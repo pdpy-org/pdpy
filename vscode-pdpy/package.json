@@ -1,0 +1,53 @@
+{
+	"name": "vscode-pdpy",
+	"displayName": "vscode-pdpy",
+	"description": "Language support for the pdpy language",
+	"version": "0.0.1",
+	"publisher": "fdch",
+	"homepage": "https://github.com/fdch/vscode-pdpy/blob/master/README.md",
+	"license": "MIT",
+	"engines": {
+		"vscode": "^1.32.0"
+	},
+	"main": "extension.js",
+	"categories": [
+		"Programming Languages"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/fdch/vscode-pdpy"
+	},
+	"activationEvents": [
+		"onLanguage:pdpy",
+		"onCommand:pdpy.execInTerminal",
+		"onCommand:pdpy.killTerminal"
+	],
+	"icon": "icon.png",
+	"contributes": {
+		"languages": [
+			{
+				"id": "pdpy",
+				"aliases": [
+					"pdpy",
+					"pdpy"
+				],
+				"extensions": [
+					".pdpy"
+				],
+				"configuration": "./language-configuration.json"
+			}
+		],
+		"grammars": [
+			{
+				"language": "pdpy",
+				"scopeName": "source.pdpy",
+				"path": "./syntaxes/pdpy.tmLanguage.json"
+			}
+		]
+	},
+	"devDependencies": {
+		"@types/node": "^7.0.43",
+		"eslint": "^4.11.0",
+		"vscode": "^1.1.6"
+	}
+}

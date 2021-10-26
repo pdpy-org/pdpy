@@ -1,0 +1,107 @@
+{
+  "fileTypes": [
+      "pdpy"
+    ],
+    "foldingStartMarker": "\\{|\\/\\*",
+    "foldingStopMarker": "\\}|\\*\\/",
+    "name": "PdPy",
+    "patterns": [
+      {
+        "match": "\\b(arg|var|classvar|const|this|thisThread|thisMethod|thisFunction|thisProcess|true|false|inf|nil)\\b",
+        "name": "keyword.control.pdpy"
+      },
+      {
+        "begin": "\"",
+        "end": "\"",
+        "name": "string.quoted.double.pdpy",
+        "patterns": [
+          {
+            "match": "\\\\.",
+            "name": "constant.character.escape.pdpy"
+          }
+        ]
+      },
+      {
+        "begin": "'",
+        "end": "'",
+        "name": "entity.name.symbol.pdpy",
+        "patterns": [
+          {
+            "match": "\\\\.",
+            "name": "constant.character.escape.pdpy"
+          }
+        ]
+      },
+      {
+        "match": "[a-z][a-zA-Z0-9_]*\\:",
+        "name": "support.name.tag.pdpy"
+      },
+      {
+        "captures": {
+          "1": {
+            "name": "entity.name.class.pdpy"
+          }
+        },
+        "match": "^\\s*\\+*\\s*([A-Z]{1}[a-zA-Z0-9_]*)\\s*\\:{1}\\s*([A-Z]{1}[a-zA-Z0-9_]*)\\s*\\{"
+      },
+      {
+        "captures": {
+          "1": {
+            "name": "entity.name.class.pdpy"
+          }
+        },
+        "match": "^([A-Z]{1}[a-zA-Z0-9_]*)[^a-zA-Z0-9_]"
+      },
+      {
+        "match": "\\|[a-zA-Z0-9\\#\\[\\]\\\"\\_\\=\\.\\(\\)[[:space:]]\\,]+\\|",
+        "name": "variable.parameter.function.pdpy"
+      },
+      {
+        "captures": {
+          "1": {
+            "name": "entity.name.class.pdpy"
+          }
+        },
+        "match": "[^a-zA-Z0-9\\\\]([A-Z_]{1}[a-zA-Z0-9_]*)[^a-zA-Z0-9_]"
+      },
+      {
+        "match": "\\\\[a-zA-Z0-9\\_]+",
+        "name": "entity.name.symbol.pdpy"
+      },
+      {
+        "captures": {
+          "1": {
+            "name": "entity.name.function.pdpy"
+          }
+        },
+        "match": "^\\s*(\\**[a-z]{1}[a-zA-Z0-9_]+)\\s*\\{"
+      },
+      {
+        "match": "\\~[a-z][a-zA-Z0-9_]*",
+        "name": "variable.language.pdpy"
+      },
+      {
+        "match": "\\\\[a-zA-Z\\0-9_\\_]+",
+        "name": "variable.language.pdpy"
+      },
+      {
+        "match": "\\/\\/.*",
+        "name": "comment.single.pdpy"
+      },
+      {
+        "match": "\\#.*",
+        "name": "comment.single.pdpy"
+      },
+      {
+        "begin": "\\/\\*",
+        "end": "\\*\\/",
+        "name": "comment.multiline.pdpy"
+      },
+      {
+        "comment": "source: ruby bundle",
+        "match": "\\b(0[xX][0-9A-Fa-f](?>_?[0-9A-Fa-f])*|\\d(?>_?\\d)*(\\.(?![^[:space:][:digit:]])(?>_?\\d)*)?([eE][-+]?\\d(?>_?\\d)*)?|0[bB][01]+)\\b",
+        "name": "constant.numeric.pdpy"
+      }
+    ],
+    "scopeName": "source.pdpy"
+}
