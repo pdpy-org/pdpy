@@ -15,3 +15,7 @@ unused/
 json_files/
 __pycache__/
 tests/
+
+# from vscode-pdpy
+node_modules/
+
