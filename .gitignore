@@ -9,3 +9,7 @@
 **/internals/list_internals.py
 *.csv
 
+src/unused/
+src/json_files/
+src/error.log
+src/pdpy/__pycache__/
