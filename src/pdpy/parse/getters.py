@@ -96,7 +96,7 @@ def getConnections(obj, out):
       if '-1' not in s:
         out.append(s + ";\r\n")
       else:
-        log(1,"EDGES", x.toJSON())
+        log(1,"EDGES", x)
         log(1,"Missed a connection:", s)
 
         
@@ -433,22 +433,22 @@ def getCanvas(obj, out, root=False):
 
 def getNativeGui(x, kind):
   s = f"#X {kind}"
-  s += ' ' + str(get(x,'position','x'))
-  s += ' ' + str(get(x,'position','y'))
+  s += ' ' + str(int(get(x,'position','x')))
+  s += ' ' + str(int(get(x,'position','y')))
 
   if hasattr(x, "digit_width"):
-    s += ' ' + str(get(x,'digit_width'))
+    s += ' ' + str(int(get(x,'digit_width')))
   else:
     s += ' 0'
 
   if hasattr(x, "limits"):
-    s += ' ' + str(get(x,'limits','lower'))
-    s += ' ' + str(get(x,'limits','upper'))
+    s += ' ' + str(int(get(x,'limits','lower')))
+    s += ' ' + str(int(get(x,'limits','upper')))
   else:
     s += ' 0 0'
 
   if hasattr(x, "flag"):
-    s += ' ' + str(get(x,'flag'))
+    s += ' ' + str(int(get(x,'flag')))
   else:
     s += ' 0'
   
