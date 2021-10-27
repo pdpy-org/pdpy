@@ -168,7 +168,7 @@ class PdPy(Base):
     """ Restore constructor
     """
     # restored canvases also have borders
-    log(0,"RESTORE",argv)
+    # log(0,"RESTORE",argv)
     last = self.__last_canvas__()
     if argv is not None:
       setattr(last, "position", Point(*argv[:2]))
@@ -217,6 +217,7 @@ class PdPy(Base):
         elif "connect"    == head[1]: self.addConnection(body) # edges
         elif "floatatom"  == head[1]: last = self.addNativeGui(head[1], body)
         elif "symbolatom" == head[1]: last = self.addNativeGui(head[1], body)
+        elif "listbox"    == head[1]: last = self.addNativeGui(head[1], body)
         elif "scalar"     == head[1]: last = self.addScalar(body)
         elif "text"       == head[1]: last = self.addComment(body)
         elif "msg"        == head[1]: last = self.addMsg(body)
