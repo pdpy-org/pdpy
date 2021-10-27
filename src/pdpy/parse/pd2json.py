@@ -100,6 +100,9 @@ def PureDataToJson(patch, pd_lines):
       # a symbol object
       elif "symbolatom" == head[1]:
         last = patch.addNativeGui(head[1], body)
+      # a listbox object
+      elif "listbox" == head[1]:
+        last = patch.addNativeGui(head[1], body)
       # a message object
       elif "msg" == head[1]:
         last = patch.addMsg(body)
