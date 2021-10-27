@@ -200,7 +200,7 @@ def getNodes(obj, out):
           s += ' ' + str(get(x,'position','x'))
           s += ' ' + str(get(x,'position','y'))
         else:
-          log(1,"WARNING, UNPARSED", x.toJSON())
+          log(1,"WARNING, UNPARSED", x)
       else:
         
         if get(x, "__pdpy__") == "PdMessage":
