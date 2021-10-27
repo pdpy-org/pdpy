@@ -4,7 +4,7 @@
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
 
-if [[ $1 -eq 'help' ]] || [[ $1 -eq '-h' ]] || [[ $1 -eq '--help' ]]
+if [[ $1 == 'help' ]] || [[ $1 == '-h' ]] || [[ $1 == '--help' ]]
 then
   echo "Usage: ./batch_test.sh pathfile [offset, once]"
   echo """Options:
@@ -31,6 +31,9 @@ outdir=$(pwd)/json_files
 
 # The error log file
 err=$(pwd)/error.log
+
+# Place the pddb.json file in the INT variable
+INT=$(pwd)/../internals/pddb.json
 
 # If there is a second argument, it is the offset to start from
 if [[ $2 ]]
@@ -61,10 +64,10 @@ while read line; do
   # to translate files into all formats
 
   if [[ ! $3 ]]; then
-    $py $file -f 'pd'   -t 'json' -i "$input" -o "$out"  >> $err 2>&1
-    $py $file -f 'pd'   -t 'pkl'  -i "$input" -o "$out1" >> $err 2>&1
-    $py $file -f 'json' -t 'pd'   -i "$out"   -o "$out2" >> $err 2>&1
-    $py $file -f 'pkl'  -t 'pd'   -i "$out1"  -o "$out3" >> $err 2>&1
+    $py $file -f 'pd'   -t 'json' -i "$input" -o "$out"  -int $INT >> $err 2>&1
+    $py $file -f 'pd'   -t 'pkl'  -i "$input" -o "$out1" -int $INT >> $err 2>&1
+    $py $file -f 'json' -t 'pd'   -i "$out"   -o "$out2" -int $INT >> $err 2>&1
+    $py $file -f 'pkl'  -t 'pd'   -i "$out1"  -o "$out3" -int $INT >> $err 2>&1
     if grep -q "Error" $err; then
       echo "Stopped at: " $input
       echo "line number"
@@ -72,10 +75,10 @@ while read line; do
       break
     fi 
   else
-    $py $file -f 'pd'   -t 'json' -i "$input" -o "$out"  >> $err 2>&1
-    $py $file -f 'pd'   -t 'pkl'  -i "$input" -o "$out1" >> $err 2>&1
-    $py $file -f 'json' -t 'pd'   -i "$out"   -o "$out2" >> $err 2>&1
-    $py $file -f 'pkl'  -t 'pd'   -i "$out1"  -o "$out3" >> $err 2>&1
+    $py $file -f 'pd'   -t 'json' -i "$input" -o "$out"  -int $INT >> $err 2>&1
+    $py $file -f 'pd'   -t 'pkl'  -i "$input" -o "$out1" -int $INT >> $err 2>&1
+    $py $file -f 'json' -t 'pd'   -i "$out"   -o "$out2" -int $INT >> $err 2>&1
+    $py $file -f 'pkl'  -t 'pd'   -i "$out1"  -o "$out3" -int $INT >> $err 2>&1
     break
   fi
   i=$((i+1))
