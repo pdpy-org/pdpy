@@ -14,7 +14,10 @@ error.log
 unused/
 json_files/
 __pycache__/
-tests/
+src/tests/patch_paths/
+src/tests/pd_files/
+src/tests/pdpy_tests/
+src/tests/all_objects.json
 **/*.test.*.py
 
 # from vscode-pdpy
