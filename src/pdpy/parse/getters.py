@@ -10,28 +10,54 @@ __all__=[
   "getStruct", "getCanvas", "getDependencies", "getNodes", "getComments", "getCoords", "getConnections", "getRestore"
 ]
 
-
+# **************************************************************************** #
 # some globals
-depth = []
+# **************************************************************************** #
+
+# Flag to indicate if we are in an object
 isobj = True
+
+# This is a list that holds the depth of the current object
+depth = []
+
+# This is a dictionary with 
+# - the node indices as keys, and 
+# - the last depth index as values
 obj_map = {}
 
+# **************************************************************************** #
+# Routines to keep track of object connections
+# **************************************************************************** #
+
 def map_idx(id):
+  """ Maps a node id to a unique index """
+  # get the depth and obj_map globals
   global depth
   global obj_map
+  # increment the last depth index by one
   depth[-1] += 1
-  obj_map.update({id:depth[-1]})
+  # add the node to the map
+  obj_map.update({ id : depth[-1] })
 
 def remap(id):
-  s = '-1'
+  """ Get the value from the mapped indices """
+  # get the object map
   global obj_map
+  s = '-1'
   try:
-    s = str(obj_map[int(id)])
+    # query the map for the value at the id key
+    s = str( obj_map[int(id)] )
   except KeyError:
+    # if the key is not found, log the error
     log(1, "remap()::Key Not Found", id)
     print(obj_map)
   finally:
+    # return the value
     return s
+
+# **************************************************************************** #
+# TODO: Define a custom decoder
+# **************************************************************************** #
 
 # def PdPyDecoder(obj):
 #   if "__type__" in obj and obj["__type__"] == "PdPy":
@@ -39,6 +65,9 @@ def remap(id):
 #   else:
 #     return lambda d: SimpleNamespace(**d)
 
+# **************************************************************************** #
+# Helper to get the property of an object
+# **************************************************************************** #
 
 def get(obj, prop, subprop=None, default=None):
 
@@ -52,8 +81,21 @@ def get(obj, prop, subprop=None, default=None):
   else:
     return get(o, subprop)
 
+# **************************************************************************** #
+# Routines to get data from structured pdpy json file into pd-formatted string
+# **************************************************************************** #
 
 def getStruct(obj, out):
+  """ Parses the struct entry into pd-lingo 
+  
+  Description
+  -----------  
+    This function takes a python object `obj` (coming from json),
+    and an `out` list. 
+  
+  It returns `None`, but they append pd-formatted strings to the `out` list
+  
+  """
   if hasattr(obj, 'struct'):
     for d in get(obj,'struct'):
       s = f"#N struct {get(d,'name')}"
@@ -77,6 +119,17 @@ def getStruct(obj, out):
       out.append(s + ";\r\n")
 
 def getComments(obj, out):
+  """ Parses the comment entry into pd-lingo 
+  
+  Description
+  -----------  
+    This function takes a python object `obj` (coming from json),
+    and an `out` list. 
+  
+  It returns `None`, but they append pd-formatted strings to the `out` list
+  
+  """
+
   if hasattr(obj, 'comments'):
     for x in get(obj,'comments'):
       s = "#X text"
@@ -88,6 +141,16 @@ def getComments(obj, out):
       out.append(s + ";\r\n")
 
 def getConnections(obj, out):
+  """ Parses the connections entry into pd-lingo 
+  
+  Description
+  -----------  
+    This function takes a python object `obj` (coming from json),
+    and an `out` list. 
+  
+  It returns `None`, but they append pd-formatted strings to the `out` list
+  
+  """
   if hasattr(obj, 'edges'):
     for x in get(obj,'edges'):
       s = "#X connect"
@@ -99,9 +162,18 @@ def getConnections(obj, out):
         log(1,"EDGES", x)
         log(1,"Missed a connection:", s)
 
-        
 
 def getNodes(obj, out):
+  """ Parses the nodes entry into pd-lingo 
+  
+  Description
+  -----------  
+    This function takes a python object `obj` (coming from json),
+    and an `out` list. 
+  
+  It returns `None`, but they append pd-formatted strings to the `out` list
+  
+  """
   # c_offset =  len(get(obj,'comments'))-1 if hasattr(obj, 'comments') else 0
 
   if hasattr(obj, 'nodes'):
@@ -366,6 +438,16 @@ def getNodes(obj, out):
         haso = False
 
 def getDeclare(obj, out, kind):
+  """ Parses the declare entry into pd-lingo 
+  
+  Description
+  -----------  
+    This function takes a python object `obj` (coming from json),
+    and an `out` list. 
+  
+  It returns `None`, but they append pd-formatted strings to the `out` list
+  
+  """
   if hasattr(obj, kind):
     s = "#X declare"
     for x in get(obj, kind):
@@ -373,11 +455,22 @@ def getDeclare(obj, out, kind):
     out.append(s + ";\r\n")
 
 def getDependencies(obj, out):
+  """ Parses the dependencies entry into paths and libs using `getDeclare()` """
   if hasattr(obj, "dependencies"):
     getDeclare(get(obj,'dependencies'), out, 'paths')
     getDeclare(get(obj,'dependencies'), out, 'libs')
 
 def getRestore(obj, out):
+  """ Parses the restore entry into pd-lingo 
+  
+  Description
+  -----------  
+    This function takes a python object `obj` (coming from json),
+    and an `out` list. 
+  
+  It returns `None`, but they append pd-formatted strings to the `out` list
+  
+  """
   global depth
   depth.pop()
   if hasattr(obj, 'position'):
@@ -388,10 +481,30 @@ def getRestore(obj, out):
     out.append(s + ";\r\n")
 
 def getBorder(obj, out):
+  """ Parses the border entry into pd-lingo 
+  
+  Description
+  -----------  
+    This function takes a python object `obj` (coming from json),
+    and an `out` list. 
+  
+  It returns `None`, but they append pd-formatted strings to the `out` list
+  
+  """
   if hasattr(obj, 'border'):
     out.append(f"#X f {str(get(obj,'border'))} ;\r\n")
 
 def getCoords(obj, out):
+  """ Parses the coords entry into pd-lingo 
+  
+  Description
+  -----------  
+    This function takes a python object `obj` (coming from json),
+    and an `out` list. 
+  
+  It returns `None`, but they append pd-formatted strings to the `out` list
+  
+  """
   if hasattr(obj, 'coords'):
     s = '#X coords'
     s += ' ' + str(get(get(obj,'coords','range'),'a','x'))
@@ -407,6 +520,18 @@ def getCoords(obj, out):
     out.append(s + ";\r\n")
 
 def getCanvas(obj, out, root=False):
+  """ Parses the canvas entry into pd-lingo 
+  
+  Description
+  -----------  
+    This function takes a python object `obj` (coming from json),
+    and an `out` list. 
+    It also takes a boolean `root` to indicate if it is the root object.
+    If it is not the root, it will recurse through the nodes.
+  
+  It returns `None`, but they append pd-formatted strings to the `out` list
+  
+  """
   global depth
   depth.append(-1)
   s = '#N canvas'
@@ -414,6 +539,7 @@ def getCanvas(obj, out, root=False):
   s += ' ' + str(get(obj,'screen','y'))
   s += ' ' + str(get(obj,'dimension','width'))
   s += ' ' + str(get(obj,'dimension','height'))
+  # Do not add name and vis flag if it is the root, add font instead
   if root:
     s += ' ' + str(get(obj,'font'))    
   else:
@@ -422,8 +548,8 @@ def getCanvas(obj, out, root=False):
   
   out.append(s + ";\r\n")
   
+  # recurse through the nodes if it is not the root
   if not root:
-    # recurse
     getNodes(obj, out)
     getComments(obj, out)
     getConnections(obj, out)
@@ -432,6 +558,17 @@ def getCanvas(obj, out, root=False):
     getBorder(obj, out)
 
 def getNativeGui(x, kind):
+  """ Parses the gui entry into pd-lingo 
+  
+  Description
+  -----------  
+    This function formats the string into the native gui string format
+  
+  Return
+  ----------
+    A native gui pd-string
+  
+  """
   s = f"#X {kind}"
   s += ' ' + str(int(get(x,'position','x')))
   s += ' ' + str(int(get(x,'position','y')))
