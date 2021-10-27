@@ -174,19 +174,24 @@ def getNodes(obj, out):
   It returns `None`, but they append pd-formatted strings to the `out` list
   
   """
+  # uncomment this to add a comment offset
   # c_offset =  len(get(obj,'comments'))-1 if hasattr(obj, 'comments') else 0
-
+  c_offset = 0
+  
   if hasattr(obj, 'nodes'):
     haso = False
     for x in obj.nodes:
       s = ''
       
+      # If the node has an ID, get it and use it to update the object map
       if hasattr(x,"id"):
-        map_idx(get(x,'id'))
-        # map_idx(get(x,'id')-c_offset)
+        # update the object map
+        map_idx(int(get(x,'id'))-c_offset)
+        # uncomment to see the mapping on the pd-file
         # s += ' ' + str(obj_map[get(x,'id')]) + ' '
  
       if get(x, "__pdpy__") == "Canvas":
+        # uncomment to see the mapping on the pd-file
         # out.append(str(obj_map[get(x,'id')]) + ' ')
         getCanvas(x, out)
       elif not hasattr(x, 'className'):
@@ -471,8 +476,10 @@ def getRestore(obj, out):
   It returns `None`, but they append pd-formatted strings to the `out` list
   
   """
+  # Get the depth and remove the last element
   global depth
   depth.pop()
+  
   if hasattr(obj, 'position'):
     s = '#X restore'
     s += ' ' + str(get(obj,'position','x'))
@@ -532,8 +539,10 @@ def getCanvas(obj, out, root=False):
   It returns `None`, but they append pd-formatted strings to the `out` list
   
   """
+  # Get the depth and add a new element with -1
   global depth
   depth.append(-1)
+  
   s = '#N canvas'
   s += ' ' + str(get(obj,'screen','x'))
   s += ' ' + str(get(obj,'screen','y'))
