@@ -115,7 +115,7 @@ def parseIOlets(arr, patchable=False):
     return {"iolets":io}
 
 def getpatchable(s):
-  """ Get the patchable flag on Pd's `class_new` call
+  """ Get the patchable flag on Pd's `class_new` call, return true if patchable
   Description
   -----------
   The 5th argument of the `class_new` function is the patchable flag.
@@ -123,7 +123,14 @@ def getpatchable(s):
   See pure-data/src/m_class.c line 432 for more information.
   """
   s = s.split(',')
-  return 4 < len(s) and '0' in s[4]
+  if 4 < len(s):
+    if '0' in s[4]:
+      return True
+    else:
+      return False
+  else:
+    # default to True if argument is not present
+    return True
 
 def parseSetup(arr, internals):
   """ Parse the object's `x_setup` call for object structure
@@ -133,10 +140,15 @@ def parseSetup(arr, internals):
   for x in arr[0].split():
     if "_setup" in x: 
       name = " ".join(x.split("_")[:-1]).replace(' ','_')
-  
-  declarations = " ".join(arr[1:-1]).split("=")
+
+  declarations = " ".join(arr[1:]).split("=")
   i=0
   obj = []
+  
+  # uncomment and pick an object by class name
+  # if 'random' == name:
+    # for i in declarations:
+      # print(repr(i))
   
   for i in range(0,len(declarations)-1,2):
     methods = []
@@ -146,6 +158,7 @@ def parseSetup(arr, internals):
     help = []
     signal = False
     patchable = False
+
     for x in declarations[i+1].replace("\n",'').split(";"):
       if   "class_new"    in x and "widget" not in x: 
         getargs(x,arguments)

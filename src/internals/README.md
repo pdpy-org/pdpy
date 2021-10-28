@@ -386,12 +386,10 @@ represented by the `"bang"` string, and it is described as a
 
 While this is true, it is incomplete. From this description alone,
 we are missing information about the functionality of the object.
-For example, we cannot know what the object does. Moreover, we fail to
-see that the object has, in fact, another `method` that responds to the `seed` symbol.
-
-These limitations come from the fact that the `.c` files are not loaded
-but parsed, and some object attributes may depend on creation arguments and other
+For example, we cannot know what the object does. Other limitations come from the fact that the `.c` files are not loaded but parsed,
+and some object attributes may depend on creation arguments and other
 circumstances during instantiation. Accounting for these is still in the todo list.
+
 You are of course welcome to help in any way. Please file an issue or make a PR!
 
 ## Credits
