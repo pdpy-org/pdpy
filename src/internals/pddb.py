@@ -116,6 +116,11 @@ def parseIOlets(arr, patchable=False):
 
 def getpatchable(s):
   """ Get the patchable flag on Pd's `class_new` call
+  Description
+  -----------
+  The 5th argument of the `class_new` function is the patchable flag.
+  It is actually casted to with CLASS_TYPEMASK and CLASS_PATCHABLE
+  See pure-data/src/m_class.c line 432 for more information.
   """
   s = s.split(',')
   return 4 < len(s) and '0' in s[4]
