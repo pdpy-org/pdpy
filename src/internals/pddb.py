@@ -118,9 +118,7 @@ def getpatchable(s):
   """ Get the patchable flag on Pd's `class_new` call
   """
   s = s.split(',')
-  if 4 < len(s):
-    return s[4]
-
+  return 4 < len(s) and '0' in s[4]
 
 def parseSetup(arr, internals):
   """ Parse the object's `x_setup` call for object structure
@@ -165,7 +163,7 @@ def parseSetup(arr, internals):
     o = {}
     
     if signal: o.update({'signal': signal})
-    if patchable: o.update({'patchable': signal})
+    if patchable: o.update({'patchable': patchable})
     updateArray(alias, 'alias', o)
     updateArray(help, 'help', o)
     updateArray(newmethod, 'newmethod', o)
