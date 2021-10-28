@@ -347,30 +347,30 @@ This is an example of the `x_misc.c` entry. The only class that is shown is the
 ```json
 [
  {
-   "file": "/path/to/pure-data/src/x_misc.c",
-   "classes": [
-       {
-           "className": "random",
-           "attributes": {
-               "patchable": false,
-               "newmethod": "random_new",
-               "arguments": {
-                   "name": "random",
-                   "args": [
-                       "A_DEFFLOAT"
-                   ]
-               },
-               "methods": "bang",
-               "description": {
-                   "kind": "control",
-                   "subkind": "generators"
-               },
-               "iolets": {
-                   "inlets": 1,
-                   "outlets": 1
-               }
-           }
-       }, ...
+   "file": "/Users/fd/Development/pure-data/src/x_misc.c",
+        "classes": [
+            {
+                "className": "random",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "random_new",
+                    "arguments": {
+                        "name": "random",
+                        "args": [
+                            "A_DEFFLOAT"
+                        ]
+                    },
+                    "methods": "bang",
+                    "description": {
+                        "kind": "control",
+                        "subkind": "generators"
+                    },
+                    "iolets": {
+                        "inlets": 2,
+                        "outlets": 1
+                    }
+                }
+            }, ...
  }, ...
 ]
 ```
@@ -381,14 +381,13 @@ The `"random"` `className` is located in the `x_misc.c` file. The
 Pure Data object is created with the `"random"` symbol and an
 optional float (`A_DEFFLOAT`). It has a single method that is
 represented by the `"bang"` string, and it is described as a
-`control` object of the `generators` subkind. It has `1` inlet and
+`control` object of the `generators` subkind. It has `2` inlets and
 `1` outlet.
 
 While this is true, it is incomplete. From this description alone,
 we are missing information about the functionality of the object.
 For example, we cannot know what the object does. Moreover, we fail to
-see that the object has, in fact, another inlet with its own specific methods,
-as well as another `method` altogether that responds to the `seed` symbol.
+see that the object has, in fact, another `method` that responds to the `seed` symbol.
 
 These limitations come from the fact that the `.c` files are not loaded
 but parsed, and some object attributes may depend on creation arguments and other
