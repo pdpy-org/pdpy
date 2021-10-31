@@ -5,7 +5,6 @@
 
 from pdpy.parse.getters import get
 from ..util.utils import log
-# from ..classes.classes import GOPArrayFlags
 
 import xml.etree.ElementTree as ET
 
@@ -57,52 +56,6 @@ class JsonToXml:
   def to_string(self):
     return ET.tostring(self.__root__, encoding='unicode', method='xml')
 
-  def __map_idx__(self, id):
-    """ Maps a node id to a unique index """
-    # increment the last self.depth index by one
-    self.depth[-1] += 1
-    # add the node to the map
-    self.obj_map.update({ id : self.depth[-1] })
-
-  def __remap__(self, id):
-    """ Get the value from the mapped indices """
-    # get the object map
-    
-    s = '-1'
-    try:
-      # query the map for the value at the id key
-      s = str( self.obj_map[int(id)] )
-    except KeyError:
-      # if the key is not found, log the error
-      log(1, "__remap__()::Key Not Found", id)
-      print(self.obj_map)
-    finally:
-      # return the value
-      return s
-
-
-  def get(self, x, prop, subprop=None, default=None):
-
-    if isinstance(x, dict) or isinstance(x, list):
-      o = x[prop]
-    else:
-      o = getattr(x, str(prop))
-    
-    if subprop is None:
-      if o is not None:
-        if isinstance(o, list):
-          return o
-        else:
-          return str(o)
-      else:
-        return default
-    else:
-      return self.get(o, subprop)
-
-  # **************************************************************************** #
-  # Routines to get data from structured pdpy json file into pd-formatted string
-  # **************************************************************************** #
-
   def getStruct(self, x, cnv):
     if hasattr(x, 'struct'):
       for d in getattr(x,'struct'):
@@ -112,14 +65,14 @@ class JsonToXml:
         self.update_with_sub(d, 'symbol', struct)
         self.update_with_sub(d, 'text', struct)
         if hasattr(d, 'array'):
-          for x in self.get(d,'array'):
+          for x in getattr(d,'array'):
             array = ET.SubElement(struct, 'array')
             self.update_with_sub(x, 'name', array)
             self.update_with_sub(x, 'template', array)
 
   def getComments(self, x, cnv):
     if hasattr(x, 'comments'):
-      for x in self.get(x,'comments'):
+      for x in getattr(x,'comments'):
         comment = ET.SubElement(cnv, 'comment')
         comment.text = ' '.join(getattr(x,'text'))
         position = getattr(x, 'position')
@@ -129,7 +82,7 @@ class JsonToXml:
 
   def getConnections(self, x, cnv):
     if hasattr(x, 'edges'):
-      for x in self.get(x,'edges'):
+      for x in getattr(x,'edges'):
         connect = ET.SubElement(cnv, 'connect')
         source = ET.SubElement(connect, 'source')
         sink = ET.SubElement(connect, 'sink')
@@ -153,9 +106,13 @@ class JsonToXml:
         else:
           className = 'obj'
         
-        objid = { 'id': str(getattr(node,'id')) }
-        
-        e = ET.Element(className, attrib=objid)
+        if hasattr(node,'id'):
+          oid = str(getattr(node,'id'))
+        else:
+          log(1,"NO ID", node)
+          oid = '0'
+
+        e = ET.Element(className, attrib={ 'id': oid })
         cnv.append(e)
 
         if hasattr(node, 'position'):
@@ -200,7 +157,7 @@ class JsonToXml:
 
         if hasattr(node, 'data'):
           data = ET.SubElement(e, 'data')
-          for d in self.get(node,'data'):
+          for d in getattr(node,'data'):
             if isinstance(d, str):
               ET.SubElement(data, 'symbol').text = d
             elif isinstance(e, list):
@@ -211,26 +168,26 @@ class JsonToXml:
               ET.SubElement(data, 'float').text = str(d)
           
         if hasattr(node,'args'):
-          args = self.get(node,'args')
+          args = getattr(node,'args')
           if not isinstance(args, list):
             args = [args]
           for arg in args:
             ET.SubElement(e, 'arg').text = arg
       
-      self.update_with_sub(x, 'border', e)
+        self.update_with_sub(x, 'border', e)
 
-  def getDeclare(self, kind):
-    if hasattr(self.root, kind):
+  def getDeclare(self, x, kind):
+    if hasattr(x, kind):
       declares = ET.SubElement(self.__root__, 'declare')
-      for x in self.get(self.root, kind):
+      for x in getattr(x, kind):
         ET.SubElement(declares, kind[:-1]).text = x
       
 
   def getDependencies(self, x, cnv):
     """ Parses the dependencies entry into paths and libs using `getDeclare()` """
     if hasattr(x, "dependencies"):
-      self.getDeclare(self.get(cnv,'dependencies'), 'paths')
-      self.getDeclare(self.get(cnv,'dependencies'), 'libs')
+      self.getDeclare(getattr(x,'dependencies'), 'paths')
+      self.getDeclare(getattr(x,'dependencies'), 'libs')
 
   def getRestore(self, x, cnv):
     # Get the self.depth and remove the last element
@@ -243,31 +200,41 @@ class JsonToXml:
       self.update_with_sub(position, 'y', cnv)
       self.update_with_sub(x, 'title', cnv)
 
-  # def getBorder(self, x, cnv):
-    # if hasattr(x, 'border'):
-      # ET.SubElement(cnv, 'border').text = self.get(x,'border')
-
   def getCoords(self, x, cnv):
     if hasattr(x, 'coords'):
       coords = ET.SubElement(cnv, 'coords')
 
       a = ET.SubElement(coords, 'a')
       b = ET.SubElement(coords, 'b')
-      ET.SubElement(a, 'xpos').text = self.get(self.get(x,'coords','range'),'a','x')
-      ET.SubElement(b, 'xpos').text = self.get(self.get(x,'coords','range'),'b','x')
-      ET.SubElement(a, 'ypos').text = self.get(self.get(x,'coords','range'),'a','y')
-      ET.SubElement(b, 'xpos').text = self.get(self.get(x,'coords','range'),'b','y')
 
-      ET.SubElement(coords, 'width').text = self.get(self.get(x,'coords','dimension'),'width')
-      ET.SubElement(coords, 'height').text = self.get(self.get(x,'coords','dimension'),'height')
+      crds = getattr(x, 'coords')
+
+      if hasattr(crds, 'range'):
+        range = getattr(crds, 'range')
+        if hasattr(range, 'a'):
+          a_range = getattr(range, 'a')
+          self.update_with_sub(a_range, 'x', a)
+          self.update_with_sub(a_range, 'y', a)
+        if hasattr(range, 'b'):
+          b_range = getattr(range, 'b')
+          self.update_with_sub(b_range, 'x', b)
+          self.update_with_sub(b_range, 'y', b)
       
-      ET.SubElement(coords, 'gop').text = self.get(x,'coords','gop')
+      if hasattr(crds, 'dimension'):
+        dimension = ET.SubElement(coords, 'dimension')
+        dimen = getattr(crds, 'dimension')
+        if hasattr(dimen, 'width'):
+          self.update_with_sub(dimen, 'width', dimension)
+          self.update_with_sub(dimen, 'height', dimension)
       
-      if hasattr(self.get(x,'coords'), 'margin'):
+      if hasattr(crds, 'gop'):
+        self.update_with_sub(crds, 'gop', coords)
+      
+      if hasattr(crds, 'margin'):
         mgn = ET.SubElement(coords, 'margin')
-        ET.SubElement(mgn, 'x').text = self.get(self.get(x,'coords','margin'),'x')
-        ET.SubElement(mgn, 'y').text = self.get(self.get(x,'coords','margin'),'y')
-      
+        margin = getattr(crds, 'margin')
+        self.update_with_sub(margin, 'x', mgn)
+        self.update_with_sub(margin, 'y', mgn)
 
   def getCanvas(self, x, canvas, root=False):
     """ Fill in the canvas element 
