@@ -4,7 +4,7 @@
 """ Json-formatted file (Python Patch Object) to XML file """
 
 from ..util.utils import log
-from ..classes.classes import GOPArrayFlags
+# from ..classes.classes import GOPArrayFlags
 
 import xml.etree.ElementTree as ET
 
@@ -152,271 +152,138 @@ class JsonToXml:
         ET.SubElement(sink, 'port').text = self.get(x,'sink','port')
 
   def getNodes(self):
-    # uncomment this to add a comment offset
-    # c_offset =  len(get(obj,'comments'))-1 if hasattr(obj, 'comments') else 0
-    c_offset = 0
-    
     if hasattr(self.obj, 'nodes'):
-      haso = False
       for x in self.obj.nodes:
-        # If the node has an ID, get it and use it to update the object map
-        if hasattr(x,"id"):
-          # update the object map
-          self.__map_idx__(int(self.get(x,'id'))-c_offset)
-          
-        if self.get(x, "__pdpy__") == "Canvas":
+
+        if hasattr(x, 'nodes'):
           # a canvas, recurse
           self.getCanvas(x)
-        elif not hasattr(x, 'className'):
-          # an empty object
-          if self.get(x, "__pdpy__") == "PdObject":
-            e = ET.SubElement(self.et, 'obj')
-            ET.SubElement(e, 'xpos').text = self.get(x,'position','x')
-            ET.SubElement(e, 'ypos').text = self.get(x,'position','y')
-          else:
-            log(1,"WARNING, UNPARSED", x)
+          continue
+
+        if hasattr(x, 'className'):
+          className = self.get(x,'className')
         else:
-          # anything else will be created
-          
+          className = 'obj'
 
-          if self.get(x, "__pdpy__") == "PdMessage":
-            
-            """ A Pd Message """
-            
-            e = ET.SubElement(self.et, 'msg')
-            ET.SubElement(e, 'xpos').text = self.get(x,'position','x')
-            ET.SubElement(e, 'ypos').text = self.get(x,'position','y')
-            if hasattr(x, "targets"):
-              for t in self.get(x,'targets'):
-                ET.SubElement(e, 'target').text = self.get(t,'address')
-                for m in self.get(t,'message'):
-                  ET.SubElement(e, 'message').text = m
+        e = ET.SubElement(self.et, className, attrib={'id':self.get(x,'id')})
 
+        if hasattr(x, 'xpos'):
+          ET.SubElement(e, 'xpos').text = self.get(x,'position','x')
+        if hasattr(x, 'ypos'):
+          ET.SubElement(e, 'ypos').text = self.get(x,'position','y')
 
+        if hasattr(x, "targets"):
+          for t in self.get(x,'targets'):
+            target = ET.SubElement(e, 'target')
+            target.text = self.get(t,'address')
+            for m in self.get(t,'message'):
+              ET.SubElement(target, 'message').text = m
 
-          elif self.get(x, "__pdpy__") == "Scalar":
-            
-            """ A Pd Scalar """
-          
-            s += "#X scalar"
-            s += ' ' + self.get(x,'name')
-          
-            for e in self.get(x,'data'):
-              s += ' ' + ' '.join(e) + " \;"
-          
-          elif self.get(x, "__pdpy__") == "PdNativeGui":
-          
-            s += self.getNativeGui(x, self.get(x,'className'))
-          
-          elif "goparray" == self.get(x,'className'):
-          
-            s += "#X array"
-            s += ' ' + self.get(x,'name')
-            s += ' ' + str(self.get(x,'size'))
-            s += ' float'
-            s += ' ' + str(GOPArrayFlags.index(self.get(x,'flag')))
-          
-          else:
-          
-            # TODO
-            # IEMGUI stuff
-            # more granular control on each param
-            className = self.get(x,'className')
-            s += "#X obj"
-            s += ' ' + str(self.get(x,'position','x'))
-            s += ' ' + str(self.get(x,'position','y'))
-            s += ' ' + className
-            
-            if self.get(x, "__pdpy__") == 'PdIEMGui':
-              # log(1,x)
-              # s += ' ' + ' '.join(get(x,'args'))
-              
-              rcv = self.get(x,'receive') if hasattr(x,'receive') else 'empty'
-              snd = self.get(x,'send') if hasattr(x,'send') else 'empty'
-              lbl = self.get(x,'label') if hasattr(x,'label') else 'empty'
-              xof = str(self.get(x,'offset', 'x')) if hasattr(x,'offset') else None
-              yof = str(self.get(x,'offset', 'y')) if hasattr(x,'offset') else None
-              lff = str(self.get(x,'font', 'face')) if hasattr(x,'font') else None
-              lfs = str(self.get(x,'font', 'size')) if hasattr(x,'font') else None
-              lbc = str(self.get(x,'lbcolor')) if hasattr(x,'lbcolor') else None
-              bgc = str(self.get(x,'bgcolor')) if hasattr(x,'bgcolor') else None
-              fgc = str(self.get(x,'fgcolor')) if hasattr(x,'fgcolor') else None
+        if hasattr(x,'receive'):
+          ET.SubElement(e, 'receive').text = self.get(x,'receive')
 
-              if "vu" == className:
-                s+=f" {str(self.get(x,'area','width'))} {str(self.get(x,'area','height'))}"
-                s+=f" {rcv} {lbl}"
-                s+=f" {'-1' if xof is None else xof}"
-                s+=f" {'-8' if yof is None else yof}"
-                s+=f" {'0' if lff is None else lff}"
-                s+=f" {'10' if lfs is None else lfs}"
-                s+=f" {'-66577' if bgc is None else bgc}"
-                s+=f" {'-1' if lbc is None else lbc}"
-                if hasattr(x,'scale'):
-                  s+=f" {'1' if self.get(x,'scale') else '1'}"
-                else:
-                  s+= ' 1'
-                if hasattr(x,'flag'):
-                  s+=f" {'1' if self.get(x,'flag') else '0'}"
-                else:
-                  s+= ' 0'
-              
-              elif "tgl" == className:
-                # log(1,"TGL",x)
-                s+=f" {str(self.get(x,'size'))}"
-                s+=f" {'1' if self.get(x,'init') else '0'}"
-                s+=f" {snd} {rcv} {lbl}"
-                s+=f" {'17' if xof is None else xof}"
-                s+=f" {'7' if yof is None else yof}"
-                s+=f" {'0' if lff is None else lff}"
-                s+=f" {'10' if lfs is None else lfs}"
-                s+=f" {'-262144' if bgc is None else bgc}"
-                s+=f" {'-1' if fgc is None else fgc}"
-                s+=f" {'-1' if lbc is None else lbc}"
-                s+=f" {'1' if self.get(x,'flag') else '0'}"
-                s+=f" {str(self.get(x,'nonzero',default='1'))}"
-                # log(1,s)
+        if hasattr(x,'send'):
+          ET.SubElement(e, 'send').text = self.get(x,'send')
 
-              elif "cnv" == className or "my_canvas" == className:
-                s+=f" {str(self.get(x,'size',default='15'))}"
-                s+=f" {str(self.get(x,'area','width'))} {str(self.get(x,'area','height'))}"
-                s+=f" {snd} {rcv} {lbl}" if snd is not None else f" {rcv} {lbl}"
-                s+=f" {'20' if xof is None else xof}"
-                s+=f" {'12' if yof is None else yof}"
-                s+=f" {'0' if lff is None else lff}"
-                s+=f" {'14' if lfs is None else lfs}"
-                s+=f" {'-233017' if bgc is None else bgc}"
-                s+=f" {'-66577' if lbc is None else lbc}"
-                s+=f" {'1' if self.get(x,'flag') else '0'}"
+        if hasattr(x,'label'):
+          label = ET.SubElement(e, 'label')
+          label.text = self.get(x,'label')
+          if hasattr(x,'offset'):
+            ET.SubElement(label, 'xoff').text = self.get(x,'offset', 'x')
+            ET.SubElement(label, 'yoff').text = self.get(x,'offset', 'y')
+          if hasattr(x,'font'):
+            ET.SubElement(label, 'fsize').text = self.get(x,'font', 'size')
+            ET.SubElement(label, 'fface').text = self.get(x,'font', 'face')
+          if hasattr(x,'lbcolor'):
+            ET.SubElement(label, 'color').text = self.get(x,'lbcolor')
 
-              elif "radio" in className or 'rdb' == className:
-                s+=f" {str(self.get(x,'size'))} {str(self.get(x,'flag'))}"
-                s+=f" {'1' if self.get(x,'init') else '0'} {str(self.get(x,'number'))}"
-                s+=f" {snd} {rcv} {lbl}"
-                s+=f" {'0' if xof is None else xof}"
-                s+=f" {'-8' if yof is None else yof}"
-                s+=f" {'0' if lff is None else lff}"
-                s+=f" {'10' if lfs is None else lfs}"
-                s+=f" {'-262144' if bgc is None else bgc}"
-                s+=f" {'-1' if fgc is None else fgc}"
-                s+=f" {'-1' if lbc is None else lbc}"
-                s+=f" {str(self.get(x,'value'))}"
+        if hasattr(x,'bgcolor'):
+          ET.SubElement(label, 'bgcolor').text = self.get(x,'bgcolor')
 
-              elif "bng" == className:
-                s+=f" {str(self.get(x,'size'))} {str(self.get(x,'hold'))}"
-                s+=f" {str(self.get(x,'intrrpt'))} {'1' if self.get(x,'init') else '0'}"
-                s+=f" {snd} {rcv} {lbl}"
-                s+=f" {'17' if xof is None else xof}"
-                s+=f" {'7' if yof is None else yof}"
-                s+=f" {'0' if lff is None else lff}"
-                s+=f" {'10' if lfs is None else lfs}"
-                s+=f" {'-262144' if bgc is None else bgc}"
-                s+=f" {'-1' if fgc is None else fgc}"
-                s+=f" {'-1' if lbc is None else lbc}"
+        if hasattr(x,'fgcolor'):
+          ET.SubElement(label, 'fgcolor').text = self.get(x,'fgcolor')
 
-              elif "nbx" == className:
-                s+=f" {str(self.get(x,'digit_width'))} {str(self.get(x,'height'))}"
-                s+=f" {str(self.get(x,'limits', 'lower'))}"
-                s+=f" {str(self.get(x,'limits', 'upper'))}"
-                s+=f" {'1' if self.get(x,'log_flag') else '0'} {'1' if self.get(x,'init') else '0'}"
-                s+=f" {snd} {rcv} {lbl}"
-                s+=f" {'0' if xof is None else xof}"
-                s+=f" {'-8' if yof is None else yof}"
-                s+=f" {'0' if lff is None else lff}"
-                s+=f" {'10' if lfs is None else lfs}"
-                s+=f" {'-262144' if bgc is None else bgc}"
-                s+=f" {'-1' if fgc is None else fgc}"
-                s+=f" {'-1' if lbc is None else lbc}"
-                s+=f" {str(self.get(x,'value'))}"
-                s+=f" {str(self.get(x,'log_height'))}"
-              
-              elif "hsl" == className:
-                s+=f" {str(self.get(x,'area','width'))} {str(self.get(x,'area','height'))}"
-                s+=f" {str(self.get(x,'limits', 'lower'))}"
-                s+=f" {str(self.get(x,'limits', 'upper'))}"
-                s+=f" {'1' if self.get(x,'log_flag') else '0'}"
-                s+=f" {'1' if self.get(x,'init') else '0'}"
-                s+=f" {snd} {rcv} {lbl}"
-                s+=f" {'-2' if xof is None else xof}"
-                s+=f" {'-8' if yof is None else yof}"
-                s+=f" {'0' if lff is None else lff}"
-                s+=f" {'10' if lfs is None else lfs}"
-                s+=f" {'-262144' if bgc is None else bgc}"
-                s+=f" {'-1' if fgc is None else fgc}"
-                s+=f" {'-1' if lbc is None else lbc}"
-                s+=f" {str(self.get(x,'value'))}"
-                s+=f" {'1' if self.get(x,'steady') else '0'}"
-              
-              elif "vsl" == className:
-                s+=f" {str(self.get(x,'area','width'))} {str(self.get(x,'area','height'))}"
-                s+=f" {str(self.get(x,'limits', 'lower'))}"
-                s+=f" {str(self.get(x,'limits', 'upper'))}"
-                s+=f" {'1' if self.get(x,'log_flag') else '0'} {'1' if self.get(x,'init') else '0'}"
-                s+=f" {snd} {rcv} {lbl}"
-                s+=f" {'0' if xof is None else xof}"
-                s+=f" {'-9' if yof is None else yof}"
-                s+=f" {'0' if lff is None else lff}"
-                s+=f" {'10' if lfs is None else lfs}"
-                s+=f" {'-262144' if bgc is None else bgc}"
-                s+=f" {'-1' if fgc is None else fgc}"
-                s+=f" {'-1' if lbc is None else lbc}"
-                s+=f" {str(self.get(x,'value'))}"
-                s+=f" {'1' if self.get(x,'steady') else '0'}"
-              
-              else:
-                log(2,"Can't parse PdIEMGui", x)
+        if hasattr(x,'area'):
+          area = ET.SubElement(e, 'area')
+          # fill out the area attributes width width and height
+          ET.SubElement(area, 'width').text = self.get(x,'area','width')
+          ET.SubElement(area, 'height').text = self.get(x,'area','height')
 
-            
-            else:
-              
-              if hasattr(x, "subclass"):
-                s += ' ' + self.get(x,'subclass')
-              
-              if hasattr(x, "keep"):
-                if self.get(x,'keep'):
-                  s += ' -k' 
+        if hasattr(x,'scale'):
+          ET.SubElement(e, 'scale').text = self.get(x,'scale')
 
-              if hasattr(x, "name"):
-                s += ' ' + self.get(x,'name')
-              
-              if hasattr(x, "size"):
-                s += ' ' + str(self.get(x,'size'))
+        if hasattr(x,'flag'):
+          ET.SubElement(e, 'flag').text = self.get(x,'flag')
+        
+        if hasattr(x,'size'):
+          ET.SubElement(e, 'size').text = self.get(x,'size')
 
-              if hasattr(x, "data"):
-                haso = True
-                
-              if hasattr(x,"args"):
-                args = self.get(x,'args')
-                # print("ARGUMENTS",args,type(args))
-                if isinstance(args, list):
-                  s += ' ' + ' '.join(args)
-                else:
-                  s += args
-          
-          
-          self.getBorder(x)  
+        if hasattr(x,'init'):
+          ET.SubElement(e, 'init').text = self.get(x,'size')
 
-        if haso:
-          
-          s = "#A"
-          
-          if "text" == self.get(x,'className'):
-            s += ' set'
-          else:
-            s += ' saved'
-          
-          for e in self.get(x,'data'):
-          
-            if isinstance(e, str):
-              s += ' ' + e #+ " \\;"
-          
+        if hasattr(x, 'nonzero'):
+          ET.SubElement(e, 'nonzero').text = self.get(x,'nonzero')
+
+        if hasattr(x, 'number'):
+          ET.SubElement(e, 'number').text = self.get(x,'number')
+        
+        if hasattr(x, 'value'):
+          ET.SubElement(e, 'value').text = self.get(x,'value')
+        
+        if hasattr(x, 'hold'):
+          ET.SubElement(e, 'hold').text = self.get(x,'hold')
+        
+        if hasattr(x, 'intrrpt'):
+          ET.SubElement(e, 'intrrpt').text = self.get(x,'intrrpt')
+        
+        if hasattr(x, 'digit_width'):
+          ET.SubElement(e, 'digit_width').text = self.get(x,'digit_width')
+        
+        if hasattr(x, 'height'):
+          ET.SubElement(e, 'height').text = self.get(x,'height')
+        
+        if hasattr(x, 'limits'):
+          limits = ET.SubElement(e, 'limits')
+          ET.SubElement(limits, 'lower').text = self.get(x,'limits','lower')
+          ET.SubElement(limits, 'upper').text = self.get(x,'limits','upper')
+        
+        if hasattr(x, 'log_flag'):
+          ET.SubElement(e, 'log_flag').text = self.get(x,'log_flag')
+
+        if hasattr(x, 'log_height'):
+          ET.SubElement(e, 'log_height').text = self.get(x,'log_height')
+
+        if hasattr(x, 'steady'):
+          ET.SubElement(e, 'steady').text = self.get(x,'steady')
+
+        if hasattr(x, "subclass"):
+          ET.SubElement(e, 'subclass').text = self.get(x,'subclass')
+        
+        if hasattr(x, "keep") and self.get(x,'keep'):
+          ET.SubElement(e, 'keep').text = self.get(x,'keep')
+
+        if hasattr(x, "name"):
+          ET.SubElement(e, 'name').text = self.get(x,'name')
+
+        if hasattr(x, "data"):
+          data = ET.SubElement(e, 'data')
+          for d in self.get(x,'data'):
+            if isinstance(d, str):
+              ET.SubElement(data, 'symbol').text = d
             elif isinstance(e, list):
-              s += ' ' + ' '.join(e) + " \\;"
-          
+              array = ET.SubElement(data, 'array')
+              for l in d:
+                ET.SubElement(array, 'float').text = l
             else:
-              s += ' ' + str(e)
+              ET.SubElement(data, 'float').text = d
           
-          
-          haso = False
+        if hasattr(x,"args"):
+          for arg in [ self.get(x,'args') ]:
+            ET.SubElement(e, 'arg').text = arg
+      
+      self.getBorder(x, e)
+
+
 
   def getDeclare(self, kind):
     if hasattr(self.obj, kind):
@@ -442,11 +309,9 @@ class JsonToXml:
       ET.SubElement(self.et, 'title').text = self.get(self.obj,'title')
       
 
-  def getBorder(self,x):
+  def getBorder(self, x, parent):
     if hasattr(x, 'border'):
-      print("border in", x)
-      # ET.SubElement(mgn, 'x').text = print("border")
-      # self.out.append(f"#X f {str(self.get(obj,'border'))} ;\r\n")
+      ET.SubElement(parent, 'border').text = self.get(x,'border')
 
   def getCoords(self):
     if hasattr(self.obj, 'coords'):
@@ -494,31 +359,4 @@ class JsonToXml:
       self.getConnections()
       self.getCoords()
       self.getRestore()
-      self.getBorder()
-
-  def getNativeGui(self, x, kind):
-    cnv = ET.SubElement(self.et, kind)
-    
-    ET.SubElement(cnv,'xpos').text = int(self.get(x,'position','x'))
-    ET.SubElement(cnv,'ypos').text = int(self.get(x,'position','y'))
-
-    if hasattr(x, "digit_width"):
-      ET.SubElement(cnv,'digit-width').text = int(self.get(x,'digit_width'))
-
-    if hasattr(x, "limits"):
-      ET.SubElement(cnv,'lower').text = int(self.get(x,'limits','lower'))
-      ET.SubElement(cnv,'upper').text = int(self.get(x,'limits','upper'))
-
-    if hasattr(x, "flag"):
-      ET.SubElement(cnv,'flag').text = int(self.get(x,'flag'))
-    
-    if hasattr(x, "label"):
-      ET.SubElement(cnv,'label').text = self.get(x,'label')
-
-    if hasattr(x, "receive"):
-      ET.SubElement(cnv,'receive').text = self.get(x,'receive')
-
-    if hasattr(x, "send"):
-      ET.SubElement(cnv,'send').text = self.get(x,'send')
-
-    
+      self.getBorder(x, cnv)
