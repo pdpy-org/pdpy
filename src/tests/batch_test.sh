@@ -52,33 +52,37 @@ mkdir -p $outdir
 # store the number of lines
 i=0
 
-while read line; do
-  echo $i "$line"
-  input="$line"
-  out="$outdir/$(basename $line).json"
-  out1="$outdir/$(basename $line).pkl"
-  out2="$outdir/$(basename $line)-ref.pd"
-  out3="$outdir/$(basename $line)-ref2.pd"
-
+function translate_all
+{
   # the commands to be executed
   # to translate files into all formats
+  local input=$1
+  local name=$(basename $input)
+  json_out="$outdir/$name.json"
+  pkl_out="$outdir/$name.pkl"
+  xml_out="$outdir/$name.xml"
+  json_ref="$outdir/$name-json_ref.pd"
+  pkl_ref="$outdir/$name-pkl_ref.pd"
+  $py $file -int $INT -f 'pd'   -t 'json' -i $input    -o $json_out >> $err 2>&1
+  $py $file -int $INT -f 'pd'   -t 'pkl'  -i $input    -o $pkl_out  >> $err 2>&1
+  $py $file -int $INT -f 'json' -t 'pd'   -i $json_out -o $json_ref >> $err 2>&1
+  $py $file -int $INT -f 'pkl'  -t 'pd'   -i $pkl_out  -o $pkl_ref  >> $err 2>&1
+  $py $file -int $INT -f 'json' -t 'xml'  -i $json_out -o $xml_out  >> $err 2>&1
+}
+
+while read line; do
+  echo $i $line
 
   if [[ ! $3 ]]; then
-    $py $file -f 'pd'   -t 'json' -i "$input" -o "$out"  -int $INT >> $err 2>&1
-    $py $file -f 'pd'   -t 'pkl'  -i "$input" -o "$out1" -int $INT >> $err 2>&1
-    $py $file -f 'json' -t 'pd'   -i "$out"   -o "$out2" -int $INT >> $err 2>&1
-    $py $file -f 'pkl'  -t 'pd'   -i "$out1"  -o "$out3" -int $INT >> $err 2>&1
+    translate_all $line
     if grep -q "Error" $err; then
-      echo "Stopped at: " $input
+      echo "Stopped at: " $line
       echo "line number"
-      echo $(grep -n $input $1 | cut -f 1 -d:)
+      echo $(grep -n $line $1 | cut -f 1 -d:)
       break
     fi 
   else
-    $py $file -f 'pd'   -t 'json' -i "$input" -o "$out"  -int $INT >> $err 2>&1
-    $py $file -f 'pd'   -t 'pkl'  -i "$input" -o "$out1" -int $INT >> $err 2>&1
-    $py $file -f 'json' -t 'pd'   -i "$out"   -o "$out2" -int $INT >> $err 2>&1
-    $py $file -f 'pkl'  -t 'pd'   -i "$out1"  -o "$out3" -int $INT >> $err 2>&1
+    translate_all $line
     break
   fi
   i=$((i+1))
