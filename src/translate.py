@@ -70,6 +70,9 @@ if "__main__" in __name__:
       if trans.reflect:
         trans.save_pd_reflection(output_file)
     
+    if target == "xml":
+      trans.save_xml(output_file)
+
     if target == "pkl":
       trans.save_object(output_file)
     

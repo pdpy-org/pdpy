@@ -10,6 +10,7 @@ from types import SimpleNamespace
 from .pdpy import PdPy
 
 from ..parse.json2pd import PdPyToPureData
+from ..parse.json2xml import JsonToXml
 from ..parse.parser import PdPyParser
 from ..util.utils import log, parsePdBinBuf, parsePdFileLines
 
@@ -20,6 +21,7 @@ Formats = {
   "json": [ "json" ],
   "pdpy" : [ "pdpy" ],
   "pd"  : [ "pd", "puredata"],
+  "xml"  : [ "xml" ],
 }
 
 def getFormat(fmt):
@@ -109,6 +111,7 @@ class Translator(object):
        
       self.json = self.load_json()
       self.pd = PdPyToPureData(self.json)
+      self.xml = JsonToXml(self.json)
       self.pdpy.parse( parsePdBinBuf(self.pd) )
       if self.reflect: self.json_ref = self.pdpy.toJSON()
 
@@ -129,6 +132,12 @@ class Translator(object):
       with open(file.with_suffix(".json"), 'w', encoding=self.enc) as fp:
         fp.write(self.json)
   
+  def save_xml(self, file):
+    if self.xml is not None:
+      with open(file.with_suffix(".xml"), 'w') as fp:
+        fp.write(self.xml.to_string())
+      # self.xml.tree.write(file.with_suffix(".xml"), encoding=self.enc)
+
   def save_pd_reflection(self, file):
     if self.reflect and self.pd_ref is not None:
       file = file.parent / (file.stem + '_ref')
