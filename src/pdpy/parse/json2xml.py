@@ -4,7 +4,7 @@
 """ Json-formatted file (Python Patch Object) to XML file """
 
 from ..util.utils import log
-
+from ..classes.default import XmlTagConvert
 import xml.etree.ElementTree as ET
 
 __all__ = [ "JsonToXml" ]
@@ -20,7 +20,7 @@ class JsonToXml:
     # The json as python object
     self.obj = obj
     self.root = getattr(obj, 'root')
-
+    self.__conv__ = XmlTagConvert()
     # This is a list that holds the self.depth of the current object
     self.depth = []
 
@@ -37,7 +37,7 @@ class JsonToXml:
     # add structs
     self.getStruct(self.obj, cnv)
     # add declarations
-    self.getDependencies(self.obj, cnv)
+    self.getDependencies(self.obj)
     # add nodes
     self.getNodes(self.root, cnv)
     # add comments
@@ -50,7 +50,7 @@ class JsonToXml:
     self.getRestore(self.root, cnv)
     
     if autoindent:
-      ET.indent(self.tree, space=' ', level=1)
+      ET.indent(self.tree, space='    ', level=0)
 
   def to_string(self):
     return ET.tostring(self.__root__, encoding='unicode', method='xml')
@@ -101,7 +101,7 @@ class JsonToXml:
           continue
 
         if hasattr(node, 'className'):
-          className = self.to_xml_tag(getattr(node,'className'))
+          className = self.__conv__.to_xml_tag(getattr(node,'className'))
         else:
           className = 'obj'
         
@@ -126,7 +126,7 @@ class JsonToXml:
             for m in getattr(t,'message'):
               ET.SubElement(target, 'message').text = str(m)
 
-        for i in ['receive','send','bgcolor','fgcolor','scale','flag','size','init','nonzero','number','value','hold','intrrpt','digit_width','height', 'log_flag', 'log_height', 'steady', 'subclass', 'name', 'keep']:
+        for i in ['vis', 'receive','send','bgcolor','fgcolor','scale','flag','size','init','nonzero','number','value','hold','intrrpt','digit_width','height', 'log_flag', 'log_height', 'steady', 'subclass', 'name', 'keep']:
           self.update_with_sub(node, i, e)
 
         if hasattr(node,'label'):
@@ -182,7 +182,7 @@ class JsonToXml:
         ET.SubElement(declares, kind[:-1]).text = x
       
 
-  def getDependencies(self, x, cnv):
+  def getDependencies(self, x):
     """ Parses the dependencies entry into paths and libs using `getDeclare()` """
     if hasattr(x, "dependencies"):
       self.getDeclare(getattr(x,'dependencies'), 'paths')
@@ -251,9 +251,11 @@ class JsonToXml:
     # Get the self.depth and add a new element with -1
     
     self.depth.append(-1)
-    
     cnv = ET.Element('canvas')
     canvas.append(cnv)
+    
+    if hasattr(x, 'id'):
+      cnv.set('id', str(x.id))
 
     if hasattr(x, 'screen'):
       screen = getattr(x, 'screen')
@@ -268,6 +270,7 @@ class JsonToXml:
     # Do not add name and vis flag if it is the root, add font instead
     if root:
       self.update_with_sub(x, 'font', cnv)
+      self.update_with_sub(x, 'vis', cnv)
       return cnv
     else:
       self.update_with_sub(x, 'name', cnv)
@@ -288,31 +291,4 @@ class JsonToXml:
       ET.SubElement(parent, attribute).text = str(getattr(x, attribute))
 
 
-  def to_xml_tag(self, tag):
-    """ Returns the tag name replacing special characters """
-    
-    tag = tag.replace('~','_tilde')
-    
-    tag = tag.replace('%','op_mod')
-    tag = tag.replace('*','op_mul')
-    tag = tag.replace('-','op_minus')
-    tag = tag.replace('+','op_plus')
-    tag = tag.replace('/','op_div')
-
-    tag = tag.replace('==','op_eq')
-    tag = tag.replace('!=','op_ne')
-    tag = tag.replace('>','op_gt')
-    tag = tag.replace('<','op_lt')
-    tag = tag.replace('>=','op_ge')
-    tag = tag.replace('<=','op_le')
-    
-    tag = tag.replace('||','op_or')
-    tag = tag.replace('&&','op_and')
-    tag = tag.replace('!','op_not')
-    
-    tag = tag.replace('&','binop_and')
-    tag = tag.replace('|','binop_bor')
-    tag = tag.replace('>>','binop_ls')
-    tag = tag.replace('<<','binop_rs')
-    
-    return tag
+  

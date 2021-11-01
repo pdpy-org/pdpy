@@ -4,74 +4,12 @@
 """ Class Definitions """
 
 import json
-from ..util.utils import  log, splitAtChar, splitByEscapedChar, splitSemi
+from .base import Base
+from ..util.utils import  log, splitByEscapedChar, splitSemi
+from .default import GOPArrayFlags
 
-__all__ = [ "Base", "Edge", "Comment", "Coords", "Dependencies", "Graph", "IEMGuiNames", "PdArray", "PdIEMGui", "PdMessage", "PdNativeGui", "PdObject", "PdType", "Point", "Size", "Scalar", "Struct", "GOPArrayFlags", "IEMGuiNames", "PdFonts"]
+__all__ = [ "Base", "Edge", "Comment", "Coords", "Dependencies", "Graph", "PdArray", "PdMessage", "PdNativeGui", "PdObject", "PdType", "Point", "Size", "Scalar", "Struct" ]
 
-GOPArrayFlags = [
-  "polygon", "polygon-saved",
-  "points", "points-saved",
-  "bezier", "bezier-saved",
-]
-IEMGuiNames = [
-  "hsl",
-  "vsl",
-  "cnv",
-  "nbx",
-  "hradio",
-  "vradio",
-  "vu",
-  "tgl",
-  "bng"
-]
-PdFonts = [
-  "Menlo",
-  "Helvetica",
-  "Times"
-]
-
-
-def filter_underscores(o):
-  return { 
-    k : v 
-    for k,v in o.__dict__.items() 
-    if not k.startswith("__") or k=="__pdpy__"
-  }
-
-
-class Base(object):
-  def __init__(self):
-    self.patchname = None
-    return self
-  
-  def __setattr__(self, name, value):
-    if value is not None:
-        self.__dict__[name] = value
-
-  def toJSON(self):
-    return json.dumps(self,
-      default=filter_underscores,
-      sort_keys=False,
-      indent=4)
-  
-  def dumps(self):
-    print(self.toJSON())
-
-  def num(self, n):
-    pdnm = None
-    if isinstance(n, str):
-      if "#" in n: pdnm = n # skip css-style colors preceded by '#'
-      elif ("e" in n or "E" in n) and ("-" in n or "+" in n):
-        pdnm = "{:e}".format(int(float(n)))
-      elif "." in n: pdnm = float(n)
-      else:
-        pdnm = int(n)
-    else:
-      pdnm = n
-    return pdnm
-
-  def pdbool(self, n):
-    return bool(int(float(n)))
 
 class Point(Base):
   def __init__(self, x, y):
@@ -243,7 +181,7 @@ class PdMessage(Base):
     self.__pdpy__ = self.__class__.__name__
     self.className = "msg"
     self.position = Point(x, y)
-    self.id = id
+    self.id = int(id)
     argc = len(argv)
     argv = list(argv)
     
@@ -298,19 +236,44 @@ class PdMessage(Base):
     self.targets.append(PdMsg(target))  
 
 class PdObj(Base):
+  """ A PdObj base class 
+  
+  Description
+  -----------
+  A PdObj holds the id, and the x and y coordinates of the pd object,
+  as well as the arguments array.
+
+  Methods
+  -------
+  - `addargs(argv)`: Adds arguments to the pd object.
+  """
   def __init__(self, id, x, y):
     self.__pdpy__ = self.__class__.__name__
-    self.id = id
+    self.id = int(id)
     self.position = Point(x, y)
   
   def addargs(self, argv):
     if not hasattr(self,'args') or self.args is None: self.args = []
     for arg in argv:
-      # print("adding",arg)
       self.args += [arg]
-    # print("ARGS",self.args)
 
 class PdObject(PdObj, PdData):
+  """ A Pure Data Object object
+  
+  Description
+  -----------
+  This class represents a Pure Data object.
+
+  Initialization Arguments
+  ----------
+  The first three arguments correspond to the `PdObj` class.
+  1. `id`: The id of the pd object.
+  2. `x`: The x-coordinate of the pd object.
+  3. `y`: The y-coordinate of the pd object.
+  4. `className`: The class name of the pd object.
+  5. `args`: The argument `list` of the pd object.
+
+  """
   def __init__(self, *argv):
     super().__init__(*argv[:3])
     args = list(argv)
@@ -319,12 +282,37 @@ class PdObject(PdObj, PdData):
       self.className = args[3] if 3 < argc else None
       self.args = args[4:] if 4 < argc else None
     except:
-      log(1, self.toJSON(), "Can't parse arguments", args)
+      raise ValueError("Invalid arguments for PdObject")
+      # log(1, self.toJSON(), "Can't parse arguments", args)
 
     self.border = None
     self.__pdpy__ = self.__class__.__name__
+  
 
 class PdArray(PdObject):
+  """ A Pure Data array object
+  
+  Description
+  -----------
+  This class represents a Pure Data array or text object.
+
+  Initialization Arguments
+  ----------
+  The first four arguments correspond to the `PdObject` arguments. 
+  See the `PdObject` class.
+  1. `id`: The id of the pd object.
+  2. `x`: The x-coordinate of the pd object.
+  3. `y`: The y-coordinate of the pd object.
+  4. `className`: The class name of the array.
+  5. `subclass`: The sub family of the array, eg. `define` or `sum`, etc.
+  6. `-k` flag (optional), or `name`: the name of the array
+  7. If it is an `array`, then the remaining argument is the array `size`
+
+  Returns
+  -------
+  A `PdArray` object.
+  
+  """
   def __init__(self, *argv):
     super().__init__(*argv[:4])
     args = list(argv)
@@ -353,120 +341,29 @@ class PdArray(PdObject):
     
     self.__pdpy__ = self.__class__.__name__
 
-class PdFont(Base):
-  def __init__(self, face, size):
-    # log(1,"PdFont", face, size)
-    self.__pdpy__ = self.__class__.__name__
-    self.face = self.num(face)
-    self.name = PdFonts[self.face if self.face < len(PdFonts) else -1]
-    self.size = self.num(size)
-
-class IEMLabel(Base):
-  def __init__(self, label, xoff, yoff, fface, fsize, lbcolor):
-    self.__pdpy__ = self.__class__.__name__
-    self.label = None if "empty" == label else label
-    self.offset = Point(xoff, yoff)
-    self.font = PdFont(fface, fsize)
-    self.lbcolor = self.num(lbcolor)
-
-class PdIEMGui(IEMLabel):
-  def __init__(self, *argv):
-    self.__pdpy__ = self.__class__.__name__
-    self.id = argv[0]
-    self.position = Point(*argv[1:3])
-    self.className = argv[3]
-    args = argv[4:]
-
-    if "vu" in self.className:
-
-      self.area = Size(*args[:2])
-      self.receive = args[2]
-      super().__init__(*args[3:8], args[9])
-      self.bgcolor = self.num(args[8])
-      self.scale= self.pdbool(args[10]) if 10 < len(args) else None
-      self.flag = self.pdbool(args[11]) if 11 < len(args) else None
-    
-    elif "tgl" in self.className:
-
-      self.size = self.num(args[0])
-      self.init = self.pdbool(args[1])
-      self.send = args[2] if args[2] != "empty" else None
-      self.receive = args[3] if args[3] != "empty" else None
-      super().__init__(*args[4:9], args[11])
-      self.bgcolor = self.num(args[9])
-      self.fgcolor = self.num(args[10])
-      self.flag    = self.num(args[12])
-      self.nonzero = self.num(args[13])
-
-    elif "cnv" in self.className or "my_canvas" in self.className:
-
-      self.size = self.num(args[0])
-      self.area = Size(*args[1:3])
-      if 12 < len(args):
-        self.send = args[3] if args[3] != "empty" else None
-        off = 0
-      else:
-        off = 1
-      self.receive = args[4-off]  if args[4-off] != "empty" else None
-      super().__init__(*args[5-off:10-off], args[11-off])
-      self.bgcolor = self.num(args[10-off])
-      self.flag    = self.num(args[12-off])
-
-    elif "radio" in self.className or "rdb" in self.className:
-
-      self.size   = self.num(args[0])
-      self.flag   = self.num(args[1])
-      self.init   = self.pdbool(args[2])
-      self.number = self.num(args[3])
-      self.send    = args[4] if args[4] != "empty" else None
-      self.receive = args[5] if args[5] != "empty" else None
-      super().__init__(*args[6:11], args[13])
-      self.bgcolor = self.num(args[11])
-      self.fgcolor = self.num(args[12])
-      self.value   = self.num(args[14])
-
-    elif "bng"    in self.className:
-      self.size   = self.num(args[0])
-      self.hold   = self.num(args[1])
-      self.intrrpt= self.num(args[2])
-      self.init   = self.pdbool(args[3])
-      self.send    = args[4] if args[4] != "empty" else None
-      self.receive = args[5] if args[5] != "empty" else None
-      super().__init__(*args[6:11], args[13])
-      self.bgcolor = self.num(args[11])
-      self.fgcolor = self.num(args[12])
-
-    elif "nbx"    in self.className:
-      self.digit_width = self.num(args[0])
-      self.height   = self.num(args[1])
-      self.limits = Bounds(*args[2:4])
-      self.log_flag = self.pdbool(args[4])
-      self.init    = self.pdbool(args[5])
-      self.send    = args[6] if args[6] != "empty" else None
-      self.receive = args[7] if args[7] != "empty" else None
-      super().__init__(*args[8:13], args[15])
-      self.bgcolor = self.num(args[13])
-      self.fgcolor = self.num(args[14])
-      self.value = float(args[16])
-      self.log_height = self.num(args[17])
-
-    elif "sl" in self.className:
-      self.area = Size(*args[:2])
-      self.limits = Bounds(*args[2:4])
-      self.log_flag = self.pdbool(args[4])
-      self.init    = self.pdbool(args[5])
-      self.send    = args[6] if args[6] != "empty" else None
-      self.receive = args[7] if args[7] != "empty" else None
-      super().__init__(*args[8:13], args[15])
-      self.bgcolor = self.num(args[13])
-      self.fgcolor = self.num(args[14])
-      self.value = float(args[16])
-      self.steady = self.num(args[17])
-
-    else:
-      log(1, "NEW IEM Gui", " ".join(argv))
-
 class PdNativeGui(PdObj):
+  """ A Pd Native Gui object 
+  
+  Description
+  -----------
+  A Pd Native Gui object is a graphical user interface that is implemented in
+  pure data. It is a sublcass of the `PdObj`
+
+  Initialization Arguments
+  -----------------------
+  1. `className`: the name of the class of the object
+  2. id: The id of the object
+  3. `x`: The x position of the object
+  4. `y`: The y position of the object
+  5. `digits_width` : The width of the object in digits
+  6. lower limit: The lower limit of the object
+  7. upper limit: The upper limit of the object
+  8. `flag`: The flag of the object
+  9. `label`: The label of the object
+  10. `receive`: the receiver symbol of the object
+  11. `send`: the sender symbol of the object
+
+  """
   def __init__(self, className, *argv):
     super().__init__(*argv[:3])
     self.__pdpy__ = self.__class__.__name__
@@ -487,6 +384,18 @@ class Source(Base):
     self.port = port
 
 class Edge(Base):
+  """ A Pd Connection 
+  Description
+  -----------
+  A Pd Connection object is a connection between two objects.
+
+  Parameters
+  ----------
+  1. `source`: The source id of the connection
+  2. `port`: The port outlet of the source
+  3. `target`: The target id of the connection
+  4. `port`: The port inlet of the target
+  """
   def __init__(self, srcId, srcPrt, snkId, snkPrt):
     self.__pdpy__ = self.__class__.__name__
     self.source = Source(srcId, srcPrt) 

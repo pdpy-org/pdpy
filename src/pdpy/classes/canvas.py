@@ -4,8 +4,9 @@
 """ Canvas Class Definition """
 
 
-from ..util.utils import log
-from .classes import Base, Point, Size
+# from ..util.utils import log
+from .base import Base
+from .classes import Point, Size
 
 __all__ = [
   "Properties",
@@ -29,9 +30,9 @@ class Properties(Base):
 
   """
   def __init__(self, 
-               screen = [0, 22],
-               dimen = [450, 300],
-               font = 12):
+               screen = [ 0, 22 ],
+               dimen  = [ 450, 300 ],
+               font   =   12 ):
     self.screen = Point(screen[0], screen[1])
     self.dimension = Size(dimen[0], dimen[1])
     self.font = self.num(font)
@@ -76,7 +77,10 @@ class Canvas(Properties):
 
     self.__pdpy__ = self.__class__.__name__
     self.name = name
-    self.vis = self.pdbool(vis)
+    if isinstance(vis, str):
+      self.vis = vis.lower() == "true"
+    else:
+      self.vis = self.pdbool(vis)
     self.gop = False
     self.coords = None
     self.position = None

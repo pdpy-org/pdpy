@@ -5,7 +5,7 @@
 
 import re
 
-from pdpy.parse.pdpy2json import is_ignored
+# from pdpy.parse.pdpy2json import is_ignored
 
 from ..classes.pdpy import PdPy
 from ..classes.canvas import Canvas

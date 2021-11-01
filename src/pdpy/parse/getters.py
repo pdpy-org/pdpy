@@ -4,7 +4,7 @@
 """ Routines to get pdpy elements back onto pd-formatted string """
 
 from ..util.utils import log
-from ..classes.classes import GOPArrayFlags
+from ..classes.default import GOPArrayFlags
 
 __all__=[
   "getStruct", "getCanvas", "getDependencies", "getNodes", "getComments", "getCoords", "getConnections", "getRestore"
