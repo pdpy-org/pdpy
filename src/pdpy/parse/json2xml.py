@@ -3,7 +3,6 @@
 
 """ Json-formatted file (Python Patch Object) to XML file """
 
-from pdpy.parse.getters import get
 from ..util.utils import log
 
 import xml.etree.ElementTree as ET

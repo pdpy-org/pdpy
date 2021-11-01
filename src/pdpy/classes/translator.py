@@ -11,6 +11,7 @@ from .pdpy import PdPy
 
 from ..parse.json2pd import PdPyToPureData
 from ..parse.json2xml import JsonToXml
+from ..parse.xml2json import XmlToJson
 from ..parse.parser import PdPyParser
 from ..util.utils import log, parsePdBinBuf, parsePdFileLines
 
@@ -122,10 +123,16 @@ class Translator(object):
       self.pd = PdPyToPureData(self.pdpy)
       self.json = self.pdpy.toJSON()
 
-    else:
-      log(2,f"Can't parse source file: {input_file}")
-      return None
+    elif self.source == "xml":
 
+      self.xml = self.load_xml()
+      self.json = self.xml.patch.toJSON()
+      # self.pd = PdPyToPureData(self.xml.patch)
+      # self.pdpy.parse( parsePdBinBuf(self.pd) )
+      # if self.reflect: self.xml_ref = JsonToXml(self.pdpy.toJSON())
+
+    else:
+      raise ValueError("Unknown source type: {}".format(self.source))
 
   def save_json(self, file):
     if self.json is not None:
@@ -136,7 +143,6 @@ class Translator(object):
     if self.xml is not None:
       with open(file.with_suffix(".xml"), 'w') as fp:
         fp.write(self.xml.to_string())
-      # self.xml.tree.write(file.with_suffix(".xml"), encoding=self.enc)
 
   def save_pd_reflection(self, file):
     if self.reflect and self.pd_ref is not None:
@@ -169,7 +175,13 @@ class Translator(object):
       file = self.file
     with open(file, "r", encoding=self.enc) as fp:
       return json.load(fp, object_hook = PdPyEncoder)
-  
+
+  def load_xml(self, file=None):
+    if file is None:
+      file = self.file
+    with open(file, "r", encoding=self.enc) as fp:
+      return XmlToJson(fp)
+
   def load_object(self):
     with open(self.file, "rb") as fp:
       data = pickle.load(fp, encoding=self.enc)
