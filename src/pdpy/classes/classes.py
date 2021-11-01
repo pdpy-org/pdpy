@@ -291,6 +291,11 @@ class PdMessage(Base):
           
           if len(self.targets):
             self.targets[-1].add(msgbuf)
+    
+  def addTarget(self, target):
+    if not hasattr(self, "targets"):
+      self.targets = []
+    self.targets.append(PdMsg(target))  
 
 class PdObj(Base):
   def __init__(self, id, x, y):

@@ -62,14 +62,7 @@ class PdPy(Base):
   
     return __canvas__
   
-  def __get_canvas__(self):
-    """ Return the last canvas taking depth and incrementing object index count
-    """
-    # __canvas__ = self.root if self.__depth__ == 0 else self.__last_canvas__()
-    __canvas__ = self.__last_canvas__()
-    self.__obj_idx__ = __canvas__.grow()
-    self.__depth__ += 1
-    return __canvas__
+
 
   def addCanvas(self, argv):
     """ Add a Canvas object from pure data syntax tokens
