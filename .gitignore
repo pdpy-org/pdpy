@@ -24,3 +24,4 @@ src/tests/all_objects.json
 # from vscode-pdpy
 node_modules/
 
+structure.txt
