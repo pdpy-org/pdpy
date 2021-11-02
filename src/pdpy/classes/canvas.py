@@ -195,3 +195,5 @@ class Canvas(Properties):
   def get_char_dim(self):
     return int(self.dimension.width / self.font * 1.55)
 
+  def addpos(self, x, y):
+    self.position = Point(x, y)

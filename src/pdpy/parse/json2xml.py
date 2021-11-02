@@ -195,8 +195,9 @@ class JsonToXml:
     
     if hasattr(x, 'position'):
       position = getattr(x, 'position')
-      self.update_with_sub(position, 'x', cnv)
-      self.update_with_sub(position, 'y', cnv)
+      pos = ET.SubElement(cnv, 'position')
+      self.update_with_sub(position, 'x', pos)
+      self.update_with_sub(position, 'y', pos)
       self.update_with_sub(x, 'title', cnv)
 
   def getCoords(self, x, cnv):
