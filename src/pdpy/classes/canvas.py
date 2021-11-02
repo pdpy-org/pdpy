@@ -76,7 +76,7 @@ class Canvas(Properties):
     super().__init__(**kwargs)
 
     self.__pdpy__ = self.__class__.__name__
-    self.name = name
+    self.name = name.replace('.pd','')
     if isinstance(vis, str):
       self.vis = vis.lower() == "true"
     else:
