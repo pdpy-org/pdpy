@@ -114,14 +114,13 @@ class XmlToJson:
 
 
   def addNodes(self, x, __last_canvas__):
-    if x.tag in ['vis', 'x', 'y', 'width', 'height', 'font', 'title', 'name', 'connect', 'comment']:
+    if x.tag in ['vis', 'x', 'y', 'width', 'height', 'font', 'title', 'name', 'connect', 'comment', 'position']:
       return
     elif 'canvas' == x.tag:
       self.addCanvas(x)
       return
     else:  
       self.patch.__obj_idx__ = __last_canvas__.grow()
-      print(x)
       __id__   = int(x.get('id', default = self.patch.__obj_idx__ ))
       __xpos__ = int(x.findtext('x'))
       __ypos__ = int(x.findtext('y'))
@@ -285,11 +284,11 @@ class XmlToJson:
       # end iemgui if statement -----------------------------------------------
       
       else:
-        print('Making', x.tag)
+        # print('Making', x.tag)
         obj = PdObject(__id__,__xpos__,__ypos__,self.__conv__.to_pd_obj(x.tag))
 
       for a in x.findall('arg'):
-        print("args", a.text)
+        # print("args", a.text)
         obj.addargs([a.text])
 
       __last_canvas__.add(obj)
