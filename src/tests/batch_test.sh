@@ -63,11 +63,15 @@ function translate_all
   xml_out="$outdir/$name.xml"
   json_ref="$outdir/$name-json_ref.pd"
   pkl_ref="$outdir/$name-pkl_ref.pd"
+  xml_jref="$outdir/$name-xml_ref.json"
+  xml_ref="$outdir/$name-xml_ref.pd"
   $py $file -int $INT -f 'pd'   -t 'json' -i $input    -o $json_out >> $err 2>&1
   $py $file -int $INT -f 'pd'   -t 'pkl'  -i $input    -o $pkl_out  >> $err 2>&1
   $py $file -int $INT -f 'json' -t 'pd'   -i $json_out -o $json_ref >> $err 2>&1
   $py $file -int $INT -f 'pkl'  -t 'pd'   -i $pkl_out  -o $pkl_ref  >> $err 2>&1
   $py $file -int $INT -f 'json' -t 'xml'  -i $json_out -o $xml_out  >> $err 2>&1
+  $py $file -int $INT -f 'xml'  -t 'json' -i $xml_out  -o $xml_jref >> $err 2>&1
+  $py $file -int $INT -f 'json' -t 'pd'   -i $xml_jref -o $xml_ref  >> $err 2>&1
 }
 
 while read line; do
