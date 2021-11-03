@@ -55,7 +55,7 @@ if "__main__" in __name__:
       output_file = Path(args.output)
       if output_file.suffix != "." + target:
         quit_help("Input file suffix does not match with -f argument")
-  
+  log(0, source, '->', target)
   log(0, input_file, "->", output_file)
   
   try:
