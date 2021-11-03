@@ -333,7 +333,7 @@ class PdArray(PdObject):
             self.keep = False
         
         if "array" == self.className:
-          self.size = args[6+off] if 6+off < argc else None
+          self.size = int(args[6+off]) if 6+off < argc else None
           off += 1
       
     if 6+off < argc:
