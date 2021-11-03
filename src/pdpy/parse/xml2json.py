@@ -4,7 +4,7 @@
 """ Convert an XML file to a JSON structured file (PdPy format) """
 
 import xml.etree.ElementTree as ET
-from ..classes.iemgui import IEMLabel, PdIEMGui
+from ..classes.iemgui import PdIEMGui
 from ..classes.pdpy import PdPy
 from ..classes.default import Default, IEMGuiNames, XmlTagConvert
 from ..classes.canvas import Canvas
@@ -118,7 +118,6 @@ class XmlToJson:
       return
     elif 'canvas' == x.tag:
       self.addCanvas(x)
-      return
     else:  
       self.patch.__obj_idx__ = __last_canvas__.grow()
       __id__   = int(x.get('id', default = self.patch.__obj_idx__ ))
@@ -131,11 +130,11 @@ class XmlToJson:
           msg.addTarget(t.text)
           for m in t.findall('message'):
             msg.targets[-1].add(m.text)
-        
+        # add the message and do not continue loading
         __last_canvas__.add(msg)
         return
       
-      if x.tag in ['floatatom', 'symbolatom', 'listbox']:
+      elif x.tag in ['floatatom', 'symbolatom', 'listbox']:
         # print( "Make PdNativeGui", x.tag)
         obj = PdNativeGui(
           x.tag, __id__, __xpos__, __ypos__,
@@ -146,149 +145,196 @@ class XmlToJson:
           x.findtext('label', default=self.__d__.label),
           x.findtext('receive', default=self.__d__.receive),
           x.findtext('send', default=self.__d__.send))
-        __last_canvas__.add(obj)
-        return
       
       # text or array-group objects
-      if "text" == x.tag or 'array' == x.tag:
-        __subclass__ = x.findtext('subclass')
-        __name__     = x.findtext('name')
-        __keep__ = x.findtext('keep') and x.findtext('keep') == "True"
-        if x.tag == 'array':
-          __size__ = self.__d__.array['size']
-          if x.findtext('size'):
-            __size__ = x.findtext('size')
-          obj = PdArray(
-            __id__, __xpos__, __ypos__, x.tag,
-            __subclass__, __name__, __keep__, __size__
-          )
-        else:
-          obj = PdArray(
-            __id__, __xpos__, __ypos__, x.tag,
-            __subclass__, __name__, __keep__
-          )
-        for a in x.findall('arg'):
-          obj.addargs(a.text)
-
-        __last_canvas__.add(obj)
-        return
+      elif "text" == x.tag or 'array' == x.tag:
+        obj = PdArray(__id__, __xpos__, __ypos__, x.tag)
+        obj.subclass = x.findtext('subclass')
+        obj.name = x.findtext('name')
+        obj.keep = x.findtext('keep') and x.findtext('keep') == "True"
+        if x.tag == 'array': obj.size = x.findtext('size')
       
       # IEMGUI-group object
       elif x.tag in IEMGuiNames:
-        obj = PdIEMGui(__id__, __xpos__, __ypos__)
-        __label__ = x.find('label')
-        label = IEMLabel(
-          __label__.findtext('label', 
-            default = self.__d__.iemgui['symbol']),
-          __label__.find('offset').findtext('x', 
-            default = self.__d__.iemgui[x.tag]['xoff']),
-          __label__.find('offset').findtext('y', 
-            default = self.__d__.iemgui[x.tag]['yoff']),
-          __label__.find('font').findtext('face', 
-            default = self.__d__.iemgui['fontface']),
-          __label__.find('font').findtext('size', 
-            default = self.__d__.iemgui[x.tag]['font']),
-          __label__.findtext('lbcolor', 
-            default = self.__d__.iemgui[x.tag]['label']['color']),
-        )
-        label_params = [  
-          label.label,
-          label.offset.x,
-          label.offset.y,
-          label.font.face,
-          label.font.size,
-          label.lbcolor
-        ]
-        
-        if 'vu' in x.tag:
-          obj.createVu(
-            x.findtext('width',   default = self.__d__.iemgui[x.tag]['width']),
-            x.findtext('height',  default = self.__d__.iemgui[x.tag]['height']),
-            x.findtext('receive', default = self.__d__.iemgui[x.tag]['receive']), 
-            *label_params, 
-            x.findtext('scale', default = self.__d__.iemgui[x.tag]['scale']),
-            x.findtext('flag',  default = self.__d__.iemgui[x.tag]['flag']),
-          )
-        elif 'tgl' in x.tag:
-          obj.createToggle(
-            x.findtext('size', default = self.__d__.iemgui[x.tag]['size']),
-            x.findtext('init', default = self.__d__.iemgui[x.tag]['init']),
-            x.findtext('send', default = self.__d__.iemgui[x.tag]['send']), 
-            x.findtext('receive', default = self.__d__.iemgui[x.tag]['receive']), 
-            *label_params, 
-            x.findtext('flag', default = self.__d__.iemgui[x.tag]['flag']),
-            x.findtext('nonzero', default = self.__d__.iemgui[x.tag]['nonzero']),
-          )
-        elif 'cnv' in x.tag:
-          obj.createCnv(
-            x.findtext('size',    default = self.__d__.iemgui[x.tag]['size']),
-            x.findtext('width',   default = self.__d__.iemgui[x.tag]['width']),
-            x.findtext('height',  default = self.__d__.iemgui[x.tag]['height']),
-            x.findtext('send',    default = self.__d__.iemgui[x.tag]['send']), 
-            x.findtext('receive', default = self.__d__.iemgui[x.tag]['receive']), 
-            *label_params, 
-            x.findtext('flag', default = self.__d__.iemgui[x.tag]['flag']),
-          )
-        elif 'radio' in x.tag:
-          obj.createRadio(
-            x.findtext('size',    default = self.__d__.iemgui[x.tag]['size']),
-            x.findtext('flag',    default = self.__d__.iemgui[x.tag]['flag']),
-            x.findtext('init',    default = self.__d__.iemgui[x.tag]['init']),
-            x.findtext('number',  default = self.__d__.iemgui[x.tag]['number']),
-            x.findtext('send',    default = self.__d__.iemgui[x.tag]['send']), 
-            x.findtext('receive', default = self.__d__.iemgui[x.tag]['receive']), 
-            *label_params, 
-            x.findtext('value', default=self.__d__.iemgui[x.tag]['value']),
-          )
-        elif 'bng' in x.tag:
-          obj.createBng(
-            x.findtext('size',    default = self.__d__.iemgui[x.tag]['size']),
-            x.findtext('hold',    default = self.__d__.iemgui[x.tag]['hold']),
-            x.findtext('intrrpt', default = self.__d__.iemgui[x.tag]['intrrpt']),
-            x.findtext('init',    default = self.__d__.iemgui[x.tag]['init']),
-            x.findtext('send',    default = self.__d__.iemgui[x.tag]['send']), 
-            x.findtext('receive', default = self.__d__.iemgui[x.tag]['receive']), 
-            *label_params
-          )
-        elif 'nbx' in x.tag:
-          obj.createNbx(
-            x.findtext('digits_width', default=self.__d__.iemgui[x.tag]['digits_width']),
-            x.findtext('height',  default = self.__d__.iemgui[x.tag]['height']),
-            x.findtext('lower',   default = self.__d__.iemgui[x.tag]['lower']),
-            x.findtext('upper',   default = self.__d__.iemgui[x.tag]['upper']),
-            x.findtext('log_flag',default = self.__d__.iemgui[x.tag]['log_flag']),
-            x.findtext('init',    default = self.__d__.iemgui[x.tag]['init']),
-            x.findtext('send',    default = self.__d__.iemgui[x.tag]['send']), 
-            x.findtext('receive', default = self.__d__.iemgui[x.tag]['receive']), 
-            *label_params, 
-            x.findtext('value',   default = self.__d__.iemgui[x.tag]['value']), 
-            x.findtext('log_height', default = self.__d__.iemgui[x.tag]['log_height']), 
-          )
-        elif 'sl' in x.tag:
-          obj.createSlider(
-            x.findtext('width',   default = self.__d__.iemgui[x.tag]['width']),
-            x.findtext('height',  default = self.__d__.iemgui[x.tag]['height']),
-            x.findtext('lower',   default = self.__d__.iemgui[x.tag]['lower']),
-            x.findtext('upper',   default = self.__d__.iemgui[x.tag]['upper']),
-            x.findtext('log_flag',default = self.__d__.iemgui[x.tag]['log_flag']),
-            x.findtext('init',    default = self.__d__.iemgui[x.tag]['init']),
-            x.findtext('send',    default = self.__d__.iemgui[x.tag]['send']), 
-            x.findtext('receive', default = self.__d__.iemgui[x.tag]['receive']), 
-            *label_params, 
-            x.findtext('value',     default = self.__d__.iemgui[x.tag]['value']), 
-            x.findtext('log_height',default = self.__d__.iemgui[x.tag]['log_height']), 
-          )
-        else:
-          print('Unknown IEMGUI object type:', x.tag)
-        
-      # end iemgui if statement -----------------------------------------------
+        obj = self.addIEMGui(x, __id__, __xpos__, __ypos__)
       
       else:
         # print('Making', x.tag)
         obj = PdObject(__id__,__xpos__,__ypos__,self.__conv__.to_pd_obj(x.tag))
 
+      # done with if statement, 
+      # add the arguments to the object
+      # and the object to the canvas
+      self.addArgs(obj, x)
+      __last_canvas__.add(obj)
+
+
+  def addArgs(self, obj, x):
+    __args__ = x.find('arg')
+    if __args__ is not None:
       for a in x.findall('arg'):
-        # print("args", a.text)
+        # print("ARGS", a.text)
         obj.addargs([a.text])
 
-      __last_canvas__.add(obj)
+
+  def addIEMGui(self, x, __id__, __xpos__, __ypos__):
+    obj = PdIEMGui(__id__, __xpos__, __ypos__, x.tag)
+
+    tag = 'radio' if 'radio' in x.tag else x.tag
+
+    __label__ = x.find('label')
+    if __label__:
+      label_params = [
+        __label__.findtext('label', 
+          default = self.__d__.iemgui['symbol']),
+      ]
+
+      __offset__ = __label__.find('offset')
+      if __offset__:
+        label_params += [
+        __offset__.findtext('x', 
+          default = self.__d__.iemgui[tag]['xoff']),
+        __offset__.findtext('y', 
+          default = self.__d__.iemgui[tag]['yoff'])
+        ]
+      else:
+        label_params += [
+          self.__d__.iemgui[tag]['xoff'],
+          self.__d__.iemgui[tag]['yoff']
+        ]
+
+      __font__ = __label__.find('font')
+      if __font__:
+        label_params += [
+        __font__.findtext('face', 
+          default = self.__d__.iemgui['fontface']),
+        __font__.findtext('size', 
+          default = self.__d__.iemgui[tag]['fsize'])
+        ]
+      else:
+        label_params += [
+          self.__d__.iemgui['fontface'],
+          self.__d__.iemgui[tag]['fsize']
+        ]
+
+      label_params += [
+        __label__.findtext('lbcolor', 
+          default = self.__d__.iemgui[tag]['lbcolor'])
+      ]
+
+    else:
+      label_params = [
+        self.__d__.iemgui['symbol'],
+        self.__d__.iemgui[tag]['xoff'],
+        self.__d__.iemgui[tag]['yoff'],
+        self.__d__.iemgui['fontface'],
+        self.__d__.iemgui[tag]['fsize'],
+        self.__d__.iemgui[tag]['lbcolor']
+      ]
+    label_params += [
+      self.__d__.iemgui[tag]['bgcolor'],
+      self.__d__.iemgui['fgcolor'],
+    ]
+    if 'vu' in x.tag:
+      obj.createVu([
+        x.findtext('width',   default = self.__d__.iemgui['vu']['width']),
+        x.findtext('height',  default = self.__d__.iemgui['vu']['height']),
+        x.findtext('receive', default = self.__d__.iemgui['symbol']), 
+        *label_params, 
+        x.findtext('scale', default = self.__d__.iemgui['vu']['scale']),
+        x.findtext('flag',  default = self.__d__.iemgui['vu']['flag']),
+      ])
+    elif 'tgl' in x.tag:
+      obj.createToggle([
+        x.findtext('size', default = self.__d__.iemgui['tgl']['size']),
+        x.findtext('init', default = self.__d__.iemgui['tgl']['init']),
+        x.findtext('send', default = self.__d__.iemgui['symbol']), 
+        x.findtext('receive', default = self.__d__.iemgui['symbol']), 
+        *label_params, 
+        x.findtext('flag', default = self.__d__.iemgui['tgl']['flag']),
+        x.findtext('nonzero', default = self.__d__.iemgui['tgl']['nonzero']),
+      ])
+    elif 'cnv' in x.tag:
+      obj.createCnv([
+        x.findtext('size',    default = self.__d__.iemgui['cnv']['size']),
+        x.findtext('width',   default = self.__d__.iemgui['cnv']['width']),
+        x.findtext('height',  default = self.__d__.iemgui['cnv']['height']),
+        x.findtext('send',    default = self.__d__.iemgui['symbol']), 
+        x.findtext('receive', default = self.__d__.iemgui['symbol']), 
+        *label_params, 
+        x.findtext('flag', default = self.__d__.iemgui['cnv']['flag']),
+      ])
+    elif 'rdb' or 'radio' in x.tag:
+      obj.createRadio([
+        x.findtext('size',  default = self.__d__.iemgui['radio']['size']),
+        x.findtext('flag',  default = self.__d__.iemgui['radio']['flag']),
+        x.findtext('init',  default = self.__d__.iemgui['radio']['init']),
+        x.findtext('number',default = self.__d__.iemgui['radio']['number']),
+        x.findtext('send',  default = self.__d__.iemgui['symbol']), 
+        x.findtext('receive',default = self.__d__.iemgui['symbol']), 
+        *label_params, 
+        x.findtext('value', default=self.__d__.iemgui['radio']['value']),
+      ])
+    elif 'bng' in x.tag:
+      obj.createBng([
+        x.findtext('size',   default = self.__d__.iemgui['bng']['size']),
+        x.findtext('hold',   default = self.__d__.iemgui['bng']['hold']),
+        x.findtext('intrrpt',default = self.__d__.iemgui['bng']['intrrpt']),
+        x.findtext('init',   default = self.__d__.iemgui['bng']['init']),
+        x.findtext('send',   default = self.__d__.iemgui['symbol']), 
+        x.findtext('receive',default = self.__d__.iemgui['symbol']), 
+        *label_params
+      ])
+    elif 'nbx' in x.tag:
+      obj.createNbx([
+        x.findtext('digits_width', default=self.__d__.iemgui[x.tag]['digits_width']),
+        x.findtext('height',  default = self.__d__.iemgui['nbx']['height']),
+        x.findtext('lower',   default = self.__d__.iemgui['nbx']['lower']),
+        x.findtext('upper',   default = self.__d__.iemgui['nbx']['upper']),
+        x.findtext('log_flag',default = self.__d__.iemgui['nbx']['log_flag']),
+        x.findtext('init',    default = self.__d__.iemgui['nbx']['init']),
+        x.findtext('send',    default = self.__d__.iemgui['symbol']), 
+        x.findtext('receive', default = self.__d__.iemgui['symbol']), 
+        *label_params, 
+        x.findtext('value',   default = self.__d__.iemgui['nbx']['value']), 
+        x.findtext('log_height', default = self.__d__.iemgui['nbx']['log_height']), 
+      ])
+    elif 'vsl' or 'vslider' in x.tag:
+      obj.createSlider([
+        x.findtext('width',   default = self.__d__.iemgui['vsl']['width']),
+        x.findtext('height',  default = self.__d__.iemgui['vsl']['height']),
+        x.findtext('lower',   default = self.__d__.iemgui['vsl']['lower']),
+        x.findtext('upper',   default = self.__d__.iemgui['vsl']['upper']),
+        x.findtext('log_flag',default = self.__d__.iemgui['vsl']['log_flag']),
+        x.findtext('init',    default = self.__d__.iemgui['vsl']['init']),
+        x.findtext('send',    default = self.__d__.iemgui['symbol']), 
+        x.findtext('receive', default = self.__d__.iemgui['symbol']), 
+        *label_params, 
+        x.findtext('value',     default = self.__d__.iemgui['vsl']['value']), 
+        x.findtext('log_height',default = self.__d__.iemgui['vsl']['log_height']), 
+        x.findtext('steady',default = self.__d__.iemgui['vsl']['steady']), 
+      ])
+    elif 'hsl' or 'hslider' in x.tag:
+      obj.createSlider([
+        x.findtext('width',   default = self.__d__.iemgui['hsl']['width']),
+        x.findtext('height',  default = self.__d__.iemgui['hsl']['height']),
+        x.findtext('lower',   default = self.__d__.iemgui['hsl']['lower']),
+        x.findtext('upper',   default = self.__d__.iemgui['hsl']['upper']),
+        x.findtext('log_flag',default = self.__d__.iemgui['hsl']['log_flag']),
+        x.findtext('init',    default = self.__d__.iemgui['hsl']['init']),
+        x.findtext('send',    default = self.__d__.iemgui['symbol']), 
+        x.findtext('receive', default = self.__d__.iemgui['symbol']), 
+        *label_params, 
+        x.findtext('value',     default = self.__d__.iemgui['hsl']['value']), 
+        x.findtext('log_height',default = self.__d__.iemgui['hsl']['log_height']), 
+        x.findtext('steady',default = self.__d__.iemgui['hsl']['steady']), 
+      ])
+    else:
+      print('Unknown IEMGUI object type:', x.tag)
+    
+    # end iemgui if statement -----------------------------------------------
+    # obj.dumps()
+
+    return obj
+
+  # end of addIEMGui definition ---------------------------------------------
