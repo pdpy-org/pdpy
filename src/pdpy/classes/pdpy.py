@@ -23,7 +23,7 @@ class PdPy(Base):
     self.__obj_idx__ = 0
     self.__canvas_idx__ = []
     self.__depth__ = 0
-    if root: self.root = Canvas(name=self.patchname.replace(".pd",""))
+    if root: self.root = Canvas(name=self.patchname)
 
   def addStruct(self, argv):
     if not hasattr(self, 'struct'): self.struct = []
@@ -31,7 +31,7 @@ class PdPy(Base):
   
   def addRoot(self, argv):
     self.root = Canvas(
-            name = self.patchname.replace(".pd",""),
+            name = self.patchname,
             vis = 1,
             id = None, 
             screen = argv[:2], 
