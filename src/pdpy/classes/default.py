@@ -52,17 +52,20 @@ class XmlTagConvert(Base):
 
   def to_xml_tag(self, tag):
     """ Returns the tag name replacing special characters """
-    if tag in self.table.keys():
-      tag = self.table[tag]
-    return self.to_tilde(tag)
+    _tag = self.to_tilde(tag)
+    for key, value in self.table.items():
+      if key in _tag:
+        _tag = _tag.replace(key, value) 
+    return _tag
 
 
   def to_pd_obj(self, pd_key):
     """ Returns the tag name replacing special characters """
+    _tag = self.from_tilde(pd_key)
     for key, value in self.table.items():
-      if pd_key == key:
-        pd_key = value
-    return self.from_tilde(pd_key)
+      if key in _tag:
+        _tag = _tag.replace(value, key) 
+    return _tag
 
 class Default(Base):
   def __init__(self):
@@ -82,8 +85,11 @@ class Default(Base):
     self.iemgui = {
       'symbol'   : 'empty',
       'fontface' : 0,
+      'fgcolor'  : -1,
       'vu': {
         'xoff':-1,
+        'width':15,
+        'height':120,
         'yoff':-8,
         'fsize':10,
         'bgcolor':-66577,
@@ -98,7 +104,6 @@ class Default(Base):
         'yoff':7,
         'fsize':10,
         'bgcolor':-262144,
-        'fgcolor':-1,
         'lbcolor':-1,
         'flag':1,
         'nonzero':1
@@ -111,7 +116,6 @@ class Default(Base):
         'yoff':12,
         'fsize':14,
         'bgcolor':-233017,
-        'fgcolor':-1,
         'lbcolor':-66577,
         'flag':1
       },
@@ -124,7 +128,6 @@ class Default(Base):
         'yoff':-8,
         'fsize':10,
         'bgcolor':-262144,
-        'fgcolor':-1,
         'lbcolor':-1,
         'value':0
       },
@@ -137,7 +140,6 @@ class Default(Base):
         'yoff':7,
         'fsize':10,
         'bgcolor':-262144,
-        'fgcolor':-1,
         'lbcolor':-1
       },
       'nbx': {
@@ -151,7 +153,6 @@ class Default(Base):
         'yoff':-8,
         'fsize':10,
         'bgcolor':-262144,
-        'fgcolor':-1,
         'lbcolor':-1,
         'value':0,
         'log_height':256
@@ -167,8 +168,8 @@ class Default(Base):
         'yoff':-8,
         'fsize':10,
         'bgcolor':-262144,
-        'fgcolor':-1,
         'lbcolor':-1,
+        'log_height':256,
         'value':0,
         'steady':0
       },
@@ -183,8 +184,8 @@ class Default(Base):
         'yoff':-8,
         'fsize':10,
         'bgcolor':-262144,
-        'fgcolor':-1,
         'lbcolor':-1,
+        'log_height':256,
         'value':0,
         'steady':0
       }
