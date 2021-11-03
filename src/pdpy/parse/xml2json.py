@@ -4,6 +4,8 @@
 """ Convert an XML file to a JSON structured file (PdPy format) """
 
 import xml.etree.ElementTree as ET
+
+from pdpy.util.utils import log
 from ..classes.iemgui import PdIEMGui
 from ..classes.pdpy import PdPy
 from ..classes.default import Default, IEMGuiNames, XmlTagConvert
@@ -114,10 +116,12 @@ class XmlToJson:
 
 
   def addNodes(self, x, __last_canvas__):
-    if x.tag in ['vis', 'x', 'y', 'width', 'height', 'font', 'title', 'name', 'connect', 'comment', 'position']:
+    if x.tag in ['vis', 'x', 'y', 'width', 'height', 'font', 'title', 'name', 'connect', 'comment', 'position', 'area', 'limits']:
       return
     elif 'canvas' == x.tag:
       self.addCanvas(x)
+    elif 'coords' == x.tag:
+      log(1, "coords", x)
     else:  
       self.patch.__obj_idx__ = __last_canvas__.grow()
       __id__   = int(x.get('id', default = self.patch.__obj_idx__ ))
@@ -235,10 +239,12 @@ class XmlToJson:
       self.__d__.iemgui[tag]['bgcolor'],
       self.__d__.iemgui['fgcolor'],
     ]
+    # log(0,"TAG",x.tag)
     if 'vu' in x.tag:
+      area_params, _ = self.getAreaAndLimits(x,'vu')
       obj.createVu([
-        x.findtext('width',   default = self.__d__.iemgui['vu']['width']),
-        x.findtext('height',  default = self.__d__.iemgui['vu']['height']),
+        area_params['width'],
+        area_params['height'],
         x.findtext('receive', default = self.__d__.iemgui['symbol']), 
         *label_params, 
         x.findtext('scale', default = self.__d__.iemgui['vu']['scale']),
@@ -254,17 +260,18 @@ class XmlToJson:
         x.findtext('flag', default = self.__d__.iemgui['tgl']['flag']),
         x.findtext('nonzero', default = self.__d__.iemgui['tgl']['nonzero']),
       ])
-    elif 'cnv' in x.tag:
+    elif 'cnv'  in x.tag  or 'my_canvas' in x.tag:
+      area_params, _ = self.getAreaAndLimits(x, 'cnv')
       obj.createCnv([
         x.findtext('size',    default = self.__d__.iemgui['cnv']['size']),
-        x.findtext('width',   default = self.__d__.iemgui['cnv']['width']),
-        x.findtext('height',  default = self.__d__.iemgui['cnv']['height']),
+        area_params['width'],
+        area_params['height'],
         x.findtext('send',    default = self.__d__.iemgui['symbol']), 
         x.findtext('receive', default = self.__d__.iemgui['symbol']), 
         *label_params, 
         x.findtext('flag', default = self.__d__.iemgui['cnv']['flag']),
       ])
-    elif 'rdb' or 'radio' in x.tag:
+    elif 'rdb'  in x.tag or 'radio' in x.tag:
       obj.createRadio([
         x.findtext('size',  default = self.__d__.iemgui['radio']['size']),
         x.findtext('flag',  default = self.__d__.iemgui['radio']['flag']),
@@ -286,11 +293,12 @@ class XmlToJson:
         *label_params
       ])
     elif 'nbx' in x.tag:
+      _, limits_params = self.getAreaAndLimits(x, 'nbx')
       obj.createNbx([
         x.findtext('digits_width', default=self.__d__.iemgui[x.tag]['digits_width']),
         x.findtext('height',  default = self.__d__.iemgui['nbx']['height']),
-        x.findtext('lower',   default = self.__d__.iemgui['nbx']['lower']),
-        x.findtext('upper',   default = self.__d__.iemgui['nbx']['upper']),
+        limits_params['lower'],
+        limits_params['upper'],
         x.findtext('log_flag',default = self.__d__.iemgui['nbx']['log_flag']),
         x.findtext('init',    default = self.__d__.iemgui['nbx']['init']),
         x.findtext('send',    default = self.__d__.iemgui['symbol']), 
@@ -299,12 +307,13 @@ class XmlToJson:
         x.findtext('value',   default = self.__d__.iemgui['nbx']['value']), 
         x.findtext('log_height', default = self.__d__.iemgui['nbx']['log_height']), 
       ])
-    elif 'vsl' or 'vslider' in x.tag:
+    elif 'vsl' in x.tag  or 'vslider' in x.tag:
+      area_params, limits_params = self.getAreaAndLimits(x, 'vsl')
       obj.createSlider([
-        x.findtext('width',   default = self.__d__.iemgui['vsl']['width']),
-        x.findtext('height',  default = self.__d__.iemgui['vsl']['height']),
-        x.findtext('lower',   default = self.__d__.iemgui['vsl']['lower']),
-        x.findtext('upper',   default = self.__d__.iemgui['vsl']['upper']),
+        area_params['width'],
+        area_params['height'],
+        limits_params['lower'],
+        limits_params['upper'],
         x.findtext('log_flag',default = self.__d__.iemgui['vsl']['log_flag']),
         x.findtext('init',    default = self.__d__.iemgui['vsl']['init']),
         x.findtext('send',    default = self.__d__.iemgui['symbol']), 
@@ -314,12 +323,13 @@ class XmlToJson:
         x.findtext('log_height',default = self.__d__.iemgui['vsl']['log_height']), 
         x.findtext('steady',default = self.__d__.iemgui['vsl']['steady']), 
       ])
-    elif 'hsl' or 'hslider' in x.tag:
+    elif 'hsl' in x.tag or 'hslider' in x.tag:
+      area_params, limits_params = self.getAreaAndLimits(x, 'hsl')
       obj.createSlider([
-        x.findtext('width',   default = self.__d__.iemgui['hsl']['width']),
-        x.findtext('height',  default = self.__d__.iemgui['hsl']['height']),
-        x.findtext('lower',   default = self.__d__.iemgui['hsl']['lower']),
-        x.findtext('upper',   default = self.__d__.iemgui['hsl']['upper']),
+        area_params['width'],
+        area_params['height'],
+        limits_params['lower'],
+        limits_params['upper'],
         x.findtext('log_flag',default = self.__d__.iemgui['hsl']['log_flag']),
         x.findtext('init',    default = self.__d__.iemgui['hsl']['init']),
         x.findtext('send',    default = self.__d__.iemgui['symbol']), 
@@ -337,4 +347,28 @@ class XmlToJson:
 
     return obj
 
+  def getAreaAndLimits(self, x, className):
+    area = x.find('area')
+    if area is not None:
+      area_params = {
+        'width' : area.findtext('width',   default = self.__d__.iemgui[className]['width']),
+        'height': area.findtext('height',  default = self.__d__.iemgui[className]['height']),
+      }
+    else:
+      area_params = {
+        'width' : self.__d__.iemgui[className]['width'],
+        'height': self.__d__.iemgui[className]['height'],
+      }
+    limits = x.find('limits')
+    if limits is not None:
+      limits_params = {
+        'lower': limits.findtext('lower',   default = self.__d__.iemgui[className]['lower']),
+        'upper': limits.findtext('upper',   default = self.__d__.iemgui[className]['upper']),
+      }
+    else:
+      limits_params = {
+        'lower': self.__d__.iemgui[className]['lower'],
+        'upper': self.__d__.iemgui[className]['upper'],
+      }
+    return area_params, limits_params
   # end of addIEMGui definition ---------------------------------------------
