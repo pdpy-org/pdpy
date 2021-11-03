@@ -47,4 +47,9 @@ class Base(object):
     return pdnm
 
   def pdbool(self, n):
-    return bool(int(float(n)))
+    if n == "True":
+      return True
+    elif n == "False":
+      return False
+    else:
+      return bool(int(float(n)))
