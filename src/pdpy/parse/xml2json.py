@@ -64,9 +64,10 @@ class XmlToJson:
       # getConnections(o.root, out)
       # # add restore (if gop)
       # getRestore(o.root, out)
-      self.addNodes(child, self.patch.root)
-      self.addComments(child, self.patch.root)
-      self.addConnections(child, self.patch.root)
+      if child is not None:
+        self.addNodes(child, self.patch.root)
+        self.addComments(child, self.patch.root)
+        self.addConnections(child, self.patch.root)
 
   def addComments(self, x, __last_canvas__):
     if 'comment' == x.tag:
@@ -110,9 +111,10 @@ class XmlToJson:
     self.patch.__canvas_idx__.append(__canvas__.add(canvas))
     
     for child in node.findall('*'):
-      self.addNodes(child, canvas)
-      self.addComments(child, canvas)
-      self.addConnections(child, canvas)
+      if child is not None:
+        self.addNodes(child, canvas)
+        self.addComments(child, canvas)
+        self.addConnections(child, canvas)
 
 
   def addNodes(self, x, __last_canvas__):
@@ -122,7 +124,15 @@ class XmlToJson:
       self.addCanvas(x)
     elif 'coords' == x.tag:
       log(1, "coords", x)
-    else:  
+    elif 'scalar' == x.tag:
+      log(1, "scalar", x)
+    elif 'goparray' == x.tag:
+      log(1, "goparray", x)
+    elif 'struct' == x.tag:
+      log(1, "struct", x)
+    elif x.find('x') is None:
+      log(1, "x is none", x.tag)
+    else:
       self.patch.__obj_idx__ = __last_canvas__.grow()
       __id__   = int(x.get('id', default = self.patch.__obj_idx__ ))
       __xpos__ = int(x.findtext('x'))
@@ -241,7 +251,7 @@ class XmlToJson:
     ]
     # log(0,"TAG",x.tag)
     if 'vu' in x.tag:
-      area_params, _ = self.getAreaAndLimits(x,'vu')
+      area_params, _ = self.getAreaAndLimits(x,'vu', get_limits=False)
       obj.createVu([
         area_params['width'],
         area_params['height'],
@@ -261,7 +271,7 @@ class XmlToJson:
         x.findtext('nonzero', default = self.__d__.iemgui['tgl']['nonzero']),
       ])
     elif 'cnv'  in x.tag  or 'my_canvas' in x.tag:
-      area_params, _ = self.getAreaAndLimits(x, 'cnv')
+      area_params, _ = self.getAreaAndLimits(x, 'cnv', get_limits=False)
       obj.createCnv([
         x.findtext('size',    default = self.__d__.iemgui['cnv']['size']),
         area_params['width'],
@@ -293,7 +303,7 @@ class XmlToJson:
         *label_params
       ])
     elif 'nbx' in x.tag:
-      _, limits_params = self.getAreaAndLimits(x, 'nbx')
+      _, limits_params = self.getAreaAndLimits(x, 'nbx', get_area=False)
       obj.createNbx([
         x.findtext('digits_width', default=self.__d__.iemgui[x.tag]['digits_width']),
         x.findtext('height',  default = self.__d__.iemgui['nbx']['height']),
@@ -347,28 +357,34 @@ class XmlToJson:
 
     return obj
 
-  def getAreaAndLimits(self, x, className):
-    area = x.find('area')
-    if area is not None:
-      area_params = {
-        'width' : area.findtext('width',   default = self.__d__.iemgui[className]['width']),
-        'height': area.findtext('height',  default = self.__d__.iemgui[className]['height']),
-      }
-    else:
-      area_params = {
-        'width' : self.__d__.iemgui[className]['width'],
-        'height': self.__d__.iemgui[className]['height'],
-      }
-    limits = x.find('limits')
-    if limits is not None:
-      limits_params = {
-        'lower': limits.findtext('lower',   default = self.__d__.iemgui[className]['lower']),
-        'upper': limits.findtext('upper',   default = self.__d__.iemgui[className]['upper']),
-      }
-    else:
-      limits_params = {
-        'lower': self.__d__.iemgui[className]['lower'],
-        'upper': self.__d__.iemgui[className]['upper'],
-      }
+  def getAreaAndLimits(self, x, className, get_limits=True, get_area=True):
+    area_params = None
+    limits_params = None
+    
+    if get_area:
+      area = x.find('area')
+      if area is not None:
+        area_params = {
+          'width' : area.findtext('width',   default = self.__d__.iemgui[className]['width']),
+          'height': area.findtext('height',  default = self.__d__.iemgui[className]['height']),
+        }
+      else:
+        area_params = {
+          'width' : self.__d__.iemgui[className]['width'],
+          'height': self.__d__.iemgui[className]['height'],
+        }
+    
+    if get_limits:
+      limits = x.find('limits')
+      if limits is not None:
+        limits_params = {
+          'lower': limits.findtext('lower',   default = self.__d__.iemgui[className]['lower']),
+          'upper': limits.findtext('upper',   default = self.__d__.iemgui[className]['upper']),
+        }
+      else:
+        limits_params = {
+          'lower': self.__d__.iemgui[className]['lower'],
+          'upper': self.__d__.iemgui[className]['upper'],
+        }
     return area_params, limits_params
   # end of addIEMGui definition ---------------------------------------------
