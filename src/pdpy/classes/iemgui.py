@@ -96,6 +96,7 @@ class PdIEMGui(IEMLabel):
     creator function.
 
     """
+    args = list(args)
     if "vu" in self.className:
       self.createVu(args)
     elif "tgl" in self.className:
@@ -129,6 +130,7 @@ class PdIEMGui(IEMLabel):
     5. 14: `scale`: flag to draw the dB scale or not
     6. 15: `flag`: another flag.
     """
+    args = list(args)
     self.area = Size(*args[:2])
     self.receive = args[2]
     super().__init__(*args[3:8], args[9])
@@ -153,6 +155,7 @@ class PdIEMGui(IEMLabel):
     5. 15: `flag`: a flag
     6. 16: `nonzero`: the non-zero value when toggle is on.
     """
+    args = list(args)
     self.size = self.num(args[0])
     self.init = self.pdbool(args[1])
     self.send = args[2] if args[2] != "empty" else None
@@ -180,6 +183,7 @@ class PdIEMGui(IEMLabel):
     4. 10-15: `IEMLabel` Parameters
     5. 16: `flag`: a flag
     """
+    args = list(args)
     self.size = self.num(args[0])
     self.area = Size(*args[1:3])
     if 12 < len(args):
@@ -210,6 +214,7 @@ class PdIEMGui(IEMLabel):
     4. 11-16: `IEMLabel` Parameters
     5. 17: `value`: the initial value of the radio button (with `init`)
     """
+    args = list(args)
     self.size   = self.num(args[0])
     self.flag   = self.num(args[1])
     self.init   = self.pdbool(args[2])
@@ -238,6 +243,7 @@ class PdIEMGui(IEMLabel):
     3. 10: `receive`: the receiver symbol of the button
     4. 11-16: `IEMLabel` Parameters
     """
+    args = list(args)
     self.size   = self.num(args[0])
     self.hold   = self.num(args[1])
     self.intrrpt= self.num(args[2])
@@ -269,6 +275,7 @@ class PdIEMGui(IEMLabel):
     5. 19: `value`: the initial value of the number box (with `init`)
     5. 20: `log_height`: upper limit of the log scale (with `log_flag`)
     """
+    args = list(args)
     self.digit_width = self.num(args[0])
     self.height   = self.num(args[1])
     self.limits = Bounds(*args[2:4])
@@ -303,6 +310,7 @@ class PdIEMGui(IEMLabel):
     5. 19: `value`: the initial value of the number box (with `init`)
     5. 20: `log_height`: upper limit of the log scale (with `log_flag`)
     """
+    args = list(args)
     self.area = Size(*args[:2])
     self.limits = Bounds(*args[2:4])
     self.log_flag = self.pdbool(args[4])
