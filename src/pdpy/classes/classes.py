@@ -53,39 +53,36 @@ class Struct(Base):
     i = 0
 
     while i < len(argv):
-      
-      if i >= len(argv):
-        break
-      
+      if i >= len(argv): break
       pd_type = argv[i]
       pd_name = argv[i + 1]
       
-      if "float" == pd_type:
-        if not hasattr(self, pd_type):
-          self.float = []
-        self.float.append(pd_name)
-      
-      elif "symbol" == pd_type:
-        if not hasattr(self, pd_type):
-          self.symbol = []
-        self.symbol.append(pd_name)
-      
-      elif "text" == pd_type:
-        if not hasattr(self, pd_type):
-          self.symbol = []
-        self.symbol.append(pd_name)
-      
-      elif "array" == pd_type:
-        if not hasattr(self, pd_type):
-          self.array = []
+      if   'float'  == pd_type: self.addFloat(pd_name)
+      elif 'symbol' == pd_type: self.addSymbol(pd_name)
+      elif 'text'   == pd_type: self.addSymbol(pd_name)
+      elif 'array'  == pd_type:
         i += 2
-        self.array.append(PdType(pd_name, argv[i]))
-      
+        self.addArray(pd_name, argv[i])
       else:
         # log(1, self.name, argv)
         log(1, f"Unparsed Struct Field #{i}")
       
       i += 2
+  
+  def addFloat(self, pd_name):
+    if not hasattr(self, 'float'):
+      self.float = []
+    self.float.append(pd_name)
+
+  def addSymbol(self, pd_name):
+    if not hasattr(self, 'symbol'):
+      self.symbol = []
+    self.symbol.append(pd_name)
+
+  def addArray(self, pd_name, array_name):
+    if not hasattr(self, 'array'):
+      self.array = []
+    self.array.append(PdType(pd_name, array_name))
 
 class Bounds(Base):
   def __init__(self, lower, upper, dtype=float):
