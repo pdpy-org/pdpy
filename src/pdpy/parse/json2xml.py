@@ -60,14 +60,21 @@ class JsonToXml:
       for d in getattr(x,'struct'):
         struct = ET.SubElement(cnv, 'struct')
         self.update_with_sub(d, 'name', struct)
-        self.update_with_sub(d, 'float', struct)
-        self.update_with_sub(d, 'symbol', struct)
         self.update_with_sub(d, 'text', struct)
         if hasattr(d, 'array'):
           for x in getattr(d,'array'):
             array = ET.SubElement(struct, 'array')
             self.update_with_sub(x, 'name', array)
             self.update_with_sub(x, 'template', array)
+        if hasattr(d, 'float'):
+          for x in getattr(d,'float'):
+            float = ET.SubElement(struct, 'float')
+            float.text = x
+        if hasattr(d, 'symbol'):
+          for x in getattr(d,'symbol'):
+            symbol = ET.SubElement(struct, 'symbol')
+            symbol.text = x
+  
 
   def getComments(self, x, cnv):
     if hasattr(x, 'comments'):
@@ -99,7 +106,9 @@ class JsonToXml:
           # a canvas, recurse
           self.getCanvas(node, cnv, root=False)
           continue
+        
 
+        
         if hasattr(node, 'className'):
           className = self.__conv__.to_xml_tag(getattr(node,'className'))
         else:
@@ -108,8 +117,11 @@ class JsonToXml:
         if hasattr(node,'id'):
           oid = str(getattr(node,'id'))
         else:
-          log(1,"NO ID", node)
           oid = '0'
+          if className in ['goparray', 'scalar']:
+            log(1, 'GOPARRAY', node)
+          else:
+            log(1,"NO ID", node)
 
         e = ET.Element(className, attrib={ 'id': oid })
         cnv.append(e)
