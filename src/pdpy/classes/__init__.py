@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 """ Mostly class definitions """
-import json
+
 from .base import *
-from .classes import *
 from .default import *
+from .classes import *
 from .canvas import *
 from .iemgui import *
 from .pdpy import *
