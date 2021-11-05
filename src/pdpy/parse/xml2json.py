@@ -10,7 +10,7 @@ from ..classes.iemgui import PdIEMGui
 from ..classes.pdpy import PdPy
 from ..classes.default import Default, IEMGuiNames, XmlTagConvert
 from ..classes.canvas import Canvas
-from ..classes.classes import Comment, Edge, PdArray, PdMessage, PdNativeGui, PdObject
+from ..classes.classes import Comment, Edge, PdArray, PdMessage, PdNativeGui, PdObject, Coords
 # from ..util.utils import log
 
 __all__ = [ "XmlToJson" ]
@@ -123,7 +123,21 @@ class XmlToJson:
     elif 'canvas' == x.tag:
       self.addCanvas(x)
     elif 'coords' == x.tag:
-      log(1, "coords", x)
+      # log(1, "coords", x)
+      __last_canvas__.coords = Coords([
+        x.find('a').findtext('x'),
+        x.find('a').findtext('y'),
+        x.find('b').findtext('x'),
+        x.find('b').findtext('y'),
+        x.find('dimension').findtext('width'),
+        x.find('dimension').findtext('height'),
+        x.findtext('gop')
+      ])
+      if x.find('margin'):
+        __last_canvas__.coords.addmargin(
+          x.find('margin').findtext('x'),
+          x.find('margin').findtext('y')
+        )
     elif 'scalar' == x.tag:
       log(1, "scalar", x)
     elif 'goparray' == x.tag:
@@ -161,7 +175,7 @@ class XmlToJson:
           x.findtext('send', default=self.__d__.send))
       
       # text or array-group objects
-      elif "text" == x.tag or 'array' == x.tag:
+      elif x.tag in ['text', 'array']:
         obj = PdArray(__id__, __xpos__, __ypos__, x.tag)
         obj.subclass = x.findtext('subclass')
         obj.name = x.findtext('name')
