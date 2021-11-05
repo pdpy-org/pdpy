@@ -94,12 +94,41 @@ class Bounds(Base):
     self.upper = dtype(upper)
 
 class Area(Base):
+  """ 
+  Area
+  ====
+  
+  Description
+  -----------
+  Represents an area with two points. See ::class::`Point`.
+  The first two coordinates are the upper left corner `a`,
+  and the second two are the upper lower corner, `b`.
+  a ------------------- |
+  |                     |
+  |                     |
+  |                     v
+  |-------------------> b
+  """
   def __init__(self, coords):
     self.__pdpy__ = self.__class__.__name__
     self.a = Point(coords[0], coords[2])
     self.b = Point(coords[1], coords[3])
 
 class Coords(Base):
+  """ 
+  Coordinates of the Pd Patch
+  ===========================
+
+  Description
+  ----------
+  The coordinates of the Pd Patch takes a list of 7 or 9 arguments 
+  Created in the following format:
+  - `range` : first 4 floats are the Area. Defined by 2 Points. See ::class::`Area` and ::class::`Point`.
+  - `dimension` : next 2 floats are the Size. See ::class::`Size`.
+  - `gop` : next 1 int (0 or 1) defines if it must Graph-on-Parent.
+  - `margin` : if present, next 2 floats are the margins. See ::func::`addmargin`)
+
+  """
   def __init__(self, coords):
     self.__pdpy__ = self.__class__.__name__
     # NON-GOP
@@ -108,8 +137,10 @@ class Coords(Base):
     self.gop = self.num(coords[6])
     # GOP
     if 9 == len(coords):
-      self.margin = Point(coords[7], coords[8])
+      self.addmargin(coords[7], coords[8])
 
+  def addmargin(self, x, y):
+    self.margin = Point(x, y)
 class Scalar(PdData):
   def __init__(self, struct, name, *data):
     self.__pdpy__ = self.__class__.__name__
