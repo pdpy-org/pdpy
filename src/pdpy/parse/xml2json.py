@@ -48,6 +48,15 @@ class XmlToJson:
       font=self.__x__.findtext('font', default=self.__d__.font['size'])
     )
 
+    # NOTE: add struct to root, not to canvas root
+    for child in self.tree.findall('struct'):
+      # log(1,"STRUCT", child)
+      self.patch.addStruct(child, source='xml')
+
+    
+    for child in self.tree.findall('declare'):
+      log(1,"DECLARE", child)
+
     for child in self.__x__.findall('*'):
       # getStruct(o, out)
       # # add main root canvas
@@ -118,7 +127,7 @@ class XmlToJson:
 
 
   def addNodes(self, x, __last_canvas__):
-    if x.tag in ['vis', 'x', 'y', 'width', 'height', 'font', 'title', 'name', 'connect', 'comment', 'position', 'area', 'limits']:
+    if x.tag in ['vis', 'x', 'y', 'width', 'height', 'font', 'title', 'name', 'connect', 'comment', 'position', 'area', 'limits', 'struct']:
       return
     elif 'canvas' == x.tag:
       self.addCanvas(x)
@@ -142,8 +151,6 @@ class XmlToJson:
       log(1, "scalar", x)
     elif 'goparray' == x.tag:
       log(1, "goparray", x)
-    elif 'struct' == x.tag:
-      log(1, "struct", x)
     elif x.find('x') is None:
       log(1, "x is none", x.tag)
     else:

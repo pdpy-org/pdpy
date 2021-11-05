@@ -25,9 +25,13 @@ class PdPy(Base):
     self.__depth__ = 0
     if root: self.root = Canvas(name=self.patchname)
 
-  def addStruct(self, argv):
-    if not hasattr(self, 'struct'): self.struct = []
-    self.struct.append(Struct(*argv))
+  def addStruct(self, argv, source='pd'):
+    if not hasattr(self, 'struct'): 
+      self.struct = []
+    if source == 'xml':
+      self.struct.append(Struct(argv, source=source))
+    else:
+      self.struct.append(Struct(*argv, source=source))
   
   def addRoot(self, argv):
     self.root = Canvas(

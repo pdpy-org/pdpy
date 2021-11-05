@@ -3,7 +3,6 @@
 
 """ Class Definitions """
 
-import json
 from .base import Base
 from ..util.utils import  log, splitByEscapedChar, splitSemi
 from .default import GOPArrayFlags
@@ -47,9 +46,44 @@ class PdType(PdData):
 class Struct(Base):
   """ An object containing a Pure Data 'struct' header
   """
-  def __init__(self, name, *argv):
+  def __init__(self, *argv, source='pd'):
     self.__pdpy__ = self.__class__.__name__
-    self.name = name
+    if source == 'pd':
+      self.parsePd(argv)
+    elif source == 'json':
+      log(1,'jsonformat')
+      pass
+    elif source == 'xml':
+      # log(1,argv)
+      self.parseXML(argv[0])
+    elif source == 'pdpy':
+      log(1,'pdpyformat')
+      pass
+    else:
+      log(1, f"Unsupported source: {source}")
+
+
+  def parseXML(self, x):
+    # x is the xml object
+    self.name = x.findtext('name')
+      
+    for s in x.findall('float'):
+      self.addFloat(s.text)
+  
+    for s in x.findall('symbol'):
+      self.addSymbol(s.text)
+
+    for s in x.findall('text'):
+      self.addSymbol(s.text)
+    
+    for s in x.findall('array'): 
+      self.addArray(s.findtext('name'),s.findtext('template'))
+    
+  
+  def parsePd(self, argv):
+    self.name = argv[0]
+    argv = argv[1:]
+    
     i = 0
 
     while i < len(argv):
