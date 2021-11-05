@@ -10,7 +10,25 @@ __all__ = [
   'GOPArrayFlags',
   'IEMGuiNames',
   'PdFonts',
+  'Formats',
+  'getFormat'
 ]
+
+Formats = {
+  "pkl" : [ "pickle", "pkl"],
+  "json": [ "json" ],
+  "pdpy" : [ "pdpy" ],
+  "pd"  : [ "pd", "puredata"],
+  "xml"  : [ "xml" ],
+}
+
+def getFormat(fmt):
+  for k,v in Formats.items():
+    for f in v:
+      if fmt == f:
+        return k
+  return None
+
 
 
 class XmlTagConvert(Base):

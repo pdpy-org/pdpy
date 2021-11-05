@@ -15,22 +15,7 @@ from ..parse.xml2json import XmlToJson
 from ..parse.parser import PdPyParser
 from ..util.utils import log, parsePdBinBuf, parsePdFileLines
 
-__all__ = [ "Translator" , "Formats", "getFormat"]
-
-Formats = {
-  "pkl" : [ "pickle", "pkl"],
-  "json": [ "json" ],
-  "pdpy" : [ "pdpy" ],
-  "pd"  : [ "pd", "puredata"],
-  "xml"  : [ "xml" ],
-}
-
-def getFormat(fmt):
-  for k,v in Formats.items():
-    for f in v:
-      if fmt == f:
-        return k
-  return None
+__all__ = [ "Translator" ] 
 
 def PdPyEncoder(obj):
   # TODO
