@@ -35,7 +35,7 @@ class JsonToXml:
     # add main root canvas
     cnv = self.getCanvas(self.root, self.__root__, root=True)
     # add structs
-    self.getStruct(self.obj, cnv)
+    self.getStruct(self.obj, self.__root__)
     # add declarations
     self.getDependencies(self.obj)
     # add nodes
@@ -55,10 +55,10 @@ class JsonToXml:
   def to_string(self):
     return ET.tostring(self.__root__, encoding='unicode', method='xml')
 
-  def getStruct(self, x, cnv):
+  def getStruct(self, x, root):
     if hasattr(x, 'struct'):
       for d in getattr(x,'struct'):
-        struct = ET.SubElement(cnv, 'struct')
+        struct = ET.SubElement(root, 'struct')
         self.update_with_sub(d, 'name', struct)
         self.update_with_sub(d, 'text', struct)
         if hasattr(d, 'array'):
@@ -189,7 +189,9 @@ class JsonToXml:
 
   def getDeclare(self, x, kind):
     if hasattr(x, kind):
-      declares = ET.SubElement(self.__root__, 'declare')
+      declares = self.__root__.find('declare')
+      if declares is None:
+        declares = ET.SubElement(self.__root__, 'declare')
       for x in getattr(x, kind):
         ET.SubElement(declares, kind[:-1]).text = x
       
