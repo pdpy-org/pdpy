@@ -6,6 +6,7 @@
 from .base import *
 from .default import *
 from .classes import *
+from .data_structures import *
 from .canvas import *
 from .iemgui import *
 from .pdpy import *

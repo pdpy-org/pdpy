@@ -7,13 +7,13 @@ from ..util.utils import log
 from .base import Base
 from .canvas import Canvas
 from .classes import *
+from .data_structures import *
 from .default import *
 from .iemgui import *
 
 __all__ = [ "PdPy" ]
 
 # nums = [ "12", "-13", "14.2", 15.4, "1e10", 1e-23, "1.3E+2", 1.4E-2]
-
 
 class PdPy(Base):
   def __init__(self, name=None, encoding='utf-8', root=False):
@@ -119,9 +119,8 @@ class PdPy(Base):
         # log(1, "NODES:", argv)
         obj = PdIEMGui(self.__obj_idx__, *argv)
         self.__last_canvas__().add(obj)
-      # signal-group object
-      # elif "~" in argv[2]:
-        # obj = self.addSignalObject(argv)
+      # TODO: make special cases for data structures
+      # - drawing instructions
       else:
         obj = PdObject(self.__obj_idx__, *argv)
         self.__last_canvas__().add(obj)

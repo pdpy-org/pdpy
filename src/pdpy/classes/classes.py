@@ -4,11 +4,23 @@
 """ Class Definitions """
 
 from .base import Base
-from ..util.utils import  log, splitByEscapedChar, splitSemi
-from .default import GOPArrayFlags
+from .data_structures import PdData, PdType
+from ..util.utils import splitSemi
 
-__all__ = [ "Base", "Edge", "Comment", "Coords", "Dependencies", "Graph", "PdArray", "PdMessage", "PdNativeGui", "PdObject", "PdType", "Point", "Size", "Scalar", "Struct" ]
-
+__all__ = [ 
+  "Base",
+  "Edge",
+  "Comment",
+  "Coords",
+  "Dependencies",
+  "Graph",
+  "PdArray",
+  "PdMessage",
+  "PdNativeGui",
+  "PdObject",
+  "Point",
+  "Size"
+]
 
 class Point(Base):
   def __init__(self, x, y):
@@ -21,102 +33,6 @@ class Size(Base):
     self.__pdpy__ = self.__class__.__name__
     self.width = self.num(w)
     self.height = self.num(h)
-
-class PdData(Base):
-  def __init__(self):
-    self.__pdpy__ = self.__class__.__name__
-    self.data = []
-    return self
-  
-  def addData(self, data, dtype=float, char=None):
-    if char is not None:
-      self.data = splitByEscapedChar(data, char=char)
-    else:
-      self.data = [dtype(d) for d in data]
-
-class PdType(PdData):
-  def __init__(self, name, template=None, size=None, flag=None, className=None):
-    self.__pdpy__ = self.__class__.__name__
-    self.name = name
-    self.template = template
-    self.size = self.num(size) if size is not None else None
-    self.flag = GOPArrayFlags[int(flag)] if flag is not None and flag.isnumeric() else None
-    self.className = className
-
-class Struct(Base):
-  """ An object containing a Pure Data 'struct' header
-  """
-  def __init__(self, *argv, source='pd'):
-    self.__pdpy__ = self.__class__.__name__
-    if source == 'pd':
-      self.parsePd(argv)
-    elif source == 'json':
-      log(1,'jsonformat')
-      pass
-    elif source == 'xml':
-      # log(1,argv)
-      self.parseXML(argv[0])
-    elif source == 'pdpy':
-      log(1,'pdpyformat')
-      pass
-    else:
-      log(1, f"Unsupported source: {source}")
-
-
-  def parseXML(self, x):
-    # x is the xml object
-    self.name = x.findtext('name')
-      
-    for s in x.findall('float'):
-      self.addFloat(s.text)
-  
-    for s in x.findall('symbol'):
-      self.addSymbol(s.text)
-
-    for s in x.findall('text'):
-      self.addSymbol(s.text)
-    
-    for s in x.findall('array'): 
-      self.addArray(s.findtext('name'),s.findtext('template'))
-    
-  
-  def parsePd(self, argv):
-    self.name = argv[0]
-    argv = argv[1:]
-    
-    i = 0
-
-    while i < len(argv):
-      if i >= len(argv): break
-      pd_type = argv[i]
-      pd_name = argv[i + 1]
-      
-      if   'float'  == pd_type: self.addFloat(pd_name)
-      elif 'symbol' == pd_type: self.addSymbol(pd_name)
-      elif 'text'   == pd_type: self.addSymbol(pd_name)
-      elif 'array'  == pd_type:
-        i += 2
-        self.addArray(pd_name, argv[i])
-      else:
-        # log(1, self.name, argv)
-        log(1, f"Unparsed Struct Field #{i}")
-      
-      i += 2
-  
-  def addFloat(self, pd_name):
-    if not hasattr(self, 'float'):
-      self.float = []
-    self.float.append(pd_name)
-
-  def addSymbol(self, pd_name):
-    if not hasattr(self, 'symbol'):
-      self.symbol = []
-    self.symbol.append(pd_name)
-
-  def addArray(self, pd_name, array_name):
-    if not hasattr(self, 'array'):
-      self.array = []
-    self.array.append(PdType(pd_name, array_name))
 
 class Bounds(Base):
   def __init__(self, lower, upper, dtype=float):
@@ -172,17 +88,6 @@ class Coords(Base):
 
   def addmargin(self, x, y):
     self.margin = Point(x, y)
-class Scalar(PdData):
-  def __init__(self, struct, name, *data):
-    self.__pdpy__ = self.__class__.__name__
-    self.className = "scalar"
-    self.name = name
-    for s in struct:
-      if self.name == s.name:
-        if hasattr(s, "float"):
-          super().addData(data, char=";")
-        elif hasattr(s, "symbol"):
-          super().addData(data, char=";")
 
 class Comment(Base):
   def __init__(self, x, y, *argv):
