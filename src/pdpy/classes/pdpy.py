@@ -7,6 +7,7 @@ from ..util.utils import log
 from .base import Base
 from .canvas import Canvas
 from .classes import *
+from .message import PdMessage
 from .data_structures import *
 from .default import *
 from .iemgui import *
