@@ -38,6 +38,8 @@ class JsonToXml:
     self.getStruct(self.obj, self.__root__)
     # add declarations
     self.getDependencies(self.obj)
+    # add main root canvas
+    cnv = self.getCanvas(self.root, self.__root__, root=True)
     # add nodes
     self.getNodes(self.root, cnv)
     # add comments
@@ -58,21 +60,23 @@ class JsonToXml:
   def getStruct(self, x, root):
     if hasattr(x, 'struct'):
       for d in getattr(x,'struct'):
-        struct = ET.SubElement(root, 'struct')
-        self.update_with_sub(d, 'name', struct)
-        self.update_with_sub(d, 'text', struct)
+      struct = ET.SubElement(root, 'struct')
+      for d in getattr(x,'struct'):
+        template = ET.SubElement(struct, 'template')
+        self.update_with_sub(d, 'name', template)
+        self.update_with_sub(d, 'text', template)
         if hasattr(d, 'array'):
           for x in getattr(d,'array'):
-            array = ET.SubElement(struct, 'array')
+            array = ET.SubElement(template, 'array')
             self.update_with_sub(x, 'name', array)
             self.update_with_sub(x, 'template', array)
         if hasattr(d, 'float'):
           for x in getattr(d,'float'):
-            float = ET.SubElement(struct, 'float')
+            float = ET.SubElement(template, 'float')
             float.text = x
         if hasattr(d, 'symbol'):
           for x in getattr(d,'symbol'):
-            symbol = ET.SubElement(struct, 'symbol')
+            symbol = ET.SubElement(template, 'symbol')
             symbol.text = x
   
 
