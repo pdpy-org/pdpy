@@ -9,7 +9,8 @@ import re
 
 from ..classes.pdpy import PdPy
 from ..classes.canvas import Canvas
-from ..classes.classes import Comment, Edge, PdArray, PdMessage, PdObject, Point
+from ..classes.message import PdMessage
+from ..classes.classes import Comment, Edge, PdArray, PdObject, Point
 from ..util.utils import log, printer, tokenize
 
 __all__ = [ "PdPyParser" ]
