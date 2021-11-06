@@ -121,13 +121,16 @@ class JsonToXml:
         if hasattr(node,'id'):
           oid = str(getattr(node,'id'))
         else:
-          oid = '0'
+          oid = None
           if className in ['goparray', 'scalar']:
             log(1, 'GOPARRAY', node)
           else:
             log(1,"NO ID", node)
+        e = ET.Element(className)
+        
+        if oid is not None:
+          e.attrib = { 'id': oid }
 
-        e = ET.Element(className, attrib={ 'id': oid })
         cnv.append(e)
 
         if hasattr(node, 'position'):
