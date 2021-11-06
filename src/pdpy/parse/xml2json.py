@@ -10,7 +10,9 @@ from ..classes.iemgui import PdIEMGui
 from ..classes.pdpy import PdPy
 from ..classes.default import Default, IEMGuiNames, XmlTagConvert
 from ..classes.canvas import Canvas
-from ..classes.classes import Comment, Edge, PdArray, PdMessage, PdNativeGui, PdObject, Coords
+from ..classes.message import PdMessage
+from ..classes.data_structures import *
+from ..classes.classes import Comment, Edge, PdArray, PdNativeGui, PdObject, Coords
 # from ..util.utils import log
 
 __all__ = [ "XmlToJson" ]
