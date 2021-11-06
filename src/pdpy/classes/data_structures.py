@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-""" Class Definitions for Pure Data's Data Structure """
+""" Class Definitions for Pure Data's Data Structures """
 
 from .base import Base
 from .default import GOPArrayFlags
@@ -40,36 +40,14 @@ class Struct(Base):
   """
   def __init__(self, *argv, source='pd'):
     self.__pdpy__ = self.__class__.__name__
-    if source == 'pd':
-      self.parsePd(argv)
-    elif source == 'json':
-      log(1,'jsonformat')
-      pass
-    elif source == 'xml':
-      # log(1,argv)
-      self.parseXML(argv[0])
-    elif source == 'pdpy':
-      log(1,'pdpyformat')
-      pass
-    else:
+    
+    if   source == 'pd'   : self.parsePd(argv)
+    elif source == 'json' : pass
+    elif source == 'xml'  : self.parseXML(argv[0])
+    elif source == 'pdpy' : pass
+    else: 
       log(1, f"Unsupported source: {source}")
 
-  def parseXML(self, x):
-    # x is the xml object
-    self.name = x.findtext('name')
-      
-    for s in x.findall('float'):
-      self.addFloat(s.text)
-  
-    for s in x.findall('symbol'):
-      self.addSymbol(s.text)
-
-    for s in x.findall('text'):
-      self.addSymbol(s.text)
-    
-    for s in x.findall('array'): 
-      self.addArray(s.findtext('name'),s.findtext('template'))
-  
   def parsePd(self, argv):
     self.name = argv[0]
     argv = argv[1:]
@@ -92,6 +70,15 @@ class Struct(Base):
         log(1, f"Unparsed Struct Field #{i}")
       
       i += 2
+  
+  def parseXML(self, x):
+    # x is the xml object
+    self.name = x.findtext('name')
+    for s in x.findall('float'): self.addFloat(s.text)
+    for s in x.findall('symbol'): self.addSymbol(s.text)
+    for s in x.findall('text'): self.addSymbol(s.text)
+    for s in x.findall('array'): 
+      self.addArray(s.findtext('name'),s.findtext('template'))
   
   def addFloat(self, pd_name):
     if not hasattr(self, 'float'):
