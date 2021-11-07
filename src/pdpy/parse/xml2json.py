@@ -162,7 +162,7 @@ class XmlToJson:
     elif 'border' == x.tag:
       border = x.text
     elif x.find('x') is None:
-      log(1, "x is none", x.tag)
+      log(1, "Unknown Tag:", x.tag)
     else:
       self.patch.__obj_idx__ = __last_canvas__.grow()
       __id__   = int(x.get('id', default = self.patch.__obj_idx__ ))
