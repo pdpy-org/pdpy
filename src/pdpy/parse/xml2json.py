@@ -27,7 +27,6 @@ class XmlToJson:
     self.__conv__ = XmlTagConvert()
     self.__root__ = self.tree.getroot()
     self.__x__ = self.__root__.find('canvas')
-
     if self.__root__.get('encoding') is None:
       encoding = 'utf-8'
     else:
@@ -115,10 +114,21 @@ class XmlToJson:
   # end of addCanvas -----------------------------------------------------------
   
   def addScalar(self, x, __last_canvas__):
-    log(1, "scalar", x)
+    scalar = Scalar(self.patch.struct, x, source='xml' )
+    __last_canvas__.add(scalar)
 
   def addGOPArray(self, x, __last_canvas__):
-    log(1, "goparray", x)
+    # log(1, "goparray", x)
+    arr = PdType(
+      x.findtext('name'),
+      size=x.findtext('size'),
+      flag=x.findtext('flag'),
+      className=x.tag
+    )
+    _data = x.find('data')
+    if _data: arr.addData(map(lambda x:x.text, _data.findall('float')))
+    __last_canvas__.add(arr)
+
 
   def addCoords(self, x, __last_canvas__):
     # log(1, "coords", x)
@@ -138,6 +148,7 @@ class XmlToJson:
       )
 
   def addNodes(self, x, __last_canvas__):
+    border = None # the border of the object box
     if x.tag in ['vis', 'x', 'y', 'width', 'height', 'font', 'title', 'name', 'connect', 'comment', 'position', 'area', 'limits', 'struct']:
       return
     elif 'canvas' == x.tag:
@@ -148,6 +159,8 @@ class XmlToJson:
       self.addScalar(x, __last_canvas__)
     elif 'goparray' == x.tag:
       self.addGOPArray(x, __last_canvas__)
+    elif 'border' == x.tag:
+      border = x.text
     elif x.find('x') is None:
       log(1, "x is none", x.tag)
     else:
@@ -157,13 +170,14 @@ class XmlToJson:
       __ypos__ = int(x.findtext('y'))
       
       if 'msg' == x.tag:
-        msg = PdMessage(__id__, __xpos__, __ypos__)
+        obj = PdMessage(__id__, __xpos__, __ypos__)
         for t in x.findall('target'):
-          msg.addTarget(t.text)
+          obj.addTarget(t.text)
           for m in t.findall('message'):
-            msg.targets[-1].add(m.text)
+            obj.targets[-1].add(m.text)
         # add the message and do not continue loading
-        __last_canvas__.add(msg)
+        if border: obj.border = border
+        __last_canvas__.add(obj)
         return
       
       elif x.tag in ['floatatom', 'symbolatom', 'listbox']:
@@ -198,6 +212,7 @@ class XmlToJson:
       # add the arguments to the object
       # and the object to the canvas
       self.addArgs(obj, x)
+      if border: obj.border = border
       __last_canvas__.add(obj)
 
 

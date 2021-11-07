@@ -32,9 +32,18 @@ class PdType(PdData):
     self.name = name
     self.template = template
     self.size = self.num(size) if size is not None else None
-    self.flag = GOPArrayFlags[int(flag)] if flag is not None and flag.isnumeric() else None
-    self.className = className
+    self.addflag(flag)
 
+    self.className = className
+  
+  def addflag(self, flag):
+    # log(1, "Adding flag: {}".format(flag))
+    if flag is not None and flag.isnumeric():
+      self.flag = GOPArrayFlags[int(flag)]
+    elif flag in GOPArrayFlags:
+      self.flag = flag
+    else:
+      self.flag = None
 class Struct(Base):
   """ An object containing a Pure Data 'struct' header
   """
@@ -97,23 +106,41 @@ class Struct(Base):
     self.array.append(PdType(pd_name, array_name))
 
 class Scalar(PdData):
-  def __init__(self, struct, name, *data, source='pd'):
+  def __init__(self, struct, *argv, source='pd'):
     self.__pdpy__ = self.__class__.__name__
     self.className = "scalar"
-    self.name = name
-    if source=='pd':
-      self.parsePd(struct, data)
-    elif source=='json':
-      self.parseJson(struct, data)
+    if   source == 'pd'  : self.parsePd(struct, argv)
+    elif source == 'json': self.parseJson(struct, argv)
+    elif source == 'xml' : self.parseXml(struct, argv[0])
 
-  def parseJson(self, struct, data):
+  def parseXml(self, struct, argv):
+    self.name = argv.findtext('name')
+    _data = argv.find('data')
+    if _data:
+      _symbol = _data.find('symbol')
+      _array  = _data.find('array')
+      _float  = _data.find('float')
+      for s in struct:
+        if self.name == s.name:
+          if _symbol:
+            super().addData(_symbol.text, dtype=str)
+            # super().addData(map(lambda x:x.text, _data.findall('symbol')))
+          if _float:
+            super().addData(_float.text, dtype=float)
+            # super().addData(map(lambda x:x.text, _data.findall('float')))
+          if _array:
+            super().addData(map(lambda x:x.text, _array.findall('*')))
+
+  def parseJson(self, struct, argv):
+    self.name = argv[0]
     for s in struct:
       if self.name == s.name:
-        super().addData(data)
+        super().addData(argv[1:])
   
-  def parsePd(self, struct, data):
+  def parsePd(self, struct, argv):
+    self.name = argv[0]
     for s in struct:
       if self.name == s.name:
-        # print('parsing struct', data)
-        super().addData(data, char=";")
+        # print('parsing struct', argv)
+        super().addData(argv[1:], char=";")
 
