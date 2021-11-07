@@ -73,6 +73,7 @@ class Struct(Base):
   
   def parseXML(self, x):
     # x is the xml object
+    # log(1,x.findall('*'))
     self.name = x.findtext('name')
     for s in x.findall('float'): self.addFloat(s.text)
     for s in x.findall('symbol'): self.addSymbol(s.text)
