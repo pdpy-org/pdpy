@@ -105,6 +105,7 @@ class Comment(Base):
 class Dependencies(Base):
   def __init__(self, *argv):
     self.__pdpy__ = self.__class__.__name__
+    # python magic to split a list in pairs
     deps = list(zip(*[iter(argv)]*2))
     for dep in deps:
       if "-path" == dep[0]:

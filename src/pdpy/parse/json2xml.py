@@ -32,8 +32,6 @@ class JsonToXml:
     self.__root__ = ET.Element('patch', attrib={'name': self.obj.patchname})
     self.tree = ET.ElementTree(self.__root__)
 
-    # add main root canvas
-    cnv = self.getCanvas(self.root, self.__root__, root=True)
     # add structs
     self.getStruct(self.obj, self.__root__)
     # add declarations
@@ -59,7 +57,6 @@ class JsonToXml:
 
   def getStruct(self, x, root):
     if hasattr(x, 'struct'):
-      for d in getattr(x,'struct'):
       struct = ET.SubElement(root, 'struct')
       for d in getattr(x,'struct'):
         template = ET.SubElement(struct, 'template')
@@ -118,19 +115,10 @@ class JsonToXml:
         else:
           className = 'obj'
         
-        if hasattr(node,'id'):
-          oid = str(getattr(node,'id'))
-        else:
-          oid = None
-          if className in ['goparray', 'scalar']:
-            log(1, 'GOPARRAY', node)
-          else:
-            log(1,"NO ID", node)
-        e = ET.Element(className)
-        
-        if oid is not None:
-          e.attrib = { 'id': oid }
 
+        oid = str(getattr(node,'id')) if hasattr(node,'id') else None
+        e = ET.Element(className)
+        if oid is not None: e.attrib = { 'id': oid }
         cnv.append(e)
 
         if hasattr(node, 'position'):
@@ -174,16 +162,38 @@ class JsonToXml:
           self.update_with_sub(lim, 'upper', limits)
 
         if hasattr(node, 'data'):
+
+          # check if we have a struct in the json object
+          if hasattr(self.obj,'struct'):
+            for idx, s in enumerate(getattr(self.obj,'struct')):
+              if getattr(s,'name') == getattr(node,'name'):
+                # scalars
+                # add the scalar node to the xml element
+                self.addScalars(idx, s, e, node)
+                
+          # text or arrays
+          # create the sub element <data>
           data = ET.SubElement(e, 'data')
-          for d in getattr(node,'data'):
+
+          if hasattr(node, 'size'):
+            ET.SubElement(e, 'size').text = str(getattr(node, 'size'))
+          if hasattr(node, 'flag'):
+            ET.SubElement(e, 'flag').text = getattr(node, 'flag')
+
+          _data = getattr(node,'data')
+          # log(1, 'DATA', _data)
+
+          for d in _data:
             if isinstance(d, str):
-              ET.SubElement(data, 'symbol').text = d
-            elif isinstance(e, list):
-              array = ET.SubElement(data, 'array')
-              for l in d:
-                ET.SubElement(array, 'float').text = str(l)
-            else:
+              ET.SubElement(data, 'symbol').text = str(d)
+            elif isinstance(d, float) or isinstance(d, int):
               ET.SubElement(data, 'float').text = str(d)
+            elif isinstance(d, list):
+              array = ET.SubElement(data, 'array')
+              for f in d:
+                ET.SubElement(array, 'float').text = str(f)
+            else:
+              log(1, 'DATA: unknown format', d)
           
         if hasattr(node,'args'):
           args = getattr(node,'args')
@@ -193,6 +203,38 @@ class JsonToXml:
             ET.SubElement(e, 'arg').text = arg
       
         self.update_with_sub(x, 'border', e)
+  
+  def getTemplate(self, template):
+    if hasattr(self.obj, 'struct'):
+      for idx, s in enumerate(getattr(self.obj, 'struct')):
+        if getattr(s, 'name') == template:
+          return idx, s
+
+  def addScalars(self, idx, s, _parent, _node):
+    _data = getattr(_node, 'data')
+    if getattr(s,'name') == getattr(_node, 'name'):
+      self.addScalar(_parent, idx, s, 'float', _data )
+      self.addScalar(_parent, idx, s, 'symbol', _data )
+      if hasattr(s,'array'):
+        for a in getattr(s,'array'):
+          _idx, _s = self.getTemplate(getattr(a,'template'))
+          self.addScalars(_idx, _s, _parent, _node)
+
+  def addScalar(self, idx, _struct, _parent, _type, _data):
+
+    if hasattr(_struct,_type):
+      # log(1, _type, _struct)
+      _struct_floats_ = getattr(_struct,_type)
+    
+      for d in _data:
+        if isinstance(d, str):
+          _float_list_ = d.split()
+          if len(_float_list_) == len(_struct_floats_):
+            for value,name in zip(_float_list_, _struct_floats_):
+              ET.SubElement(_parent, name).text = value
+        # elif isinstance(d, float) or isinstance(d, int):
+          
+
 
   def getDeclare(self, x, kind):
     if hasattr(x, kind):

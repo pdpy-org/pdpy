@@ -30,6 +30,7 @@ class PdPy(Base):
     if not hasattr(self, 'struct'): 
       self.struct = []
     if source == 'xml':
+      # log(1, "addStruct", argv)
       self.struct.append(Struct(argv, source=source))
     else:
       self.struct.append(Struct(*argv, source=source))

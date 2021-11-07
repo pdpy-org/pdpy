@@ -12,7 +12,7 @@ from ..classes.default import Default, IEMGuiNames, XmlTagConvert
 from ..classes.canvas import Canvas
 from ..classes.message import PdMessage
 from ..classes.data_structures import *
-from ..classes.classes import Comment, Edge, PdArray, PdNativeGui, PdObject, Coords
+from ..classes.classes import Comment, Edge, PdArray, PdNativeGui, PdObject, Coords, Dependencies
 # from ..util.utils import log
 
 __all__ = [ "XmlToJson" ]
@@ -51,30 +51,16 @@ class XmlToJson:
     )
 
     # NOTE: add struct to root, not to canvas root
-    for child in self.tree.findall('struct'):
-      # log(1,"STRUCT", child)
+    for child in self.tree.findall('struct/template'):
       self.patch.addStruct(child, source='xml')
 
+    for child in self.tree.findall('declare/path'):
+      self.patch.addDependencies(['-path', child.text])
     
-    for child in self.tree.findall('declare'):
-      log(1,"DECLARE", child)
+    for child in self.tree.findall('declare/lib'):
+      self.patch.addDependencies(['-lib', child.text])
 
     for child in self.__x__.findall('*'):
-      # getStruct(o, out)
-      # # add main root canvas
-      # getCanvas(o.root, out, root=True)
-      # # add declarations
-      # getDependencies(o, out)
-      # # add nodes
-      # getNodes(o.root, out)
-      # # add comments
-      # getComments(o.root, out)
-      # # add coords
-      # getCoords(o.root, out)
-      # # add connections
-      # getConnections(o.root, out)
-      # # add restore (if gop)
-      # getRestore(o.root, out)
       if child is not None:
         self.addNodes(child, self.patch.root)
         self.addComments(child, self.patch.root)
@@ -126,7 +112,30 @@ class XmlToJson:
         self.addNodes(child, canvas)
         self.addComments(child, canvas)
         self.addConnections(child, canvas)
+  # end of addCanvas -----------------------------------------------------------
+  
+  def addScalar(self, x, __last_canvas__):
+    log(1, "scalar", x)
 
+  def addGOPArray(self, x, __last_canvas__):
+    log(1, "goparray", x)
+
+  def addCoords(self, x, __last_canvas__):
+    # log(1, "coords", x)
+    __last_canvas__.coords = Coords([
+      x.find('a').findtext('x'),
+      x.find('a').findtext('y'),
+      x.find('b').findtext('x'),
+      x.find('b').findtext('y'),
+      x.find('dimension').findtext('width'),
+      x.find('dimension').findtext('height'),
+      x.findtext('gop')
+    ])
+    if x.find('margin'):
+      __last_canvas__.coords.addmargin(
+        x.find('margin').findtext('x'),
+        x.find('margin').findtext('y')
+      )
 
   def addNodes(self, x, __last_canvas__):
     if x.tag in ['vis', 'x', 'y', 'width', 'height', 'font', 'title', 'name', 'connect', 'comment', 'position', 'area', 'limits', 'struct']:
@@ -134,25 +143,11 @@ class XmlToJson:
     elif 'canvas' == x.tag:
       self.addCanvas(x)
     elif 'coords' == x.tag:
-      # log(1, "coords", x)
-      __last_canvas__.coords = Coords([
-        x.find('a').findtext('x'),
-        x.find('a').findtext('y'),
-        x.find('b').findtext('x'),
-        x.find('b').findtext('y'),
-        x.find('dimension').findtext('width'),
-        x.find('dimension').findtext('height'),
-        x.findtext('gop')
-      ])
-      if x.find('margin'):
-        __last_canvas__.coords.addmargin(
-          x.find('margin').findtext('x'),
-          x.find('margin').findtext('y')
-        )
+      self.addCoords(x, __last_canvas__)
     elif 'scalar' == x.tag:
-      log(1, "scalar", x)
+      self.addScalar(x, __last_canvas__)
     elif 'goparray' == x.tag:
-      log(1, "goparray", x)
+      self.addGOPArray(x, __last_canvas__)
     elif x.find('x') is None:
       log(1, "x is none", x.tag)
     else:
