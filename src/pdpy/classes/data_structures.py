@@ -26,6 +26,9 @@ class PdData(Base):
     else:
       self.data = [dtype(d) for d in data]
 
+  def addDataFromTemplate(self, data, template):
+    self.data = template.parse(data)
+
 class PdType(PdData):
   def __init__(self, name, template=None, size=None, flag=None, className=None):
     self.__pdpy__ = self.__class__.__name__
@@ -56,6 +59,16 @@ class Struct(Base):
     elif source == 'pdpy' : pass
     else: 
       log(1, f"Unsupported source: {source}")
+  
+  def parent(self, parent=None):
+    """ Sets the parent of this object if `parent` is present, otherwise returns the parent of this object."""
+    if parent is not None:
+      self.__parent__ = parent
+      return self
+    elif self.__parent__ is not None:
+      return self.__parent__
+    else:
+      raise ValueError("No parent set")
 
   def parsePd(self, argv):
     self.name = argv[0]
@@ -105,6 +118,62 @@ class Struct(Base):
       self.array = []
     self.array.append(PdType(pd_name, array_name))
 
+  def parse(self, data):
+    """ Returns a list of scalar data structured by the corresponding struct """
+    _data = []
+    # log(1,"DATA",data)
+    # data = list(filter(lambda x:x==' ',data))
+    if len(data) == 0: 
+      return None
+    _arr = None
+    _fs = data[0].split(' ')
+    # log(1,'FS',_fs)
+    if len(data) > 2:
+      _arr = data[1:]
+    # log(1,'ARR',_arr)
+    
+    if hasattr(self, 'float'):
+      _data.append({f:self.num(v) for f,v in zip(self.float, _fs[:len(self.float)])})
+    if hasattr(self, 'symbol'):
+      _data.append({f:v for f,v in zip(self.symbol, _fs[len(self.float):len(self.float)+len(self.symbol)])})
+    
+    if _arr is not None and hasattr(self, 'array'):
+      for a in self.array:
+        _, template = self.__parent__.getTemplate(a.template)
+        
+      if template is not None:
+        if hasattr(template, 'float'):
+          # fill the corresponding named arrays with float arrays
+          _arr_obj = {}
+          for val_list in _arr:
+            # zip key and value from template names and data float values
+            for key, val in zip(template.float, val_list):
+              if key in _arr_obj:
+                _arr_obj[key].append(self.num(val))
+              else:
+                _arr_obj[key] = [self.num(val)]
+          _data.append(_arr_obj)
+
+        if hasattr(template, 'symbol'):
+          # fill the corresponding named arrays with tring arrays
+          _arr_obj = {}
+          for val_list in _arr:
+            # zip key and value from template names and data string values
+            for key, val in zip(template.symbol, val_list):
+              if key in _arr_obj:
+                _arr_obj[key].append(val)
+              else:
+                _arr_obj[key] = [val]
+          _data.append(_arr_obj)
+          
+        if hasattr(template, 'array'):
+          #TODO: implement this
+          log(1,"DS recursion on arrays implemented")
+    
+    if len(_data):
+      return _data
+
+
 class Scalar(PdData):
   def __init__(self, struct, *argv, source='pd'):
     self.__pdpy__ = self.__class__.__name__
@@ -143,4 +212,5 @@ class Scalar(PdData):
       if self.name == s.name:
         # print('parsing struct', argv)
         super().addData(argv[1:], char=";")
+        super().addDataFromTemplate(self.data, s)
 

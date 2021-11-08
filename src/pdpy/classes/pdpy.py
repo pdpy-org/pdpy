@@ -25,7 +25,7 @@ class PdPy(Base):
     self.__canvas_idx__ = []
     self.__depth__ = 0
     if root: self.root = Canvas(name=self.patchname)
-
+  
   def getTemplate(self, template_name):
     if hasattr(self, 'struct'):
       for idx, s in enumerate(getattr(self, 'struct')):
@@ -40,6 +40,8 @@ class PdPy(Base):
       self.struct.append(Struct(argv, source=source))
     else:
       self.struct.append(Struct(*argv, source=source))
+    
+    self.struct[-1].parent(self)
   
   def addRoot(self, argv):
     self.root = Canvas(
