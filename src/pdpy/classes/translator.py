@@ -9,7 +9,7 @@ from types import SimpleNamespace
 
 from .pdpy import PdPy
 
-from ..parse.json2pd import PdPyToPureData
+from ..parse.json2pd import JsonToPd
 from ..parse.json2xml import JsonToXml
 from ..parse.xml2json import XmlToJson
 from ..parse.parser import PdPyParser
@@ -83,12 +83,15 @@ class Translator(object):
       self.pdpy.parse( parsePdFileLines(self.pd) )
       # 3. return a json string representation from pdpy
       self.json = self.pdpy.toJSON()
-      if self.reflect: self.pd_ref = PdPyToPureData(self.pdpy)
+      if self.reflect: 
+        self.json2pd = JsonToPd(self.pdpy)
+        self.pd_ref = self.json2pd.getpd()
 
     elif self.source == "pkl":
 
       self.json = self.load_object()
-      self.pd = PdPyToPureData(self.json)
+      self.json2pd = JsonToPd(self.json)
+      self.pd = self.json2pd.getpd()
       self.pd_data = parsePdBinBuf(self.pd)
       self.pdpy.parse( self.pd_data )
       if self.reflect: self.json_ref = self.pdpy.toJSON()
@@ -96,7 +99,8 @@ class Translator(object):
     elif self.source == "json":
        
       self.json = self.load_json()
-      self.pd = PdPyToPureData(self.json)
+      self.json2pd = JsonToPd(self.json)
+      self.pd = self.json2pd.getpd()
       self.xml = JsonToXml(self.json)
       self.pdpy.parse( parsePdBinBuf(self.pd) )
       if self.reflect: self.json_ref = self.pdpy.toJSON()
@@ -105,7 +109,8 @@ class Translator(object):
       
       self.pdpy = self.load_pdpy(self.path.name,self.enc)
       # self.pdpy.dumps()
-      self.pd = PdPyToPureData(self.pdpy)
+      self.json2pd = JsonToPd(self.pdpy)
+      self.pd = self.json2pd.getpd()
       self.json = self.pdpy.toJSON()
 
     elif self.source == "xml":

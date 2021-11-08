@@ -15,7 +15,7 @@ class JsonToXml:
 
     # do not continue loading if root is not present
     if not hasattr(obj, "root"):
-      return
+      raise Exception("JsonToXml: No root found in the object")
 
     # The json as python object
     self.obj = obj

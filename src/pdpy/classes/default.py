@@ -9,6 +9,7 @@ __all__ = [
   'XmlTagConvert',
   'GOPArrayFlags',
   'IEMGuiNames',
+  'PdNativeGuiNames',
   'PdFonts',
   'Formats',
   'getFormat'
@@ -112,7 +113,7 @@ class Default(Base):
         'fsize':10,
         'bgcolor':-66577,
         'lbcolor':-1,
-        'scale':1,
+        'scale':True,
         'flag':1
       },
       'tgl': {
@@ -232,4 +233,8 @@ PdFonts = [
   "Times"
 ]
 
-
+PdNativeGuiNames = [
+  'floatatom',
+  'symbolatom',
+  'listbox'
+]
