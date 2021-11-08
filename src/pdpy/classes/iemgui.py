@@ -81,6 +81,8 @@ class PdIEMGui(IEMLabel):
     self.__pdpy__ = self.__class__.__name__
     self.id = argv[0]
     self.position = Point(*argv[1:3])
+    # log(1, "Creating IEMGUI: {}".format(self.id))
+    # log(1, "Arguments:", argv)
     # check if argument 3 is present in argv
     if 3 < len(argv):
       self.className = argv[3]
@@ -244,6 +246,7 @@ class PdIEMGui(IEMLabel):
     4. 11-16: `IEMLabel` Parameters
     """
     args = list(args)
+    # log(1, "bng args: {}".format(args))
     self.size   = self.num(args[0])
     self.hold   = self.num(args[1])
     self.intrrpt= self.num(args[2])

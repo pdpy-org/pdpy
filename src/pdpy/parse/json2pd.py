@@ -225,11 +225,7 @@ class JsonToPd:
     if hasattr(obj, 'comments'):
       for x in getattr(obj,'comments'):
         s = "#X text"
-        if hasattr(x, 'position'):
-          pos = getattr(x, 'position')
-          s += f" {str(getattr(pos,'x'))} {str(getattr(pos,'y'))} "
-        else:
-          log(1,"Comment has no position.")
+        s = self.addpos(s, x)
         if hasattr(x, 'text'):
           text = getattr(x, 'text')
           if len(text) == 1: 
@@ -268,6 +264,12 @@ class JsonToPd:
           log(1,"EDGES", x)
           log(1,"Missed a connection:", s)
 
+  def addpos(self, pd_string, json_object):
+    if hasattr(json_object, 'position'):
+      pos = getattr(json_object, 'position')
+      pd_string += f" {getattr(pos,'x')} {getattr(pos,'y')} "
+    return pd_string
+
   def getNodes(self, obj):
     """ Parses the nodes entry into pd-lingo 
     
@@ -300,10 +302,7 @@ class JsonToPd:
           # TODO: avoid these checks 
           if getattr(x, "__pdpy__") == "PdObject":
             s += "#X obj"
-            if hasattr(x, 'position'):
-              pos = getattr(x, 'position')
-              s += ' ' + str(getattr(pos,'x'))
-              s += ' ' + str(getattr(pos,'y'))
+            s = self.addpos(s, x)
           else:
             log(1,"WARNING, UNPARSED", x)
         else:
@@ -311,10 +310,8 @@ class JsonToPd:
           
           if 'msg' == className:
             s += '#X msg'
-            if hasattr(x, 'position'):
-              pos = getattr(x, 'position')
-              s += ' ' + str(getattr(pos,'x'))
-              s += ' ' + str(getattr(pos,'y'))
+            s = self.addpos(s, x)
+            
             if hasattr(x, "targets"):
               for t in getattr(x,'targets'):
                 if 'outlet' == getattr(t,'address'):
@@ -350,10 +347,7 @@ class JsonToPd:
             # more granular control on each param
 
             s += "#X obj"
-            if hasattr(x, 'position'):
-              pos = getattr(x, 'position')
-              s += ' ' + str(getattr(pos,'x'))
-              s += ' ' + str(getattr(pos,'y'))
+            s = self.addpos(s, x)
             s += ' ' + className
             
             if className in IEMGuiNames:
@@ -373,6 +367,7 @@ class JsonToPd:
                 else:
                   s += ' ' + str(self.__d__.iemgui[name]['xoff'])
                   s += ' ' + str(self.__d__.iemgui[name]['yoff'])
+                return s
 
               def addarea(s, name):
                 if hasattr(x, 'area'):
@@ -382,6 +377,7 @@ class JsonToPd:
                 else:
                   s += ' ' + str(self.__d__.iemgui[name]['width'])
                   s += ' ' + str(self.__d__.iemgui[name]['height'])
+                return s
 
               def addfont(s, name):
                 if hasattr(x, 'font'):
@@ -391,6 +387,7 @@ class JsonToPd:
                 else:
                   s += ' ' + str(self.__d__.iemgui['fontface'])
                   s += ' ' + str(self.__d__.iemgui[name]['fsize'])
+                return s
 
               def addlimits(s, name):
                 if hasattr(x, 'limits'):
@@ -400,6 +397,7 @@ class JsonToPd:
                 else:
                   s += ' ' + str(self.__d__.iemgui[name]['upper'])
                   s += ' ' + str(self.__d__.iemgui[name]['lower'])
+                return s
               
               def addprop(s, name, prop, bool=False, _global=False):
                 if not _global:
@@ -411,112 +409,113 @@ class JsonToPd:
                   s += ' ' + str(getattr(x, prop, _default))
                 else:
                   s += ' 1' if getattr(x, prop, _default) else ' 0'
-              
+                return s
 
               if "vu" == className:
-                addarea(s, 'vu')
+                s = addarea(s, 'vu')
                 s += f" {receive} {label}"
-                addoffset(s, 'vu')
-                addfont(s, 'vu')
-                addprop(s, 'vu', 'bgcolor')
-                addprop(s, 'vu', 'lbcolor')
-                addprop(s, 'vu', 'scale', bool=True)
-                addprop(s, 'vu', 'flag', bool=True)
+                s = addoffset(s, 'vu')
+                s = addfont(s, 'vu')
+                s = addprop(s, 'vu', 'bgcolor')
+                s = addprop(s, 'vu', 'lbcolor')
+                s = addprop(s, 'vu', 'scale', bool=True)
+                s = addprop(s, 'vu', 'flag', bool=True)
               
                 
               elif "cnv" == className or "my_canvas" == className:
-                addprop(s, 'cnv', 'size')
-                addarea(s, 'cnv')
+                s = addprop(s, 'cnv', 'size')
+                s = addarea(s, 'cnv')
                 s+=f" {send} {receive} {label}" if send is not None else f" {receive} {label}"
-                addoffset(s, 'cnv')
-                addfont(s, 'cnv')
-                addprop(s, 'cnv', 'bgcolor')
-                addprop(s, 'cnv', 'lbcolor')
-                addprop(s, 'cnv', 'flag', bool=True)
+                s = addoffset(s, 'cnv')
+                s = addfont(s, 'cnv')
+                s = addprop(s, 'cnv', 'bgcolor')
+                s = addprop(s, 'cnv', 'lbcolor')
+                s = addprop(s, 'cnv', 'flag', bool=True)
 
               elif "tgl" == className:
-                addprop(s, 'tgl', 'size')
-                addprop(s, 'tgl', 'init', bool=True)
+                s = addprop(s, 'tgl', 'size')
+                s = addprop(s, 'tgl', 'init', bool=True)
                 s += f" {send} {receive} {label}"
-                addoffset(s, 'tgl')
-                addfont(s, 'tgl')
-                addprop(s, 'tgl', 'bgcolor')
-                addprop(s, 'tgl', 'fgcolor', _global=True)
-                addprop(s, 'tgl', 'lbcolor')
-                addprop(s, 'tgl', 'flag', bool=True)
-                addprop(s, 'tgl', 'nonzero')
+                s = addoffset(s, 'tgl')
+                s = addfont(s, 'tgl')
+                s = addprop(s, 'tgl', 'bgcolor')
+                s = addprop(s, 'tgl', 'fgcolor', _global=True)
+                s = addprop(s, 'tgl', 'lbcolor')
+                s = addprop(s, 'tgl', 'flag', bool=True)
+                s = addprop(s, 'tgl', 'nonzero')
               
               elif "radio" in className or 'rdb' == className:
-                addprop(s, 'radio', 'size')
-                addprop(s, 'radio', 'flag', bool=True)
-                addprop(s, 'radio', 'init', bool=True)
-                addprop(s, 'radio', 'number')
+                s = addprop(s, 'radio', 'size')
+                s = addprop(s, 'radio', 'flag', bool=True)
+                s = addprop(s, 'radio', 'init', bool=True)
+                s = addprop(s, 'radio', 'number')
                 s += f" {send} {receive} {label}"
-                addoffset(s, 'radio')
-                addfont(s, 'radio')
-                addprop(s, 'radio', 'bgcolor')
-                addprop(s, 'radio', 'fgcolor', _global=True)
-                addprop(s, 'radio', 'lbcolor')
-                addprop(s, 'radio', 'value')
+                s = addoffset(s, 'radio')
+                s = addfont(s, 'radio')
+                s = addprop(s, 'radio', 'bgcolor')
+                s = addprop(s, 'radio', 'fgcolor', _global=True)
+                s = addprop(s, 'radio', 'lbcolor')
+                s = addprop(s, 'radio', 'value')
 
 
               elif 'bng' == className:
-                addprop(s, 'bng', 'size')
-                addprop(s, 'bng', 'hold')
-                addprop(s, 'bng', 'intrrpt')
-                addprop(s, 'bng', 'init', bool=True)
+                s = addprop(s, 'bng', 'size')
+                s = addprop(s, 'bng', 'hold')
+                s = addprop(s, 'bng', 'intrrpt')
+                s = addprop(s, 'bng', 'init', bool=True)
                 s += f" {send} {receive} {label}"
-                addoffset(s, 'bng')
-                addfont(s, 'bng')
-                addprop(s, 'bng', 'bgcolor')
-                addprop(s, 'bng', 'fgcolor', _global=True)
-                addprop(s, 'bng', 'lbcolor')
+                s = addoffset(s, 'bng')
+                s = addfont(s, 'bng')
+                s = addprop(s, 'bng', 'bgcolor')
+                s = addprop(s, 'bng', 'fgcolor', _global=True)
+                s = addprop(s, 'bng', 'lbcolor')
 
               elif 'nbx' == className:
-                addprop(s, 'nbx', 'digits_width')
-                addprop(s, 'nbx', 'height')
-                addlimits(s, 'nbx')
-                addprop(s, 'nbx', 'log_flag')
-                addprop(s, 'nbx', 'init', bool=True)
+                s = addprop(s, 'nbx', 'digits_width')
+                s = addprop(s, 'nbx', 'height')
+                s = addlimits(s, 'nbx')
+                s = addprop(s, 'nbx', 'log_flag')
+                s = addprop(s, 'nbx', 'init', bool=True)
                 s += f" {send} {receive} {label}"
-                addoffset(s, 'nbx')
-                addfont(s, 'nbx')
-                addprop(s, 'nbx', 'bgcolor')
-                addprop(s, 'nbx', 'fgcolor', _global=True)
-                addprop(s, 'nbx', 'lbcolor')
-                addprop(s, 'nbx', 'value')
-                addprop(s, 'nbx', 'log_height')
+                s = addoffset(s, 'nbx')
+                s = addfont(s, 'nbx')
+                s = addprop(s, 'nbx', 'bgcolor')
+                s = addprop(s, 'nbx', 'fgcolor', _global=True)
+                s = addprop(s, 'nbx', 'lbcolor')
+                s = addprop(s, 'nbx', 'value')
+                s = addprop(s, 'nbx', 'log_height')
 
               elif 'hsl' == className:
-                addarea(s, 'hsl')
-                addlimits(s, 'hsl')
-                addprop(s, 'hsl', 'log_flag')
-                addprop(s, 'hsl', 'init', bool=True)
+                s = addarea(s, 'hsl')
+                s = addlimits(s, 'hsl')
+                s = addprop(s, 'hsl', 'log_flag')
+                s = addprop(s, 'hsl', 'init', bool=True)
                 s += f" {send} {receive} {label}"
-                addoffset(s, 'hsl')
-                addfont(s, 'hsl')
-                addprop(s, 'hsl', 'bgcolor')
-                addprop(s, 'hsl', 'fgcolor', _global=True)
-                addprop(s, 'hsl', 'lbcolor')
-                addprop(s, 'hsl', 'value')
-                addprop(s, 'hsl', 'steady', bool=True)
+                s = addoffset(s, 'hsl')
+                s = addfont(s, 'hsl')
+                s = addprop(s, 'hsl', 'bgcolor')
+                s = addprop(s, 'hsl', 'fgcolor', _global=True)
+                s = addprop(s, 'hsl', 'lbcolor')
+                s = addprop(s, 'hsl', 'value')
+                s = addprop(s, 'hsl', 'steady', bool=True)
               
               elif 'vsl' == className:
-                addarea(s, 'vsl')
-                addlimits(s, 'vsl')
-                addprop(s, 'vsl', 'log_flag')
-                addprop(s, 'vsl', 'init', bool=True)
+                s = addarea(s, 'vsl')
+                s = addlimits(s, 'vsl')
+                s = addprop(s, 'vsl', 'log_flag')
+                s = addprop(s, 'vsl', 'init', bool=True)
                 s += f" {send} {receive} {label}"
-                addoffset(s, 'vsl')
-                addfont(s, 'vsl')
-                addprop(s, 'vsl', 'bgcolor')
-                addprop(s, 'vsl', 'fgcolor', _global=True)
-                addprop(s, 'vsl', 'lbcolor')
-                addprop(s, 'vsl', 'value')
-                addprop(s, 'vsl', 'steady', bool=True)
+                s = addoffset(s, 'vsl')
+                s = addfont(s, 'vsl')
+                s = addprop(s, 'vsl', 'bgcolor')
+                s = addprop(s, 'vsl', 'fgcolor', _global=True)
+                s = addprop(s, 'vsl', 'lbcolor')
+                s = addprop(s, 'vsl', 'value')
+                s = addprop(s, 'vsl', 'steady', bool=True)
               
               else:
                 log(2,"Can't parse PdIEMGui", x)
+              # log(1,"IEMGui", s)
 
             
             else:
@@ -576,11 +575,9 @@ class JsonToPd:
     
     self.depth.pop()
     
-    if hasattr(obj, 'position'):
+    if hasattr(obj, 'title'):
       s = '#X restore'
-      pos = getattr(obj,'position')
-      s += ' ' + str(getattr(pos,'x'))
-      s += ' ' + str(getattr(pos,'y'))
+      s = self.addpos(s, obj)
       s += ' ' + getattr(obj,'title')
       self.pd.append(s + self.end)
 
@@ -613,18 +610,15 @@ class JsonToPd:
     if hasattr(obj, 'coords'):
       coords = getattr(obj,'coords')
       range = getattr(coords,'range')
-      pos = getattr(coords,'position')
+      dimension = getattr(coords,'dimension')
       a = getattr(range,'a')
       b = getattr(range,'b')
 
       s = '#X coords'
-      s += ' ' + str(getattr(a,'x'))
-      s += ' ' + str(getattr(b,'x'))
-      s += ' ' + str(getattr(a,'y'))
-      s += ' ' + str(getattr(b,'y'))
-      s += ' ' + str(getattr(pos,'width'))
-      s += ' ' + str(getattr(pos,'height'))
-      s += ' ' + str(getattr(coords,'gop'))
+      s += f" {getattr(a,'x')} {getattr(b,'x')}"
+      s += f" {getattr(a,'y')} {getattr(b,'y')}"
+      s += f" {getattr(dimension,'width')} {getattr(dimension,'height')}"
+      s += f" {getattr(coords,'gop')}"
       if hasattr(coords, 'margin'):
         margin = getattr(coords,'margin')
         s += ' ' + str(getattr(margin,'x'))
@@ -644,9 +638,7 @@ class JsonToPd:
     
     """
     s = '#X ' + className
-    pos = getattr(x,'position')
-    s += ' ' + str(int(getattr(pos,'x')))
-    s += ' ' + str(int(getattr(pos,'y')))
+    s = self.addpos(s, x)
     s += ' ' + str(int(getattr(x,'digit_width',self.__d__.digits_width)))
     
     if hasattr(x, "limits"):
