@@ -226,6 +226,9 @@ def getNodes(obj, out):
           s += ' ' + get(x,'name')
         
           for e in get(x,'data'):
+            log(1,"SCALAR", e)
+            if hasattr(obj,'struct'):
+              log(1,"STRUCT", obj.struct)
             s += ' ' + ' '.join(e) + " \;"
         
         elif get(x, "__pdpy__") == "PdNativeGui":
