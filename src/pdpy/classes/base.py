@@ -42,6 +42,9 @@ class Base(object):
       elif "." in n: pdnm = float(n)
       else:
         pdnm = int(n)
+    elif isinstance(n, list):
+      # print("num(): input was a list of str numbers", n)
+      pdnm = list(map(lambda x:self.num(x),n))
     else:
       pdnm = n
     return pdnm
