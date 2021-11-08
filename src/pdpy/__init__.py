@@ -10,6 +10,5 @@ from .classes.default import *
 from .classes.translator import *
 from .classes.pdpy import *
 
-from .parse.getters import *
 from .parse.json2pd import *
 from .parse.pd2json import *

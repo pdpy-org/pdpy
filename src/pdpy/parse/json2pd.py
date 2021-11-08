@@ -3,7 +3,6 @@
 
 """ Json-formatted file (Python Patch Object) to Pure data file """
 
-# from .getters import *
 from ..util.utils import log
 from ..classes.default import GOPArrayFlags, PdNativeGuiNames, IEMGuiNames, Default
 
