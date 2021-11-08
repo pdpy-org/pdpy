@@ -203,12 +203,6 @@ class JsonToXml:
             ET.SubElement(e, 'arg').text = arg
       
         self.update_with_sub(x, 'border', e)
-  
-  def getTemplate(self, template):
-    if hasattr(self.obj, 'struct'):
-      for idx, s in enumerate(getattr(self.obj, 'struct')):
-        if getattr(s, 'name') == template:
-          return idx, s
 
   def addScalars(self, idx, s, _parent, _node):
     _data = getattr(_node, 'data')
@@ -217,7 +211,7 @@ class JsonToXml:
       self.addScalar(_parent, idx, s, 'symbol', _data )
       if hasattr(s,'array'):
         for a in getattr(s,'array'):
-          _idx, _s = self.getTemplate(getattr(a,'template'))
+          _idx, _s = self.obj.getTemplate(getattr(a,'template'))
           self.addScalars(_idx, _s, _parent, _node)
 
   def addScalar(self, idx, _struct, _parent, _type, _data):

@@ -26,6 +26,12 @@ class PdPy(Base):
     self.__depth__ = 0
     if root: self.root = Canvas(name=self.patchname)
 
+  def getTemplate(self, template_name):
+    if hasattr(self, 'struct'):
+      for idx, s in enumerate(getattr(self, 'struct')):
+        if template_name == getattr(s, 'name'):
+          return idx, s
+  
   def addStruct(self, argv, source='pd'):
     if not hasattr(self, 'struct'): 
       self.struct = []
