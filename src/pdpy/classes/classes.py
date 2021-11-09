@@ -22,7 +22,7 @@ __all__ = [
 ]
 
 class Point(Base):
-  def __init__(self, x=None, y=None, json_dict=None):
+  def __init__(self, x=None, y=None, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
     if x is not None and y is not None:
       self.x = self.num(x)
@@ -30,24 +30,35 @@ class Point(Base):
     elif isinstance(json_dict, dict):
       self.x = self.num(json_dict.get("x", None))
       self.y = self.num(json_dict.get("y", None))
+    elif xml_object is not None:
+      self.x = xml_object.findtext('x', None)
+      self.y = xml_object.findtext('y', None)
     else:
       self.x = None
       self.y = None
 class Size(Base):
-  def __init__(self, w=None, h=None, json_dict=None):
+  def __init__(self, w=None, h=None, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
     if w is not None and h is not None:
       self.width = self.num(w)
-      self.hheight = self.num(h)
+      self.height = self.num(h)
     elif isinstance(json_dict, dict):
-      self.width = self.num(json_dict.get("width", None))
-      self.hheight = self.num(json_dict.get("height", None))
+      self.width = self.num(json_dict.get("width", 0))
+      self.height = self.num(json_dict.get("height", 0))
+    elif xml_object is not None:
+      self.width = xml_object.findtext('width', 0)
+      self.height = xml_object.findtext('height', 0)
     else:
-      self.width = None
-      self.hheight = None
-
+      self.width = 0
+      self.height = 0
 class Bounds(Base):
-  def __init__(self, lower=None, upper=None, dtype=float, json_dict=None):
+  def __init__(self,
+               lower=None,
+               upper=None,
+               dtype=float,
+               json_dict=None,
+               xml_object=None
+               ):
     self.__pdpy__ = self.__class__.__name__
     if lower is not None and upper is not None:
       self.lower = dtype(lower)
@@ -55,6 +66,9 @@ class Bounds(Base):
     elif isinstance(json_dict, dict):
       self.lower = dtype(json_dict.get("lower", 0))
       self.upper = dtype(json_dict.get("upper", 0))
+    elif xml_object is not None:
+      self.lower = dtype(xml_object.findtext('lower', 0))
+      self.upper = dtype(xml_object.findtext('upper', 0))
     else:
       self.lower = dtype(0)
       self.upper = dtype(0)
@@ -75,7 +89,7 @@ class Area(Base):
   |                     v
   |-------------------> b
   """
-  def __init__(self, coords=None, json_dict=None):
+  def __init__(self, coords=None, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
     if coords is not None:
       self.a = Point(x=coords[0], y=coords[1])
@@ -83,6 +97,9 @@ class Area(Base):
     elif isinstance(json_dict, dict):
       self.a = Point(json_dict=json_dict.get("a", None))
       self.b = Point(json_dict=json_dict.get("b", None))
+    elif xml_object is not None:
+      self.a = Point(xml_object=xml_object.find('a'))
+      self.b = Point(xml_object=xml_object.find('b'))
     else:
       self.a = Point()
       self.b = Point()
@@ -103,7 +120,7 @@ class Coords(Base):
   - `margin` : if present, next 2 floats are the margins. See ::func::`addmargin`)
 
   """
-  def __init__(self, coords=None, json_dict=None):
+  def __init__(self, coords=None, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
     if coords is not None:
       # NON-GOP
@@ -119,14 +136,20 @@ class Coords(Base):
       self.gop = self.num(json_dict.get("gop", 0))
       if hasattr(json_dict, 'margin'):
         self.addmargin(json_dict=json_dict.get("margin", None))
+    elif xml_object is not None:
+      self.range = Area(xml_object=xml_object.find('range'))
+      self.dimension = Size(xml_object=xml_object.find('dimension'))
+      self.gop = self.num(xml_object.findtext("gop", 0))
+      if xml_object.find('margin'):
+        self.addmargin(xml_object=xml_object.find('margin'))
     else:
       self.range = Area()
       self.dimension = Size()
       self.gop = 0
       self.margin = Size()
 
-  def addmargin(self, x=None, y=None, json_dict=None):
-    self.margin = Point(x=x, y=y, json_dict=json_dict)
+  def addmargin(self, **kwargs):
+    self.margin = Point(**kwargs)
 
 class Comment(Base):
   def __init__(self, x, y, *argv):
