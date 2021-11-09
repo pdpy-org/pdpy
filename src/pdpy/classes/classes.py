@@ -11,7 +11,7 @@ __all__ = [
   "Coords",
   "Graph",
   "Point",
-  "PdObj"
+  "PdObj",
   "Size"
 ]
 
