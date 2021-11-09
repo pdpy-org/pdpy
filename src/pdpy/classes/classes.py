@@ -22,22 +22,42 @@ __all__ = [
 ]
 
 class Point(Base):
-  def __init__(self, x, y):
+  def __init__(self, x=None, y=None, json_dict=None):
     self.__pdpy__ = self.__class__.__name__
-    self.x = self.num(x)
-    self.y = self.num(y)
-
+    if x is not None and y is not None:
+      self.x = self.num(x)
+      self.y = self.num(y)
+    elif isinstance(json_dict, dict):
+      self.x = self.num(json_dict.get("x", None))
+      self.y = self.num(json_dict.get("y", None))
+    else:
+      self.x = None
+      self.y = None
 class Size(Base):
-  def __init__(self, w, h):
+  def __init__(self, w=None, h=None, json_dict=None):
     self.__pdpy__ = self.__class__.__name__
-    self.width = self.num(w)
-    self.height = self.num(h)
+    if w is not None and h is not None:
+      self.width = self.num(w)
+      self.hheight = self.num(h)
+    elif isinstance(json_dict, dict):
+      self.width = self.num(json_dict.get("width", None))
+      self.hheight = self.num(json_dict.get("height", None))
+    else:
+      self.width = None
+      self.hheight = None
 
 class Bounds(Base):
-  def __init__(self, lower, upper, dtype=float):
+  def __init__(self, lower=None, upper=None, dtype=float, json_dict=None):
     self.__pdpy__ = self.__class__.__name__
-    self.lower = dtype(lower)
-    self.upper = dtype(upper)
+    if lower is not None and upper is not None:
+      self.lower = dtype(lower)
+      self.upper = dtype(upper)
+    elif isinstance(json_dict, dict):
+      self.lower = dtype(json_dict.get("lower", 0))
+      self.upper = dtype(json_dict.get("upper", 0))
+    else:
+      self.lower = dtype(0)
+      self.upper = dtype(0)
 
 class Area(Base):
   """ 
@@ -55,10 +75,18 @@ class Area(Base):
   |                     v
   |-------------------> b
   """
-  def __init__(self, coords):
+  def __init__(self, coords=None, json_dict=None):
     self.__pdpy__ = self.__class__.__name__
-    self.a = Point(coords[0], coords[2])
-    self.b = Point(coords[1], coords[3])
+    if coords is not None:
+      self.a = Point(x=coords[0], y=coords[1])
+      self.b = Point(x=coords[2], y=coords[3])
+    elif isinstance(json_dict, dict):
+      self.a = Point(json_dict=json_dict.get("a", None))
+      self.b = Point(json_dict=json_dict.get("b", None))
+    else:
+      self.a = Point()
+      self.b = Point()
+  
 
 class Coords(Base):
   """ 
@@ -75,23 +103,35 @@ class Coords(Base):
   - `margin` : if present, next 2 floats are the margins. See ::func::`addmargin`)
 
   """
-  def __init__(self, coords):
+  def __init__(self, coords=None, json_dict=None):
     self.__pdpy__ = self.__class__.__name__
-    # NON-GOP
-    self.range = Area(coords[:4])
-    self.dimension = Size(coords[4], coords[5])
-    self.gop = self.num(coords[6])
-    # GOP
-    if 9 == len(coords):
-      self.addmargin(coords[7], coords[8])
+    if coords is not None:
+      # NON-GOP
+      self.range = Area(coords=coords[:4])
+      self.dimension = Size(w=coords[4], h=coords[5])
+      self.gop = self.num(coords[6])
+      # GOP
+      if 9 == len(coords):
+        self.addmargin(x=coords[7], y=coords[8])
+    elif isinstance(json_dict, dict):
+      self.range = Area(json_dict=json_dict.get("range", None))
+      self.dimension = Size(json_dict=json_dict.get("dimension", None))
+      self.gop = self.num(json_dict.get("gop", 0))
+      if hasattr(json_dict, 'margin'):
+        self.addmargin(json_dict=json_dict.get("margin", None))
+    else:
+      self.range = Area()
+      self.dimension = Size()
+      self.gop = 0
+      self.margin = Size()
 
-  def addmargin(self, x, y):
-    self.margin = Point(x, y)
+  def addmargin(self, x=None, y=None, json_dict=None):
+    self.margin = Point(x=x, y=y, json_dict=json_dict)
 
 class Comment(Base):
   def __init__(self, x, y, *argv):
     self.__pdpy__ = self.__class__.__name__
-    self.position = Point(x, y)
+    self.position = Point(x=x, y=y)
     # can have \\, split at \\;, and  the unescaped comma is a border flag, f 80
     argc = len(argv)
     argv = list(argv)
@@ -148,7 +188,7 @@ class PdObj(PdData):
   def __init__(self, id, x, y):
     self.__pdpy__ = self.__class__.__name__
     self.id = int(id)
-    self.position = Point(x, y)
+    self.position = Point(x=x, y=y)
   
   def addargs(self, argv):
     if not hasattr(self,'args') or self.args is None: 

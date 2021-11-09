@@ -28,6 +28,11 @@ def PdPyEncoder(obj):
   #   return pdpy
   # else:
   #
+  # return SimpleNamespace(**obj)
+  # o = obj.__dict__
+  # if hasattr(obj, '__pdpy__'):
+    # obj['__pdpy__'](obj,source='json')
+  # log(1,"PdPyEncoder:",obj)
   return SimpleNamespace(**obj)
 
 class Translator(object):
