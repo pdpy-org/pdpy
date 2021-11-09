@@ -12,7 +12,9 @@ from ..classes.canvas import Canvas
 from ..classes.message import PdMessage
 from ..classes.comment import Comment
 from ..classes.connections import Edge
-from ..classes.classes import  PdArray, PdObject, Point
+from ..classes.classes import Point
+from ..classes.pdobject import PdObject
+from ..classes.pdarray import PdArray
 from ..util.utils import log, printer, tokenize
 
 __all__ = [ "PdPyParser" ]

@@ -5,7 +5,7 @@
 
 import re
 
-from ..classes.classes import PdObject
+from ..classes.pdobject import PdObject
 from ..util.utils import log, printer
 
 __all__ = [ "PdPyLoad" ]

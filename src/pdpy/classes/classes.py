@@ -4,16 +4,14 @@
 """ Class Definitions """
 
 from .base import Base
-from .data_structures import PdData, PdType
+from .data_structures import PdType, PdData
 
 __all__ = [ 
   "Base",
   "Coords",
   "Graph",
-  "PdArray",
-  "PdNativeGui",
-  "PdObject",
   "Point",
+  "PdObj"
   "Size"
 ]
 
@@ -146,6 +144,20 @@ class Coords(Base):
 
   def addmargin(self, **kwargs):
     self.margin = Point(**kwargs)
+  
+class Graph(Base):
+  def __init__(self, id, name, area, range):
+    self.__pdpy__ = self.__class__.__name__
+    self.id = id
+    self.name = name
+    self.area = Area(area)
+    self.range = Area(range)
+    self.array = []
+    self.border = None
+  
+  def addArray(self, *argv):
+    self.array.append(PdType(argv[0], size = argv[1]))
+
 class PdObj(PdData):
   """ A PdObj base class 
   
@@ -168,136 +180,3 @@ class PdObj(PdData):
       self.args = []
     for arg in argv:
       self.args += [arg]
-
-class PdObject(PdObj):
-  """ A Pure Data Object object
-  
-  Description
-  -----------
-  This class represents a Pure Data object.
-
-  Initialization Arguments
-  ----------
-  The first three arguments correspond to the `PdObj` class.
-  1. `id`: The id of the pd object.
-  2. `x`: The x-coordinate of the pd object.
-  3. `y`: The y-coordinate of the pd object.
-  4. `className`: The class name of the pd object.
-  5. `args`: The argument `list` of the pd object.
-
-  """
-  def __init__(self, *argv):
-    super().__init__(*argv[:3])
-    args = list(argv)
-    argc = len(args)
-    try:
-      self.className = args[3] if 3 < argc else None
-      self.args = args[4:] if 4 < argc else None
-    except:
-      raise ValueError("Invalid arguments for PdObject")
-      # log(1, self.toJSON(), "Can't parse arguments", args)
-
-    self.border = None
-    self.__pdpy__ = self.__class__.__name__
-  
-
-class PdArray(PdObject):
-  """ A Pure Data array object
-  
-  Description
-  -----------
-  This class represents a Pure Data array or text object.
-
-  Initialization Arguments
-  ----------
-  The first four arguments correspond to the `PdObject` arguments. 
-  See the `PdObject` class.
-  1. `id`: The id of the pd object.
-  2. `x`: The x-coordinate of the pd object.
-  3. `y`: The y-coordinate of the pd object.
-  4. `className`: The class name of the array.
-  5. `subclass`: The sub family of the array, eg. `define` or `sum`, etc.
-  6. `-k` flag (optional), or `name`: the name of the array
-  7. If it is an `array`, then the remaining argument is the array `size`
-
-  Returns
-  -------
-  A `PdArray` object.
-  
-  """
-  def __init__(self, *argv):
-    super().__init__(*argv[:4])
-    args = list(argv)
-    argc = len(args)
-    self.subclass = args[4] if 4 < argc else None
-    
-    off = 0
-    if hasattr(self, "subclass"):
-      if "define" == self.subclass:
-        
-        if 5 < argc:
-          if "-k" == args[5]:
-            self.keep = True 
-            self.name = args[6] if 6 < argc else None
-            off += 1
-          else:
-            self.name = args[5] if 5 < argc else None
-            self.keep = False
-        
-        if "array" == self.className:
-          self.size = int(args[6+off]) if 6+off < argc else None
-          off += 1
-      
-    if 6+off < argc:
-      self.args = args[6+off:]
-    
-    self.__pdpy__ = self.__class__.__name__
-
-class PdNativeGui(PdObj):
-  """ A Pd Native Gui object 
-  
-  Description
-  -----------
-  A Pd Native Gui object is a graphical user interface that is implemented in
-  pure data. It is a sublcass of the `PdObj`
-
-  Initialization Arguments
-  -----------------------
-  1. `className`: the name of the class of the object
-  2. id: The id of the object
-  3. `x`: The x position of the object
-  4. `y`: The y position of the object
-  5. `digits_width` : The width of the object in digits
-  6. lower limit: The lower limit of the object
-  7. upper limit: The upper limit of the object
-  8. `flag`: The flag of the object
-  9. `label`: The label of the object
-  10. `receive`: the receiver symbol of the object
-  11. `send`: the sender symbol of the object
-
-  """
-  def __init__(self, className, *argv):
-    super().__init__(*argv[:3])
-    self.__pdpy__ = self.__class__.__name__
-    self.className = className
-    if 3 < len(argv):
-      self.digit_width = argv[3]
-      self.limits = Bounds(*argv[4:6])
-      self.flag = argv[6] if 6 < len(argv) else None
-      if 7 < len(argv):
-        self.label = argv[7] if "-" != argv[7] else None
-        self.receive = argv[8] if "-" != argv[8] else None
-        self.send = argv[9] if "-" != argv[9] else None
-  
-class Graph(Base):
-  def __init__(self, id, name, area, range):
-    self.__pdpy__ = self.__class__.__name__
-    self.id = id
-    self.name = name
-    self.area = Area(area)
-    self.range = Area(range)
-    self.array = []
-    self.border = None
-  
-  def addArray(self, *argv):
-    self.array.append(PdType(argv[0], size = argv[1]))

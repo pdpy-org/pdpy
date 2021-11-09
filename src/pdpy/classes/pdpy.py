@@ -8,6 +8,9 @@ from .base import Base
 from .canvas import Canvas
 from .message import PdMessage
 from .classes import *
+from .gui import PdNativeGui
+from .pdobject import PdObject
+from .pdarray import PdArray
 from .dependencies import Dependencies
 from .comment import Comment
 from .connections import Edge
