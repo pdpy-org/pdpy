@@ -9,7 +9,7 @@ from types import SimpleNamespace
 
 from .pdpy import PdPy
 
-from ..parse.json2pd import JsonToPd
+
 from ..parse.json2xml import JsonToXml
 from ..parse.xml2json import XmlToJson
 from ..parse.parser import PdPyParser
@@ -75,56 +75,69 @@ class Translator(object):
       self.internals = self.load_json(self.internals_file)
       # print(self.internals)
     
-    # initialize an empty pdpy instance with name and encoding
-    self.pdpy = PdPy(self.path.name, self.enc)
-    
     # Load the source file
     if self.source == "pd":
 
-      # 1. load the pd file in memory
-      self.pd = self.load_pd()
-      # 2. parse the pd lines and populate the pdpy instance
-      # account for pure data line endings and split into a list
-      self.pdpy.parse( parsePdFileLines(self.pd) )
+      self.pdpy = PdPy(
+          name = self.path.name,
+          encoding = self.enc,
+          pd_lines = parsePdFileLines(self.load_pd())
+      )
       # 3. return a json string representation from pdpy
       self.json = self.pdpy.toJSON()
+      self.xml = JsonToXml(self.pdpy)
+
+      if self.reflect:
+        self.pd_ref = PdPy(
+          name = self.path.name,
+          encoding = self.enc,
+          json_dict = self.json
+        ).pd
+
+    elif self.source == "json" or self.source == "pkl":
+      __load__ = self.load_json if self.source == "json" else self.load_object
+
+      self.pdpy = PdPy(
+          name = self.path.name,
+          encoding = self.enc,
+          json_dict = __load__()
+      )
+      self.xml = JsonToXml(self.pdpy)
+      self.pd = self.pdpy.pd
+      self.pdpy_ref = PdPy(
+          name = self.path.name,
+          encoding = self.enc,
+          pd_lines = parsePdBinBuf(self.pd)
+      )
       if self.reflect: 
-        self.json2pd = JsonToPd(self.pdpy)
-        self.pd_ref = self.json2pd.getpd()
-
-    elif self.source == "pkl":
-
-      self.json = self.load_object()
-      self.json2pd = JsonToPd(self.json)
-      self.pd = self.json2pd.getpd()
-      self.pd_data = parsePdBinBuf(self.pd)
-      self.pdpy.parse( self.pd_data )
-      if self.reflect: self.json_ref = self.pdpy.toJSON()
-
-    elif self.source == "json":
-       
-      self.json = self.load_json()
-      self.json2pd = JsonToPd(self.json)
-      self.pd = self.json2pd.getpd()
-      self.xml = JsonToXml(self.json)
-      self.pdpy.parse( parsePdBinBuf(self.pd) )
-      if self.reflect: self.json_ref = self.pdpy.toJSON()
-
+        self.json_ref = self.pdpy_ref.toJSON()
+    
     elif self.source == "pdpy":
       
-      self.pdpy = self.load_pdpy(self.path.name,self.enc)
-      # self.pdpy.dumps()
-      self.json2pd = JsonToPd(self.pdpy)
-      self.pd = self.json2pd.getpd()
+      self.pdpy = PdPyParser(
+        self.load_pdpy(),
+        self.internals,
+        name = self.path.name,
+        encoding = self.enc
+      )
+      
+      self.pd = self.pdpy.pd
       self.json = self.pdpy.toJSON()
+      self.xml = JsonToXml(self.pdpy)
+      if self.reflect:
+        log(1,"pdpy lang reflection not implemented yet")
 
     elif self.source == "xml":
 
-      self.xml = self.load_xml()
-      self.json = self.xml.patch.toJSON()
-      # self.pd = PdPyToPureData(self.xml.patch)
-      # self.pdpy.parse( parsePdBinBuf(self.pd) )
-      # if self.reflect: self.xml_ref = JsonToXml(self.pdpy.toJSON())
+      self.pdpy = PdPy(
+          name = self.path.name,
+          encoding = self.enc,
+          xml_object = XmlToJson(self.load_xml())
+      )
+      self.json = self.pdpy.toJSON()
+      self.pd = self.pdpy.pd
+      if self.reflect: 
+        self.xml_ref = JsonToXml(self.pdpy)
 
     else:
       raise ValueError("Unknown source type: {}".format(self.source))
@@ -161,9 +174,9 @@ class Translator(object):
       with open(file.with_suffix(".pkl"), "wb") as fp:
         pickle.dump(self.json, fp, pickle.HIGHEST_PROTOCOL)
 
-  def load_pdpy(self, name, encoding):
+  def load_pdpy(self):
     with open(self.file, "r", encoding=self.enc) as fp:
-      return PdPyParser(fp, self.internals, name=name, encoding=encoding)
+      return fp
   
   def load_json(self, file=None):
     if file is None:
@@ -175,7 +188,7 @@ class Translator(object):
     if file is None:
       file = self.file
     with open(file, "r", encoding=self.enc) as fp:
-      return XmlToJson(fp)
+      return fp
 
   def load_object(self):
     with open(self.file, "rb") as fp:

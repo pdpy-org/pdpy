@@ -5,32 +5,58 @@
 
 from ..util.utils import log
 from .base import Base
-from .canvas import Canvas
-from .message import PdMessage
 from .classes import *
-from .gui import PdNativeGui
 from .pdobject import PdObject
 from .pdarray import PdArray
+from .gui import PdNativeGui
+from .message import PdMessage
+from .canvas import Canvas
 from .dependencies import Dependencies
 from .comment import Comment
 from .connections import Edge
 from .data_structures import *
 from .default import *
 from .iemgui import *
+from ..parse.json2pd import JsonToPd
 
 __all__ = [ "PdPy" ]
 
 # nums = [ "12", "-13", "14.2", 15.4, "1e10", 1e-23, "1.3E+2", 1.4E-2]
 
 class PdPy(Base):
-  def __init__(self, name=None, encoding='utf-8', root=False):
+  
+  def __init__(self, 
+               name=None,
+               encoding='utf-8',
+               root=False,
+               pd_lines=None,
+               json_dict=None,
+               xml_object=None):
+    """ Initialize a PdPy object """
     super().__init__()
+
     self.patchname = name
     self.encoding = encoding
+    self.__pdpy__ = self.__class__.__name__
     self.__obj_idx__ = 0
     self.__canvas_idx__ = []
     self.__depth__ = 0
-    if root: self.root = Canvas(name=self.patchname)
+
+    if pd_lines is not None:
+      # parse the pd lines and populate the pdpy instance
+      # account for pure data line endings and split into a list
+      self.parse(pd_lines)
+    elif json_dict is not None:
+      self.__j2pd__ = JsonToPd(json_dict)
+      self.pd = self.__j2pd__.getpd()
+    elif xml_object is not None:
+      pass
+    elif not root:
+      log(1,f"{self.__pdpy__}: is empty")
+    elif root: 
+      self.root = Canvas(name=self.patchname)
+    else:
+      log(1,f"{self.__pdpy__}: unexpected creation args.")
   
   def getTemplate(self, template_name):
     if hasattr(self, 'struct'):
