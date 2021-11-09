@@ -9,6 +9,7 @@ from .canvas import Canvas
 from .message import PdMessage
 from .classes import *
 from .comment import Comment
+from .connections import Edge
 from .data_structures import *
 from .default import *
 from .iemgui import *
@@ -174,7 +175,8 @@ class PdPy(Base):
     self.__last_canvas__().add(scalar)
     return scalar
 
-  def addConnection(self, argv): self.__last_canvas__().edge(Edge(*argv))
+  def addConnection(self, argv):
+    self.__last_canvas__().edge(Edge(pd=argv))
 
   def addCoords(self, coords):
     """ the coords constructor
@@ -188,7 +190,7 @@ class PdPy(Base):
     # log(0,"RESTORE",argv)
     last = self.__last_canvas__()
     if argv is not None:
-      setattr(last, "position", Point(*argv[:2]))
+      setattr(last, "position", Point(x=argv[0], y=argv[1]))
       self.__last_canvas__().title = ' '.join(argv[2:])
     self.__depth__ -= 1
     if len(self.__canvas_idx__):

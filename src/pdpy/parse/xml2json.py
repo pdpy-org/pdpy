@@ -13,7 +13,8 @@ from ..classes.canvas import Canvas
 from ..classes.message import PdMessage
 from ..classes.data_structures import *
 from ..classes.comment import Comment
-from ..classes.classes import Edge, PdArray, PdNativeGui, PdObject, Coords, Dependencies
+from ..classes.connections import Edge
+from ..classes.classes import PdArray, PdNativeGui, PdObject, Coords, Dependencies
 # from ..util.utils import log
 
 __all__ = [ "XmlToJson" ]
@@ -73,13 +74,7 @@ class XmlToJson:
 
   def addConnections(self, x, __last_canvas__):
     if 'connect' == x.tag:
-      __last_canvas__.edge(
-        Edge( 
-          x.find('source').findtext('id'),
-          x.find('source').findtext('port'),
-          x.find('sink').findtext('id'),
-          x.find('sink').findtext('port'))
-        )
+      __last_canvas__.edge(Edge(xml_object=x))
 
   def addCanvas(self, node):
     __canvas__ = self.patch.__get_canvas__()

@@ -11,7 +11,8 @@ from ..classes.pdpy import PdPy
 from ..classes.canvas import Canvas
 from ..classes.message import PdMessage
 from ..classes.comment import Comment
-from ..classes.classes import  Edge, PdArray, PdObject, Point
+from ..classes.connections import Edge
+from ..classes.classes import  PdArray, PdObject, Point
 from ..util.utils import log, printer, tokenize
 
 __all__ = [ "PdPyParser" ]
@@ -383,10 +384,8 @@ class PdPyParser(PdPy):
     if sink is None: sink = __canvas__.__obj_idx__ + 1
     source_port = sink_port = 0
     log(0,"objectConnector", source, sink)
-    edge = Edge(
-     source, source_port,
-     sink, sink_port
-    )
+    pd_edge = (source, source_port, sink, sink_port)
+    edge = Edge(pd=pd_edge)
     __canvas__.edge(edge)
     
     # edge.dumps()
