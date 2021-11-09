@@ -14,7 +14,8 @@ from ..classes.message import PdMessage
 from ..classes.data_structures import *
 from ..classes.comment import Comment
 from ..classes.connections import Edge
-from ..classes.classes import PdArray, PdNativeGui, PdObject, Coords, Dependencies
+# from ..classes.dependencies import Dependencies
+from ..classes.classes import PdArray, PdNativeGui, PdObject, Coords
 # from ..util.utils import log
 
 __all__ = [ "XmlToJson" ]

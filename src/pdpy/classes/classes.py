@@ -8,9 +8,7 @@ from .data_structures import PdData, PdType
 
 __all__ = [ 
   "Base",
-  "Edge",
   "Coords",
-  "Dependencies",
   "Graph",
   "PdArray",
   "PdNativeGui",
@@ -148,38 +146,6 @@ class Coords(Base):
 
   def addmargin(self, **kwargs):
     self.margin = Point(**kwargs)
-
-class Dependencies(Base):
-  def __init__(self, *argv):
-    self.__pdpy__ = self.__class__.__name__
-    # python magic to split a list in pairs
-    deps = list(zip(*[iter(argv)]*2))
-    for dep in deps:
-      if "-path" == dep[0]:
-        self.updatePath(dep[1])
-      elif "-lib" == dep[0]:
-        self.updateLib(dep[1])
-  
-  def updatePath(self, path):
-    if not hasattr(self, "paths"):
-      self.paths = []
-    self.paths.append(path)
-  
-  def updateLib(self, lib):
-    if not hasattr(self, "libs"):
-      self.libs = []
-    self.libs.append(lib)
-  
-  def update(self, deps):
-    if hasattr(deps, "paths"):
-      if len(deps.paths):
-        for path in deps.paths:
-          self.updatePath(path)
-    if hasattr(deps, "libs"):
-      if len(deps.libs):
-        for lib in deps.libs:
-          self.updateLib(lib)
-
 class PdObj(PdData):
   """ A PdObj base class 
   
@@ -322,30 +288,6 @@ class PdNativeGui(PdObj):
         self.label = argv[7] if "-" != argv[7] else None
         self.receive = argv[8] if "-" != argv[8] else None
         self.send = argv[9] if "-" != argv[9] else None
-
-class Source(Base):
-  def __init__(self, id, port):
-    self.__pdpy__ = self.__class__.__name__
-    self.id = id
-    self.port = port
-
-class Edge(Base):
-  """ A Pd Connection 
-  Description
-  -----------
-  A Pd Connection object is a connection between two objects.
-
-  Parameters
-  ----------
-  1. `source`: The source id of the connection
-  2. `port`: The port outlet of the source
-  3. `target`: The target id of the connection
-  4. `port`: The port inlet of the target
-  """
-  def __init__(self, srcId, srcPrt, snkId, snkPrt):
-    self.__pdpy__ = self.__class__.__name__
-    self.source = Source(srcId, srcPrt) 
-    self.sink = Source(snkId, snkPrt)
   
 class Graph(Base):
   def __init__(self, id, name, area, range):

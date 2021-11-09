@@ -8,6 +8,7 @@ from .base import Base
 from .canvas import Canvas
 from .message import PdMessage
 from .classes import *
+from .dependencies import Dependencies
 from .comment import Comment
 from .connections import Edge
 from .data_structures import *
