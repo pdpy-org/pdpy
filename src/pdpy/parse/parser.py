@@ -10,7 +10,8 @@ import re
 from ..classes.pdpy import PdPy
 from ..classes.canvas import Canvas
 from ..classes.message import PdMessage
-from ..classes.classes import Comment, Edge, PdArray, PdObject, Point
+from ..classes.comment import Comment
+from ..classes.classes import  Edge, PdArray, PdObject, Point
 from ..util.utils import log, printer, tokenize
 
 __all__ = [ "PdPyParser" ]
@@ -361,7 +362,7 @@ class PdPyParser(PdPy):
       __canvas__.__cursor__.y += __canvas__.__box__.height
     
     if objClass is Comment:
-      obj = Comment(x, y, argv)
+      obj = Comment(argv, x=x, y=y)
       __canvas__.comment(obj)
     else:
       self.__obj_idx__ = __canvas__.grow() 

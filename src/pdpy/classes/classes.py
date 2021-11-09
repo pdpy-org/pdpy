@@ -5,12 +5,10 @@
 
 from .base import Base
 from .data_structures import PdData, PdType
-from ..util.utils import splitSemi
 
 __all__ = [ 
   "Base",
   "Edge",
-  "Comment",
   "Coords",
   "Dependencies",
   "Graph",
@@ -150,20 +148,6 @@ class Coords(Base):
 
   def addmargin(self, **kwargs):
     self.margin = Point(**kwargs)
-
-class Comment(Base):
-  def __init__(self, x, y, *argv):
-    self.__pdpy__ = self.__class__.__name__
-    self.position = Point(x=x, y=y)
-    # can have \\, split at \\;, and  the unescaped comma is a border flag, f 80
-    argc = len(argv)
-    argv = list(argv)
-    if argc:
-      if 2 < len(argv) and "f" == argv[-2] and argv[-1].isnumeric():
-        self.border = self.num(argv[-1])
-        argv = argv[:-2]
-        argv[-1] = argv[-1].replace(",","")
-      self.text = splitSemi(argv)
 
 class Dependencies(Base):
   def __init__(self, *argv):

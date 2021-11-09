@@ -8,6 +8,7 @@ from .base import Base
 from .canvas import Canvas
 from .message import PdMessage
 from .classes import *
+from .comment import Comment
 from .data_structures import *
 from .default import *
 from .iemgui import *
@@ -145,7 +146,7 @@ class PdPy(Base):
   
   def addComment(self, argv):
     self.__last_canvas__().grow()
-    comment = Comment(*argv)
+    comment = Comment(*argv[2:], x=argv[0], y=argv[1])
     self.__last_canvas__().comment(comment)
     return comment
 
@@ -175,10 +176,10 @@ class PdPy(Base):
 
   def addConnection(self, argv): self.__last_canvas__().edge(Edge(*argv))
 
-  def addCoords(self, argv):
+  def addCoords(self, coords):
     """ the coords constructor
     """
-    setattr(self.__last_canvas__(), "coords", Coords(argv))
+    setattr(self.__last_canvas__(), "coords", Coords(coords=coords))
 
   def restore(self, argv=None):
     """ Restore constructor
@@ -251,3 +252,20 @@ class PdPy(Base):
           else:                   last = self.restore(body)
         else: log(1,"What is this?", argv, self.patchname)
 
+  def from_json(self, json_object):
+    """ Parse a json object into this class' scope """
+    for key, value in json_object.items():
+      if 'patchname' == key:
+        self.patchname = value
+      elif 'encoding' == key:
+        self.encoding == value
+      elif 'struct' == key:
+        self.struct = []
+        for s in value:
+          self.struct.append(Struct(s,source='json'))
+      elif 'root' == key:
+        self.root = []
+        for r in value:
+          self.root.append(Canvas(r,source='json'))
+      elif 'dependencies' == key:
+        self.dependencies = Dependencies(value,source='json')

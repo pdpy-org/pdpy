@@ -12,7 +12,8 @@ from ..classes.default import Default, IEMGuiNames, XmlTagConvert
 from ..classes.canvas import Canvas
 from ..classes.message import PdMessage
 from ..classes.data_structures import *
-from ..classes.classes import Comment, Edge, PdArray, PdNativeGui, PdObject, Coords, Dependencies
+from ..classes.comment import Comment
+from ..classes.classes import Edge, PdArray, PdNativeGui, PdObject, Coords, Dependencies
 # from ..util.utils import log
 
 __all__ = [ "XmlToJson" ]
@@ -67,12 +68,7 @@ class XmlToJson:
 
   def addComments(self, x, __last_canvas__):
     if 'comment' == x.tag:
-      __last_canvas__.comment(
-      Comment(
-        x.findtext('x'), 
-        x.findtext('y'),
-        x.text)
-      )
+      __last_canvas__.comment(Comment(xml_object=x))
       return
 
   def addConnections(self, x, __last_canvas__):
@@ -132,20 +128,7 @@ class XmlToJson:
 
   def addCoords(self, x, __last_canvas__):
     # log(1, "coords", x)
-    __last_canvas__.coords = Coords([
-      x.find('a').findtext('x'),
-      x.find('a').findtext('y'),
-      x.find('b').findtext('x'),
-      x.find('b').findtext('y'),
-      x.find('dimension').findtext('width'),
-      x.find('dimension').findtext('height'),
-      x.findtext('gop')
-    ])
-    if x.find('margin'):
-      __last_canvas__.coords.addmargin(
-        x.find('margin').findtext('x'),
-        x.find('margin').findtext('y')
-      )
+    __last_canvas__.coords = Coords(xml_object=x)
 
   def addNodes(self, x, __last_canvas__):
     border = None # the border of the object box
