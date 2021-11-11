@@ -29,6 +29,9 @@ class PdData(Base):
   def addDataFromTemplate(self, data, template):
     self.data = template.parse(data)
 
+  def addDataFromJson(self, template, json_data):
+    self.data = template.from_json(json_data)
+
 class PdType(PdData):
   def __init__(self, json_dict = None):
     self.__pdpy__ = self.__class__.__name__
