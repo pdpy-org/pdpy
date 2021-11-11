@@ -34,7 +34,7 @@ class Point(Base):
       self.y = None
 
   def __pd__(self):
-    return f" {self.x} {self.y} "
+    return f"{self.x} {self.y}"
 class Size(Base):
   def __init__(self, w=None, h=None, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
@@ -52,7 +52,7 @@ class Size(Base):
       self.height = 0
 
   def __pd__(self):
-    return f" {self.width} {self.height} "
+    return f"{self.width} {self.height}"
 
 class Bounds(Base):
   def __init__(self,
@@ -77,7 +77,7 @@ class Bounds(Base):
       self.upper = dtype(0)
   
   def __pd__(self):
-    return f" {self.lower} {self.upper} "
+    return f"{self.lower} {self.upper}"
 class Area(Base):
   """ 
   Area
@@ -110,7 +110,7 @@ class Area(Base):
       self.b = Point()
   
   def __pd__(self):
-    return f" {self.a.x} {self.b.x} {self.a.y} {self.b.y} "
+    return f"{self.a.x} {self.b.x} {self.a.y} {self.b.y}"
 
 class Coords(Base):
   """ 

@@ -91,18 +91,20 @@ class Translator(object):
         json_dict = self.load_object()
 
       self.pdpy = pdpy.PdPy(json_dict=json_dict)
-      # log(1,'print dumps')
+      # self.pdpy.dumps()
       self.xml = pdpy.JsonToXml(self.pdpy)
+      # print(self.xml.to_string())
       self.pd = self.pdpy.__pd__
 
-      print("-"*80)
-      print("BEFORE PDPY from JSON->PD")
+      # print("-"*80)
+      # print("BEFORE PDPY from JSON->PD")
+      # print(self.pd)
       self.pdpy_ref = pdpy.PdPy(
           name = self.path.name,
           encoding = self.enc,
-          pd_lines = self.pd
+          pd_lines = pdpy.parsePdBinBuf(self.pd)
       )
-      self.pdpy_ref.dumps()
+      # self.pdpy_ref.dumps()
       if self.reflect: 
         self.json_ref = self.pdpy_ref.toJSON()
     
