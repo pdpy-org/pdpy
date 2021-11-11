@@ -245,8 +245,7 @@ class Scalar(PdData):
     if pd_lines is not None:
       self.parsePd(struct, pd_lines)
     elif json_dict is not None:
-      for k,v in json_dict.items():
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
     elif xml_object is not None:
       self.parseXml(struct, xml_object)
 
