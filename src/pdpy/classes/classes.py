@@ -12,7 +12,9 @@ __all__ = [
   "Graph",
   "Point",
   "PdObj",
-  "Size"
+  "Size",
+  "Bounds",
+  "Area"
 ]
 
 class Point(Base):
@@ -21,30 +23,37 @@ class Point(Base):
     if x is not None and y is not None:
       self.x = self.num(x)
       self.y = self.num(y)
-    elif isinstance(json_dict, dict):
-      self.x = self.num(json_dict.get("x", None))
-      self.y = self.num(json_dict.get("y", None))
+    elif json_dict is not None:
+      for k,v in json_dict.items():
+        setattr(self, k, v)
     elif xml_object is not None:
       self.x = xml_object.findtext('x', None)
       self.y = xml_object.findtext('y', None)
     else:
       self.x = None
       self.y = None
+
+  def __pd__(self):
+    return f" {self.x} {self.y} "
 class Size(Base):
   def __init__(self, w=None, h=None, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
     if w is not None and h is not None:
       self.width = self.num(w)
       self.height = self.num(h)
-    elif isinstance(json_dict, dict):
-      self.width = self.num(json_dict.get("width", 0))
-      self.height = self.num(json_dict.get("height", 0))
+    elif json_dict is not None:
+      for k,v in json_dict.items():
+        setattr(self, k, v)
     elif xml_object is not None:
       self.width = xml_object.findtext('width', 0)
       self.height = xml_object.findtext('height', 0)
     else:
       self.width = 0
       self.height = 0
+
+  def __pd__(self):
+    return f" {self.width} {self.height} "
+
 class Bounds(Base):
   def __init__(self,
                lower=None,
@@ -57,16 +66,18 @@ class Bounds(Base):
     if lower is not None and upper is not None:
       self.lower = dtype(lower)
       self.upper = dtype(upper)
-    elif isinstance(json_dict, dict):
-      self.lower = dtype(json_dict.get("lower", 0))
-      self.upper = dtype(json_dict.get("upper", 0))
+    elif json_dict is not None:
+      for k,v in json_dict.items():
+        setattr(self, k, v)
     elif xml_object is not None:
       self.lower = dtype(xml_object.findtext('lower', 0))
       self.upper = dtype(xml_object.findtext('upper', 0))
     else:
       self.lower = dtype(0)
       self.upper = dtype(0)
-
+  
+  def __pd__(self):
+    return f" {self.lower} {self.upper} "
 class Area(Base):
   """ 
   Area
@@ -88,9 +99,9 @@ class Area(Base):
     if coords is not None:
       self.a = Point(x=coords[0], y=coords[1])
       self.b = Point(x=coords[2], y=coords[3])
-    elif isinstance(json_dict, dict):
-      self.a = Point(json_dict=json_dict.get("a", None))
-      self.b = Point(json_dict=json_dict.get("b", None))
+    elif json_dict is not None:
+      for k,v in json_dict.items():
+        setattr(self, k, v)
     elif xml_object is not None:
       self.a = Point(xml_object=xml_object.find('a'))
       self.b = Point(xml_object=xml_object.find('b'))
@@ -98,6 +109,8 @@ class Area(Base):
       self.a = Point()
       self.b = Point()
   
+  def __pd__(self):
+    return f" {self.a.x} {self.b.x} {self.a.y} {self.b.y} "
 
 class Coords(Base):
   """ 
@@ -124,12 +137,9 @@ class Coords(Base):
       # GOP
       if 9 == len(coords):
         self.addmargin(x=coords[7], y=coords[8])
-    elif isinstance(json_dict, dict):
-      self.range = Area(json_dict=json_dict.get("range", None))
-      self.dimension = Size(json_dict=json_dict.get("dimension", None))
-      self.gop = self.num(json_dict.get("gop", 0))
-      if hasattr(json_dict, 'margin'):
-        self.addmargin(json_dict=json_dict.get("margin", None))
+    elif json_dict is not None:
+      for k,v in json_dict.items():
+        setattr(self, k, v)
     elif xml_object is not None:
       self.range = Area(xml_object=xml_object.find('range'))
       self.dimension = Size(xml_object=xml_object.find('dimension'))
@@ -145,18 +155,35 @@ class Coords(Base):
   def addmargin(self, **kwargs):
     self.margin = Point(**kwargs)
   
+  def __pd__(self):
+    return f" {self.range.__pd__()} {self.dimension.__pd__()} {self.gop} " + self.margin.__pd__() if self.margin else ""
+
 class Graph(Base):
-  def __init__(self, id, name, area, range):
+  def __init__(self, pd_lines=None, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
-    self.id = id
-    self.name = name
-    self.area = Area(area)
-    self.range = Area(range)
-    self.array = []
-    self.border = None
+    if pd_lines is not None:
+      self.id = pd_lines[0]
+      self.name = pd_lines[1]
+      self.area = Area(pd_lines[2:5])
+      self.range = Area(pd_lines[5:8])
+      self.array = []
+      self.border = None
+    elif json_dict is not None:
+      for k,v in json_dict.items():
+        setattr(self, k, v)
+    elif xml_object is not None:
+      self.id = xml_object.findtext('id')
+      self.name = xml_object.findtext('name')
+      self.area = Area(xml_object=xml_object.find('area'))
+      self.range = Area(xml_object=xml_object.find('range'))
+      self.array = []
+      self.border = None
   
   def addArray(self, *argv):
-    self.array.append(PdType(argv[0], size = argv[1]))
+    self.array.append(PdType(json_dict={
+      'name' : argv[0],
+      'size' : argv[1]
+    }))
 
 class PdObj(PdData):
   """ A PdObj base class 
