@@ -50,19 +50,22 @@ class Base(object):
     return pdnm
 
   def pdbool(self, n):
-    if n == "True":
+    if n == "True" or n == "true":
       return True
-    elif n == "False":
+    elif n == "False" or n == "false":
       return False
     else:
       return bool(int(float(n)))
 
   def __populate__(self, scope, json_dict):
+    # TODO: protect against overblowing scope
     if not hasattr(json_dict, 'items'):
-      log(1, "json_dict is not a dict")
+      log(1, scope.__class__.__name__, "json_dict is not a dict")
       if not hasattr(json_dict, '__dict__'):
-        raise Exception("json_dict is not a dict or a class")
+        raise log(2, scope.__class__.__name__, "json_dict is not a class")
       json_dict = json_dict.__dict__
-    else:
-      map(lambda k,v: setattr(scope, k, v), json_dict.items())
+    
+    # map(lambda k,v: setattr(scope, k, v), json_dict.items())
+    for k,v in json_dict.items():
+      setattr(scope, k, v)
 
