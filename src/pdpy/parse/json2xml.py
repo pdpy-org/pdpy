@@ -3,6 +3,7 @@
 
 """ Json-formatted file (Python Patch Object) to XML file """
 
+from pdpy.classes.data_structures import Struct
 from ..util.utils import log
 from ..classes.default import XmlTagConvert
 import xml.etree.ElementTree as ET
@@ -13,13 +14,17 @@ class JsonToXml:
   
   def __init__(self, obj, autoindent=True):
 
-    # do not continue loading if root is not present
-    if not hasattr(obj, "root"):
-      raise Exception("JsonToXml: No root found in the object")
+    log(1, 'Converting Json to XML', obj)
+
+      # raise Exception("JsonToXml: No root found in the object")
 
     # The json as python object
     self.obj = obj
-    self.root = getattr(obj, 'root')
+    # do not continue loading if root is not present
+    if hasattr(self.obj, "root"):
+      self.root = getattr(self.obj, "root")
+    else:
+      raise Exception("JsonToXml: No root found in the object")
     self.__conv__ = XmlTagConvert()
     # This is a list that holds the self.depth of the current object
     self.depth = []
@@ -57,8 +62,10 @@ class JsonToXml:
 
   def getStruct(self, x, root):
     if hasattr(x, 'struct'):
+      self.struct = []
       struct = ET.SubElement(root, 'struct')
       for d in getattr(x,'struct'):
+        self.struct.append(Struct(d, source='json'))
         template = ET.SubElement(struct, 'template')
         self.update_with_sub(d, 'name', template)
         self.update_with_sub(d, 'text', template)
@@ -188,6 +195,8 @@ class JsonToXml:
               ET.SubElement(data, 'symbol').text = str(d)
             elif isinstance(d, float) or isinstance(d, int):
               ET.SubElement(data, 'float').text = str(d)
+            elif isinstance(d, dict):
+              pass
             elif isinstance(d, list):
               array = ET.SubElement(data, 'array')
               for f in d:
@@ -329,6 +338,7 @@ class JsonToXml:
     if root:
       self.update_with_sub(x, 'font', cnv)
       self.update_with_sub(x, 'vis', cnv)
+      self.update_with_sub(x, 'isroot', cnv)
       return cnv
     else:
       self.update_with_sub(x, 'name', cnv)
