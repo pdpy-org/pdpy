@@ -30,16 +30,19 @@ class PdNativeGui(PdObj):
   11. `send`: the sender symbol of the object
 
   """
-  def __init__(self, className, *argv):
-    super().__init__(*argv[:3])
-    self.__pdpy__ = self.__class__.__name__
-    self.className = className
-    if 3 < len(argv):
-      self.digit_width = argv[3]
-      self.limits = Bounds(lower=argv[4], upper=argv[5])
-      self.flag = argv[6] if 6 < len(argv) else None
-      if 7 < len(argv):
-        self.label = argv[7] if "-" != argv[7] else None
-        self.receive = argv[8] if "-" != argv[8] else None
-        self.send = argv[9] if "-" != argv[9] else None
-
+  def __init__(self, className=None, pd_lines=None, json_dict=None):
+    if className is not None and pd_lines is not None:
+      super().__init__(*pd_lines[:3])
+      self.__pdpy__ = self.__class__.__name__
+      self.className = className
+      if 3 < len(pd_lines):
+        self.digit_width = pd_lines[3]
+        self.limits = Bounds(lower=pd_lines[4], upper=pd_lines[5])
+        self.flag = pd_lines[6] if 6 < len(pd_lines) else None
+        if 7 < len(pd_lines):
+          self.label = pd_lines[7] if "-" != pd_lines[7] else None
+          self.receive = pd_lines[8] if "-" != pd_lines[8] else None
+          self.send = pd_lines[9] if "-" != pd_lines[9] else None
+    elif json_dict is not None:
+      for k,v in json_dict.items():
+        setattr(self, k, v)

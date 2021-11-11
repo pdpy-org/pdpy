@@ -5,6 +5,7 @@
 
 from ..util.utils import log
 from ..classes.default import GOPArrayFlags, PdNativeGuiNames, IEMGuiNames, Default
+from ..classes.data_structures import Scalar
 
 __all__ = [ "JsonToPd" ]
 
@@ -12,12 +13,13 @@ class JsonToPd:
 
   def __init__(self, obj):
     
-    if not hasattr(obj, 'root'):
+    # log(1, "JsonToPd: Parsing", obj)
+    if not hasattr(obj,'root'):
       raise Exception("JsonToPd: No root object")
     
     self.obj = obj
-    self.root = getattr(obj, 'root')
-    self.name = self.obj.patchname  
+    self.root = getattr(self.obj,'root')
+    self.name = getattr(self.obj,'patchname')
     self.pd = []
     self.__d__ = Default()
 
@@ -39,19 +41,19 @@ class JsonToPd:
       # add structs
       self.getStruct()
       # add main root canvas
-      self.getCanvas(self.obj.root, root=True)
+      self.getCanvas(getattr(self.obj,'root'), root=True)
       # add declarations
       self.getDependencies()
       # add nodes
-      self.getNodes(self.obj.root)
+      self.getNodes(getattr(self.obj,'root'))
       # add comments
-      self.getComments(self.obj.root)
+      self.getComments(getattr(self.obj,'root'))
       # add coords
-      self.getCoords(self.obj.root)
+      self.getCoords(getattr(self.obj,'root'))
       # add connections
-      self.getConnections(self.obj.root)
+      self.getConnections(getattr(self.obj,'root'))
       # add restore (if gop)
-      self.getRestore(self.obj.root)
+      self.getRestore(getattr(self.obj,'root'))
     
   def getpd(self):
     """ Returns the pd array as a string """
@@ -171,8 +173,7 @@ class JsonToPd:
     s = '#N canvas'
     if hasattr(obj, 'screen'):
       screen = getattr(obj, 'screen')
-      s += ' ' + str(getattr(screen,'x'))
-      s += ' ' + str(getattr(screen,'y'))
+      s += screen.__pd__()
     if hasattr(obj, 'dimension'):
       dimension = getattr(obj, 'dimension')
       s += ' ' + str(getattr(dimension,'width'))
@@ -266,8 +267,7 @@ class JsonToPd:
 
   def addpos(self, pd_string, json_object):
     if hasattr(json_object, 'position'):
-      pos = getattr(json_object, 'position')
-      pd_string += f" {getattr(pos,'x')} {getattr(pos,'y')} "
+      pd_string += getattr(json_object, 'position').__pd__()
     return pd_string
 
   def getNodes(self, obj):
@@ -321,15 +321,10 @@ class JsonToPd:
                   s += ' \\; ' + getattr(t,'address') + ' ' + ' \\, '.join(getattr(t,'message'))
           
           elif "scalar" == className:
-            s += "#X scalar"
-            s += ' ' + getattr(x,'name')
-            #TODO: fix scalar to new struct schema
-            for e in getattr(x,'data'):
-              log(1,"SCALAR", e)
-              if hasattr(obj,'struct'):
-                log(1,"STRUCT", obj.struct)
-              s += ' ' + ' '.join(e) + " \;"
-          
+            scalar = Scalar(struct=self.obj.struct, json_dict=x)
+            # scalar.dumps()
+            s = scalar.getPd()
+            
           elif className in PdNativeGuiNames:
             s += self.getNativeGui(x, className)
           

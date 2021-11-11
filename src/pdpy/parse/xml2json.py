@@ -41,19 +41,19 @@ class XmlToJson:
     self.patch = PdPy(self.__root__.get('name'), encoding)
 
     # add the root canvas
-    self.patch.root = Canvas(
-      name = self.patch.patchname,
-      vis = self.__x__.findtext('vis', default=self.__d__.vis),
-      screen = [
+    self.patch.root = Canvas(json_dict={
+      'name' : self.patch.patchname,
+      'vis' : self.__x__.findtext('vis', default=self.__d__.vis),
+      'screen' : [
         self.__x__.findtext('x', default=self.__d__.screen['x']), 
         self.__x__.findtext('y', default=self.__d__.screen['x'])
       ],
-      dimen  = [
+      'dimen'  : [
         self.__x__.findtext('width', default=self.__d__.dimen['width']),
         self.__x__.findtext('height',default=self.__d__.dimen['height'])
       ],
-      font=self.__x__.findtext('font', default=self.__d__.font['size'])
-    )
+      'font' : self.__x__.findtext('font', default=self.__d__.font['size'])
+    })
 
     # NOTE: add struct to root, not to canvas root
     for child in self.tree.findall('struct/template'):
@@ -109,17 +109,17 @@ class XmlToJson:
   # end of addCanvas -----------------------------------------------------------
   
   def addScalar(self, x, __last_canvas__):
-    scalar = Scalar(self.patch.struct, x, source='xml' )
+    scalar = Scalar(struct=self.patch.struct, xml_object=x)
     __last_canvas__.add(scalar)
 
   def addGOPArray(self, x, __last_canvas__):
     # log(1, "goparray", x)
-    arr = PdType(
-      x.findtext('name'),
-      size=x.findtext('size'),
-      flag=x.findtext('flag'),
-      className=x.tag
-    )
+    arr = PdType(json_dict={
+      'name' : x.findtext('name'),
+      'size' : x.findtext('size'),
+      'flag' : x.findtext('flag'),
+      'className' : x.tag
+    })
     _data = x.find('data')
     if _data: arr.addData(map(lambda x:x.text, _data.findall('float')))
     __last_canvas__.add(arr)
@@ -152,7 +152,7 @@ class XmlToJson:
       __ypos__ = int(x.findtext('y'))
       
       if 'msg' == x.tag:
-        obj = PdMessage(__id__, __xpos__, __ypos__)
+        obj = PdMessage(pd_lines=[__id__, __xpos__, __ypos__])
         for t in x.findall('target'):
           obj.addTarget(t.text)
           for m in t.findall('message'):
@@ -165,18 +165,21 @@ class XmlToJson:
       elif x.tag in ['floatatom', 'symbolatom', 'listbox']:
         # print( "Make PdNativeGui", x.tag)
         obj = PdNativeGui(
-          x.tag, __id__, __xpos__, __ypos__,
-          x.findtext('digits_width', default=self.__d__.digits_width),
-          x.findtext('lower', default=self.__d__.limits['lower']),
-          x.findtext('upper', default=self.__d__.limits['upper']),
-          x.findtext('flag', default=self.__d__.flag),
-          x.findtext('label', default=self.__d__.label),
-          x.findtext('receive', default=self.__d__.receive),
-          x.findtext('send', default=self.__d__.send))
+          className=x.tag, 
+          pd_lines=[
+            __id__, __xpos__, __ypos__,
+            x.findtext('digits_width', default=self.__d__.digits_width),
+            x.findtext('lower', default=self.__d__.limits['lower']),
+            x.findtext('upper', default=self.__d__.limits['upper']),
+            x.findtext('flag', default=self.__d__.flag),
+            x.findtext('label', default=self.__d__.label),
+            x.findtext('receive', default=self.__d__.receive),
+            x.findtext('send', default=self.__d__.send)
+        ])
       
       # text or array-group objects
       elif x.tag in ['text', 'array']:
-        obj = PdArray(__id__, __xpos__, __ypos__, x.tag)
+        obj = PdArray(pd_lines = [__id__, __xpos__, __ypos__, x.tag])
         obj.subclass = x.findtext('subclass')
         obj.name = x.findtext('name')
         obj.keep = x.findtext('keep') and x.findtext('keep') == "True"
@@ -188,7 +191,10 @@ class XmlToJson:
       
       else:
         # print('Making', x.tag)
-        obj = PdObject(__id__,__xpos__,__ypos__,self.__conv__.to_pd_obj(x.tag))
+        obj = PdObject(pd_lines=[
+          __id__, __xpos__, __ypos__,
+          self.__conv__.to_pd_obj(x.tag)
+        ])
 
       # done with if statement, 
       # add the arguments to the object
@@ -207,7 +213,7 @@ class XmlToJson:
 
 
   def addIEMGui(self, x, __id__, __xpos__, __ypos__):
-    obj = PdIEMGui(__id__, __xpos__, __ypos__, x.tag)
+    obj = PdIEMGui(pd_lines=[__id__, __xpos__, __ypos__, x.tag])
 
     tag = 'radio' if 'radio' in x.tag else x.tag
 

@@ -3,8 +3,9 @@
 
 """ PdPy class definition """
 
+from types import SimpleNamespace
 from ..util.utils import log
-from .base import Base
+from .base import Base, json
 from .classes import *
 from .pdobject import PdObject
 from .pdarray import PdArray
@@ -47,16 +48,21 @@ class PdPy(Base):
       # account for pure data line endings and split into a list
       self.parse(pd_lines)
     elif json_dict is not None:
-      self.__j2pd__ = JsonToPd(json_dict)
-      self.pd = self.__j2pd__.getpd()
+      if not hasattr(json_dict, 'items'):
+        json_dict = json_dict.__dict__
+      for k,v in json_dict.items():
+        setattr(self, k, v)
+      self.__j2pd__ = JsonToPd(self)
+      self.__pd__ = self.__j2pd__.getpd()
+
     elif xml_object is not None:
-      pass
-    elif not root:
-      log(1,f"{self.__pdpy__}: is empty")
-    elif root: 
-      self.root = Canvas(name=self.patchname)
+      log(2,"NOTIMPLEMENTED")
     else:
       log(1,f"{self.__pdpy__}: unexpected creation args.")
+    
+    if root: 
+      self.root = Canvas(json_dict={'name':self.patchname})
+
   
   def getTemplate(self, template_name):
     if hasattr(self, 'struct'):
@@ -76,13 +82,14 @@ class PdPy(Base):
     self.struct[-1].parent(self)
   
   def addRoot(self, argv):
-    self.root = Canvas(
-            name = self.patchname,
-            vis = 1,
-            id = None, 
-            screen = argv[:2], 
-            dimen = argv[2:4], 
-            font = argv[4])
+    self.root = Canvas(json_dict={
+            'name' : self.patchname,
+            'vis' : 1,
+            'id' : None, 
+            'screen' : Point(x=argv[0], y=argv[1]),
+            'dimen' : Size(w=argv[2], h=argv[3]), 
+            'font' : int(argv[4])
+    })
     return self.root
   
   def addDependencies(self, argv):
@@ -128,12 +135,13 @@ class PdPy(Base):
     This 
     """
     __canvas__ = self.__get_canvas__()
-    canvas = Canvas(
-            name   = argv[4],
-            vis    = argv[5],
-            id     = self.__obj_idx__,
-            screen = argv[:2], 
-            dimen  = argv[2:4])
+    canvas = Canvas(json_dict={
+            'name'   : argv[4],
+            'vis'    : argv[5],
+            'id'     : self.__obj_idx__,
+            'screen' : Point(x=argv[0], y=argv[1]), 
+            'dimen'  : Size(w=argv[2], h=argv[3]),
+    })
     self.__canvas_idx__.append(__canvas__.add(canvas))
 
     return canvas
@@ -145,45 +153,46 @@ class PdPy(Base):
     self.__obj_idx__ = self.__last_canvas__().grow()
     if 2 == len(argv):
       # an empty object
-      obj = PdObject(self.__obj_idx__, *argv)
+      obj = PdObject(pd_lines = [self.__obj_idx__] + argv)
       self.__last_canvas__().add(obj)
     else:
       # text-group object
       if "text" == argv[2]:
-        obj = PdArray(self.__obj_idx__, *argv)
+        obj = PdArray(pd_lines = [self.__obj_idx__] + argv)
         self.__last_canvas__().add(obj)
       # array-group object
       elif "array" == argv[2]:
-        obj = PdArray(self.__obj_idx__, *argv)
+        obj = PdArray(pd_lines = [self.__obj_idx__] + argv)
         self.__last_canvas__().add(obj)
       # IEMGUI-group object
       elif argv[2] in IEMGuiNames:
         # log(1, "NODES:", argv)
-        obj = PdIEMGui(self.__obj_idx__, *argv)
+        obj = PdIEMGui(self.__obj_idx__, pd_lines=argv)
         self.__last_canvas__().add(obj)
       # TODO: make special cases for data structures
       # - drawing instructions
       else:
-        obj = PdObject(self.__obj_idx__, *argv)
+        obj = PdObject(pd_lines = [self.__obj_idx__] + argv)
         self.__last_canvas__().add(obj)
     return obj
   
   def addMsg(self, argv):
     # log(1,"msg", nodes)
     self.__obj_idx__ = self.__last_canvas__().grow()
-    msg = PdMessage(self.__obj_idx__, *argv)
+    msg = PdMessage(pd_lines=[self.__obj_idx__]+argv)
     self.__last_canvas__().add(msg)
     return msg
   
   def addComment(self, argv):
     self.__last_canvas__().grow()
-    comment = Comment(*argv[2:], x=argv[0], y=argv[1])
+    # log(1,"COMMENT",argv)
+    comment = Comment(pd_lines=argv)
     self.__last_canvas__().comment(comment)
     return comment
 
   def addNativeGui(self, className, argv):
     self.__obj_idx__ = self.__last_canvas__().grow()
-    obj = PdNativeGui(className, self.__obj_idx__, *argv)
+    obj = PdNativeGui(className=className, pd_lines=[self.__obj_idx__]+argv)
     self.__last_canvas__().add(obj)
     return obj
 
@@ -191,17 +200,22 @@ class PdPy(Base):
     """ The ye-olde array ancestor
     """
     self.__obj_idx__ = self.__last_canvas__().grow()
-    graph = Graph( self.__obj_idx__, argv[0], argv[4:9], argv[1:5] )
+    graph = Graph(pd_lines=[self.__obj_idx__, argv[0]] + argv[4:9] + argv[1:5])
     self.__last_canvas__().add(graph)
     return graph
 
   def addGOPArray(self, argv):
-    arr = PdType(argv[0], size=argv[1], flag=argv[3], className="goparray")
+    arr = PdType(json_dict={
+      'name' : argv[0],
+      'size' : argv[1],
+      'flag' : argv[3],
+      'className' : "goparray"
+    })
     self.__last_canvas__().add(arr)
     return arr
   
   def addScalar(self, argv):
-    scalar = Scalar(self.struct, *argv)
+    scalar = Scalar(struct=self.struct, pd_lines=argv)
     self.__last_canvas__().add(scalar)
     return scalar
 
@@ -241,7 +255,8 @@ class PdPy(Base):
     ',' is handled before calling this method.
 
     """
-
+    log(1,f'Parsing {len(argvecs)} pd_lines')
+    # print(argvecs)
     store_graph = False
     last = None
 

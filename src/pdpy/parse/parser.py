@@ -365,16 +365,16 @@ class PdPyParser(PdPy):
       __canvas__.__cursor__.y += __canvas__.__box__.height
     
     if objClass is Comment:
-      obj = Comment(argv, x=x, y=y)
+      obj = Comment([x, y] + argv)
       __canvas__.comment(obj)
     else:
       self.__obj_idx__ = __canvas__.grow() 
       if isinstance(argv, str): 
-        obj = objClass(self.__obj_idx__, x, y, argv)
-        __canvas__.add(obj)
+        pd_lines = [ self.__obj_idx__, x, y, argv ]
       else:
-        obj = objClass(self.__obj_idx__, x, y, *argv)
-        __canvas__.add(obj)
+        pd_lines = [ self.__obj_idx__, x, y ] + argv
+      obj = objClass(pd_lines=pd_lines)
+      __canvas__.add(obj)
 
     return obj
 

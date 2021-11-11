@@ -10,22 +10,21 @@ from ..util.utils import splitSemi
 __all__ = [ 'Comment' ]
 
 class Comment(Base):
-  def __init__(self, *argv, x=None, y=None, json_dict=None, xml_object=None):
+  def __init__(self, pd_lines=None, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
-    if isinstance(json_dict, dict):
-      self.position = Point(json_dict=json_dict['position'])
-      self.text = json_dict.get('text', None)
+    if json_dict is not None:
+      for k,v in json_dict.items():
+        setattr(self, k, v)
     elif xml_object is not None:
       self.position = Point(xml_object=xml_object.find('position'))
-      self.text = x.text
-    elif x is not None and y is not None:
-      self.position = Point(x=x, y=y)
+      self.text = xml_object.text
+    elif pd_lines is not None:
+      self.position = Point(x=pd_lines[0], y=pd_lines[1])
       # can have "\\,"
       # split at "\\;" 
       # and the unescaped comma is a border flag: ", f 80"
-      argc = len(argv)
-      argv = list(argv)
-      if argc:
+      argv = pd_lines[2:]
+      if len(argv):
         if 2 < len(argv) and "f" == argv[-2] and argv[-1].isnumeric():
           self.border = self.num(argv[-1])
           argv = argv[:-2]

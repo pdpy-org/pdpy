@@ -5,7 +5,9 @@
 
 from .classes import PdObj
 
-__all__ = [ "PdObject" ]
+__all__ = [
+  "PdObject"
+]
 
 
 class PdObject(PdObj):
@@ -25,16 +27,21 @@ class PdObject(PdObj):
   5. `args`: The argument `list` of the pd object.
 
   """
-  def __init__(self, *argv):
-    super().__init__(*argv[:3])
-    args = list(argv)
-    argc = len(args)
-    try:
-      self.className = args[3] if 3 < argc else None
-      self.args = args[4:] if 4 < argc else None
-    except:
-      raise ValueError("Invalid arguments for PdObject")
-      # log(1, self.toJSON(), "Can't parse arguments", args)
+  def __init__(self, pd_lines=None,json_dict=None):
+    if pd_lines is not None:
+      super().__init__(*pd_lines[:3])
+      args = list(pd_lines)
+      argc = len(args)
+      try:
+        self.className = args[3] if 3 < argc else None
+        self.args = args[4:] if 4 < argc else None
+      except:
+        raise ValueError("Invalid arguments for PdObject")
+        # log(1, self.toJSON(), "Can't parse arguments", args)
 
-    self.border = None
+      self.border = None
+    elif json_dict is not None:
+      for k,v in json_dict.items():
+        setattr(self,k,v)
+
     self.__pdpy__ = self.__class__.__name__
