@@ -39,7 +39,7 @@ class PdArray(PdObject):
       self.subclass = args[4] if 4 < argc else None
       
       off = 0
-      if hasattr(self, "subclass"):
+      if self.subclass is not None:
         if "define" == self.subclass:
           
           if 5 < argc:
