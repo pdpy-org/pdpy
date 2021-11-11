@@ -91,7 +91,7 @@ if "__main__" in __name__:
 
   except:
     print("=" * 80)
-    log(2, f"[{input_file}]: {direct}")
+    log(2, direct)
     print("_" * 80)
     print(traceback.format_exc())
     print("=" * 80)
