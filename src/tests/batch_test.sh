@@ -66,11 +66,17 @@ function translate_all
   xml_jref="$outdir/$name-xml_ref.json"
   xml_ref="$outdir/$name-xml_ref.pd"
   $py $file -int $INT -f 'pd'   -t 'json' -i $input    -o $json_out >> $err 2>&1
+  if [[ ! -f $json_out ]]; then return; fi
   $py $file -int $INT -f 'pd'   -t 'pkl'  -i $input    -o $pkl_out  >> $err 2>&1
+  if [[ ! -f $pkl_out ]]; then return; fi
   $py $file -int $INT -f 'json' -t 'pd'   -i $json_out -o $json_ref >> $err 2>&1
+  if [[ ! -f $json_ref ]]; then return; fi
   $py $file -int $INT -f 'pkl'  -t 'pd'   -i $pkl_out  -o $pkl_ref  >> $err 2>&1
+  if [[ ! -f $pkl_ref ]]; then return; fi
   $py $file -int $INT -f 'json' -t 'xml'  -i $json_out -o $xml_out  >> $err 2>&1
+  if [[ ! -f $xml_out ]]; then return; fi
   $py $file -int $INT -f 'xml'  -t 'json' -i $xml_out  -o $xml_jref >> $err 2>&1
+  if [[ ! -f $xml_jref ]]; then return; fi
   $py $file -int $INT -f 'json' -t 'pd'   -i $xml_jref -o $xml_ref  >> $err 2>&1
 }
 
@@ -79,7 +85,7 @@ while read line; do
 
   if [[ ! $3 ]]; then
     translate_all $line
-    if grep -q "Error" $err; then
+    if grep -q "ERROR" $err; then
       echo "Stopped at: " $line
       echo "line number"
       echo $(grep -n $line $1 | cut -f 1 -d:)
