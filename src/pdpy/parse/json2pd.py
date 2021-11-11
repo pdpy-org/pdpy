@@ -169,22 +169,7 @@ class JsonToPd:
     # Get the self.depth and add a new element with -1
     
     self.depth.append(-1)
-    
-    s = '#N canvas'
-    if hasattr(obj, 'screen'):
-      screen = getattr(obj, 'screen')
-      s += screen.__pd__()
-    if hasattr(obj, 'dimension'):
-      dimension = getattr(obj, 'dimension')
-      s += ' ' + str(getattr(dimension,'width'))
-      s += ' ' + str(getattr(dimension,'height'))
-    # Do not add name and vis flag if it is the root, add font instead
-    if root and hasattr(obj, 'font'):
-      s += ' ' + str(getattr(obj,'font'))    
-    else:
-      s += ' ' + getattr(obj,'name')
-      s += f" {'1' if getattr(obj,'vis') else '0'}"
-    
+    s = obj.__pd__()
     self.pd.append(s + self.end)
     
     # recurse through the nodes if it is not the root
@@ -230,9 +215,9 @@ class JsonToPd:
         if hasattr(x, 'text'):
           text = getattr(x, 'text')
           if len(text) == 1: 
-            s += text[0]
+            s += ' ' + text[0]
           else: 
-            s += ' '.join([ f"{t} \\;" for t in text ])
+            s += ' ' + ' '.join([ f"{t} \\;" for t in text ])
         else:
           log(1, "Comment has no text.")
         # TODO: is this placing doubly escaped commas?
@@ -267,7 +252,7 @@ class JsonToPd:
 
   def addpos(self, pd_string, json_object):
     if hasattr(json_object, 'position'):
-      pd_string += getattr(json_object, 'position').__pd__()
+      pd_string += ' ' + json_object.position.__pd__()
     return pd_string
 
   def getNodes(self, obj):
@@ -537,7 +522,7 @@ class JsonToPd:
                 if isinstance(args, list):
                   s += ' ' + ' '.join(args)
                 else:
-                  s += args
+                  s += ' ' + args
           
           self.pd.append(s + self.end)
           self.getBorder(x)  
