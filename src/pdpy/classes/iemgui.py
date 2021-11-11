@@ -4,6 +4,7 @@
 """ Class Definitions """
 
 # from ..util.utils import  log
+import json
 from .base import Base
 from .default import PdFonts
 from .classes import Base, Point, Size, Bounds
@@ -54,13 +55,9 @@ class IEMLabel(Base):
               fsize=None,
               lbcolor=None,
               json_dict=None):
-    if json_dict is not None and isinstance(json_dict, dict):
-      for k,v in json_dict.items():
-        if 'offset' == k:
-          v = Point(json_dict=v)
-        elif 'font' == k:
-          v = PdFont(json_dict=v)
-        setattr(self, k, v)
+    if json_dict is not None:
+      super().__populate__(self, json_dict)
+
     else:
       self.__pdpy__ = self.__class__.__name__
       self.label = None if "empty" == label else label
@@ -113,13 +110,8 @@ class PdIEMGui(IEMLabel):
         self.className = pd_lines[3]
         if 4 < len(pd_lines):
           self.createGui(pd_lines[4:])
-    elif json_dict is not None and isinstance(json_dict, dict):
-      for k,v in json_dict.items():
-        if 'area' == k:
-          v = Size(json_dict=v)
-        elif 'limits' == k:
-          v = Bounds(json_dict=v)
-        setattr(self, k, v)
+    elif json_dict is not None:
+      super().__populate__(self, json_dict)
   
   def createGui(self, args):
     """ 

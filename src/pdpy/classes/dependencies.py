@@ -11,7 +11,7 @@ class Dependencies(Base):
   def __init__(self, *argv, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
     if json_dict is not None:
-      map(lambda k,v:setattr(self,k,v), json_dict.items())
+      super().__populate__(self, json_dict)
     elif xml_object is not None:
       pass
     else:

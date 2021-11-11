@@ -44,5 +44,4 @@ class PdNativeGui(PdObj):
           self.receive = pd_lines[8] if "-" != pd_lines[8] else None
           self.send = pd_lines[9] if "-" != pd_lines[9] else None
     elif json_dict is not None:
-      for k,v in json_dict.items():
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)

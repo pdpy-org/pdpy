@@ -24,8 +24,7 @@ class Point(Base):
       self.x = self.num(x)
       self.y = self.num(y)
     elif json_dict is not None:
-      for k,v in json_dict.items():
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
     elif xml_object is not None:
       self.x = xml_object.findtext('x', None)
       self.y = xml_object.findtext('y', None)
@@ -42,8 +41,7 @@ class Size(Base):
       self.width = self.num(w)
       self.height = self.num(h)
     elif json_dict is not None:
-      for k,v in json_dict.items():
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
     elif xml_object is not None:
       self.width = xml_object.findtext('width', 0)
       self.height = xml_object.findtext('height', 0)
@@ -67,8 +65,7 @@ class Bounds(Base):
       self.lower = dtype(lower)
       self.upper = dtype(upper)
     elif json_dict is not None:
-      for k,v in json_dict.items():
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
     elif xml_object is not None:
       self.lower = dtype(xml_object.findtext('lower', 0))
       self.upper = dtype(xml_object.findtext('upper', 0))
@@ -100,8 +97,7 @@ class Area(Base):
       self.a = Point(x=coords[0], y=coords[1])
       self.b = Point(x=coords[2], y=coords[3])
     elif json_dict is not None:
-      for k,v in json_dict.items():
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
     elif xml_object is not None:
       self.a = Point(xml_object=xml_object.find('a'))
       self.b = Point(xml_object=xml_object.find('b'))
@@ -138,8 +134,7 @@ class Coords(Base):
       if 9 == len(coords):
         self.addmargin(x=coords[7], y=coords[8])
     elif json_dict is not None:
-      for k,v in json_dict.items():
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
     elif xml_object is not None:
       self.range = Area(xml_object=xml_object.find('range'))
       self.dimension = Size(xml_object=xml_object.find('dimension'))
@@ -169,8 +164,7 @@ class Graph(Base):
       self.array = []
       self.border = None
     elif json_dict is not None:
-      for k,v in json_dict.items():
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
     elif xml_object is not None:
       self.id = xml_object.findtext('id')
       self.name = xml_object.findtext('name')

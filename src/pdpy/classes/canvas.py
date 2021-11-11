@@ -54,22 +54,21 @@ class Canvas(Base):
     self.__obj_idx__ = -1
     
     if json_dict is not None:
-      for k,v in json_dict.items():
-        if 'font' == k:
-          v = self.num(v)
-        if 'isroot' == k:
-          v = True if v == 'True' or v == True else False
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
     else:
       self.screen = Point(x=0, y=22)
       self.dimension = Size(w=450, h=300)
       self.font = 12
     
-    self.__pad__ = Size(w=self.font, h=self.font)
-    self.__margin__ = Size()
-    self.__cursor_init__ = Point(x=self.font, y=self.font)
-    self.__cursor__ = Point(x=self.font, y=self.font)
-    self.__box__ = Size(w=self.font * 1.25, h=self.font * 2)
+    self.isroot = self.pdbool(self.isroot)
+    
+    if hasattr(self, 'font'):
+      self.font = self.num(self.font)
+      self.__pad__ = Size(w=self.font, h=self.font)
+      self.__cursor_init__ = Point(x=self.font, y=self.font)
+      self.__cursor__ = Point(x=self.font, y=self.font)
+      self.__box__ = Size(w=self.font * 1.25, h=self.font * 2)
+      self.__margin__ = Size()
 
   def __pd__(self):
     s = "#X canvas"

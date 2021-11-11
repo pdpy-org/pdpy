@@ -17,8 +17,7 @@ class Source(Base):
       self.id = id
       self.port = port
     elif json_dict is not None:
-      for k,v in json_dict.items():
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
     elif xml_object is not None:
       self.id = xml_object.findtext('id', None)
       self.port = xml_object.findtext('port', None)
@@ -44,8 +43,7 @@ class Edge(Base):
       self.source = Source(id=pd[0], port=pd[1]) 
       self.sink = Source(id=pd[2], port=pd[3])
     elif json_dict is not None:
-      for k,v in json_dict.items():
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
     elif xml_object is not None:
       self.source = Source(xml_object.find('source', None))
       self.sink = Source(xml_object.find('sink', None))

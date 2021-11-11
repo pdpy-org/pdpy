@@ -4,6 +4,7 @@
 """ Base Class """
 
 import json
+from ..util.utils import log
 
 __all__ = [ "Base" ]
 
@@ -13,7 +14,6 @@ def filter_underscores(o):
     for k,v in o.__dict__.items() 
     if not k.startswith("__") or k=="__pdpy__"
   }
-
 
 class Base(object):
   def __init__(self):
@@ -56,3 +56,13 @@ class Base(object):
       return False
     else:
       return bool(int(float(n)))
+
+  def __populate__(self, scope, json_dict):
+    if not hasattr(json_dict, 'items'):
+      log(1, "json_dict is not a dict")
+      if not hasattr(json_dict, '__dict__'):
+        raise Exception("json_dict is not a dict or a class")
+      json_dict = json_dict.__dict__
+    else:
+      map(lambda k,v: setattr(scope, k, v), json_dict.items())
+

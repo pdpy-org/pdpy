@@ -13,8 +13,7 @@ class Comment(Base):
   def __init__(self, pd_lines=None, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
     if json_dict is not None:
-      for k,v in json_dict.items():
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
     elif xml_object is not None:
       self.position = Point(xml_object=xml_object.find('position'))
       self.text = xml_object.text

@@ -47,20 +47,18 @@ class PdPy(Base):
       # parse the pd lines and populate the pdpy instance
       # account for pure data line endings and split into a list
       self.parse(pd_lines)
+    
     elif json_dict is not None:
-      if not hasattr(json_dict, 'items'):
-        json_dict = json_dict.__dict__
-      for k,v in json_dict.items():
-        setattr(self, k, v)
-      self.__j2pd__ = JsonToPd(self)
-      self.__pd__ = self.__j2pd__.getpd()
-
+      # populate this class scope from the json_dict
+      super().__populate__(self, json_dict)
+    
     elif xml_object is not None:
-      log(2,"NOTIMPLEMENTED")
+      log(2,"XML INPUT NOT IMPLEMENTED")
+    
     else:
       log(1,f"{self.__pdpy__}: unexpected creation args.")
     
-    if root: 
+    if root:
       self.root = Canvas(json_dict={'name':self.patchname,'isroot':True})
 
   

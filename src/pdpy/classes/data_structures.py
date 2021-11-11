@@ -58,8 +58,7 @@ class Struct(Base):
     if   pd_lines is not None: 
       self.parsePd(pd_lines)
     elif json_dict is not None: 
-      for k,v in json_dict.items():
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
     elif xml_obj is not None:
       self.parseXML(xml_obj)
     else: 

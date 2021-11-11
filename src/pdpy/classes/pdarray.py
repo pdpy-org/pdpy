@@ -59,7 +59,6 @@ class PdArray(PdObject):
         self.args = args[6+off:]
 
     elif json_dict is not None:
-      for k,v in json_dict.items():
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
       
     self.__pdpy__ = self.__class__.__name__

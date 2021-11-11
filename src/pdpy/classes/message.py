@@ -16,7 +16,7 @@ class PdMsg(Base):
   def __init__(self, json_dict=None):
     self.__pdpy__ = self.__class__.__name__
     if json_dict is not None:
-      self.address = json_dict.get('address')
+      super().__populate__(self, json_dict)
   
   def add(self, msg):
     if not hasattr(self, "message"):
@@ -36,11 +36,12 @@ class PdMessage(Base):
       if len(pd_lines[3:]):
         self.addMessages(argv)
     elif json_dict is not None:
-      for k,v in json_dict.items():
-        if 'targets' == k:
-          for target in v:
-            self.addTarget(target)
-        setattr(self, k, v)
+      super().__populate__(self, json_dict)
+      # for k,v in json_dict.items():
+      #   if 'targets' == k:
+      #     for target in v:
+      #       self.addTarget(target)
+      #   setattr(self, k, v)
   
   def addTarget(self, target):
     if not hasattr(self, "targets"):
