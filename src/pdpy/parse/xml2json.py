@@ -6,6 +6,7 @@
 import xml.etree.ElementTree as ET
 
 from pdpy.util.utils import log
+from ..classes.base import Base
 from ..classes.iemgui import PdIEMGui
 from ..classes.pdpy import PdPy
 from ..classes.default import Default, IEMGuiNames, XmlTagConvert
@@ -23,7 +24,7 @@ from ..classes.classes import Coords
 
 __all__ = [ "XmlToJson" ]
 
-class XmlToJson:
+class XmlToJson(Base):
   """
   Convert XML to Json
   """
@@ -144,6 +145,8 @@ class XmlToJson:
       self.addGOPArray(x, __last_canvas__)
     elif 'border' == x.tag:
       border = x.text
+    elif 'isroot' == x.tag:
+      __last_canvas__.isroot = self.pdbool(x.text)
     elif x.find('x') is None:
       log(1, "Unknown Tag:", x.tag)
     else:
