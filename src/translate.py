@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import time
 import argparse
 import traceback
 from pathlib import Path
@@ -11,9 +12,10 @@ from pdpy import Translator, log, getFormat
 def quit_help(msg=None):
   parser.print_help(sys.stderr)
   if msg is not None:
-    log(2, "-"*80)
+    print("_"*80)
     log(2,"REASON:", msg)
-  log(2,"-"*80)
+  else:
+    log(2,"Unknown error...")
   sys.exit(1)
 
 global internals
@@ -57,11 +59,11 @@ if "__main__" in __name__:
         quit_help("Input file suffix does not match with -f argument")
   
   direct = source + ' -> ' + target
-  
+  start_time = time.process_time()
   print("-"*80)
-  log(0, "Begin")
-  log(0, direct)
-  log(0, input_file, "->", output_file)
+  log(0, f"BEGIN: {start_time} - {direct}")
+  log(0, f"From: {input_file}")
+  log(0, f"To: {output_file}")
   
   try:
     trans = Translator(input_file, 
@@ -93,3 +95,7 @@ if "__main__" in __name__:
     print("_" * 80)
     print(traceback.format_exc())
     print("=" * 80)
+
+  finally:
+    end_time = time.process_time()
+    log(0, f"END: {end_time} - ELAPSED: {end_time - start_time}")

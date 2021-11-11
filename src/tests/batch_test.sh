@@ -44,7 +44,7 @@ else
 fi
 
 # clear the error log
-echo > $err
+echo Logfile created by batch_test.sh on $(date) > $err
 
 # Make the output directory
 mkdir -p $outdir

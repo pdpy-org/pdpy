@@ -64,12 +64,12 @@ def log(l, *argv):
   -----------
   This function printst to console with error `level` 
   """
-  level = {
-    0: "",
-    1: "Warning :",
-    2: "-> ERROR:"
-  }
-  print(f"{level[l]}",*argv)
+  if 1==l:
+    print("WARNING:",*argv)
+  elif 2==l:
+    print("ERROR:",*list(map(lambda x:x.__repr__(),argv)))
+  else:
+    print(*argv)
 
 def splitByEscapedChar(data, char=";"):
 
