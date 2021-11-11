@@ -3,48 +3,13 @@
 
 """ Canvas Class Definition """
 
-
-# from ..util.utils import log
 from .base import Base
 from .classes import Point, Size
 
 __all__ = [
-  "Properties",
   "Canvas"
 ]
-
-class Properties(Base):
-  """ Properties for a Pure Data 'canvas' or 'subpatch'
-
-  Description:
-  -----------
-  An object to represent pd's subpatch properties. The basic properties come
-  from the pure data file representation: `#N canvas 0 22 450 300 12;`
-
-  Attributes:
-  -----------
-  `screen` (`Point`) x-y pair of the top-left window corner on the screen (0,22)
-  `dimension` (`Size`) window width and height dimensions (450, 300)
-  `font` (`int`) window font size (12)
-  `__pdpy__` (`str`) PdPy className (`self.__class__.__name__`)
-
-  """
-  def __init__(self, 
-               screen = [ 0, 22 ],
-               dimen  = [ 450, 300 ],
-               font   =   12 ):
-    self.screen = Point(screen[0], screen[1])
-    self.dimension = Size(dimen[0], dimen[1])
-    self.font = self.num(font)
-    self.__pdpy__ = self.__class__.__name__
-    self.__pad__ = Size(self.font, self.font)
-    self.__margin__ = Size(0, 0)
-    self.__cursor_init__ = Point(self.font, self.font)
-    self.__cursor__ = Point(self.font, self.font)
-    self.__box__ = Size(self.font * 1.25, self.font * 2)
-
-
-class Canvas(Properties):
+class Canvas(Base):
   """ A Pure Data 'canvas' or 'subpatch' represented as a `pdpy` object
 
   Description:
@@ -70,25 +35,38 @@ class Canvas(Properties):
   - `border`   (`int`) Position of the object's box right border  (None)
   - `id`       (`int`) Identifier number for connections (None)
   - `__obj_idx__`  (`int`) Number of objects currently on this canvas (-1)
+
+  The basic properties come
+  from the pure data file representation: `#N canvas 0 22 450 300 12;`
+
+  Attributes:
+  -----------
+  `screen` (`Point`) x-y pair of the top-left window corner on the screen (0,22)
+  `dimension` (`Size`) window width and height dimensions (450, 300)
+  `font` (`int`) window font size (12)
+  `__pdpy__` (`str`) PdPy className (`self.__class__.__name__`)
   
   """
-  def __init__(self, name = "(subpatch)", vis = 0, id = None, **kwargs):
-    super().__init__(**kwargs)
+  def __init__(self,json_dict=None):
 
     self.__pdpy__ = self.__class__.__name__
-    self.name = name.replace('.pd','')
-    if isinstance(vis, str):
-      self.vis = vis.lower() == "true"
-    else:
-      self.vis = self.pdbool(vis)
-    self.gop = False
-    self.coords = None
-    self.position = None
-    self.title = None
-    self.border = None
-    self.id = id
     self.__obj_idx__ = -1
+    
+    if json_dict is not None and isinstance(json_dict, dict):
+      for k,v in json_dict.items():
+        if 'font' == k:
+          v = self.num(v)
+        setattr(self, k, v)
+    else:
+      self.screen = Point(x=0, y=22)
+      self.dimension = Size(w=450, h=300)
+      self.font = 12
 
+    self.__pad__ = Size(w=self.font, h=self.font)
+    self.__margin__ = Size()
+    self.__cursor_init__ = Point(x=self.font, y=self.font)
+    self.__cursor__ = Point(x=self.font, y=self.font)
+    self.__box__ = Size(w=self.font * 1.25, h=self.font * 2)
 
   def grow(self):
     """ Increments the canvas object index by 1
@@ -196,4 +174,4 @@ class Canvas(Properties):
     return int(self.dimension.width / self.font * 1.55)
 
   def addpos(self, x, y):
-    self.position = Point(x, y)
+    self.position = Point(x=x, y=y)
