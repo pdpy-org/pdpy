@@ -14,8 +14,12 @@ __all__ = [
   "PdObj",
   "Size",
   "Bounds",
-  "Area"
+  "Area",
+  "ArgumentException"
 ]
+
+class ArgumentException(Exception):
+  pass
 
 class Point(Base):
   def __init__(self, x=None, y=None, json_dict=None, xml_object=None):
