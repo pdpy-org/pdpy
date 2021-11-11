@@ -1,0 +1,122 @@
+{
+  "Base" : {
+  "__file__" : "base",
+ "__subclass__" : "object"
+},
+  "Properties" : {
+  "__file__" : "canvas",
+ "__subclass__" : "Base"
+},
+  "Canvas" : {
+  "__file__" : "canvas",
+ "__subclass__" : "Properties"
+},
+  "Point" : {
+  "__file__" : "classes",
+ "__subclass__" : "Base"
+},
+  "Size" : {
+  "__file__" : "classes",
+ "__subclass__" : "Base"
+},
+  "Bounds" : {
+  "__file__" : "classes",
+ "__subclass__" : "Base"
+},
+  "Area" : {
+  "__file__" : "classes",
+ "__subclass__" : "Base"
+},
+  "Coords" : {
+  "__file__" : "classes",
+ "__subclass__" : "Base"
+},
+  "Graph" : {
+  "__file__" : "classes",
+ "__subclass__" : "Base"
+},
+  "PdObj" : {
+  "__file__" : "classes",
+ "__subclass__" : "PdData"
+},
+  "Comment" : {
+  "__file__" : "comment",
+ "__subclass__" : "Base"
+},
+  "Source" : {
+  "__file__" : "connections",
+ "__subclass__" : "Base"
+},
+  "Edge" : {
+  "__file__" : "connections",
+ "__subclass__" : "Base"
+},
+  "PdData" : {
+  "__file__" : "data_structures",
+ "__subclass__" : "Base"
+},
+  "PdType" : {
+  "__file__" : "data_structures",
+ "__subclass__" : "PdData"
+},
+  "Struct" : {
+  "__file__" : "data_structures",
+ "__subclass__" : "Base"
+},
+  "Scalar" : {
+  "__file__" : "data_structures",
+ "__subclass__" : "PdData"
+},
+  "XmlTagConvert" : {
+  "__file__" : "default",
+ "__subclass__" : "Base"
+},
+  "Default" : {
+  "__file__" : "default",
+ "__subclass__" : "Base"
+},
+  "Dependencies" : {
+  "__file__" : "dependencies",
+ "__subclass__" : "Base"
+},
+  "PdNativeGui" : {
+  "__file__" : "gui",
+ "__subclass__" : "PdObj"
+},
+  "PdFont" : {
+  "__file__" : "iemgui",
+ "__subclass__" : "Base"
+},
+  "IEMLabel" : {
+  "__file__" : "iemgui",
+ "__subclass__" : "Base"
+},
+  "PdIEMGui" : {
+  "__file__" : "iemgui",
+ "__subclass__" : "IEMLabel"
+},
+  "PdMsg" : {
+  "__file__" : "message",
+ "__subclass__" : "Base"
+},
+  "PdMessage" : {
+  "__file__" : "message",
+ "__subclass__" : "Base"
+},
+  "PdArray" : {
+  "__file__" : "pdarray",
+ "__subclass__" : "PdObject"
+},
+  "PdObject" : {
+  "__file__" : "pdobject",
+ "__subclass__" : "PdObj"
+},
+  "PdPy" : {
+  "__file__" : "p",
+ "__subclass__" : "Base"
+},
+  "Translator" : {
+  "__file__" : "translator",
+ "__subclass__" : "object"
+}
+}
