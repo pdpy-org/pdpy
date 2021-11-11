@@ -65,11 +65,11 @@ def log(l, *argv):
   This function printst to console with error `level` 
   """
   level = {
-    0: "Normal",
-    1: "Warning",
-    2: "Error"
+    0: "",
+    1: "Warning :",
+    2: "-> ERROR:"
   }
-  print(f"pdpy [{level[l]}]:",*argv)
+  print(f"{level[l]}",*argv)
 
 def splitByEscapedChar(data, char=";"):
 
@@ -164,7 +164,7 @@ def parsePdFileLines(file_lines):
   return  nodes
 
 def parsePdBinBuf(binbuf):
-  """ Feed in file lines and return a list with pure data lines
+  """ Feed in a pd file string and return a list with pure data lines
 
   Description
   -----------

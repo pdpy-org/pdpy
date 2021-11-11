@@ -44,7 +44,7 @@ if "__main__" in __name__:
   else:
     input_file = Path(args.input)
     if input_file.suffix != "." + source:
-      print(source, target, input_file)
+      log(2, source, target, input_file)
       quit_help("Input file suffix does not match with -f argument")
     if not input_file.exists():
       quit_help(f"File {input_file} does not exist.")
@@ -55,7 +55,12 @@ if "__main__" in __name__:
       output_file = Path(args.output)
       if output_file.suffix != "." + target:
         quit_help("Input file suffix does not match with -f argument")
-  log(0, source, '->', target)
+  
+  direct = source + ' -> ' + target
+  
+  print("-"*80)
+  log(0, "Begin")
+  log(0, direct)
   log(0, input_file, "->", output_file)
   
   try:
@@ -83,7 +88,8 @@ if "__main__" in __name__:
         trans.save_json_reflection(output_file)
 
   except:
-    log(2, "-" * 80)
-    log(2, f"Input: {input_file}")
-    log(2, "-" * 80)
-    traceback.print_exc()
+    print("=" * 80)
+    log(2, f"[{input_file}]: {direct}")
+    print("_" * 80)
+    print(traceback.format_exc())
+    print("=" * 80)
