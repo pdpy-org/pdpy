@@ -283,6 +283,16 @@ class Scalar(PdData):
         super().addData(argv[1:], char=";")
         super().addDataFromTemplate(self.data, s)
 
+  def getPd(self):
+    # scalarName = getattr(x,'name')
+    s = '#X ' + self.className
+    s += ' ' + self.name
+
+    _arr = None
+
+    if not hasattr(self, 'data'):
+      log(1,'Scalar has no data')
+      self.dumps()
 
     _fs = self.data[0]
     # log(1,'DATA',self.data)
