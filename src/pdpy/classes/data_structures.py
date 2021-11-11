@@ -30,14 +30,16 @@ class PdData(Base):
     self.data = template.parse(data)
 
 class PdType(PdData):
-  def __init__(self, name, template=None, size=None, flag=None, className=None):
+  def __init__(self, json_dict = None):
     self.__pdpy__ = self.__class__.__name__
-    self.name = name
-    self.template = template
-    self.size = self.num(size) if size is not None else None
-    self.addflag(flag)
-
-    self.className = className
+    if json_dict is not None:
+      for k,v in json_dict.items():
+        setattr(self, k, v)
+    # self.name = name
+    # self.template = template
+    # self.size = self.num(size) if size is not None else None
+    # self.addflag(flag)
+    # self.className = className
   
   def addflag(self, flag):
     # log(1, "Adding flag: {}".format(flag))
@@ -50,15 +52,18 @@ class PdType(PdData):
 class Struct(Base):
   """ An object containing a Pure Data 'struct' header
   """
-  def __init__(self, *argv, source='pd'):
+  def __init__(self, pd_lines=None, json_dict=None, xml_obj=None):
     self.__pdpy__ = self.__class__.__name__
     
-    if   source == 'pd'   : self.parsePd(argv)
-    elif source == 'json' : pass
-    elif source == 'xml'  : self.parseXML(argv[0])
-    elif source == 'pdpy' : pass
+    if   pd_lines is not None: 
+      self.parsePd(pd_lines)
+    elif json_dict is not None: 
+      for k,v in json_dict.items():
+        setattr(self, k, v)
+    elif xml_obj is not None:
+      self.parseXML(xml_obj)
     else: 
-      log(1, f"Unsupported source: {source}")
+      log(1, f"Unsupported arguments")
   
   def parent(self, parent=None):
     """ Sets the parent of this object if `parent` is present, otherwise returns the parent of this object."""
@@ -93,6 +98,22 @@ class Struct(Base):
       
       i += 2
   
+  # def parseJson(self, x):
+  #   # x is the simple namespace
+  #   for key, value in x.__dict__.items():
+
+  #     if key == 'float':
+  #       for v in value:
+  #         self.addFloat(v)
+      
+  #     if key == 'symbol' or key == 'text':
+  #       for v in value:
+  #         self.addSymbol(v)
+      
+  #     if key == 'array':
+  #       for v in value:
+  #         self.addArray(v.name, v.template)
+
   def parseXML(self, x):
     # x is the xml object
     # log(1,x.findall('*'))
@@ -116,7 +137,10 @@ class Struct(Base):
   def addArray(self, pd_name, array_name):
     if not hasattr(self, 'array'):
       self.array = []
-    self.array.append(PdType(pd_name, array_name))
+    self.array.append(PdType(json_dict={
+      'name':pd_name,
+      'template':array_name
+    }))
 
   def parse(self, data):
     """ Returns a list of scalar data structured by the corresponding struct """
@@ -175,12 +199,20 @@ class Struct(Base):
 
 
 class Scalar(PdData):
-  def __init__(self, struct, *argv, source='pd'):
+  def __init__(self, 
+               struct=None,
+               pd_lines=None,
+               json_dict=None,
+               xml_object=None):
     self.__pdpy__ = self.__class__.__name__
     self.className = "scalar"
-    if   source == 'pd'  : self.parsePd(struct, argv)
-    elif source == 'json': self.parseJson(struct, argv)
-    elif source == 'xml' : self.parseXml(struct, argv[0])
+    if pd_lines is not None:
+      self.parsePd(struct, pd_lines)
+    elif json_dict is not None:
+      for k,v in json_dict.items():
+        setattr(self, k, v)
+    elif xml_object is not None:
+      self.parseXml(struct, xml_object)
 
   def parseXml(self, struct, argv):
     self.name = argv.findtext('name')
@@ -200,11 +232,12 @@ class Scalar(PdData):
           if _array:
             super().addData(map(lambda x:x.text, _array.findall('*')))
 
-  def parseJson(self, struct, argv):
-    self.name = argv[0]
-    for s in struct:
-      if self.name == s.name:
-        super().addData(argv[1:])
+  # def parseJson(self, structs, json_data):
+  #   self.name = getattr(json_data, 'name')
+  #   for s in structs:
+  #     if self.name == s.name:
+  #       self.__struct__ = Struct(s, source='json')
+  #       super().addDataFromJson(self.__struct__, json_data)
   
   def parsePd(self, struct, argv):
     self.name = argv[0]
