@@ -52,7 +52,8 @@ class XmlToJson:
         self.__x__.findtext('width', default=self.__d__.dimen['width']),
         self.__x__.findtext('height',default=self.__d__.dimen['height'])
       ],
-      'font' : self.__x__.findtext('font', default=self.__d__.font['size'])
+      'font' : self.__x__.findtext('font', default=self.__d__.font['size']),
+      'isroot': True
     })
 
     # NOTE: add struct to root, not to canvas root
