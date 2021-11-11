@@ -45,7 +45,7 @@ class Edge(Base):
     elif json_dict is not None:
       super().__populate__(self, json_dict)
     elif xml_object is not None:
-      self.source = Source(xml_object.find('source', None))
-      self.sink = Source(xml_object.find('sink', None))
+      self.source = Source(xml_object=xml_object.find('source', None))
+      self.sink = Source(xml_object=xml_object.find('sink', None))
     else:
       raise ValueError(f"{self.__pdpy__}: No valid parameters given")
