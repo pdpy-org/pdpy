@@ -195,6 +195,44 @@ class Struct(Base):
     if len(_data):
       return _data
 
+  def from_json(self, json_data):
+    """ Returns a pd scalar structured by the corresponding struct """
+    # log(1, "JSON", json_data.__dict__['data'])
+    # json_data is the simple namespace
+    _data = []
+    data = json_data.__dict__['data']
+    if not len(data):
+      return None
+    _fs = data[0].__dict__
+    _arr = None
+    if len(data) > 2:
+      _arr = map(lambda x:x.__dict__, data[1:])
+
+    if hasattr(self, 'float'):
+      _data.append({f:self.num(_fs[f]) for f in self.float})
+    if hasattr(self, 'symbol'):
+      _data.append({f:_fs[f] for f in self.float})
+    
+    if _arr is not None and hasattr(self, 'array'):
+      for a in self.array:
+        _, _template = self.__parent__.getTemplate(a.template)
+        if _template is not None:
+      
+          if hasattr(_template, 'float'):
+            for val_list in _arr:
+              _data.append({f:self.num(val_list[f]) for f in _template.float})
+      
+          if hasattr(_template, 'symbol'):
+            for val_list in _arr:
+              _data.append({f:val_list[f] for f in _template.symbol})
+          
+          if hasattr(_template, 'array'):
+            #TODO: implement this
+            log(1,"DS recursion on arrays implemented")
+      
+    if len(_data):
+      return _data
+
 
 class Scalar(PdData):
   def __init__(self, 
@@ -245,3 +283,44 @@ class Scalar(PdData):
         super().addData(argv[1:], char=";")
         super().addDataFromTemplate(self.data, s)
 
+
+    _fs = self.data[0]
+    # log(1,'DATA',self.data)
+    if len(self.data) > 2:
+      _arr = self.data[1:]
+
+    if hasattr(self.__struct__,'float'):
+      for f in getattr(self.__struct__,'float'):
+        if f in _fs:
+          s += ' ' + str(_fs[f]) + ' \\;'
+    
+    if hasattr(self.__struct__,'symbol'):
+      for f in getattr(self.__struct__,'symbol'):
+        if f in _fs:
+          s += ' ' + str(_fs[f]) + ' \\;'
+    
+    if _arr is not None and hasattr(self.__struct__,'array'):
+      for a in getattr(self.__struct__,'array'):
+        _,  _template = self.__struct__.getTemplate(getattr(a,'template'))
+        if _template is not None:
+
+          if hasattr(_template, 'float'):
+            # populate de pd string by the structs' order
+            _arr_str = ''
+            for val_list in _arr:
+              for idx in enumerate(getattr(_template, 'float')):
+                  _arr_str += ' ' + val_list[idx]
+            s += ' ' + _arr_str + ' \\;'
+          
+          if hasattr(_template, 'symbol'):
+            # populate de pd string by the structs' order
+            _arr_str = ''
+            for val_list in _arr:
+              for idx in enumerate(getattr((_template, 'symbol'))):
+                  _arr_str += ' ' + val_list[idx]
+            s += ' ' + _arr_str + ' \\;'
+          
+          if hasattr(_template, 'array'):
+            #TODO: implement this
+            log(1,"DS recursion on arrays implemented")
+    return s
