@@ -8,14 +8,23 @@ from .base import Base
 from .default import PdFonts
 from .classes import Base, Point, Size, Bounds
 
-__all__ = [  "IEMLabel", "PdIEMGui" ]
+__all__ = [ 
+  "IEMLabel",
+  "PdIEMGui",
+  "PdFont"
+]
 
 class PdFont(Base):
-  def __init__(self, face, size):
-    self.__pdpy__ = self.__class__.__name__
-    self.face = self.num(face)
-    self.name = PdFonts[self.face if self.face < len(PdFonts) else -1]
-    self.size = self.num(size)
+  def __init__(self, face=None, size=None, json_dict=None):
+    if face is not None and size is not None:
+      self.__pdpy__ = self.__class__.__name__
+      self.face = self.num(face)
+      self.name = PdFonts[self.face if self.face < len(PdFonts) else -1]
+      self.size = self.num(size)
+    elif json_dict is not None and isinstance(json_dict, dict):
+      for k in json_dict:
+        setattr(self, k, json_dict[k])
+
 
 # end class PdFont -----------------------------------------------------------
 
@@ -37,12 +46,27 @@ class IEMLabel(Base):
   5. `fsize`: the font size of the label
   6. `lbcolor`: the color of the label
   """
-  def __init__(self, label, xoff, yoff, fface, fsize, lbcolor):
-    self.__pdpy__ = self.__class__.__name__
-    self.label = None if "empty" == label else label
-    self.offset = Point(xoff, yoff)
-    self.font = PdFont(fface, fsize)
-    self.lbcolor = self.num(lbcolor)
+  def __init__(self,
+              label=None,
+              xoff=None,
+              yoff=None,
+              fface=None,
+              fsize=None,
+              lbcolor=None,
+              json_dict=None):
+    if json_dict is not None and isinstance(json_dict, dict):
+      for k,v in json_dict.items():
+        if 'offset' == k:
+          v = Point(json_dict=v)
+        elif 'font' == k:
+          v = PdFont(json_dict=v)
+        setattr(self, k, v)
+    else:
+      self.__pdpy__ = self.__class__.__name__
+      self.label = None if "empty" == label else label
+      self.offset = Point(xoff, yoff)
+      self.font = PdFont(fface, fsize)
+      self.lbcolor = self.num(lbcolor)
 
 # end of class IEMLabel --------------------------------------------------------
 
@@ -77,17 +101,25 @@ class PdIEMGui(IEMLabel):
 
   """
 
-  def __init__(self, *argv):
-    self.__pdpy__ = self.__class__.__name__
-    self.id = argv[0]
-    self.position = Point(*argv[1:3])
-    # log(1, "Creating IEMGUI: {}".format(self.id))
-    # log(1, "Arguments:", argv)
-    # check if argument 3 is present in argv
-    if 3 < len(argv):
-      self.className = argv[3]
-      if 4 < len(argv):
-        self.createGui(argv[4:])
+  def __init__(self, pd_lines=None, json_dict=None):
+    if pd_lines is not None:
+      self.__pdpy__ = self.__class__.__name__
+      self.id = pd_lines[0]
+      self.position = Point(x=pd_lines[1], y=pd_lines[2])
+      # log(1, "Creating IEMGUI: {}".format(self.id))
+      # log(1, "Arguments:", argv)
+      # check if argument 3 is present in argv
+      if 3 < len(pd_lines):
+        self.className = pd_lines[3]
+        if 4 < len(pd_lines):
+          self.createGui(pd_lines[4:])
+    elif json_dict is not None and isinstance(json_dict, dict):
+      for k,v in json_dict.items():
+        if 'area' == k:
+          v = Size(json_dict=v)
+        elif 'limits' == k:
+          v = Bounds(json_dict=v)
+        setattr(self, k, v)
   
   def createGui(self, args):
     """ 
