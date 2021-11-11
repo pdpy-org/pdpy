@@ -157,7 +157,8 @@ class Struct(Base):
     if hasattr(self, 'float'):
       _data.append({f:self.num(v) for f,v in zip(self.float, _fs[:len(self.float)])})
     if hasattr(self, 'symbol'):
-      _data.append({f:v for f,v in zip(self.symbol, _fs[len(self.float):len(self.float)+len(self.symbol)])})
+      log(1, "SYMBOLS", self.symbol, _fs)
+      _data.append({f:v for f,v in zip(self.symbol, _fs[len(self.float)+1:])})
     
     if _arr is not None and hasattr(self, 'array'):
       for a in self.array:
