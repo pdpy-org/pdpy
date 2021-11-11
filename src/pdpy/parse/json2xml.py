@@ -14,7 +14,7 @@ class JsonToXml:
   
   def __init__(self, obj, autoindent=True):
 
-    log(1, 'Converting Json to XML', obj)
+    # log(1, 'Converting Json to XML', obj)
 
       # raise Exception("JsonToXml: No root found in the object")
 
