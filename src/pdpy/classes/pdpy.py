@@ -3,7 +3,7 @@
 
 """ PdPy class definition """
 
-from types import SimpleNamespace
+# from types import SimpleNamespace
 from ..util.utils import log
 from .base import Base, json
 from .classes import *
@@ -61,7 +61,7 @@ class PdPy(Base):
       log(1,f"{self.__pdpy__}: unexpected creation args.")
     
     if root: 
-      self.root = Canvas(json_dict={'name':self.patchname})
+      self.root = Canvas(json_dict={'name':self.patchname,'isroot':True})
 
   
   def getTemplate(self, template_name):
@@ -87,8 +87,9 @@ class PdPy(Base):
             'vis' : 1,
             'id' : None, 
             'screen' : Point(x=argv[0], y=argv[1]),
-            'dimen' : Size(w=argv[2], h=argv[3]), 
-            'font' : int(argv[4])
+            'dimension' : Size(w=argv[2], h=argv[3]), 
+            'font' : int(argv[4]),
+            'isroot' : True
     })
     return self.root
   
@@ -140,7 +141,7 @@ class PdPy(Base):
             'vis'    : argv[5],
             'id'     : self.__obj_idx__,
             'screen' : Point(x=argv[0], y=argv[1]), 
-            'dimen'  : Size(w=argv[2], h=argv[3]),
+            'dimension' : Size(w=argv[2], h=argv[3]),
     })
     self.__canvas_idx__.append(__canvas__.add(canvas))
 
@@ -256,7 +257,7 @@ class PdPy(Base):
 
     """
     log(1,f'Parsing {len(argvecs)} pd_lines')
-    # print(argvecs)
+    # print(type(argvecs))
     store_graph = False
     last = None
 
@@ -264,6 +265,7 @@ class PdPy(Base):
       # log(1, "argv:", argv)
       head = argv[:2] 
       body = argv[2:]
+      log(1, "head:", head, "body:", body)
       
       
       if "#N"   == head[0]: #N -> either structs or canvases
@@ -299,20 +301,20 @@ class PdPy(Base):
           else:                   last = self.restore(body)
         else: log(1,"What is this?", argv, self.patchname)
 
-  def from_json(self, json_object):
-    """ Parse a json object into this class' scope """
-    for key, value in json_object.items():
-      if 'patchname' == key:
-        self.patchname = value
-      elif 'encoding' == key:
-        self.encoding == value
-      elif 'struct' == key:
-        self.struct = []
-        for s in value:
-          self.struct.append(Struct(s,source='json'))
-      elif 'root' == key:
-        self.root = []
-        for r in value:
-          self.root.append(Canvas(r,source='json'))
-      elif 'dependencies' == key:
-        self.dependencies = Dependencies(value,source='json')
+  # def from_json(self, json_object):
+  #   """ Parse a json object into this class' scope """
+  #   for key, value in json_object.items():
+  #     if 'patchname' == key:
+  #       self.patchname = value
+  #     elif 'encoding' == key:
+  #       self.encoding == value
+  #     elif 'struct' == key:
+  #       self.struct = []
+  #       for s in value:
+  #         self.struct.append(Struct(s,source='json'))
+  #     elif 'root' == key:
+  #       self.root = []
+  #       for r in value:
+  #         self.root.append(Canvas(r,source='json'))
+  #     elif 'dependencies' == key:
+  #       self.dependencies = Dependencies(value,source='json')
