@@ -3,6 +3,7 @@
 
 """ Utilities """
 
+import sys
 import re
 
 __all__ = [
@@ -12,7 +13,9 @@ __all__ = [
   "parsePdBinBuf",
   "parsePdFileLines",
   "printer",
-  "checknum"
+  "checknum",
+  "quit_help",
+  "PdPyEncoder"
 ]
 
 def checknum(num):
@@ -177,3 +180,26 @@ def parsePdBinBuf(binbuf):
   nodes = [ tokenize(line) for line in list(filter(None,lines)) ]
 
   return  nodes
+
+def quit_help(msg=None, parser=None):
+  if parser is not None:
+    parser.print_help(sys.stderr)
+  if msg is not None:
+    print("_"*80)
+    log(2,"REASON:", msg)
+  else:
+    log(2,"Unknown error...")
+  sys.exit(1)
+
+
+def PdPyEncoder(obj):
+  import pdpy
+  if '__pdpy__' in obj:
+    pdpyName = obj['__pdpy__']
+    # print(pdpyName, obj)
+    # obj = set(map(lambda x:PdPyEncoder(x),obj))
+    # this line grabs the class from the module
+    # and creates an instance of it
+    # passing the json object as the argument
+    return getattr(pdpy, pdpyName)(json_dict=obj)
+  return obj
