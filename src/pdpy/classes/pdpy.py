@@ -3,9 +3,8 @@
 
 """ PdPy class definition """
 
-# from types import SimpleNamespace
 from ..util.utils import log
-from .base import Base, json
+from .base import Base
 from .classes import *
 from .pdobject import PdObject
 from .pdarray import PdArray
@@ -22,8 +21,6 @@ from ..parse.json2pd import JsonToPd
 
 __all__ = [ "PdPy" ]
 
-# nums = [ "12", "-13", "14.2", 15.4, "1e10", 1e-23, "1.3E+2", 1.4E-2]
-
 class PdPy(Base):
   
   def __init__(self, 
@@ -33,7 +30,9 @@ class PdPy(Base):
                pd_lines=None,
                json_dict=None,
                xml_object=None):
+
     """ Initialize a PdPy object """
+
     super().__init__()
 
     self.patchname = name
@@ -56,7 +55,7 @@ class PdPy(Base):
       log(2,"XML INPUT NOT IMPLEMENTED")
     
     else:
-      log(1,f"{self.__pdpy__}: unexpected creation args.")
+      log(1,f"{self.__pdpy__}: Neither json_dict nor xml_object nor pd_lines keyword arguments were passed")
     
     if root:
       self.root = Canvas(json_dict={'name':self.patchname,'isroot':True})
@@ -155,6 +154,9 @@ class PdPy(Base):
       obj = PdObject(pd_lines = [self.__obj_idx__] + argv)
       self.__last_canvas__().add(obj)
     else:
+      # protect against argv not being a list
+      if not isinstance(argv, list):
+        argv = [argv]
       # text-group object
       if "text" == argv[2]:
         obj = PdArray(pd_lines = [self.__obj_idx__] + argv)
@@ -166,7 +168,7 @@ class PdPy(Base):
       # IEMGUI-group object
       elif argv[2] in IEMGuiNames:
         # log(1, "NODES:", argv)
-        obj = PdIEMGui(self.__obj_idx__, pd_lines=argv)
+        obj = PdIEMGui(pd_lines=[self.__obj_idx__] + argv)
         self.__last_canvas__().add(obj)
       # TODO: make special cases for data structures
       # - drawing instructions
@@ -254,7 +256,7 @@ class PdPy(Base):
     ',' is handled before calling this method.
 
     """
-    log(1,f'Parsing {len(argvecs)} pd_lines')
+    # log(1,f'Parsing {len(argvecs)} pd_lines')
     # print(type(argvecs))
     store_graph = False
     last = None
@@ -263,7 +265,7 @@ class PdPy(Base):
       # log(1, "argv:", argv)
       head = argv[:2] 
       body = argv[2:]
-      log(1, "head:", head, "body:", body)
+      # log(1, "head:", head, "body:", body)
       
       
       if "#N"   == head[0]: #N -> either structs or canvases
@@ -298,21 +300,16 @@ class PdPy(Base):
           if "graph" == body[-1]: last = self.restore(body)
           else:                   last = self.restore(body)
         else: log(1,"What is this?", argv, self.patchname)
+  
+  def __pd__(self):
+    """ Unparse this class' scope into a list of pure data argument vectors
 
-  # def from_json(self, json_object):
-  #   """ Parse a json object into this class' scope """
-  #   for key, value in json_object.items():
-  #     if 'patchname' == key:
-  #       self.patchname = value
-  #     elif 'encoding' == key:
-  #       self.encoding == value
-  #     elif 'struct' == key:
-  #       self.struct = []
-  #       for s in value:
-  #         self.struct.append(Struct(s,source='json'))
-  #     elif 'root' == key:
-  #       self.root = []
-  #       for r in value:
-  #         self.root.append(Canvas(r,source='json'))
-  #     elif 'dependencies' == key:
-  #       self.dependencies = Dependencies(value,source='json')
+    Description:
+    ------------
+    This method returns a list of pure data argument vectors (1) from this 
+    class' scope.
+
+    """
+    # log(1, "Unparsing")
+    # return list(map(lambda x:x.__pd__(), self.root))
+    return JsonToPd(self).getpd()
