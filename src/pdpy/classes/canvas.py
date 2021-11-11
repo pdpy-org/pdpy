@@ -47,26 +47,40 @@ class Canvas(Base):
   `__pdpy__` (`str`) PdPy className (`self.__class__.__name__`)
   
   """
-  def __init__(self,json_dict=None):
+  def __init__(self, json_dict=None):
 
     self.__pdpy__ = self.__class__.__name__
+    self.isroot = False
     self.__obj_idx__ = -1
     
-    if json_dict is not None and isinstance(json_dict, dict):
+    if json_dict is not None:
       for k,v in json_dict.items():
         if 'font' == k:
           v = self.num(v)
+        if 'isroot' == k:
+          v = True if v == 'True' or v == True else False
         setattr(self, k, v)
     else:
       self.screen = Point(x=0, y=22)
       self.dimension = Size(w=450, h=300)
       self.font = 12
-
+    
     self.__pad__ = Size(w=self.font, h=self.font)
     self.__margin__ = Size()
     self.__cursor_init__ = Point(x=self.font, y=self.font)
     self.__cursor__ = Point(x=self.font, y=self.font)
     self.__box__ = Size(w=self.font * 1.25, h=self.font * 2)
+
+  def __pd__(self):
+    s = "#X canvas"
+    s += ' ' + self.screen.__pd__()
+    s += ' ' + self.dimension.__pd__()
+    if self.isroot:
+      s += ' ' + str(self.font)
+    else:
+      s += ' ' + self.name
+      s += ' ' + '1' if self.vis else '0'
+    return s
 
   def grow(self):
     """ Increments the canvas object index by 1
