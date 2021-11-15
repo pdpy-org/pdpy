@@ -76,6 +76,3 @@ class Base(object):
 
   def __pd__(self):
     return f"#{self.__type__} {self.__cls__}"
-
-  def __pos__(self, position):
-    return f"{self.__pd__()} {position.x} {position.y}"

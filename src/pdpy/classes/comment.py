@@ -35,7 +35,8 @@ class Comment(Base):
   def __pd__(self):
     """ Return a pd representation string """
 
-    s = super().__pos__(self.position)
+    s = super().__pd__()
+    s += ' ' + self.position.__pd__()
 
     if hasattr(self, 'text'):
       if len(self.text) == 1: 
