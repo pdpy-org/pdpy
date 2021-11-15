@@ -16,10 +16,15 @@ def filter_underscores(o):
   }
 
 class Base(object):
-  def __init__(self):
-    self.patchname = None
+  def __init__(self, patchname=None, pdtype=None, cls=None):
+    self.patchname = patchname # the name of the patch
+    self.__end__ = ';\r\n' # The pd line end character sequence
+    self.__type__ = pdtype # one of X, N, or A
+    self.__cls__ = cls # one of obj, msg, text, etc.
+
     return self
   
+
   def __setattr__(self, name, value):
     if value is not None:
         self.__dict__[name] = value
@@ -69,3 +74,8 @@ class Base(object):
     for k,v in json_dict.items():
       setattr(scope, k, v)
 
+  def __pd__(self):
+    return f"#{self.__type__} {self.__cls__}"
+
+  def __pos__(self, position):
+    return f"{self.__pd__()} {position.x} {position.y}"
