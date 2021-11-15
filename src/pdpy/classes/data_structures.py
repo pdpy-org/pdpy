@@ -333,5 +333,5 @@ class Scalar(PdData):
             #TODO: implement this
             log(1,"DS recursion on arrays implemented")
     
-    return Base.__pd__(s)
+    return super().__pd__(s)
 

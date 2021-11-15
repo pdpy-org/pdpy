@@ -146,6 +146,6 @@ class PdMessage(PdObj):
       s = ''
       for target in self.targets:
         s += ' ' + target.__pd__()
-      return Base.__pd__(s)
+      return super().__pd__(s)
     else:
       return ''
