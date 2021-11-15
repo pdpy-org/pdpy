@@ -306,9 +306,9 @@ class JsonToPd:
                   s += ' \\; ' + getattr(t,'address') + ' ' + ' \\, '.join(getattr(t,'message'))
           
           elif "scalar" == className:
-            scalar = Scalar(struct=self.obj.struct, json_dict=x)
+            # scalar = Scalar(struct=self.obj.struct, json_dict=x)
             # scalar.dumps()
-            s = scalar.getPd()
+            s = x.__pd__()
             
           elif className in PdNativeGuiNames:
             s += self.getNativeGui(x, className)

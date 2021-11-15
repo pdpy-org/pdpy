@@ -238,6 +238,8 @@ class Struct(Base):
     if len(_data):
       return _data
 
+# TODO: so, what if we just fill the Struct with the scalar data
+# instead of this Scalar class? maybe forget this class and use only Struct?
 
 class Scalar(PdData):
   def __init__(self, 
@@ -246,7 +248,9 @@ class Scalar(PdData):
                json_dict=None,
                xml_object=None):
     self.__pdpy__ = self.__class__.__name__
-    self.className = "scalar"
+    super().__init__(cls='scalar')
+    self.className = self.__cls__
+    
     if pd_lines is not None:
       self.parsePd(struct, pd_lines)
     elif json_dict is not None:
@@ -272,13 +276,6 @@ class Scalar(PdData):
           if _array:
             super().addData(map(lambda x:x.text, _array.findall('*')))
 
-  # def parseJson(self, structs, json_data):
-  #   self.name = getattr(json_data, 'name')
-  #   for s in structs:
-  #     if self.name == s.name:
-  #       self.__struct__ = Struct(s, source='json')
-  #       super().addDataFromJson(self.__struct__, json_data)
-  
   def parsePd(self, struct, argv):
     self.name = argv[0]
     for s in struct:
@@ -287,13 +284,11 @@ class Scalar(PdData):
         super().addData(argv[1:], char=";")
         super().addDataFromTemplate(self.data, s)
 
-  def getPd(self):
-    # scalarName = getattr(x,'name')
-    s = '#X ' + self.className
-    s += ' ' + self.name
+  def __pd__(self):
+
+    s = self.name
 
     _arr = None
-
     if not hasattr(self, 'data'):
       log(1,'Scalar has no data')
       self.dumps()
@@ -337,4 +332,6 @@ class Scalar(PdData):
           if hasattr(_template, 'array'):
             #TODO: implement this
             log(1,"DS recursion on arrays implemented")
-    return s
+    
+    return Base.__pd__(s)
+
