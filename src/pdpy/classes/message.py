@@ -3,9 +3,8 @@
 
 """ Class Definitions """
 
-import json
 from .base import Base
-from .classes import Point
+from .classes import PdObj
 
 __all__ = [
   "PdMessage",
@@ -13,44 +12,92 @@ __all__ = [
 ]
 
 class PdMsg(Base):
-  def __init__(self, json_dict=None):
+  """ Representation of a Pd Message
+  
+  Description
+  -----------
+  This class represents a Pd message with a address symbol and a message list.
+  If no address is given, the default is the 'outlet' symbol. This means that
+  the message list needs to be outputted to the object's outlet. If a address
+  is specified, then the list of messages is to be outputted to the address.
+
+  Parameters
+  ----------
+  address : str (optional) - Default: 'outlet' 
+
+  Attributes
+  ----------
+  address : str
+    The address symbol name
+  message : list
+    The message list
+
+  Methods
+  -------
+  add(msg) : None
+    Add a message to the message list
+  
+  __pd__() : str
+    Returns a string of escaped comma-separated Pd messages or an empty string
+    This method outputs a semicolon if the address is not the default.
+
+  """
+  def __init__(self, address=None, json_dict=None):
+    """ Initialize with a address or default to 'outlet' """
     self.__pdpy__ = self.__class__.__name__
+    
     if json_dict is not None:
       super().__populate__(self, json_dict)
+    else:
+      if address is not None:
+        self.address = address
+      else:
+        self.address = 'outlet'
   
   def add(self, msg):
-    if not hasattr(self, "message"):
+    if not hasattr(self, 'message'):
       self.message = []
     self.message.append(msg)
 
-class PdMessage(Base):
+  def __pd__(self):
+    """ 
+    Returns a string of escaped comma-separated Pd messages or an empty string.
+    If there is a address, output an escaped semicolon 
+    and the address before the message
+    """
+    s = f'\\; {self.address} ' if self.address != 'outlet' else ''
+    s += ' \\, '.join(self.message) if hasattr(self, 'message') else ''
+    return s
+
+class PdMessage(PdObj):
+  """ Representation of a Pd Message box
+
+  Description
+  -----------
+  This class represents a Pd message box with a list of targets
+  each target being a ::class::`PdMsg` instance
+  
+  """
   def __init__(self, pd_lines=None, json_dict=None):
 
     self.__pdpy__ = self.__class__.__name__
-    super().__init__(cls="msg")
 
     if pd_lines is not None:
+      super().__init__(*pd_lines[:3], cls='msg')
       self.className = self.__cls__
-      self.id = int(pd_lines[0])
-      self.position = Point(x=pd_lines[1], y=pd_lines[2])
       argv = pd_lines[3:]
       if len(pd_lines[3:]):
         self.addMessages(argv)
     elif json_dict is not None:
       super().__populate__(self, json_dict)
-      # for k,v in json_dict.items():
-      #   if 'targets' == k:
-      #     for target in v:
-      #       self.addTarget(target)
-      #   setattr(self, k, v)
-  
-  def addTarget(self, target):
+      
+  def addTarget(self, address):
     if not hasattr(self, "targets"):
       self.targets = []
-    if isinstance(target, dict):
-      self.targets.append(PdMsg(json_dict=target))  
+    if isinstance(address, dict):
+      self.targets.append(PdMsg(address['address'])) 
     else:
-      self.targets.append(PdMsg(json_dict={'address':target}))  
+      self.targets.append(PdMsg(address))  
 
   def addMessages(self, argv):
       
@@ -59,14 +106,13 @@ class PdMessage(Base):
       argv = argv[:-2]
       argv[-1] = argv[-1].replace(",","")
   
-
     if len(argv) >= 1:
       self.targets = []
-      self.targets.append(PdMsg(json_dict={'address':'outlet'}))
+      self.targets.append(PdMsg())
       i = 0
       msgbuf = ''
-      while i < len(argv) :
-      
+    
+      while i < len(argv) :    
         if "\\," == argv[i]:
           if len(msgbuf) and len(self.targets):
             self.targets[-1].add(msgbuf)
@@ -75,7 +121,6 @@ class PdMessage(Base):
             self.targets.pop()
           i += 1
           continue
-      
         if "\\;" == argv[i]:
           if len(msgbuf) and len(self.targets):
             self.targets[-1].add(msgbuf)
@@ -83,16 +128,24 @@ class PdMessage(Base):
           else:
             self.targets.pop()
           if i + 1 < len(argv):
-            self.targets.append(PdMsg(json_dict={'address':argv[i+1]}))
+            self.targets.append(PdMsg(argv[i+1]))
           i += 2
           continue
-
         if len(msgbuf):
           msgbuf += " " + argv[i]
         else:
           msgbuf = argv[i]
-        
         i += 1
       
       if len(self.targets):
         self.targets[-1].add(msgbuf)
+
+  def __pd__(self):
+    """ Return a pd message in pd lang """
+    if hasattr(self, "targets"):
+      s = ''
+      for target in self.targets:
+        s += ' ' + target.__pd__()
+      return Base.__pd__(s)
+    else:
+      return ''

@@ -15,9 +15,10 @@ __all__ = [
 ]
 
 class PdData(Base):
-  def __init__(self):
+  def __init__(self, **kwargs):
     self.__pdpy__ = self.__class__.__name__
     self.data = []
+    super().__init__(**kwargs)
     return self
   
   def addData(self, data, dtype=float, char=None):

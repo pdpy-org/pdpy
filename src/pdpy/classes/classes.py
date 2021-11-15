@@ -195,10 +195,11 @@ class PdObj(PdData):
   -------
   - `addargs(argv)`: Adds arguments to the pd object.
   """
-  def __init__(self, id, x, y):
+  def __init__(self, id, x, y, **kwargs):
     self.__pdpy__ = self.__class__.__name__
     self.id = int(id)
     self.position = Point(x=x, y=y)
+    super().__init__(**kwargs)
   
   def addargs(self, argv):
     if not hasattr(self,'args') or self.args is None: 
