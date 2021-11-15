@@ -75,11 +75,38 @@ class Base(object):
       setattr(scope, k, v)
 
   def __pd__(self, args=None):
-    s = f"#{self.__type__} {self.__cls__}"
-    if args is not None:
+    """ Returns a the pd line for this object
+    
+    Description
+    -----------
+    
+    Parameters
+    -----------
+    args : `list` of `str` or `str` or `None`
+      The arguments to the pd line.
+    
+    If args is present, the pd line will end with `;\r\n` with the arguments:
+      If args is a list of strings, each element is appended to the pd line.
+        `#N canvas 0 22 340 520 12;`
+      If args is a string, it is appended to the pd line: 
+        `#X obj 10 30 print;`
+    If args is None, the pd line is returned without arguments: 
+      `#X connect`
+
+    Returns
+    -----------
+    `str` : the pd line for this object built with `__type__` and `__cls__`
+
+    """
+    
+    s = f'#{self.__type__} {self.__cls__}'
+
+    if args is None:
+      return s
+    else:
       if isinstance(args, list):
         s += ' ' + ' '.join(args)
       else:
-        s += f" {args}"
-    return s + self.__end__
+        s += f' {args}'
+      return s + self.__end__
 
