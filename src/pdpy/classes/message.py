@@ -27,9 +27,10 @@ class PdMessage(Base):
   def __init__(self, pd_lines=None, json_dict=None):
 
     self.__pdpy__ = self.__class__.__name__
+    super().__init__(cls="msg")
 
     if pd_lines is not None:
-      self.className = "msg"
+      self.className = self.__cls__
       self.id = int(pd_lines[0])
       self.position = Point(x=pd_lines[1], y=pd_lines[2])
       argv = pd_lines[3:]

@@ -12,7 +12,7 @@ __all__ = [ 'Comment' ]
 class Comment(Base):
   def __init__(self, pd_lines=None, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
-    super().__init__(pdtype='X', cls='text')
+    super().__init__(cls='text')
     
     if json_dict is not None:
       super().__populate__(self, json_dict)
@@ -35,20 +35,19 @@ class Comment(Base):
   def __pd__(self):
     """ Return a pd representation string """
 
-    s = super().__pd__()
-    s += ' ' + self.position.__pd__()
+    args = self.position.__pd__()
 
     if hasattr(self, 'text'):
       if len(self.text) == 1: 
-        s += ' ' + self.text[0]
+        args += ' ' + self.text[0]
       else: 
-        s += ' ' + ' '.join([ f"{txt} \\;" for txt in self.text ])
+        args += ' ' + ' '.join([ f"{txt} \\;" for txt in self.text ])
     
     # TODO: is this placing doubly escaped commas?
-    s = s.replace(',',' \\,')
+    args = args.replace(',',' \\,')
     
-    s += f", f {self.border}" if hasattr(self, 'border') else ''
+    args += f", f {self.border}" if hasattr(self, 'border') else ''
 
-    return s + self.__end__
+    return super().__pd__(args)
 
 

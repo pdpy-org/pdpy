@@ -24,6 +24,9 @@ class Source(Base):
     else:
       raise ValueError(f"{self.__pdpy__}: No valid parameters given")
 
+  def __pd__(self):
+    return f"{self.id} {self.port}"
+
 class Edge(Base):
   """ A Pd Connection 
   Description
@@ -39,6 +42,7 @@ class Edge(Base):
   """
   def __init__(self, pd=None, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
+    super().__init__(cls="connect")
     if pd is not None:
       self.source = Source(id=pd[0], port=pd[1]) 
       self.sink = Source(id=pd[2], port=pd[3])
@@ -49,3 +53,6 @@ class Edge(Base):
       self.sink = Source(xml_object=xml_object.find('sink', None))
     else:
       raise ValueError(f"{self.__pdpy__}: No valid parameters given")
+
+  def __pd__(self):
+    return super().__pd__(f"{self.source.__pd__()} {self.sink.__pd__()}")
