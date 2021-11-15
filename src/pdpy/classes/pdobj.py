@@ -4,6 +4,7 @@
 """ Class Definitions """
 
 from .data_structures import PdData
+from .classes import Point
 
 __all__ = [
   "PdObj"
