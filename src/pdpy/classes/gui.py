@@ -33,9 +33,9 @@ class PdNativeGui(PdObj):
   """
   def __init__(self, className=None, pd_lines=None, json_dict=None):
     if className is not None and pd_lines is not None:
-      super().__init__(*pd_lines[:3])
+      super().__init__(*pd_lines[:3], cls=className)
       self.__pdpy__ = self.__class__.__name__
-      self.className = className
+      self.className = self.__cls__
       if 3 < len(pd_lines):
         self.digit_width = pd_lines[3]
         self.limits = Bounds(lower=pd_lines[4], upper=pd_lines[5])
@@ -46,3 +46,17 @@ class PdNativeGui(PdObj):
           self.send = pd_lines[9] if "-" != pd_lines[9] else None
     elif json_dict is not None:
       super().__populate__(self, json_dict)
+
+  def __pd__(self):
+    """ Returns the pd-code representation of the object """
+    s = f" {int(getattr(self,'digit_width',self.__d__.digits_width))}"
+    if hasattr(self, "limits"):
+      s += self.limits.__pd__()
+    else:
+      s += f" {self.__d__.limits['lower']} {self.__d__.limits['upper']}"
+    s += ' ' + int(getattr(self,'flag', self.__d__.flag))
+    s += ' ' + getattr(self,'label',self.__d__.label)
+    s += ' ' + getattr(self,'receive',self.__d__.receive)
+    s += ' ' + getattr(self,'send',self.__d__.send)
+
+    return super().__pd__(s)
