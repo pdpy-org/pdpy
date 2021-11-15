@@ -3,7 +3,8 @@
 
 """ Class Definitions """
 
-from .classes import PdObj, Bounds
+from .pdobj import PdObj
+from .classes import Bounds
 
 __all__ = ["PdNativeGui"]
 

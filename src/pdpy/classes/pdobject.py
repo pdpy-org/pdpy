@@ -3,7 +3,7 @@
 
 """ Class Definitions """
 
-from .classes import PdObj
+from .pdobj import PdObj
 
 __all__ = [
   "PdObject"
