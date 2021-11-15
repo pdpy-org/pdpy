@@ -74,6 +74,9 @@ class Base(object):
     for k,v in json_dict.items():
       setattr(scope, k, v)
 
+    if hasattr(scope, 'className') and self.__cls__ is None:
+      self.__cls__ = scope.className 
+
   def __pd__(self, args=None):
     """ Returns a the pd line for this object
     
