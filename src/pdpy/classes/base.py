@@ -68,20 +68,22 @@ class Base(object):
     else:
       setattr(self, 'data', [dtype(d) for d in data])
 
-  def __populate__(self, scope, json_dict):
-    # TODO: protect against overblowing scope
+  def __populate__(self, child, json_dict):
+    # TODO: protect against overblowing child scope
     if not hasattr(json_dict, 'items'):
-      log(1, scope.__class__.__name__, "json_dict is not a dict")
+      log(1, child.__class__.__name__, "json_dict is not a dict")
       if not hasattr(json_dict, '__dict__'):
-        raise log(2, scope.__class__.__name__, "json_dict is not a class")
+        raise log(2, child.__class__.__name__, "json_dict is not a class")
       json_dict = json_dict.__dict__
     
-    # map(lambda k,v: setattr(scope, k, v), json_dict.items())
+    # map(lambda k,v: setattr(child, k, v), json_dict.items())
     for k,v in json_dict.items():
-      setattr(scope, k, v)
-
-    if hasattr(scope, 'className') and self.__cls__ is None:
-      self.__cls__ = scope.className 
+      setattr(child, k, v)
+    
+    # self.dumps()
+    
+    if hasattr(child, 'className') and self.__cls__ is None:
+      self.__cls__ = child.className 
 
   def __pd__(self, args=None):
     """ Returns a the pd line for this object
