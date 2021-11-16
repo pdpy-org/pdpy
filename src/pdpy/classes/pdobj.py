@@ -3,14 +3,14 @@
 
 """ Class Definitions """
 
-from .data_structures import PdData
+from .base import Base
 from .classes import Point
 
 __all__ = [
   "PdObj"
 ]
 
-class PdObj(PdData):
+class PdObj(Base):
   """ A PdObj base class 
   
   Description
