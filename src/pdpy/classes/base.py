@@ -8,26 +8,42 @@ from ..util.utils import log, splitByEscapedChar
 
 __all__ = [ "Base" ]
 
-def filter_underscores(o):
-  return { 
-    k : v 
-    for k,v in o.__dict__.items() 
-    if not k.startswith("__") or k=="__pdpy__"
-  }
-
 class Base(object):
-  def __init__(self, patchname=None, pdtype=None, cls=None):
-    self.patchname = patchname # the name of the patch
-    self.__end__ = ';\r\n' # The pd line end character sequence
-    self.__type__ = pdtype if pdtype is not None else 'X' # one of X, N, or A
-    self.__cls__ = cls if cls is not None else 'obj' # or msg, text, etc.
-
-    # return self
+  """ Pd Base class
   
+  Description
+  -----------
+  The base class for all pd objects in pdpy.
+
+  Paramaeters
+  -----------
+  patchname : `str` (optional)
+    Name of the Pd patch file (default: `None`)
+  pdtype : `str` (optional)
+    Type of the Pd object (one of X, N, or A). Defaults to 'X': `#X ...`
+  cls : `str` (optional) 
+    Class of the Pd object (eg. msg, text, etc.) Defaults to `obj`. `#X obj ...`
+  json_dict : `dict` (optional)
+    A dictionary of key/value pairs to populate the object. 
+
+  """
+  
+  def __init__(self, patchname=None, pdtype=None, cls=None, json_dict=None):
+    """ Initialize the object """
+    self.patchname = patchname
+    self.__type__ = pdtype if pdtype is not None else 'X'
+    self.__cls__ = cls if cls is not None else 'obj'
+    
+    if json_dict:
+      self.__populate__(self, json_dict)
+    
+    # The pd line end character sequence
+    self.__end__ = ';\r\n' 
 
   def __setattr__(self, name, value):
+    """ Hijack setattr to return ourselves as a dictionary """
     if value is not None:
-        self.__dict__[name] = value
+      self.__dict__[name] = value
 
   def __json__(self):
     """ Return a JSON representation of the class' scope as a string """
@@ -53,6 +69,7 @@ class Base(object):
     log(0, self.__json__())
 
   def num(self, n):
+    """ Returns a number (or list of number) object from a Pd file string """
     pdnm = None
     if isinstance(n, str):
       if "#" in n: pdnm = n # skip css-style colors preceded by '#'
@@ -69,6 +86,7 @@ class Base(object):
     return pdnm
 
   def pdbool(self, n):
+    """ Returns a boolean object from a Pd file string """
     if n == "True" or n == "true":
       return True
     elif n == "False" or n == "false":
@@ -77,12 +95,14 @@ class Base(object):
       return bool(int(float(n)))
 
   def __fill__(self, data, dtype=float, char=None):
+    """ Fills the `data` attribute from a Pd file string """
     if char is not None:
       setattr(self, 'data', splitByEscapedChar(data, char=char))
     else:
       setattr(self, 'data', [dtype(d) for d in data])
 
   def __populate__(self, child, json_dict):
+    """ Populates the derived/child class instance with a dictionary """
     # TODO: protect against overblowing child scope
     if not hasattr(json_dict, 'items'):
       log(1, child.__class__.__name__, "json_dict is not a dict")
@@ -94,7 +114,7 @@ class Base(object):
     for k,v in json_dict.items():
       setattr(child, k, v)
     
-    if hasattr(child, 'className') and hasattr(self, '__cls__') and self.__cls__ is None:
+    if hasattr(child, 'className') and self.__cls__ is None:
       self.__cls__ = child.className 
 
   def __pd__(self, args=None):
