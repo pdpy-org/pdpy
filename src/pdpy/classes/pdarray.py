@@ -33,15 +33,14 @@ class PdArray(PdObject):
   """
   def __init__(self, pd_lines = None, json_dict = None):
     if pd_lines is not None:
-      super().__init__(*pd_lines[:4])
+      super().__init__(pd_lines=pd_lines[:4])
       args = list(pd_lines)
       argc = len(args)
-      self.subclass = args[4] if 4 < argc else None
-      
-      off = 0
-      if self.subclass is not None:
+
+      if 4 < argc:
+        self.subclass = args[4] 
+        off = 0
         if "define" == self.subclass:
-          
           if 5 < argc:
             if "-k" == args[5]:
               self.keep = True 
@@ -54,9 +53,9 @@ class PdArray(PdObject):
           if "array" == self.className:
             self.size = int(args[6+off]) if 6+off < argc else None
             off += 1
-        
-      if 6+off < argc:
-        self.args = args[6+off:]
+
+        if 6+off < argc:
+          self.args = args[6+off:]
 
     elif json_dict is not None:
       super().__populate__(self, json_dict)
