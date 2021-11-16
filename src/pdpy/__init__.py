@@ -25,6 +25,7 @@ from .classes.message import *
 from .classes.pdarray import *
 from .classes.pdobject import *
 from .classes.translator import *
+from .classes.exceptions import *
 
 # The parsers
 

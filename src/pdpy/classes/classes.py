@@ -1,22 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-""" Class Definitions """
+""" Graphical Class Definitions """
 
 from .base import Base
 
-__all__ = [ 
-  "Base",
-  "Coords",
+__all__ = [
   "Point",
   "Size",
   "Bounds",
   "Area",
-  "ArgumentException"
+  "Coords"
 ]
-
-class ArgumentException(Exception):
-  pass
 
 class Point(Base):
   def __init__(self, x=None, y=None, json_dict=None, xml_object=None):
@@ -153,6 +148,3 @@ class Coords(Base):
   
   def __pd__(self):
     return f" {self.range.__pd__()} {self.dimension.__pd__()} {self.gop} " + self.margin.__pd__() if self.margin else ""
-
-
-

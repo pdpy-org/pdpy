@@ -16,3 +16,4 @@ from .canvas import *
 from .iemgui import *
 from .pdpy import *
 from .translator import *
+from .exceptions import *

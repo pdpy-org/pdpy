@@ -6,7 +6,7 @@
 import json
 import pickle
 from pdpy.classes.base import Base
-from pdpy.classes.classes import ArgumentException
+from pdpy.classes.exceptions import ArgumentException
 from pdpy.classes.pdpy import PdPy
 from pdpy.parse.parser import PdPyParser
 from pdpy.parse.xml2json import XmlToJson
