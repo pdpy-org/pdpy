@@ -16,18 +16,32 @@ __all__ = [
 ]
 
 class PdType(Base):
-  def __init__(self, json_dict = None):
-    self.__pdpy__ = self.__class__.__name__
+  """ A Pd Type
+  
+  Description
+  -----------
+  A PdType instance extends the Base class with an `addflag` method
+  to account for GOPArrayFlags. And, a `__pd__` method to return a
+  string representation of the PdType.
 
-    if json_dict is not None:
-      super().__populate__(self, json_dict)
-    # self.name = name
-    # self.template = template
-    # self.size = self.num(size) if size is not None else None
-    # self.addflag(flag)
-    # self.className = className
-    #initialize the base class ?
-    # self.dumps()
+  Parameters
+  ----------
+  json_dict : dict
+    A dictionary of the JSON object. For example: 
+    ```
+    {
+      'name' : 'array_name',
+      'size' : 100,
+      'type' : 'float',
+      'flag' : 0,
+      'className' : 'goparray'
+    }
+    ```
+
+  """
+  def __init__(self, json_dict):
+    self.__pdpy__ = self.__class__.__name__
+    super().__init__(json_dict=json_dict)
   
   def addflag(self, flag):
     # log(1, "Adding flag: {}".format(flag))
@@ -38,14 +52,17 @@ class PdType(Base):
     else:
       self.flag = None
 
-
-  # def __pd__(self):
-  #   elif "goparray" == className:
-  #   s += "#X array"
-  #   s += ' ' + getattr(x,'name')
-  #   s += ' ' + str(getattr(x,'size'))
-  #   s += ' float'
-  #   s += ' ' + str(GOPArrayFlags.index(getattr(x,'flag')))
+  def __pd__(self):
+    """ Return a string representation of the PdType """
+    if self.__cls__ == 'array':
+      s=f"{self.name} {self.size} {self.type} {GOPArrayFlags.index(self.flag)}"
+      return super().__pd__(s)
+    elif hasattr(self, 'template'):
+      # FIXME: this is probably not correct
+      return f"{self.name} {self.template}"
+    else:
+      log(1, "PdType: {}".format(self.__cls__))
+      self.dumps()
 
 class Struct(Base):
   """ An object containing a Pure Data 'struct' header
