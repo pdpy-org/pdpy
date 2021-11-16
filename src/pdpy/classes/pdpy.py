@@ -314,4 +314,15 @@ class PdPy(Base):
     """
     # log(1, "Unparsing")
     # return list(map(lambda x:x.__pd__(), self.root))
+    
+    # __pd__ recursion order:    
+    # struct
+    # root
+    # dependencies
+    # nodes
+    # comments
+    # coords
+    # edges
+    # restore
+
     return JsonToPd(self).getpd()

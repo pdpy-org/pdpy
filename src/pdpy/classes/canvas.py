@@ -49,6 +49,7 @@ class Canvas(Base):
   """
   def __init__(self, json_dict=None):
 
+    super().__init__(pdtype='N', cls='canvas')
     self.__pdpy__ = self.__class__.__name__
     self.isroot = False
     self.__obj_idx__ = -1
@@ -59,6 +60,8 @@ class Canvas(Base):
       self.screen = Point(x=0, y=22)
       self.dimension = Size(w=450, h=300)
       self.font = 12
+      self.vis = 0
+      self.name = None
     
     self.isroot = self.pdbool(self.isroot)
     
@@ -71,14 +74,37 @@ class Canvas(Base):
       self.__margin__ = Size()
 
   def __pd__(self):
-    s = "#X canvas"
-    s += ' ' + self.screen.__pd__()
-    s += ' ' + self.dimension.__pd__()
+    """ Pure Data representation of the canvas """
+
+    s = f"{self.screen.__pd__()} {self.dimension.__pd__()}"
+    
     if self.isroot:
-      s += ' ' + str(self.font)
+      return super().__pd__(f"{s} {self.font}")
     else:
-      s += ' ' + self.name
-      s += ' ' + '1' if self.vis else '0'
+      # recurse
+      s = super().__pd__(f"{s} {self.name} {1 if self.vis else 0}")
+    
+      if hasattr(self, 'nodes'):
+        for node in self.nodes:
+          s += f" {node.__pd__()}"
+
+      if hasattr(self, 'comments'):
+        for comment in self.comments:
+          s += f" {comment.__pd__()}"
+      
+      if hasattr(self, 'edges'):
+        for edge in self.edges:
+          s += f" {edge.__pd__()}"
+      
+      if hasattr(self, 'coords'):
+        s += self.coords.__pd__()
+      
+      if hasattr(self, 'title'):
+        s += f"#X restore {self.position.__pd__()} {self.title} {self.__end__}"
+      
+      if hasattr(self, 'border'):
+        s += f"#X f {self.border} {self.__end__}"
+
     return s
 
   def grow(self):
