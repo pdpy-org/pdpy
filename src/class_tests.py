@@ -29,4 +29,4 @@ with open(file, "r", encoding='utf-8') as fp:
   data = PdPy(json_dict=data)
 
 with open('test.json','w') as fp:
-  fp.write(data.toJSON())
+  fp.write(data.__json__())
