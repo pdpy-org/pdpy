@@ -4,12 +4,10 @@
 """ Class Definitions """
 
 from .base import Base
-from .data_structures import PdType
 
 __all__ = [ 
   "Base",
   "Coords",
-  "Graph",
   "Point",
   "Size",
   "Bounds",
@@ -156,30 +154,5 @@ class Coords(Base):
   def __pd__(self):
     return f" {self.range.__pd__()} {self.dimension.__pd__()} {self.gop} " + self.margin.__pd__() if self.margin else ""
 
-class Graph(Base):
-  def __init__(self, pd_lines=None, json_dict=None, xml_object=None):
-    self.__pdpy__ = self.__class__.__name__
-    if pd_lines is not None:
-      self.id = pd_lines[0]
-      self.name = pd_lines[1]
-      self.area = Area(pd_lines[2:5])
-      self.range = Area(pd_lines[5:8])
-      self.array = []
-      self.border = None
-    elif json_dict is not None:
-      super().__populate__(self, json_dict)
-    elif xml_object is not None:
-      self.id = xml_object.findtext('id')
-      self.name = xml_object.findtext('name')
-      self.area = Area(xml_object=xml_object.find('area'))
-      self.range = Area(xml_object=xml_object.find('range'))
-      self.array = []
-      self.border = None
-  
-  def addArray(self, *argv):
-    self.array.append(PdType(json_dict={
-      'name' : argv[0],
-      'size' : argv[1]
-    }))
 
 

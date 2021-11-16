@@ -4,14 +4,16 @@
 """ Class Definitions for Pure Data's Data Structures """
 
 from .base import Base
+from .classes import Area # for the Graph class
 from .default import GOPArrayFlags
 from ..util.utils import  log, splitByEscapedChar
 
 __all__ = [
-  "Scalar", 
-  "Struct",
   "PdData",
-  "PdType"
+  "PdType",
+  "Struct",
+  "Graph",
+  "Scalar"
 ]
 
 class PdData(Base):
@@ -52,6 +54,16 @@ class PdType(PdData):
       self.flag = flag
     else:
       self.flag = None
+
+
+  # def __pd__(self):
+  #   elif "goparray" == className:
+  #   s += "#X array"
+  #   s += ' ' + getattr(x,'name')
+  #   s += ' ' + str(getattr(x,'size'))
+  #   s += ' float'
+  #   s += ' ' + str(GOPArrayFlags.index(getattr(x,'flag')))
+
 class Struct(Base):
   """ An object containing a Pure Data 'struct' header
   """
@@ -137,11 +149,12 @@ class Struct(Base):
     self.symbol.append(pd_name)
 
   def addArray(self, pd_name, array_name):
+    """ Append an array structure with symbols for name and template """
     if not hasattr(self, 'array'):
       self.array = []
     self.array.append(PdType(json_dict={
-      'name':pd_name,
-      'template':array_name
+      'name' : pd_name,
+      'template' : array_name
     }))
 
   def parse(self, data):
@@ -237,6 +250,25 @@ class Struct(Base):
       
     if len(_data):
       return _data
+
+class Graph(Struct):
+  """ The ye-olde array """
+  def __init__(self, pd_lines=None, json_dict=None, xml_object=None):
+    self.__pdpy__ = self.__class__.__name__
+    if pd_lines is not None:
+      self.id = pd_lines[0]
+      self.name = pd_lines[1]
+      self.area = Area(pd_lines[2:5])
+      self.range = Area(pd_lines[5:8])
+      self.border = None
+    elif json_dict is not None:
+      super().__populate__(self, json_dict)
+    elif xml_object is not None:
+      self.id = xml_object.findtext('id')
+      self.name = xml_object.findtext('name')
+      self.area = Area(xml_object=xml_object.find('area'))
+      self.range = Area(xml_object=xml_object.find('range'))
+      self.border = None
 
 # TODO: so, what if we just fill the Struct with the scalar data
 # instead of this Scalar class? maybe forget this class and use only Struct?
