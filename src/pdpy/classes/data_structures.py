@@ -6,38 +6,19 @@
 from .base import Base
 from .classes import Area # for the Graph class
 from .default import GOPArrayFlags
-from ..util.utils import  log, splitByEscapedChar
+from ..util.utils import  log
 
 __all__ = [
-  "PdData",
   "PdType",
   "Struct",
   "Graph",
   "Scalar"
 ]
 
-class PdData(Base):
-  def __init__(self, **kwargs):
-    self.__pdpy__ = self.__class__.__name__
-    self.data = []
-    super().__init__(**kwargs)
-    return self
-  
-  def addData(self, data, dtype=float, char=None):
-    if char is not None:
-      self.data = splitByEscapedChar(data, char=char)
-    else:
-      self.data = [dtype(d) for d in data]
-
-  def addDataFromTemplate(self, data, template):
-    self.data = template.parse(data)
-
-  def addDataFromJson(self, template, json_data):
-    self.data = template.from_json(json_data)
-
-class PdType(PdData):
+class PdType(Base):
   def __init__(self, json_dict = None):
     self.__pdpy__ = self.__class__.__name__
+    super().__init__()
     if json_dict is not None:
       super().__populate__(self, json_dict)
     # self.name = name
@@ -273,7 +254,7 @@ class Graph(Struct):
 # TODO: so, what if we just fill the Struct with the scalar data
 # instead of this Scalar class? maybe forget this class and use only Struct?
 
-class Scalar(PdData):
+class Scalar(Base):
   def __init__(self, 
                struct=None,
                pd_lines=None,
@@ -300,21 +281,21 @@ class Scalar(PdData):
       for s in struct:
         if self.name == s.name:
           if _symbol:
-            super().addData(_symbol.text, dtype=str)
-            # super().addData(map(lambda x:x.text, _data.findall('symbol')))
+            super().__fill__(_symbol.text, dtype=str)
+            # super().__fill__(map(lambda x:x.text, _data.findall('symbol')))
           if _float:
-            super().addData(_float.text, dtype=float)
-            # super().addData(map(lambda x:x.text, _data.findall('float')))
+            super().__fill__(_float.text, dtype=float)
+            # super().__fill__(map(lambda x:x.text, _data.findall('float')))
           if _array:
-            super().addData(map(lambda x:x.text, _array.findall('*')))
+            super().__fill__(map(lambda x:x.text, _array.findall('*')))
 
   def parsePd(self, struct, argv):
     self.name = argv[0]
     for s in struct:
       if self.name == s.name:
         # print('parsing struct', argv)
-        super().addData(argv[1:], char=";")
-        super().addDataFromTemplate(self.data, s)
+        super().__fill__(argv[1:], char=";")
+        super().__fill__(s.parse(self.data))
 
   def __pd__(self):
 

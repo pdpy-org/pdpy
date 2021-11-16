@@ -123,7 +123,7 @@ class XmlToJson(Base):
       'className' : x.tag
     })
     _data = x.find('data')
-    if _data: arr.addData(map(lambda x:x.text, _data.findall('float')))
+    if _data: arr.__fill__(map(lambda x:x.text, _data.findall('float')))
     __last_canvas__.add(arr)
 
 

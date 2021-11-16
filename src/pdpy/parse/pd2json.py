@@ -41,11 +41,11 @@ def PureDataToJson(patch, pd_lines):
     elif "#A" == head[0]:
       if not str(head[1]).isnumeric():
         # text
-        last.addData(body, char=";", dtype=str)
+        last.__fill__(body, char=";", dtype=str)
       else:
         # array, store as floats
         # last.size = body[0]
-        last.addData(body, dtype=float)
+        last.__fill__(body, dtype=float)
     # anything else is an "#X"
     else:
       # handle embedded declarations

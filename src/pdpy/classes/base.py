@@ -4,7 +4,7 @@
 """ Base Class """
 
 import json
-from ..util.utils import log
+from ..util.utils import log, splitByEscapedChar
 
 __all__ = [ "Base" ]
 
@@ -61,6 +61,12 @@ class Base(object):
       return False
     else:
       return bool(int(float(n)))
+
+  def __fill__(self, data, dtype=float, char=None):
+    if char is not None:
+      setattr(self, 'data', splitByEscapedChar(data, char=char))
+    else:
+      setattr(self, 'data', [dtype(d) for d in data])
 
   def __populate__(self, scope, json_dict):
     # TODO: protect against overblowing scope
