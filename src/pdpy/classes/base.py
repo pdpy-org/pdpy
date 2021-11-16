@@ -20,9 +20,9 @@ class Base(object):
     self.patchname = patchname # the name of the patch
     self.__end__ = ';\r\n' # The pd line end character sequence
     self.__type__ = pdtype if pdtype is not None else 'X' # one of X, N, or A
-    self.__cls__ = cls # one of obj, msg, text, etc.
+    self.__cls__ = cls if cls is not None else 'obj' # or msg, text, etc.
 
-    return self
+    # return self
   
 
   def __setattr__(self, name, value):
@@ -80,9 +80,7 @@ class Base(object):
     for k,v in json_dict.items():
       setattr(child, k, v)
     
-    # self.dumps()
-    
-    if hasattr(child, 'className') and self.__cls__ is None:
+    if hasattr(child, 'className') and hasattr(self, '__cls__') and self.__cls__ is None:
       self.__cls__ = child.className 
 
   def __pd__(self, args=None):

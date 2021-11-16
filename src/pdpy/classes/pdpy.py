@@ -206,9 +206,11 @@ class PdPy(Base):
     return graph
 
   def addGOPArray(self, argv):
+    # log(1,"addGOPArray", argv)
     arr = PdType(json_dict={
       'name' : argv[0],
       'size' : argv[1],
+      'type' : argv[2],
       'flag' : argv[3],
       'className' : "goparray"
     })

@@ -18,7 +18,7 @@ __all__ = [
 class PdType(Base):
   def __init__(self, json_dict = None):
     self.__pdpy__ = self.__class__.__name__
-    super().__init__()
+
     if json_dict is not None:
       super().__populate__(self, json_dict)
     # self.name = name
@@ -26,6 +26,8 @@ class PdType(Base):
     # self.size = self.num(size) if size is not None else None
     # self.addflag(flag)
     # self.className = className
+    #initialize the base class ?
+    # self.dumps()
   
   def addflag(self, flag):
     # log(1, "Adding flag: {}".format(flag))

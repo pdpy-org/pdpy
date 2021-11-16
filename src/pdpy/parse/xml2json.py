@@ -119,6 +119,7 @@ class XmlToJson(Base):
     arr = PdType(json_dict={
       'name' : x.findtext('name'),
       'size' : x.findtext('size'),
+      'type' : x.findtext('type'),
       'flag' : x.findtext('flag'),
       'className' : x.tag
     })
