@@ -76,34 +76,53 @@ class Canvas(Base):
   def __pd__(self):
     """ Pure Data representation of the canvas """
 
-    s = f"{self.screen.__pd__()} {self.dimension.__pd__()}"
+    # the canvas line
+    s = super().__pd__()
+
+    s += f" {self.screen.__pd__()} {self.dimension.__pd__()}"
     
     if self.isroot:
-      return super().__pd__(f"{s} {self.font}")
+      # root canvas only reports font
+      s += f" {self.font}"
     else:
-      # recurse
-      s = super().__pd__(f"{s} {self.name} {1 if self.vis else 0}")
+      # non-root canvases, report their name and their vis status
+      s += f" {self.name} {1 if self.vis else 0}"
     
-      if hasattr(self, 'nodes'):
-        for node in self.nodes:
-          s += f" {node.__pd__()}"
+    # end the line so we can continue appending to `s`
+    s += self.__end__
+    
+    # recurse through the nodes
+    if hasattr(self, 'nodes'):
+      for node in self.nodes:
+        s += f" {node.__pd__()}"
 
-      if hasattr(self, 'comments'):
-        for comment in self.comments:
-          s += f" {comment.__pd__()}"
-      
+    # recurse through the comments
+    if hasattr(self, 'comments'):
+      for comment in self.comments:
+        s += f" {comment.__pd__()}"
+    
+    # connections and coords
+    # this order is swapped for the root canvas
+    if self.isroot:
+      if hasattr(self, 'coords'):
+        s += self.coords.__pd__()
       if hasattr(self, 'edges'):
         for edge in self.edges:
           s += f" {edge.__pd__()}"
-      
+    else:
+      if hasattr(self, 'edges'):
+        for edge in self.edges:
+          s += f" {edge.__pd__()}"
       if hasattr(self, 'coords'):
         s += self.coords.__pd__()
-      
-      if hasattr(self, 'title'):
-        s += f"#X restore {self.position.__pd__()} {self.title} {self.__end__}"
-      
-      if hasattr(self, 'border'):
-        s += f"#X f {self.border} {self.__end__}"
+    
+    # the restore line
+    if hasattr(self, 'title'):
+      s += f"#X restore {self.position.__pd__()} {self.title} {self.__end__}"
+    
+    # the border, only if not root
+    if not self.isroot and hasattr(self, 'border'):
+      s += f"#X f {self.border} {self.__end__}"
 
     return s
 
