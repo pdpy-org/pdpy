@@ -37,7 +37,7 @@ class PdObject(PdObj):
         self.args = args[4:] if 4 < argc else None
       except:
         raise ValueError("Invalid arguments for PdObject")
-        # log(1, self.toJSON(), "Can't parse arguments", args)
+        # log(1, self.__json__(), "Can't parse arguments", args)
 
       self.border = None
     elif json_dict is not None:

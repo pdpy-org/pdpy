@@ -37,7 +37,7 @@ class JsonToPd:
     self.parse()
 
   def parse(self):
-      # print(o.toJSON())
+      # print(o.__json__())
       # add structs
       self.getStruct()
       # add main root canvas

@@ -138,7 +138,7 @@ class Translator(Base):
     
     if target == 'json' or target == 'pkl':
       # return a json string representation from pdpy
-      self.json = self.pdpy.toJSON()
+      self.json = self.pdpy.__json__()
       if self.json is not None:
         if target == 'json':
           ofname = out.with_suffix(".json")
@@ -177,7 +177,7 @@ class Translator(Base):
             name = self.input_file.name,
             encoding = self.encoding,
             pd_lines = parsePdBinBuf(self.pd)
-           ).toJSON()
+           ).__json__()
           if self.json_ref is not None:
             out = out.parent / (out.stem + '_ref')
             ofname = out.with_suffix(".json")

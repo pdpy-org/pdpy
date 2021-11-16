@@ -29,14 +29,28 @@ class Base(object):
     if value is not None:
         self.__dict__[name] = value
 
-  def toJSON(self):
-    return json.dumps(self,
-      default=filter_underscores,
-      sort_keys=False,
-      indent=4)
+  def __json__(self):
+    """ Return a JSON representation of the class' scope as a string """
+
+    # inner function to filter out variables that are
+    # prefixed with two underscores ('_') 
+    # with the exception of '__pdpy__'
+    def __filter__(o):
+      return { 
+        k : v 
+        for k,v in o.__dict__.items() 
+        if not k.startswith("__") or k=="__pdpy__"
+      }
+
+    return json.dumps(
+      self,
+      default   = __filter__,
+      sort_keys = False,
+      indent    = 4
+    )
   
   def dumps(self):
-    print(self.toJSON())
+    log(0, self.__json__())
 
   def num(self, n):
     pdnm = None

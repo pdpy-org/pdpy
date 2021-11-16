@@ -120,7 +120,7 @@ class Canvas(Base):
     if not hasattr(self, 'edges'): 
       self.edges = []
     self.edges.append(edge)
-    # log(1,"Edge",edge.toJSON())
+    # log(1,"Edge",edge.__json__())
 
   def comment(self, comment):
     """ Append a pure data comment
@@ -169,7 +169,7 @@ class Canvas(Base):
       self.__cursor__.y += self.__pad__.height 
       self.__cursor__.y += self.__box__.height
     
-    # log(0,"Get Position", self.__cursor__.toJSON())
+    # log(0,"Get Position", self.__cursor__.__json__())
 
     return self.__cursor__.x, self.__cursor__.y
 
