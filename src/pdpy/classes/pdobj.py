@@ -36,3 +36,11 @@ class PdObj(Base):
       self.args = []
     for arg in argv:
       self.args += [arg]
+
+  def __pd__(self):
+    """ Parses the pd object into a string """
+    s = self.position.__pd__()
+    if hasattr(self, 'args'):
+      for arg in self.args:
+        s += f" {arg}"
+    return super().__pd__(s)
