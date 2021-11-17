@@ -10,6 +10,7 @@ __all__ = ['Dependencies']
 class Dependencies(Base):
   def __init__(self, *argv, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
+    super().__init__(cls='declare')
     if json_dict is not None:
       super().__populate__(self, json_dict)
     elif xml_object is not None:
@@ -43,3 +44,17 @@ class Dependencies(Base):
         for lib in deps.libs:
           self.updateLib(lib)
 
+  def __pd__(self):
+    """ Parses the dependencies into paths and libs """
+    
+    s = ''
+    
+    if hasattr(self, 'paths'):
+      for x in self.paths:
+        s += f" -path {x}"
+    
+    if hasattr(self, 'libs'):
+      for x in self.libs:
+        s += f" -lib {x}"
+
+    return super().__pd__(s)
