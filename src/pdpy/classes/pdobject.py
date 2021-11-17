@@ -9,7 +9,6 @@ __all__ = [
   "PdObject"
 ]
 
-
 class PdObject(PdObj):
   """ A Pure Data Object object
   
@@ -27,20 +26,25 @@ class PdObject(PdObj):
   5. `args`: The argument `list` of the pd object.
 
   """
-  def __init__(self, pd_lines=None,json_dict=None):
-    if pd_lines is not None:
+  def __init__(self, pd_lines=None, json_dict=None, **kwargs):
+
+    self.__pdpy__ = self.__class__.__name__
+
+    if json_dict is not None:
+      super().__init__(**kwargs)
+      super().__populate__(self, json_dict)
+
+    elif pd_lines is not None:
       super().__init__(*pd_lines[:3])
       args = list(pd_lines)
       argc = len(args)
       try:
         self.className = args[3] if 3 < argc else None
-        self.args = args[4:] if 4 < argc else None
+        if 4 < argc:
+          self.addargs(args[4:])
       except:
         raise ValueError("Invalid arguments for PdObject")
         # log(1, self.__json__(), "Can't parse arguments", args)
 
       self.border = None
-    elif json_dict is not None:
-      super().__populate__(self, json_dict)
 
-    self.__pdpy__ = self.__class__.__name__
