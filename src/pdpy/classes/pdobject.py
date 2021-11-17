@@ -36,15 +36,9 @@ class PdObject(PdObj):
 
     elif pd_lines is not None:
       super().__init__(*pd_lines[:3])
-      args = list(pd_lines)
-      argc = len(args)
       try:
-        self.className = args[3] if 3 < argc else None
-        if 4 < argc:
-          self.addargs(args[4:])
+        self.className = pd_lines[3] if 3 < len(pd_lines) else None
+        if 4 < len(pd_lines):
+          self.addargs(pd_lines[4:])
       except:
         raise ValueError("Invalid arguments for PdObject")
-        # log(1, self.__json__(), "Can't parse arguments", args)
-
-      self.border = None
-
