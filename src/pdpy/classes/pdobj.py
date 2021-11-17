@@ -22,10 +22,13 @@ class PdObj(Base):
   -------
   - `addargs(argv)`: Adds arguments to the pd object.
   """
-  def __init__(self, id, x, y, **kwargs):
+  def __init__(self, id=None, x=None, y=None, **kwargs):
+
     self.__pdpy__ = self.__class__.__name__
-    self.id = int(id)
-    self.position = Point(x=x, y=y)
+    if id is not None:
+      self.id = int(id)
+    if x is not None and y is not None:
+      self.position = Point(x=x, y=y)
     super().__init__(**kwargs)
   
   def addargs(self, argv):
