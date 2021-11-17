@@ -4,6 +4,7 @@
 """ Pure data file lines (spanning multiple rows) to Json file """
 
 from ..util.utils import log
+from ..classes.pddata import PdData
 
 __all__ = [ "PureDataToJson" ]
 
@@ -41,11 +42,11 @@ def PureDataToJson(patch, pd_lines):
     elif "#A" == head[0]:
       if not str(head[1]).isnumeric():
         # text
-        last.__fill__(body, char=";", dtype=str)
+        setattr(last, 'data', PdData(body, dtype=str, char=';',head=head[1]))
       else:
         # array, store as floats
         # last.size = body[0]
-        last.__fill__(body, dtype=float)
+        setattr(last, 'data', PdData(body))
     # anything else is an "#X"
     else:
       # handle embedded declarations

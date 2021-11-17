@@ -5,8 +5,9 @@
 
 import xml.etree.ElementTree as ET
 
-from pdpy.util.utils import log
+from ..util.utils import log
 from ..classes.base import Base
+from ..classes.pddata import PdData
 from ..classes.iemgui import PdIEMGui
 from ..classes.pdpy import PdPy
 from ..classes.default import Default, IEMGuiNames, XmlTagConvert
@@ -124,7 +125,8 @@ class XmlToJson(Base):
       'className' : x.tag
     })
     _data = x.find('data')
-    if _data: arr.__fill__(map(lambda x:x.text, _data.findall('float')))
+    if _data: 
+      setattr(arr, 'data', PdData(list(map(lambda x:x.text, _data.findall('float')))))
     __last_canvas__.add(arr)
 
 
