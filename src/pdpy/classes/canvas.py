@@ -73,59 +73,6 @@ class Canvas(Base):
       self.__box__ = Size(w=self.font * 1.25, h=self.font * 2)
       self.__margin__ = Size()
 
-  def __pd__(self):
-    """ Pure Data representation of the canvas """
-
-    # the canvas line
-    s = super().__pd__()
-
-    s += f" {self.screen.__pd__()} {self.dimension.__pd__()}"
-    
-    if self.isroot:
-      # root canvas only reports font
-      s += f" {self.font}"
-    else:
-      # non-root canvases, report their name and their vis status
-      s += f" {self.name} {1 if self.vis else 0}"
-    
-    # end the line so we can continue appending to `s`
-    s += self.__end__
-    
-    # recurse through the nodes
-    if hasattr(self, 'nodes'):
-      for node in self.nodes:
-        s += f" {node.__pd__()}"
-
-    # recurse through the comments
-    if hasattr(self, 'comments'):
-      for comment in self.comments:
-        s += f" {comment.__pd__()}"
-    
-    # connections and coords
-    # this order is swapped for the root canvas
-    if self.isroot:
-      if hasattr(self, 'coords'):
-        s += self.coords.__pd__()
-      if hasattr(self, 'edges'):
-        for edge in self.edges:
-          s += f" {edge.__pd__()}"
-    else:
-      if hasattr(self, 'edges'):
-        for edge in self.edges:
-          s += f" {edge.__pd__()}"
-      if hasattr(self, 'coords'):
-        s += self.coords.__pd__()
-    
-    # the restore line
-    if hasattr(self, 'title'):
-      s += f"#X restore {self.position.__pd__()} {self.title} {self.__end__}"
-    
-    # the border, only if not root
-    if not self.isroot and hasattr(self, 'border'):
-      s += f"#X f {self.border} {self.__end__}"
-
-    return s
-
   def grow(self):
     """ Increments the canvas object index by 1
     """
@@ -232,4 +179,57 @@ class Canvas(Base):
     return int(self.dimension.width / self.font * 1.55)
 
   def addpos(self, x, y):
-    self.position = Point(x=x, y=y)
+    setattr(self, 'position', Point(x=x, y=y))
+
+  def __pd__(self):
+    """ Pure Data representation of the canvas """
+
+    # the canvas line
+    s = super().__pd__()
+
+    s += f" {self.screen.__pd__()} {self.dimension.__pd__()}"
+    
+    if self.isroot:
+      # root canvas only reports font
+      s += f" {self.font}"
+    else:
+      # non-root canvases, report their name and their vis status
+      s += f" {self.name} {1 if self.vis else 0}"
+    
+    # end the line so we can continue appending to `s`
+    s += self.__end__
+    
+    # recurse through the nodes
+    if hasattr(self, 'nodes'):
+      for node in self.nodes:
+        s += f" {node.__pd__()}"
+
+    # recurse through the comments
+    if hasattr(self, 'comments'):
+      for comment in self.comments:
+        s += f" {comment.__pd__()}"
+    
+    # connections and coords
+    # this order is swapped for the root canvas
+    if self.isroot:
+      if hasattr(self, 'coords'):
+        s += self.coords.__pd__()
+      if hasattr(self, 'edges'):
+        for edge in self.edges:
+          s += f" {edge.__pd__()}"
+    else:
+      if hasattr(self, 'edges'):
+        for edge in self.edges:
+          s += f" {edge.__pd__()}"
+      if hasattr(self, 'coords'):
+        s += self.coords.__pd__()
+    
+    # the restore line
+    if hasattr(self, 'title'):
+      s += f"#X restore {self.position.__pd__()} {self.title} {self.__end__}"
+    
+    # the border, only if not root
+    if not self.isroot and hasattr(self, 'border'):
+      s += f"#X f {self.border} {self.__end__}"
+
+    return s
