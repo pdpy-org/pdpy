@@ -6,6 +6,7 @@
 from ..util.utils import log
 from .base import Base
 from .classes import *
+from .pddata import PdData
 from .pdobject import PdObject
 from .pdarray import PdArray
 from .gui import PdNativeGui
@@ -276,9 +277,12 @@ class PdPy(Base):
           if    7 == len(argv): last = self.addRoot(body)
           elif  8 == len(argv): last = self.addCanvas(body)
       elif "#A" == head[0]: #A -> text, savestate, or array  data
-        if   "set"        in head[1]: last.__fill__(body, char=";", dtype=str)
-        elif "saved"      in head[1]: last.__fill__(body, dtype=str)
-        else:                         last.__fill__(body, dtype=float)
+        if   "set"        in head[1]:
+          setattr(last, 'data', PdData(body, dtype=str, char=';',head=head[1]))
+        elif "saved"      in head[1]:
+          setattr(last, 'data', PdData(body, dtype=str,head=head[1]))
+        else:
+          setattr(last, 'data', PdData(body))
       else: #X -----------------> anything else is an "#X"
         if   "declare"    == head[1]: self.addDependencies(body)
         elif "coords"     == head[1]: self.addCoords(body)
@@ -316,9 +320,10 @@ class PdPy(Base):
     # return list(map(lambda x:x.__pd__(), self.root))
     
     # __pd__ recursion order:    
+
     # struct
     # root
-    # dependencies
+    # - dependencies
     # nodes
     # comments
     # coords

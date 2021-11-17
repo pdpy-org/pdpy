@@ -5,6 +5,7 @@
 
 from .base import Base
 from .classes import Area # for the Graph class
+from .pddata import PdData
 from .default import GOPArrayFlags
 from ..util.utils import  log
 
@@ -300,21 +301,19 @@ class Scalar(Base):
       for s in struct:
         if self.name == s.name:
           if _symbol:
-            super().__fill__(_symbol.text, dtype=str)
-            # super().__fill__(map(lambda x:x.text, _data.findall('symbol')))
+            setattr(self, 'data',PdData(_symbol.text, dtype=str, head='scalar'))
           if _float:
-            super().__fill__(_float.text, dtype=float)
-            # super().__fill__(map(lambda x:x.text, _data.findall('float')))
+            setattr(self, 'data',PdData(_float.text, head='scalar'))
           if _array:
-            super().__fill__(map(lambda x:x.text, _array.findall('*')))
+            setattr(self, 'data',PdData(list(map(lambda x:x.text, _array.findall('*'))), head='scalar'))
 
   def parsePd(self, struct, argv):
     self.name = argv[0]
     for s in struct:
       if self.name == s.name:
         # print('parsing struct', argv)
-        super().__fill__(argv[1:], char=";")
-        super().__fill__(s.parse(self.data))
+        setattr(self, 'data', PdData(argv[1:], char=";", head='scalar'))
+        setattr(self, 'data', PdData(s.parse(self.data), head='scalar'))
 
   def __pd__(self):
 

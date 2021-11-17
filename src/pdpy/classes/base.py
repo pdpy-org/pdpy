@@ -4,7 +4,7 @@
 """ Base Class """
 
 import json
-from ..util.utils import log, splitByEscapedChar
+from ..util.utils import log
 
 __all__ = [ "Base" ]
 
@@ -93,13 +93,6 @@ class Base(object):
       return False
     else:
       return bool(int(float(n)))
-
-  def __fill__(self, data, dtype=float, char=None):
-    """ Fills the `data` attribute from a Pd file string """
-    if char is not None:
-      setattr(self, 'data', splitByEscapedChar(data, char=char))
-    else:
-      setattr(self, 'data', [dtype(d) for d in data])
 
   def __populate__(self, child, json_dict):
     """ Populates the derived/child class instance with a dictionary """
