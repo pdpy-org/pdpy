@@ -43,6 +43,9 @@ class PdObject(PdObj):
       except:
         raise ValueError("Invalid arguments for PdObject")
   
-  def __pd__(self):
+  def __pd__(self, args=None):
     """ Return the pd code of the object. """
-    return super().__pd__(self.className)
+    if args is None:
+      return super().__pd__(self.className)
+    else:
+      return super().__pd__(args)

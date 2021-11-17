@@ -37,23 +37,23 @@ class PdObj(Base):
     for arg in argv:
       self.args += [arg]
 
-  def __pd__(self, className=None):
-    """ Parses the pd object into a string 
-
-    Parameters
-    ----------
-    `className`: The class name of the pd object.
-
-    """
+  def __pd__(self, args=None):
+    """ Parses the pd object into a string """
+    # add the position
     s = self.position.__pd__()
-    s += f" {className}"
+    # check if called with argumnts (array, text, etc) and append them
+    if args:
+      s += f" {args}"
+    # check if we have extra arguments stored in the object and append them
     if hasattr(self, 'args'):
       for arg in self.args:
         s += f" {arg}"
-    
+    # wrap and close the pd line
     s = super().__pd__(s)
     
+    # check if we have data and append it (this calls the PdData.__pd__ method)
     if hasattr(self, 'data'):
       s += self.data.__pd__()
-    
+
+    # return the pd line
     return s

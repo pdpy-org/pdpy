@@ -58,3 +58,16 @@ class PdArray(PdObject):
             off += 1
           if 6+off < argc:
             self.addargs(pd_lines[6+off:])      
+  
+  def __pd__(self):
+    """ Return the pd code of the object. """
+    s = self.className
+    if hasattr(self, 'subclass'):
+      s += " " + self.subclass
+      if hasattr(self, 'keep'):
+        s += " -k"
+      if hasattr(self, 'name'):
+        s += " " + self.name
+      if "array" == self.className and hasattr(self, 'size'):
+        s += " " + self.size
+    return super().__pd__(s)
