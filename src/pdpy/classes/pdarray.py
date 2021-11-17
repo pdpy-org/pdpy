@@ -5,7 +5,9 @@
 
 from .pdobject import PdObject
 
-__all__ = ["PdArray"]
+__all__ = [
+  "PdArray"
+]
 
 class PdArray(PdObject):
   """ A Pure Data array object
@@ -32,32 +34,29 @@ class PdArray(PdObject):
   
   """
   def __init__(self, pd_lines = None, json_dict = None):
-    if pd_lines is not None:
+
+    self.__pdpy__ = self.__class__.__name__
+
+    if json_dict is not None:
+      super().__init__(json_dict=json_dict)
+
+    elif pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
-      args = list(pd_lines)
-      argc = len(args)
+      argc = len(pd_lines)
 
       if 4 < argc:
-        self.subclass = args[4] 
+        setattr(self, 'subclass', pd_lines[4])
         off = 0
-        if "define" == self.subclass:
-          if 5 < argc:
-            if "-k" == args[5]:
-              self.keep = True 
-              self.name = args[6] if 6 < argc else None
-              off += 1
-            else:
-              self.name = args[5] if 5 < argc else None
-              self.keep = False
-          
+        if "define" == self.subclass and 5 < argc and "-k" == pd_lines[5]:
+          setattr(self, 'keep', True)
+          off += 1
+        if 5+off < argc:
+          setattr(self, 'name', pd_lines[5+off])
           if "array" == self.className:
-            self.size = int(args[6+off]) if 6+off < argc else None
+            if 6+off < argc:
+              setattr(self, 'size', self.num(pd_lines[6+off]))
             off += 1
-
-        if 6+off < argc:
-          self.args = args[6+off:]
-
-    elif json_dict is not None:
-      super().__populate__(self, json_dict)
+          if 6+off < argc:
+            self.addargs(pd_lines[6+off:])
       
-    self.__pdpy__ = self.__class__.__name__
+      
