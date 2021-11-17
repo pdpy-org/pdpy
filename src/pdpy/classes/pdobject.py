@@ -42,3 +42,7 @@ class PdObject(PdObj):
           self.addargs(pd_lines[4:])
       except:
         raise ValueError("Invalid arguments for PdObject")
+  
+  def __pd__(self):
+    """ Return the pd code of the object. """
+    return super().__pd__(self.className)
