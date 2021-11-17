@@ -57,6 +57,4 @@ class PdArray(PdObject):
               setattr(self, 'size', self.num(pd_lines[6+off]))
             off += 1
           if 6+off < argc:
-            self.addargs(pd_lines[6+off:])
-      
-      
+            self.addargs(pd_lines[6+off:])      
