@@ -5,6 +5,7 @@
 
 from .base import Base
 from .classes import Point, Size, Bounds
+from .connections import Comm
 from .pdobject import PdObject
 from .default import PdFonts
 
@@ -30,7 +31,6 @@ class PdFont(Base):
     elif json_dict is not None and isinstance(json_dict, dict):
       for k in json_dict:
         setattr(self, k, json_dict[k])
-
 
 # end class PdFont -----------------------------------------------------------
 
@@ -93,7 +93,7 @@ class Vu(PdObject):
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
       self.area = Size(*pd_lines[:2])
-      self.receive = pd_lines[2]
+      self.comm = Comm(send=False, receive=pd_lines[2])
       self.label = IEMLabel(*pd_lines[3:8], pd_lines[9])
       self.bgcolor = self.num(pd_lines[8])
       self.scale= self.pdbool(pd_lines[10]) if 10 < len(pd_lines) else None
@@ -101,7 +101,16 @@ class Vu(PdObject):
     elif json_dict is not None:
       super().__populate__(self, json_dict)
 
-  # end of createVu method -----------------------------------------------------
+  def __pd__(self):
+    """ Return the pd string for this object """
+    s = self.area.__pd__()
+    s += f" {self.comm.__pd__()}"
+    s += f" {self.label.__pd__()}"
+    s += f" {self.bgcolor}"
+    s += f" {self.label.lbcolor}"
+    s += f" {self.scale}" if self.scale is not None else ""
+    s += f" {self.flag}" if self.flag is not None else ""
+    return super().__pd__(s)
 class Toggle(PdObject):
   """
   The IEM Toggle Object
@@ -128,8 +137,7 @@ class Toggle(PdObject):
       pd_lines = pd_lines[4:]
       self.size = self.num(pd_lines[0])
       self.init = self.pdbool(pd_lines[1])
-      self.send = pd_lines[2] if pd_lines[2] != "empty" else None
-      self.receive = pd_lines[3] if pd_lines[3] != "empty" else None
+      self.comm = Comm(pd_lines[2:4])
       self.label = IEMLabel(*pd_lines[4:9], pd_lines[11])
       self.bgcolor = self.num(pd_lines[9])
       self.fgcolor = self.num(pd_lines[10])
@@ -138,7 +146,18 @@ class Toggle(PdObject):
     elif json_dict is not None:
       super().__populate__(self, json_dict)
 
-  # end of createToggle method ------------------------------------------------
+  def __pd__(self):
+    """ Return the pd string for this object """
+    s = str(self.size)
+    s += f" {self.init}"
+    s += f" {self.comm.__pd__()}"
+    s += f" {self.label.__pd__()}"
+    s += f" {self.bgcolor}"
+    s += f" {self.fgcolor}"
+    s += f" {self.label.lbcolor}"
+    s += f" {self.flag}"
+    s += f" {self.nonzero}"
+    return super().__pd__(s)
 
 class Cnv(PdObject):
   """
@@ -165,19 +184,27 @@ class Cnv(PdObject):
       self.size = self.num(pd_lines[0])
       self.area = Size(*pd_lines[1:3])
       if 12 < len(pd_lines):
-        self.send = pd_lines[3] if pd_lines[3] != "empty" else None
+        self.comm = Comm(pd_lines[3:5])
         off = 0
       else:
+        self.comm = Comm(send=False,receive=pd_lines[3])
         off = 1
-      self.receive = pd_lines[4-off]  if pd_lines[4-off] != "empty" else None
       self.label = IEMLabel(*pd_lines[5-off:10-off], pd_lines[11-off])
       self.bgcolor = self.num(pd_lines[10-off])
       self.flag    = self.num(pd_lines[12-off])
     elif json_dict is not None:
       super().__populate__(self, json_dict)
   
-  # end of createCnv method ---------------------------------------------------
-
+  def __pd__(self):
+    """ Return the pd string for this object """
+    s = str(self.size)
+    s += f" {self.area.__pd__()}"
+    s += f" {self.comm.__pd__()}"
+    s += f" {self.label.__pd__()}"
+    s += f" {self.bgcolor}"
+    s += f" {self.label.lbcolor}"
+    s += f" {self.flag}"
+    return super().__pd__(s)
 class Radio(PdObject):
   """
   The IEM Radio Object
@@ -206,8 +233,7 @@ class Radio(PdObject):
       self.flag   = self.num(pd_lines[1])
       self.init   = self.pdbool(pd_lines[2])
       self.number = self.num(pd_lines[3])
-      self.send    = pd_lines[4] if pd_lines[4] != "empty" else None
-      self.receive = pd_lines[5] if pd_lines[5] != "empty" else None
+      self.comm = Comm(pd_lines[4:6])
       self.label = IEMLabel(*pd_lines[6:11], pd_lines[13])
       self.bgcolor = self.num(pd_lines[11])
       self.fgcolor = self.num(pd_lines[12])
@@ -215,8 +241,19 @@ class Radio(PdObject):
     elif json_dict is not None:
       super().__populate__(self, json_dict)
   
-  # end of createRadio method -------------------------------------------------
-
+  def __pd__(self):
+    """ Return the pd string for this object """
+    s = str(self.size)
+    s += f" {self.flag}"
+    s += f" {self.init}"
+    s += f" {self.number}"
+    s += f" {self.comm.__pd__()}"
+    s += f" {self.label.__pd__()}"
+    s += f" {self.bgcolor}"
+    s += f" {self.fgcolor}"
+    s += f" {self.label.lbcolor}"
+    s += f" {self.value}"
+    return super().__pd__(s)
 class Bng(PdObject):
   """
   The IEM Button Object
@@ -244,16 +281,25 @@ class Bng(PdObject):
       self.hold   = self.num(pd_lines[1])
       self.intrrpt= self.num(pd_lines[2])
       self.init   = self.pdbool(pd_lines[3])
-      self.send    = pd_lines[4] if pd_lines[4] != "empty" else None
-      self.receive = pd_lines[5] if pd_lines[5] != "empty" else None
+      self.comm = Comm(pd_lines[4:6])
       self.label = IEMLabel(*pd_lines[6:11], pd_lines[13])
       self.bgcolor = self.num(pd_lines[11])
       self.fgcolor = self.num(pd_lines[12])
     elif json_dict is not None:
       super().__populate__(self, json_dict)
   
-  # end of createBng method ---------------------------------------------------
-
+  def __pd__(self):
+    """ Return the pd string for this object """
+    s = str(self.size)
+    s += f" {self.hold}"
+    s += f" {self.intrrpt}"
+    s += f" {self.init}"
+    s += f" {self.comm.__pd__()}"
+    s += f" {self.label.__pd__()}"
+    s += f" {self.bgcolor}"
+    s += f" {self.fgcolor}"
+    s += f" {self.label.lbcolor}"
+    return super().__pd__(s)
 class Nbx(PdObject):
   """
   The IEM Number Box Object
@@ -283,8 +329,7 @@ class Nbx(PdObject):
       self.limits = Bounds(*pd_lines[2:4])
       self.log_flag = self.pdbool(pd_lines[4])
       self.init    = self.pdbool(pd_lines[5])
-      self.send    = pd_lines[6] if pd_lines[6] != "empty" else None
-      self.receive = pd_lines[7] if pd_lines[7] != "empty" else None
+      self.comm = Comm(pd_lines[6:8])
       self.label = IEMLabel(*pd_lines[8:13], pd_lines[15])
       self.bgcolor = self.num(pd_lines[13])
       self.fgcolor = self.num(pd_lines[14])
@@ -292,8 +337,22 @@ class Nbx(PdObject):
       self.log_height = self.num(pd_lines[17])
     elif json_dict is not None:
       super().__populate__(self, json_dict)
-
-  # end createNbx method ------------------------------------------------------
+  
+  def __pd__(self):
+    """ Return the pd string for this object """
+    s = str(self.digit_width)
+    s += f" {self.height}"
+    s += f" {self.limits.__pd__()}"
+    s += f" {self.log_flag}"
+    s += f" {self.init}"    
+    s += f" {self.comm.__pd__()}"
+    s += f" {self.label.__pd__()}"
+    s += f" {self.bgcolor}"
+    s += f" {self.fgcolor}"
+    s += f" {self.label.lbcolor}"
+    s += f" {self.value}"
+    s += f" {self.log_height}"
+    return super().__pd__(s)
 
 class Slider(PdObject):
   """
@@ -324,8 +383,7 @@ class Slider(PdObject):
       self.limits = Bounds(*pd_lines[2:4])
       self.log_flag = self.pdbool(pd_lines[4])
       self.init    = self.pdbool(pd_lines[5])
-      self.send    = pd_lines[6] if pd_lines[6] != "empty" else None
-      self.receive = pd_lines[7] if pd_lines[7] != "empty" else None
+      self.comm = Comm(pd_lines[6:8])
       self.label = IEMLabel(*pd_lines[8:13], pd_lines[15])
       self.bgcolor = self.num(pd_lines[13])
       self.fgcolor = self.num(pd_lines[14])
@@ -333,3 +391,18 @@ class Slider(PdObject):
       self.steady = self.num(pd_lines[17])
     elif json_dict is not None:
       super().__populate__(self, json_dict)
+
+  def __pd__(self):
+    """ Return the pd string for this object """
+    s = self.area.__pd__()
+    s += f" {self.limits.__pd__()}"
+    s += f" {self.log_flag}"
+    s += f" {self.init}"
+    s += f" {self.comm.__pd__()}"
+    s += f" {self.label.__pd__()}"
+    s += f" {self.bgcolor}"
+    s += f" {self.fgcolor}"
+    s += f" {self.label.lbcolor}"
+    s += f" {self.value}"
+    s += f" {self.steady}"
+    return super().__pd__(s)

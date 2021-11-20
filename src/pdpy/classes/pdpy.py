@@ -169,6 +169,23 @@ class PdPy(Base):
       # IEMGUI-group object
       elif argv[2] in IEMGuiNames:
         # log(1, "NODES:", argv)
+        if "vu" in argv[2]:
+          Vu(pd_lines=argv)
+        elif "tgl" in argv[2]:
+          Toggle(pd_lines=argv)
+        elif "cnv" in argv[2] or "my_canvas" in argv[2]:
+          Cnv(pd_lines=argv)
+        elif "radio" in argv[2] or "rdb" in argv[2]:
+          Radio(pd_lines=argv)
+        elif "bng"    in argv[2]:
+          Bng(pd_lines=argv)
+        elif "nbx"    in argv[2]:
+          Nbx(pd_lines=argv)
+        elif "sl" in argv[2]:
+          Slider(pd_lines=argv)
+        else:
+          raise ValueError("Unknown class name: {}".format(self.className))
+      
         obj = PdIEMGui(pd_lines=[self.__obj_idx__] + argv)
         self.__last_canvas__().add(obj)
       # TODO: make special cases for data structures

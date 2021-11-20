@@ -4,11 +4,36 @@
 """ Class Definitions """
 
 from .base import Base
+from .default import Default
 
-__all__ = [ 
+__all__ = [
+  'Comm',
   'Edge',
   'Source'
 ]
+
+class Comm(Base):
+  """
+  Communication Class holding send and receive pairs
+  """
+  def __init__(self, 
+               send=None,
+               receive=None,
+               json_dict=None,
+               default=Default.iemgui['symbol']):
+    """ Takes in a send and receive symbol pair or a json dict """
+    if json_dict is not None:
+      super().__populate__(self, json_dict)
+    else:
+      self.send = send if send is not None else default
+      self.receive = receive if receive is not None else default
+    
+  def __pd__(self, order=0):
+    """ Returns a pd string for this send/receive pair"""
+    if order==1:
+      return f"{self.receive} {self.send}"
+    else:
+      return f"{self.send if self.send != False else ''} {self.receive}"
 
 class Source(Base):
   def __init__(self, id=None, port=None, json_dict=None, xml_object=None):

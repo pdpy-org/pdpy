@@ -3,6 +3,8 @@
 
 """ Class Definitions """
 
+from .connections import Comm
+from .default import Default
 from .pdobj import PdObj
 from .classes import Bounds
 
@@ -41,22 +43,19 @@ class PdNativeGui(PdObj):
         self.limits = Bounds(lower=pd_lines[4], upper=pd_lines[5])
         self.flag = pd_lines[6] if 6 < len(pd_lines) else None
         if 7 < len(pd_lines):
-          self.label = pd_lines[7] if "-" != pd_lines[7] else None
-          self.receive = pd_lines[8] if "-" != pd_lines[8] else None
-          self.send = pd_lines[9] if "-" != pd_lines[9] else None
+          self.label = pd_lines[7] if Default.label != pd_lines[7] else None
+          self.comm = Comm(send=pd_lines[8], receive=pd_lines[9], default=Default.receive)
     elif json_dict is not None:
       super().__populate__(self, json_dict)
 
   def __pd__(self):
     """ Returns the pd-code representation of the object """
-    s = f" {int(getattr(self,'digit_width',self.__d__.digits_width))}"
+    s = f" {int(getattr(self,'digit_width',Default.digits_width))}"
     if hasattr(self, "limits"):
       s += self.limits.__pd__()
     else:
-      s += f" {self.__d__.limits['lower']} {self.__d__.limits['upper']}"
-    s += ' ' + int(getattr(self,'flag', self.__d__.flag))
-    s += ' ' + getattr(self,'label',self.__d__.label)
-    s += ' ' + getattr(self,'receive',self.__d__.receive)
-    s += ' ' + getattr(self,'send',self.__d__.send)
-
+      s += f" {Default.limits['lower']} {Default.limits['upper']}"
+    s += ' ' + int(getattr(self,'flag', Default.flag))
+    s += ' ' + getattr(self,'label',Default.label)
+    s += f" {self.comm.__pd__(1)}"
     return super().__pd__(s)
