@@ -60,24 +60,18 @@ class PdPy(Base):
     
     if root:
       self.root = Canvas(json_dict={'name':self.patchname,'isroot':True})
-
   
   def getTemplate(self, template_name):
-    if hasattr(self, 'struct'):
-      for idx, s in enumerate(getattr(self, 'struct')):
-        if template_name == getattr(s, 'name'):
-          return idx, s
+    for idx, s in enumerate(getattr(self, 'struct')):
+      if template_name == getattr(s, 'name'):
+        return idx, s
   
-  def addStruct(self, argv, source='pd'):
+  def addStruct(self, argv):
     if not hasattr(self, 'struct'): 
       self.struct = []
-    if source == 'xml':
-      # log(1, "addStruct", argv)
-      self.struct.append(Struct(argv, source=source))
-    else:
-      self.struct.append(Struct(*argv, source=source))
-    
-    self.struct[-1].parent(self)
+    struct = Struct(pd_lines=argv)
+    struct.parent(self)
+    self.struct.append(struct)  
   
   def addRoot(self, argv):
     self.root = Canvas(json_dict={
@@ -170,23 +164,22 @@ class PdPy(Base):
       elif argv[2] in IEMGuiNames:
         # log(1, "NODES:", argv)
         if "vu" in argv[2]:
-          Vu(pd_lines=argv)
+          obj = Vu(pd_lines = [self.__obj_idx__] + argv)
         elif "tgl" in argv[2]:
-          Toggle(pd_lines=argv)
+          obj = Toggle(pd_lines = [self.__obj_idx__] + argv)
         elif "cnv" in argv[2] or "my_canvas" in argv[2]:
-          Cnv(pd_lines=argv)
+          obj = Cnv(pd_lines = [self.__obj_idx__] + argv)
         elif "radio" in argv[2] or "rdb" in argv[2]:
-          Radio(pd_lines=argv)
+          obj = Radio(pd_lines = [self.__obj_idx__] + argv)
         elif "bng"    in argv[2]:
-          Bng(pd_lines=argv)
+          obj = Bng(pd_lines = [self.__obj_idx__] + argv)
         elif "nbx"    in argv[2]:
-          Nbx(pd_lines=argv)
+          obj = Nbx(pd_lines = [self.__obj_idx__] + argv)
         elif "sl" in argv[2]:
-          Slider(pd_lines=argv)
+          obj = Slider(pd_lines = [self.__obj_idx__] + argv)
         else:
           raise ValueError("Unknown class name: {}".format(self.className))
       
-        obj = PdIEMGui(pd_lines=[self.__obj_idx__] + argv)
         self.__last_canvas__().add(obj)
       # TODO: make special cases for data structures
       # - drawing instructions

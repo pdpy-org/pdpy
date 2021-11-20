@@ -5,6 +5,7 @@
 
 from .base import Base
 from .classes import Area # for the Graph class
+from .exceptions import ArgumentException
 from .pddata import PdData
 from .default import GOPArrayFlags
 from ..util.utils import  log
@@ -59,7 +60,6 @@ class PdType(Base):
       s=f"{self.name} {self.size} {self.type} {GOPArrayFlags.index(self.flag)}"
       return super().__pd__(s)
     elif hasattr(self, 'template'):
-      # FIXME: this is probably not correct
       return f"{self.name} {self.template}"
     else:
       log(1, "PdType: {}".format(self.__cls__))
@@ -70,18 +70,43 @@ class Struct(Base):
   """
   def __init__(self, pd_lines=None, json_dict=None, xml_obj=None):
     self.__pdpy__ = self.__class__.__name__
-    
-    if   pd_lines is not None: 
-      self.parsePd(pd_lines)
-    elif json_dict is not None: 
+    super().__init__(pdtype='N', cls='struct')
+    if json_dict is not None: 
       super().__populate__(self, json_dict)
     elif xml_obj is not None:
-      self.parseXML(xml_obj)
+      # log(1,xml_obj.findall('*'))
+      self.name = xml_obj.findtext('name')
+      for s in xml_obj.findall('float'): self.addFloat(s.text)
+      for s in xml_obj.findall('symbol'): self.addSymbol(s.text)
+      for s in xml_obj.findall('text'): self.addText(s.text)
+      for s in xml_obj.findall('array'): 
+        self.addArray(s.findtext('name'),s.findtext('template'))
+    elif pd_lines is not None: 
+      self.name = pd_lines[0]
+      pd_lines = pd_lines[1:]
+      i = 0
+      while i < len(pd_lines):
+        if i >= len(pd_lines): break
+        pd_type = pd_lines[i]
+        pd_name = pd_lines[i + 1]
+        if   'float'  == pd_type: self.addFloat(pd_name)
+        elif 'symbol' == pd_type: self.addSymbol(pd_name)
+        elif 'text'   == pd_type: self.addText(pd_name)
+        elif 'array'  == pd_type:
+          i += 2
+          self.addArray(pd_name, pd_lines[i])
+        else:
+          # log(1, self.name, pd_lines)
+          log(1, f"Unparsed Struct Field #{i}")
+        i += 2
     else: 
-      log(1, f"Unsupported arguments")
+      raise ArgumentException("Struct: Incorrect arguments given")
   
   def parent(self, parent=None):
-    """ Sets the parent of this object if `parent` is present, otherwise returns the parent of this object."""
+    """ 
+    Sets the parent of this object if `parent` is present, 
+    otherwise returns the parent of this object.
+    """
     if parent is not None:
       self.__parent__ = parent
       return self
@@ -90,55 +115,6 @@ class Struct(Base):
     else:
       raise ValueError("No parent set")
 
-  def parsePd(self, argv):
-    self.name = argv[0]
-    argv = argv[1:]
-    
-    i = 0
-
-    while i < len(argv):
-      if i >= len(argv): break
-      pd_type = argv[i]
-      pd_name = argv[i + 1]
-      
-      if   'float'  == pd_type: self.addFloat(pd_name)
-      elif 'symbol' == pd_type: self.addSymbol(pd_name)
-      elif 'text'   == pd_type: self.addSymbol(pd_name)
-      elif 'array'  == pd_type:
-        i += 2
-        self.addArray(pd_name, argv[i])
-      else:
-        # log(1, self.name, argv)
-        log(1, f"Unparsed Struct Field #{i}")
-      
-      i += 2
-  
-  # def parseJson(self, x):
-  #   # x is the simple namespace
-  #   for key, value in x.__dict__.items():
-
-  #     if key == 'float':
-  #       for v in value:
-  #         self.addFloat(v)
-      
-  #     if key == 'symbol' or key == 'text':
-  #       for v in value:
-  #         self.addSymbol(v)
-      
-  #     if key == 'array':
-  #       for v in value:
-  #         self.addArray(v.name, v.template)
-
-  def parseXML(self, x):
-    # x is the xml object
-    # log(1,x.findall('*'))
-    self.name = x.findtext('name')
-    for s in x.findall('float'): self.addFloat(s.text)
-    for s in x.findall('symbol'): self.addSymbol(s.text)
-    for s in x.findall('text'): self.addSymbol(s.text)
-    for s in x.findall('array'): 
-      self.addArray(s.findtext('name'),s.findtext('template'))
-  
   def addFloat(self, pd_name):
     if not hasattr(self, 'float'):
       self.float = []
@@ -148,6 +124,11 @@ class Struct(Base):
     if not hasattr(self, 'symbol'):
       self.symbol = []
     self.symbol.append(pd_name)
+
+  def addText(self, pd_name):
+    if not hasattr(self, 'text'):
+      self.text = []
+    self.text.append(pd_name)
 
   def addArray(self, pd_name, array_name):
     """ Append an array structure with symbols for name and template """
@@ -252,6 +233,19 @@ class Struct(Base):
     if len(_data):
       return _data
 
+  def __pd__(self):
+    """ Returns the struct instruction for the pd file """
+    s = self.name
+
+    for a in ['float', 'symbol', 'text']:
+      if hasattr(self, a):
+        s += ' ' + ' '.join(list(map(lambda x:a+' '+x, getattr(self, a))))
+    
+    if hasattr(self, 'array'):
+      s += ' ' + ' '.join(list(map(lambda x:x.__pd__(), self.array)))
+     
+    return super().__pd__(s)
+
 class Graph(Struct):
   """ The ye-olde array """
   def __init__(self, pd_lines=None, json_dict=None, xml_object=None):
@@ -261,7 +255,6 @@ class Graph(Struct):
       self.name = pd_lines[1]
       self.area = Area(pd_lines[2:5])
       self.range = Area(pd_lines[5:8])
-      self.border = None
     elif json_dict is not None:
       super().__populate__(self, json_dict)
     elif xml_object is not None:
@@ -269,8 +262,7 @@ class Graph(Struct):
       self.name = xml_object.findtext('name')
       self.area = Area(xml_object=xml_object.find('area'))
       self.range = Area(xml_object=xml_object.find('range'))
-      self.border = None
-
+    
 # TODO: so, what if we just fill the Struct with the scalar data
 # instead of this Scalar class? maybe forget this class and use only Struct?
 
