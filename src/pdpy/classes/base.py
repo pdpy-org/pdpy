@@ -138,13 +138,14 @@ class Base(object):
     """
     
     s = f'#{self.__type__} {self.__cls__}'
+    # log(1, "Base.__pd__()", repr(s))
 
-    if args is None:
-      return s
-    else:
+    if args is not None:
       if isinstance(args, list):
         s += ' ' + ' '.join(args)
       else:
         s += f' {args}'
-      return s + self.__end__
+        s += self.__end__
+
+    return s
 
