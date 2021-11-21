@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 """ Pure Data Default Definitions """
-from .base import Base
 
 __all__ = [
   'Default',
@@ -32,7 +31,7 @@ def getFormat(fmt):
 
 
 
-class XmlTagConvert(Base):
+class XmlTagConvert(object):
   def __init__(self):    
     self.table = {
       '%'  : 'op_mod',
@@ -86,9 +85,8 @@ class XmlTagConvert(Base):
         _tag = _tag.replace(value, key) 
     return _tag
 
-class Default(Base):
+class Default(object):
   def __init__(self):
-    super().__init__()
     self.screen       = { 'x':0, 'y': 22 }
     self.dimen        = { 'width': 450, 'height': 300 }
     self.font         = { 'size': 12, 'face': 0 }

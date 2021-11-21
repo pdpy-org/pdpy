@@ -3,8 +3,8 @@
 
 """ Class Definitions """
 
+from pdpy.util.utils import log
 from .base import Base
-from .default import Default
 
 __all__ = [
   'Comm',
@@ -20,16 +20,22 @@ class Comm(Base):
                send=None,
                receive=None,
                json_dict=None,
-               default=Default.iemgui['symbol']):
+               default=None):
     """ Takes in a send and receive symbol pair or a json dict """
+    self.__pdpy__ = self.__class__.__name__
+    super().__init__()
+    if default is None:
+      default = self.__d__.iemgui['symbol']
     if json_dict is not None:
-      super().__populate__(self, json_dict)
+      super().__init__(json_dict=json_dict)
     else:
       self.send = send if send is not None else default
       self.receive = receive if receive is not None else default
+    # print("Initialized Comm class", self)
     
   def __pd__(self, order=0):
     """ Returns a pd string for this send/receive pair"""
+    log(1, "Comm.__pd__()", self.dumps())
     if order==1:
       return f"{self.receive} {self.send}"
     else:

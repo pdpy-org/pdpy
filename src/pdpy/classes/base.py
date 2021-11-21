@@ -5,6 +5,7 @@
 
 import json
 from ..util.utils import log
+from .default import Default
 
 __all__ = [ "Base" ]
 
@@ -33,6 +34,7 @@ class Base(object):
     self.patchname = patchname
     self.__type__ = pdtype if pdtype is not None else 'X'
     self.__cls__ = cls if cls is not None else 'obj'
+    self.__d__ = Default()
     
     if json_dict:
       self.__populate__(self, json_dict)

@@ -4,8 +4,8 @@
 """ Json-formatted file (Python Patch Object) to Pure data file """
 
 from ..util.utils import log
-from ..classes.default import GOPArrayFlags, PdNativeGuiNames, IEMGuiNames, Default
-from ..classes.data_structures import Scalar
+from ..classes.default import GOPArrayFlags, PdNativeGuiNames, IEMGuiNames
+# from ..classes.data_structures import Scalar
 
 __all__ = [ "JsonToPd" ]
 
@@ -21,7 +21,6 @@ class JsonToPd:
     self.root = getattr(self.obj,'root')
     self.name = getattr(self.obj,'patchname')
     self.pd = []
-    self.__d__ = Default()
 
     # This is a list that holds the self.depth of the current object
     self.depth = []
