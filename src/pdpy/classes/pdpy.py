@@ -224,7 +224,7 @@ class PdPy(Base):
       'type' : argv[2],
       'flag' : argv[3],
       'className' : "goparray"
-    })
+    }, cls='array')
     self.__last_canvas__().add(arr)
     return arr
   
@@ -248,8 +248,8 @@ class PdPy(Base):
     # log(0,"RESTORE",argv)
     last = self.__last_canvas__()
     if argv is not None:
-      setattr(last, "position", Point(x=argv[0], y=argv[1]))
-      self.__last_canvas__().title = ' '.join(argv[2:])
+      setattr(last, 'position', Point(x=argv[0], y=argv[1]))
+      setattr(self.__last_canvas__(), 'title', ' '.join(argv[2:]))
     self.__depth__ -= 1
     if len(self.__canvas_idx__):
       self.__canvas_idx__.pop()
@@ -326,18 +326,34 @@ class PdPy(Base):
     class' scope.
 
     """
-    # log(1, "Unparsing")
-    # return list(map(lambda x:x.__pd__(), self.root))
+    log(1, "Unparsing")
+    s = ''
+    for x in getattr(self,'struct', []):
+      s += x.__pd__()
     
-    # __pd__ recursion order:    
+    s += f"{self.root.__pd__()}"
 
-    # struct
-    # root
-    # - dependencies
-    # nodes
-    # comments
-    # coords
-    # edges
-    # restore
+    for x in getattr(self, 'dependencies', []):
+      s += f"{x.__pd__()}"
+    
+    for x in getattr(self, 'nodes', []):
+      s += f"{x.__pd__()}"
 
-    return JsonToPd(self).getpd()
+    for x in getattr(self, 'comments', []):
+      s += f"{x.__pd__()}"
+
+    if hasattr(self, 'coords'):
+      s += f"{self.coords.__pd__()}"
+    
+    for x in getattr(self, 'edges', []):
+      s += f"{x.__pd__()}"
+
+    if hasattr(self, 'coords'):
+      s += f"{self.coords.__pd__()}"
+
+    # s += self.__end__
+    
+    if hasattr(self, 'title') and hasattr(self, 'position'):
+      s += f"#X restore {self.position.__pd__()} {self.title} {self.__end__}"
+    
+    return s
