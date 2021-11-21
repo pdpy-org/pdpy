@@ -90,8 +90,8 @@ class Area(Base):
   def __init__(self, coords=None, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
     if coords is not None:
-      self.a = Point(x=coords[0], y=coords[1])
-      self.b = Point(x=coords[2], y=coords[3])
+      self.a = Point(x=coords[0], y=coords[2])
+      self.b = Point(x=coords[1], y=coords[3])
     elif json_dict is not None:
       super().__populate__(self, json_dict)
     elif xml_object is not None:
@@ -120,8 +120,14 @@ class Coords(Base):
 
   """
   def __init__(self, coords=None, json_dict=None, xml_object=None):
+    
     self.__pdpy__ = self.__class__.__name__
-    if coords is not None:
+    super().__init__(cls='coords')
+    
+    if json_dict is not None:
+      super().__populate__(self, json_dict)
+    
+    elif coords is not None:
       # NON-GOP
       self.range = Area(coords=coords[:4])
       self.dimension = Size(w=coords[4], h=coords[5])
@@ -129,8 +135,7 @@ class Coords(Base):
       # GOP
       if 9 == len(coords):
         self.addmargin(x=coords[7], y=coords[8])
-    elif json_dict is not None:
-      super().__populate__(self, json_dict)
+    
     elif xml_object is not None:
       self.range = Area(xml_object=xml_object.find('range'))
       self.dimension = Size(xml_object=xml_object.find('dimension'))
