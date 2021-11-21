@@ -8,9 +8,8 @@ import xml.etree.ElementTree as ET
 from ..util.utils import log
 from ..classes.base import Base
 from ..classes.pddata import PdData
-from ..classes.iemgui import PdIEMGui
 from ..classes.pdpy import PdPy
-from ..classes.default import Default, IEMGuiNames, XmlTagConvert
+from ..classes.default import IEMGuiNames, XmlTagConvert
 from ..classes.canvas import Canvas
 from ..classes.message import PdMessage
 from ..classes.data_structures import *
@@ -31,7 +30,6 @@ class XmlToJson(Base):
   """
   def __init__(self, xml_file):
     self.tree = ET.parse(xml_file)
-    self.__d__ = Default()
     self.__conv__ = XmlTagConvert()
     self.__root__ = self.tree.getroot()
     self.__x__ = self.__root__.find('canvas')
