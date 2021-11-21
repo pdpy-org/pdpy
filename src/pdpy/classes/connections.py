@@ -3,7 +3,6 @@
 
 """ Class Definitions """
 
-from pdpy.util.utils import log
 from .base import Base
 
 __all__ = [
@@ -31,11 +30,9 @@ class Comm(Base):
     else:
       self.send = send if send is not None else default
       self.receive = receive if receive is not None else default
-    # print("Initialized Comm class", self)
     
   def __pd__(self, order=0):
     """ Returns a pd string for this send/receive pair"""
-    log(1, "Comm.__pd__()", self.dumps())
     if order==1:
       return f"{self.receive} {self.send}"
     else:

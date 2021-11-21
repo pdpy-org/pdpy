@@ -10,14 +10,15 @@ class PdData(Base):
   """ A PdData base class """
   def __init__(self, data=None, dtype=float, char=None, head=None):
     self.__pdpy__ = self.__class__.__name__
-    super().__init__(pdtype='A')
 
     self.dtype = dtype
     self.char = char
+    super().__init__(pdtype='A')
     if head is not None:
       self.__cls__ = head
     else:
       self.__cls__ = ''
+
     if self.char is not None:
       self.data = splitByEscapedChar(data, char=self.char)
     else:

@@ -4,7 +4,6 @@
 """ Class Definitions """
 
 from .connections import Comm
-from .default import Default
 from .pdobj import PdObj
 from .classes import Bounds
 

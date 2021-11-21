@@ -89,7 +89,7 @@ class PdMessage(PdObj):
       if len(pd_lines[3:]):
         self.addMessages(argv)
     elif json_dict is not None:
-      super().__populate__(self, json_dict)
+      super().__init__(cls='msg',json_dict=json_dict)
       
   def addTarget(self, address):
     if not hasattr(self, "targets"):
@@ -142,7 +142,6 @@ class PdMessage(PdObj):
 
   def __pd__(self):
     """ Return a pd message in pd lang """
-    if hasattr(self, "targets"):
     s = ''
     for target in getattr(self, "targets", []):
       s += target.__pd__()
