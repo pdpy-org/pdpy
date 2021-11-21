@@ -186,7 +186,6 @@ class Canvas(Base):
 
     # the canvas line
     s = super().__pd__()
-
     s += f" {self.screen.__pd__()} {self.dimension.__pd__()}"
     
     if self.isroot:
@@ -200,27 +199,24 @@ class Canvas(Base):
     s += self.__end__
     
     # recurse through the nodes
-    if hasattr(self, 'nodes'):
-      for node in self.nodes:
-        s += f" {node.__pd__()}"
+    for x in getattr(self,'nodes',[]):
+      # log(1,"Canvas", f"Node: {x.__json__()}")
+      s += f"{x.__pd__()}"
 
     # recurse through the comments
-    if hasattr(self, 'comments'):
-      for comment in self.comments:
-        s += f" {comment.__pd__()}"
+    for x in getattr(self,'comments', []):
+      s += f"{x.__pd__()}"
     
     # connections and coords
     # this order is swapped for the root canvas
     if self.isroot:
       if hasattr(self, 'coords'):
         s += self.coords.__pd__()
-      if hasattr(self, 'edges'):
-        for edge in self.edges:
-          s += f" {edge.__pd__()}"
+      for x in getattr(self, 'edges', []):
+        s += f"{x.__pd__()}"
     else:
-      if hasattr(self, 'edges'):
-        for edge in self.edges:
-          s += f" {edge.__pd__()}"
+      for x in getattr(self, 'edges', []):
+        s += f"{x.__pd__()}"
       if hasattr(self, 'coords'):
         s += self.coords.__pd__()
     
