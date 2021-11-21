@@ -41,10 +41,15 @@ class PdType(Base):
     ```
 
   """
-  def __init__(self, json_dict):
+  def __init__(self, json_dict=None, **kwargs):
     self.__pdpy__ = self.__class__.__name__
-    super().__init__(json_dict=json_dict)
-  
+    super().__init__(**kwargs)
+    if json_dict is not None:
+      super().__populate__(self, json_dict)
+    if hasattr(self, 'className') and self.className == 'goparray':
+      self.__cls__ = 'array'
+
+
   def addflag(self, flag):
     # log(1, "Adding flag: {}".format(flag))
     if flag is not None and flag.isnumeric():
@@ -57,13 +62,12 @@ class PdType(Base):
   def __pd__(self):
     """ Return a string representation of the PdType """
     if self.__cls__ == 'array':
-      s=f"{self.name} {self.size} {self.type} {GOPArrayFlags.index(self.flag)}"
+      s=f"{self.name} {self.size} {self.type} {self.flag}"
       return super().__pd__(s)
     elif hasattr(self, 'template'):
       return f"{self.name} {self.template}"
     else:
       log(1, "PdType: {}".format(self.__cls__))
-      self.dumps()
 
 class Struct(Base):
   """ An object containing a Pure Data 'struct' header

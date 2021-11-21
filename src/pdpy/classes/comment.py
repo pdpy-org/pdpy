@@ -35,19 +35,18 @@ class Comment(Base):
   def __pd__(self):
     """ Return a pd representation string """
 
-    args = self.position.__pd__()
+    s = self.position.__pd__()
 
-    if hasattr(self, 'text'):
-      if len(self.text) == 1: 
-        args += ' ' + self.text[0]
-      else: 
-        args += ' ' + ' '.join([ f"{txt} \\;" for txt in self.text ])
-    
-    # TODO: is this placing doubly escaped commas?
-    args = args.replace(',',' \\,')
-    
-    args += f", f {self.border}" if hasattr(self, 'border') else ''
+    if hasattr(self, 'text') and len(self.text):
+      if len(self.text) == 1:
+        s += ' ' + self.text[0]
+      else:
+        s += ' ' + ' '.join(list(map(lambda x:f"{x} \\;",list(self.text[:-1]))))
+        s += ' ' + self.text[-1]
 
-    return super().__pd__(args)
+    if hasattr(self, "border"):
+      s += f', f {self.border}'
+
+    return super().__pd__(s)
 
 

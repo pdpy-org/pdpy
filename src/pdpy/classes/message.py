@@ -143,9 +143,12 @@ class PdMessage(PdObj):
   def __pd__(self):
     """ Return a pd message in pd lang """
     if hasattr(self, "targets"):
-      s = ''
-      for target in self.targets:
-        s += ' ' + target.__pd__()
-      return super().__pd__(s)
-    else:
-      return ''
+    s = ''
+    for target in getattr(self, "targets", []):
+      s += target.__pd__()
+    
+    if hasattr(self, "border"):
+      s += f', f {self.border}'
+    
+    return super().__pd__(s) if s else ''
+    

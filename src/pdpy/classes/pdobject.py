@@ -46,6 +46,8 @@ class PdObject(PdObj):
   def __pd__(self, args=None):
     """ Return the pd code of the object. """
     if args is None:
-      return super().__pd__(self.className)
+      args = self.className
     else:
-      return super().__pd__(args)
+      args = self.className + ' ' + args
+    # log(1, "PdObject args:", args)
+    return super().__pd__(args)

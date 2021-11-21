@@ -147,4 +147,7 @@ class Coords(Base):
     self.margin = Point(**kwargs)
   
   def __pd__(self):
-    return f" {self.range.__pd__()} {self.dimension.__pd__()} {self.gop} " + self.margin.__pd__() if self.margin else ""
+    s = f"{self.range.__pd__()} {self.dimension.__pd__()} {self.gop}"
+    if hasattr(self, 'margin'):
+      s += f" {self.margin.__pd__()}"
+    return super().__pd__(s)
