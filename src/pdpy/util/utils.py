@@ -196,10 +196,12 @@ def PdPyEncoder(obj):
   import pdpy
   if '__pdpy__' in obj:
     pdpyName = obj['__pdpy__']
-    # print(pdpyName, obj)
-    # obj = set(map(lambda x:PdPyEncoder(x),obj))
     # this line grabs the class from the module
     # and creates an instance of it
     # passing the json object as the argument
-    return getattr(pdpy, pdpyName)(json_dict=obj)
-  return obj
+    try:
+      return getattr(pdpy, pdpyName)(json_dict=obj)
+    except Exception as e:
+      raise Exception(f"Error {e}. This happened while creating {pdpyName} with PdPyEncoder. Input object: {obj}")
+  else:
+    return obj
