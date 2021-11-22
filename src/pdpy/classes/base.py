@@ -83,6 +83,8 @@ class Base(object):
     elif isinstance(n, list):
       # print("num(): input was a list of str numbers", n)
       pdnm = list(map(lambda x:self.num(x),n))
+    elif 0.0 == n:
+      return 0
     else:
       pdnm = n
     return pdnm
@@ -137,7 +139,7 @@ class Base(object):
 
     """
     
-    s = f'#{self.__type__} {self.__cls__}'
+    s = f"#{self.__type__} {self.__cls__}"
     # log(1, "Base.__pd__()", repr(s))
 
     if args is not None:
