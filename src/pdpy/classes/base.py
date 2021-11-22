@@ -49,11 +49,36 @@ class Base(object):
     """
     if parent is not None:
       self.__parent__ = parent
+      # print("adding parent to child", self.__class__.__name__, '<=', parent.__class__.__name__)
       return self
     elif self.__parent__ is not None:
       return self.__parent__
     else:
       raise ValueError("No parent set")
+
+  def addparents(self, parent, children='nodes'):
+    """ Sets the parents of all children (aka, nodes)
+    
+    Example:
+    addparents(self, 'nodes')
+    """
+    for child in getattr(parent, children, []):
+      child.parent(parent)
+      # print(child.__pdpy__,repr(dir(child)))
+      if hasattr(child, children):
+        child.addparents(child)
+
+  def getroot(self, child):
+    """ Returns the parent of this object """
+    if hasattr(child, '__parent__'):
+      # log(1, child.__class__.__name__, "parented")
+      return self.getroot(child.__parent__)
+    else:
+      # log(1, child.__class__.__name__, "has no parent")
+      return child
+
+  def getstruct(self):
+    return getattr(self.getroot(self), 'struct', None)
 
   def __setattr__(self, name, value):
     """ Hijack setattr to return ourselves as a dictionary """
