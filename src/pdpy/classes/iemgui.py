@@ -68,14 +68,14 @@ class IEMLabel(Base):
 
     else:
       self.__pdpy__ = self.__class__.__name__
-      self.label = None if "empty" == label else label
+      self.label = label if label is not None else self.__d__.iemgui['symbol']
       self.offset = Point(xoff, yoff)
       self.font = PdFont(fface, fsize)
       self.lbcolor = self.num(lbcolor)
 
   def __pd__(self):
     """ Return the pd string for this iem label """
-    return f"{self.offset.__pd__()} {self.font.__pd__()}"
+    return f"{self.label} {self.offset.__pd__()} {self.font.__pd__()}"
 
 # end of class IEMLabel --------------------------------------------------------
 
@@ -113,8 +113,8 @@ class Vu(PdObject):
     s = self.area.__pd__()
     s += f" {self.comm.__pd__()}"
     s += f" {self.label.__pd__()}"
-    s += f" {self.label.lbcolor}"
     s += f" {self.bgcolor}"
+    s += f" {self.label.lbcolor}"
     if self.scale is not None:
       s += f" {1 if self.scale else 0}"
     if self.flag is not None:

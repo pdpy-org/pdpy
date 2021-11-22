@@ -36,7 +36,10 @@ class Comm(Base):
     if order==1:
       return f"{self.receive} {self.send}"
     else:
-      return f"{self.send if self.send != False else ''} {self.receive}"
+      if self.send is not False:
+        return f"{self.send} {self.receive}"
+      else:
+        return f"{self.receive}"
 
 class Source(Base):
   def __init__(self, id=None, port=None, json_dict=None, xml_object=None):
