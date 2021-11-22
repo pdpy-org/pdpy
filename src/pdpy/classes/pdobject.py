@@ -37,7 +37,7 @@ class PdObject(PdObj):
     elif pd_lines is not None:
       super().__init__(*pd_lines[:3])
       try:
-        self.className = pd_lines[3] if 3 < len(pd_lines) else None
+        self.className = pd_lines[3] if 3 < len(pd_lines) else ''
         if 4 < len(pd_lines):
           self.addargs(pd_lines[4:])
       except:

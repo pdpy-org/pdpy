@@ -61,13 +61,13 @@ class PdArray(PdObject):
   
   def __pd__(self):
     """ Return the pd code of the object. """
-    s = self.className
+    s = ''
     if hasattr(self, 'subclass'):
-      s += " " + self.subclass
+      s += f"{self.subclass}"
       if hasattr(self, 'keep'):
         s += " -k"
       if hasattr(self, 'name'):
-        s += " " + self.name
+        s += f" {self.name}"
       if "array" == self.className and hasattr(self, 'size'):
-        s += " " + self.size
+        s += f" {self.size}"
     return super().__pd__(s)
