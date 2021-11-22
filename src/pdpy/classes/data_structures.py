@@ -297,68 +297,69 @@ class Scalar(Base):
       for s in struct:
         if self.name == s.name:
           if _symbol:
-            setattr(self, 'data',PdData(_symbol.text, dtype=str, head='scalar'))
+            setattr(self, 'data',PdData(data=_symbol.text, struct=s))
           if _float:
-            setattr(self, 'data',PdData(_float.text, head='scalar'))
+            setattr(self, 'data',PdData(data=_float.text, struct=s))
           if _array:
-            setattr(self, 'data',PdData(list(map(lambda x:x.text, _array.findall('*'))), head='scalar'))
+            setattr(self, 'data',PdData(data=list(map(lambda x:x.text, _array.findall('*'))), struct=s))
 
   def parsePd(self, struct, argv):
     self.name = argv[0]
     for s in struct:
       if self.name == s.name:
         # print('parsing struct', argv)
-        setattr(self, 'data', PdData(argv[1:], char=";", head='scalar'))
-        setattr(self, 'data', PdData(s.parse(self.data), head='scalar'))
+        setattr(self, 'data', PdData(data=argv[1:],struct=s))
 
   def __pd__(self):
 
     s = self.name
 
-    _arr = None
+    # _arr = None
     if not hasattr(self, 'data'):
       log(1,'Scalar has no data')
       self.dumps()
-
-    _fs = self.data[0]
-    # log(1,'DATA',self.data)
-    if len(self.data) > 2:
-      _arr = self.data[1:]
-
-    if hasattr(self.__struct__,'float'):
-      for f in getattr(self.__struct__,'float'):
-        if f in _fs:
-          s += ' ' + str(_fs[f]) + ' \\;'
-    
-    if hasattr(self.__struct__,'symbol'):
-      for f in getattr(self.__struct__,'symbol'):
-        if f in _fs:
-          s += ' ' + str(_fs[f]) + ' \\;'
-    
-    if _arr is not None and hasattr(self.__struct__,'array'):
-      for a in getattr(self.__struct__,'array'):
-        _,  _template = self.__struct__.getTemplate(getattr(a,'template'))
-        if _template is not None:
-
-          if hasattr(_template, 'float'):
-            # populate de pd string by the structs' order
-            _arr_str = ''
-            for val_list in _arr:
-              for idx in enumerate(getattr(_template, 'float')):
-                  _arr_str += ' ' + val_list[idx]
-            s += ' ' + _arr_str + ' \\;'
-          
-          if hasattr(_template, 'symbol'):
-            # populate de pd string by the structs' order
-            _arr_str = ''
-            for val_list in _arr:
-              for idx in enumerate(getattr((_template, 'symbol'))):
-                  _arr_str += ' ' + val_list[idx]
-            s += ' ' + _arr_str + ' \\;'
-          
-          if hasattr(_template, 'array'):
-            #TODO: implement this
-            log(1,"DS recursion on arrays implemented")
-    
+    else:
+      s += ' ' + self.data.__pd__()
     return super().__pd__(s)
+    # _fs = self.data[0]
+    # # log(1,'DATA',self.data)
+    # if len(self.data) > 2:
+    #   _arr = self.data[1:]
+
+    # if hasattr(self.__struct__,'float'):
+    #   for f in getattr(self.__struct__,'float'):
+    #     if f in _fs:
+    #       s += ' ' + str(_fs[f]) + ' \\;'
+    
+    # if hasattr(self.__struct__,'symbol'):
+    #   for f in getattr(self.__struct__,'symbol'):
+    #     if f in _fs:
+    #       s += ' ' + str(_fs[f]) + ' \\;'
+    
+    # if _arr is not None and hasattr(self.__struct__,'array'):
+    #   for a in getattr(self.__struct__,'array'):
+    #     _,  _template = self.__struct__.getTemplate(getattr(a,'template'))
+    #     if _template is not None:
+
+    #       if hasattr(_template, 'float'):
+    #         # populate de pd string by the structs' order
+    #         _arr_str = ''
+    #         for val_list in _arr:
+    #           for idx in enumerate(getattr(_template, 'float')):
+    #               _arr_str += ' ' + val_list[idx]
+    #         s += ' ' + _arr_str + ' \\;'
+          
+    #       if hasattr(_template, 'symbol'):
+    #         # populate de pd string by the structs' order
+    #         _arr_str = ''
+    #         for val_list in _arr:
+    #           for idx in enumerate(getattr((_template, 'symbol'))):
+    #               _arr_str += ' ' + val_list[idx]
+    #         s += ' ' + _arr_str + ' \\;'
+          
+    #       if hasattr(_template, 'array'):
+    #         #TODO: implement this
+    #         log(1,"DS recursion on arrays implemented")
+    
+    # return super().__pd__(s)
 

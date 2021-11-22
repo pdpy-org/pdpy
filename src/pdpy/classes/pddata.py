@@ -8,28 +8,50 @@ from ..util.utils import splitByEscapedChar
 
 class PdData(Base):
   """ A PdData base class """
-  def __init__(self, data=None, dtype=float, char=None, head=None):
+  
+  def __init__(self,
+               data=None,
+               head=None,
+               struct=None,
+               json_dict=None):
+
     self.__pdpy__ = self.__class__.__name__
-
-    self.dtype = dtype
-    self.char = char
     super().__init__(pdtype='A')
-    if head is not None:
-      self.__cls__ = head
+    
+    if json_dict is not None:
+      super().__populate__(self, json_dict)
     else:
-      self.__cls__ = ''
+      self.struct = struct
+      
+      if head is not None:
+        # 'set' or 'saved' for symbols, otherwise '0' for arrays of floats
+        self.__cls__ = str(head)
 
-    if self.char is not None:
-      self.data = splitByEscapedChar(data, char=self.char)
-    else:
-      self.data = [self.dtype(d) for d in data]
+        if '0' == self.__cls__:
+          self.data = [float(d) for d in data]
+        elif 'saved' == self.__cls__:
+          self.data = [str(d) for d in data]
+        elif 'set' == self.__cls__:
+          self.data = splitByEscapedChar(data, char=';')
+        else:
+          raise ValueError(f"Unknown data type {head} for:\n{self.dumps()}")
+      else:
+        if self.struct is not None:
+          self.data = struct.parse(data)
+        else:
+          raise ValueError("Struct and Data must be present.")
+
 
   def __pd__(self):
     """ Parses the pd object into a string """
     if hasattr(self, 'data'):
-      s = ''
-      for d in self.data:
-        s += f" {d}"
+      print(self.data)
+      if self.__cls__ == 0:
+        s = ' '.join(list(map(lambda x:f"{self.num(x)}", self.data)))
+      elif self.__cls__ == 'set' or self.__cls__ == 'saved':
+        s = ' '.join(list(map(lambda x:str(x), self.data)))
+      elif self.__cls__ == 'scalar':
+        s = ' '.join(list(map(lambda x:str(x), self.data)))
       return super().__pd__(s)
     else:
       return ''

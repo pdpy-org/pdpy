@@ -287,12 +287,7 @@ class PdPy(Base):
           if    7 == len(argv): last = self.addRoot(body)
           elif  8 == len(argv): last = self.addCanvas(body)
       elif "#A" == head[0]: #A -> text, savestate, or array  data
-        if   "set"        in head[1]:
-          setattr(last, 'data', PdData(body, dtype=str, char=';',head=head[1]))
-        elif "saved"      in head[1]:
-          setattr(last, 'data', PdData(body, dtype=str,head=head[1]))
-        else:
-          setattr(last, 'data', PdData(body))
+        setattr(last, 'data', PdData(data=body, head=head[1]))
       else: #X -----------------> anything else is an "#X"
         if   "declare"    == head[1]: self.addDependencies(body)
         elif "coords"     == head[1]: self.addCoords(body)
