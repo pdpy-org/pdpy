@@ -146,6 +146,7 @@ class Base(object):
       else:
         s += f' {args}'
         s += self.__end__
-
+    # TODO: split line at 80 chars: 
+    # insert \r\n on or before the last space char
     return s
 
