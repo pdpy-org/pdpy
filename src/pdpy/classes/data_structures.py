@@ -65,7 +65,7 @@ class PdType(Base):
       s=f"{self.name} {self.size} {self.type} {self.flag}"
       return super().__pd__(s)
     elif hasattr(self, 'template'):
-      return f"{self.name} {self.template}"
+      return f"array {self.name} {self.template}"
     else:
       log(1, "PdType: {}".format(self.__cls__))
 
@@ -108,19 +108,6 @@ class Struct(Base):
     else: 
       raise ArgumentException("Struct: Incorrect arguments given")
   
-  def parent(self, parent=None):
-    """ 
-    Sets the parent of this object if `parent` is present, 
-    otherwise returns the parent of this object.
-    """
-    if parent is not None:
-      self.__parent__ = parent
-      return self
-    elif self.__parent__ is not None:
-      return self.__parent__
-    else:
-      raise ValueError("No parent set")
-
   def addFloat(self, pd_name):
     if not hasattr(self, 'float'):
       self.float = []
@@ -152,20 +139,21 @@ class Struct(Base):
     # data = list(filter(lambda x:x==' ',data))
     if len(data) == 0: 
       return None
-    _arr = None
-    _fs = data[0].split(' ')
-    # log(1,'FS',_fs)
-    if len(data) > 2:
-      _arr = data[1:]
-    # log(1,'ARR',_arr)
+    arr = None
+    fs = data[0].split(' ')
+    # log(1,'FS',fs)
+    if len(data) >= 2:
+      arr = data[1:]
+    # log(1,'ARR',arr)
     
     if hasattr(self, 'float'):
-      _data.append({f:self.num(v) for f,v in zip(self.float, _fs[:len(self.float)])})
+      _data.append({f:self.num(v) for f,v in zip(self.float, fs[:len(self.float)])})
     if hasattr(self, 'symbol'):
-      log(1, "SYMBOLS", self.symbol, _fs)
-      _data.append({f:v for f,v in zip(self.symbol, _fs[len(self.float)+1:])})
+      # log(1, "SYMBOLS", self.symbol, fs)
+      _data.append({f:v for f,v in zip(self.symbol, fs[len(self.float):])})
+      # log(1, "DATA", _data)
     
-    if _arr is not None and hasattr(self, 'array'):
+    if arr is not None and hasattr(self, 'array'):
       for a in self.array:
         _, template = self.__parent__.getTemplate(a.template)
         
@@ -173,7 +161,7 @@ class Struct(Base):
         if hasattr(template, 'float'):
           # fill the corresponding named arrays with float arrays
           _arr_obj = {}
-          for val_list in _arr:
+          for val_list in arr:
             # zip key and value from template names and data float values
             for key, val in zip(template.float, val_list):
               if key in _arr_obj:
@@ -185,7 +173,7 @@ class Struct(Base):
         if hasattr(template, 'symbol'):
           # fill the corresponding named arrays with tring arrays
           _arr_obj = {}
-          for val_list in _arr:
+          for val_list in arr:
             # zip key and value from template names and data string values
             for key, val in zip(template.symbol, val_list):
               if key in _arr_obj:
@@ -201,43 +189,53 @@ class Struct(Base):
     if len(_data):
       return _data
 
-  def from_json(self, json_data):
+  def unparse(self, data):
     """ Returns a pd scalar structured by the corresponding struct """
-    # log(1, "JSON", json_data.__dict__['data'])
-    # json_data is the simple namespace
-    _data = []
-    data = json_data.__dict__['data']
-    if not len(data):
-      return None
-    _fs = data[0].__dict__
-    _arr = None
-    if len(data) > 2:
-      _arr = map(lambda x:x.__dict__, data[1:])
-
-    if hasattr(self, 'float'):
-      _data.append({f:self.num(_fs[f]) for f in self.float})
-    if hasattr(self, 'symbol'):
-      _data.append({f:_fs[f] for f in self.float})
+   
+    if not len(data): return ''
     
-    if _arr is not None and hasattr(self, 'array'):
-      for a in self.array:
-        _, _template = self.__parent__.getTemplate(a.template)
-        if _template is not None:
-      
-          if hasattr(_template, 'float'):
-            for val_list in _arr:
-              _data.append({f:self.num(val_list[f]) for f in _template.float})
-      
-          if hasattr(_template, 'symbol'):
-            for val_list in _arr:
-              _data.append({f:val_list[f] for f in _template.symbol})
-          
-          if hasattr(_template, 'array'):
-            #TODO: implement this
-            log(1,"DS recursion on arrays implemented")
-      
-    if len(_data):
-      return _data
+    s = ''
+    # fs = data[0]
+    # arr = None
+    # if len(data) >= 2:
+      # arr = data[1:]
+    # log(1,"DATA",data)
+    # log(1,'FS',fs)
+    # log(1,'ARR',arr)
+    for d in data:
+      if isinstance(d, dict):
+        if hasattr(self, 'float'):
+          s += ' '.join([str(d[f]) for f in self.float if f in d])
+          s += ' \\;'
+        if hasattr(self, 'symbol'):
+          s += ' '.join([str(d[f]) for f in self.symbol if f in d])
+          s += ' \\;'
+      else:
+        if hasattr(self, 'array'):
+          # find the correct template
+          for a in self.array:
+            _, _template = self.__parent__.getTemplate(a.template)
+          # if we found it, go on:
+          if _template is not None:
+            for x in d:
+              for f in getattr(_template, 'float', []):
+                val = x[f]
+                if isinstance(val, list):
+                  s += f"{' '.join(list(map(lambda x:str(x),val)))}"
+                else:
+                  s += f"{val}"
+              for f in getattr(_template, 'symbol', []):
+                val = x[f]
+                if isinstance(val, list):
+                  s += f"{' '.join(list(map(lambda x:str(x),val)))}"
+                else:
+                  s += f"{val}"
+              s += ' \\;'
+            if hasattr(_template, 'array'):
+              #TODO: implement this
+              log(1,"DS recursion on arrays implemented")
+    if len(s):
+      return s
 
   def __pd__(self):
     """ Returns the struct instruction for the pd file """
@@ -271,6 +269,8 @@ class Graph(Struct):
     
 # TODO: so, what if we just fill the Struct with the scalar data
 # instead of this Scalar class? maybe forget this class and use only Struct?
+# Not really, though. Let's just use one Struct to define many scalars, 
+# like pd does.
 
 class Scalar(Base):
   def __init__(self, 
@@ -314,54 +314,8 @@ class Scalar(Base):
 
   def __pd__(self):
 
-    s = self.name
-
-    # _arr = None
-    if not hasattr(self, 'data'):
-      log(1,'Scalar has no data')
-      self.dumps()
+    if hasattr(self, 'data'):
+      _, template = self.getroot(self).getTemplate(self.name)
+      return super().__pd__(self.name+ ' ' + template.unparse(self.data.data))
     else:
-      s += ' ' + self.data.__pd__()
-    return super().__pd__(s)
-    # _fs = self.data[0]
-    # # log(1,'DATA',self.data)
-    # if len(self.data) > 2:
-    #   _arr = self.data[1:]
-
-    # if hasattr(self.__struct__,'float'):
-    #   for f in getattr(self.__struct__,'float'):
-    #     if f in _fs:
-    #       s += ' ' + str(_fs[f]) + ' \\;'
-    
-    # if hasattr(self.__struct__,'symbol'):
-    #   for f in getattr(self.__struct__,'symbol'):
-    #     if f in _fs:
-    #       s += ' ' + str(_fs[f]) + ' \\;'
-    
-    # if _arr is not None and hasattr(self.__struct__,'array'):
-    #   for a in getattr(self.__struct__,'array'):
-    #     _,  _template = self.__struct__.getTemplate(getattr(a,'template'))
-    #     if _template is not None:
-
-    #       if hasattr(_template, 'float'):
-    #         # populate de pd string by the structs' order
-    #         _arr_str = ''
-    #         for val_list in _arr:
-    #           for idx in enumerate(getattr(_template, 'float')):
-    #               _arr_str += ' ' + val_list[idx]
-    #         s += ' ' + _arr_str + ' \\;'
-          
-    #       if hasattr(_template, 'symbol'):
-    #         # populate de pd string by the structs' order
-    #         _arr_str = ''
-    #         for val_list in _arr:
-    #           for idx in enumerate(getattr((_template, 'symbol'))):
-    #               _arr_str += ' ' + val_list[idx]
-    #         s += ' ' + _arr_str + ' \\;'
-          
-    #       if hasattr(_template, 'array'):
-    #         #TODO: implement this
-    #         log(1,"DS recursion on arrays implemented")
-    
-    # return super().__pd__(s)
-
+      return super().__pd__(self.name)
