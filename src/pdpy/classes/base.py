@@ -42,6 +42,19 @@ class Base(object):
     # The pd line end character sequence
     self.__end__ = ';\r\n' 
 
+  def parent(self, parent=None):
+    """ 
+    Sets the parent of this object if `parent` is present, 
+    otherwise returns the parent of this object.
+    """
+    if parent is not None:
+      self.__parent__ = parent
+      return self
+    elif self.__parent__ is not None:
+      return self.__parent__
+    else:
+      raise ValueError("No parent set")
+
   def __setattr__(self, name, value):
     """ Hijack setattr to return ourselves as a dictionary """
     if value is not None:
