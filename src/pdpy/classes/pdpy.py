@@ -18,7 +18,6 @@ from .connections import Edge
 from .data_structures import *
 from .default import *
 from .iemgui import *
-from ..parse.json2pd import JsonToPd
 
 __all__ = [ "PdPy" ]
 
@@ -322,7 +321,6 @@ class PdPy(Base):
     class' scope.
 
     """
-    log(1, "Unparsing")
     s = ''
     for x in getattr(self,'struct', []):
       s += x.__pd__()
@@ -346,8 +344,6 @@ class PdPy(Base):
 
     if hasattr(self, 'coords'):
       s += f"{self.coords.__pd__()}"
-
-    # s += self.__end__
     
     if hasattr(self, 'title') and hasattr(self, 'position'):
       s += f"#X restore {self.position.__pd__()} {self.title} {self.__end__}"
