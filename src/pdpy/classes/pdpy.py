@@ -328,8 +328,8 @@ class PdPy(Base):
     
     s += f"{self.root.__pd__()}"
 
-    for x in getattr(self, 'dependencies', []):
-      s += f"{x.__pd__()}"
+    if hasattr(self, 'dependencies'):
+      s += f"{self.dependencies.__pd__()}"
     
     for x in getattr(self, 'nodes', []):
       s += f"{x.__pd__()}"
