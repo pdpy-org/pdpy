@@ -81,7 +81,8 @@ class PdPy(Base):
             'screen' : Point(x=argv[0], y=argv[1]),
             'dimension' : Size(w=argv[2], h=argv[3]), 
             'font' : int(argv[4]),
-            'isroot' : True
+            'isroot' : True,
+            '__parent__' : self
     })
     return self.root
   
@@ -130,7 +131,7 @@ class PdPy(Base):
     __canvas__ = self.__get_canvas__()
     canvas = Canvas(json_dict={
             'name'   : argv[4],
-            'vis'    : argv[5],
+            'vis'    : self.num(argv[5]),
             'id'     : self.__obj_idx__,
             'screen' : Point(x=argv[0], y=argv[1]), 
             'dimension' : Size(w=argv[2], h=argv[3]),
@@ -352,3 +353,9 @@ class PdPy(Base):
       s += f"#X restore {self.position.__pd__()} {self.title} {self.__end__}"
     
     return s
+
+  def __tree__(self):
+    self.root.parent(self)
+    for x in getattr(self, 'struct', []):
+      x.parent(self)
+    self.addparents(self.root)
