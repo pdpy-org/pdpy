@@ -11,6 +11,7 @@ from .connections import *
 from .pdobject import *
 from .pdarray import *
 from .gui import *
+from .pddata import *
 from .data_structures import *
 from .canvas import *
 from .iemgui import *
