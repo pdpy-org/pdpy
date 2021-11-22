@@ -97,11 +97,13 @@ class Struct(Base):
         elif 'symbol' == pd_type: self.addSymbol(pd_name)
         elif 'text'   == pd_type: self.addText(pd_name)
         elif 'array'  == pd_type:
-          i += 2
-          self.addArray(pd_name, pd_lines[i])
+          array_name = pd_lines[i + 2]
+          self.addArray(pd_name, array_name)
+          i += 1
         else:
-          # log(1, self.name, pd_lines)
           log(1, f"Unparsed Struct Field #{i}")
+          log(1, self.name, pd_lines)
+          self.dumps()
         i += 2
     else: 
       raise ArgumentException("Struct: Incorrect arguments given")
