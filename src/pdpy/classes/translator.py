@@ -89,12 +89,14 @@ class Translator(Base):
 
     elif self.source == "json":
       with open(self.input_file, "r", encoding=self.encoding) as fp:
-        self.pdpy = json.load(fp, object_hook = PdPyEncoder)
+        self.pdpy = json.load(fp, object_hook = PdPyEncoder())
+      self.pdpy.__tree__()
 
     elif self.source == "pkl":
       with open(self.input_file, "rb") as fp:
         data = pickle.load(fp, encoding=self.encoding)
-        self.pdpy = json.loads(data, object_hook = PdPyEncoder)
+        self.pdpy = json.loads(data, object_hook = PdPyEncoder())
+      self.pdpy.__tree__()
     
     elif self.source == "pdpy":
       with open(self.input_file, "r", encoding=self.encoding) as fp:
