@@ -314,13 +314,12 @@ class Scalar(Base):
     self.name = argv[0]
     for s in struct:
       if self.name == s.name:
-        # print('parsing struct', argv)
-        setattr(self, 'data', PdData(data = argv[1:],template = s))
-
+        setattr(self, 'data', PdData(data = argv[1:], template = s))
+    
   def __pd__(self):
 
     s = self.name
-    for x in getattr(self, 'data', []):
+    if hasattr(self, 'data'):
       _, template = self.getroot(self).getTemplate(self.name)
-      s += ' ' + template.unparse(x.data)
+      s += ' ' + template.unparse(self.data.data)
     return super().__pd__(s)
