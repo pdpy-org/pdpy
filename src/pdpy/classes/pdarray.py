@@ -3,6 +3,8 @@
 
 """ Class Definitions """
 
+from pdpy.classes.data_structures import PdType
+from pdpy.util.utils import log
 from .pdobject import PdObject
 
 __all__ = [
@@ -42,23 +44,59 @@ class PdArray(PdObject):
 
     elif pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
-      argc = len(pd_lines)
+      # argc = len(pd_lines) - 4
+      # log(1, f"{self.__class__.__name__} argc: {argc}")
+      # log(1, 'pd_lines', pd_lines)
+      i = 0
+      argv = pd_lines[4:]
+      # print(argv)
+      try:
+        # add the border and trim argument list
+        if 'f' == argv[len(argv)-2]:
+          self.border = argv[-1]
+          argv = argv[:-2]
 
-      if 4 < argc:
-        setattr(self, 'subclass', pd_lines[4])
-        off = 0
-        if "define" == self.subclass and 5 < argc and "-k" == pd_lines[5]:
+        # print('FIRST',i, argv[i])
+        setattr(self, 'subclass', argv[i])
+        i += 1
+        
+        # print('SECOND',i, argv[i])
+        if "-k" == argv[i]:
+          # print('keeping', i, argv[i])
           setattr(self, 'keep', True)
-          off += 1
-        if 5+off < argc:
-          setattr(self, 'name', pd_lines[5+off])
-          if "array" == self.className:
-            if 6+off < argc:
-              setattr(self, 'size', self.num(pd_lines[6+off]))
-            off += 1
-          if 6+off < argc:
-            self.addargs(pd_lines[6+off:])      
-  
+          i += 1
+        
+        if '-s' == argv[i]:
+          # print('struct-ref', i, argv[i])
+          setattr(self, 'struct_ref', {
+            'name' : argv[i + 1], 
+            'template' : argv[i + 2]
+          })
+          i += 3
+        
+        if '-f' == argv[i]:
+          # print('element-ref', i, argv[i])
+          self.struct_ref.update({ 'element' : {
+            'name' : argv[i + 1],
+            'template' : argv[i + 2]
+          }})
+          i += 3
+        
+        # print('THIRD',i, argv[i])
+        setattr(self, 'name', argv[i])
+        i += 1
+        
+        # print('FOURTH',i, argv[i])
+        setattr(self, 'size', self.num(argv[i]))
+        i += 1
+        
+        # print('FIFTH',i, argv[i])
+        self.addargs(argv[i:])
+      
+      except IndexError:
+        pass
+
+
   def __pd__(self):
     """ Return the pd code of the object. """
     s = ''
@@ -70,4 +108,8 @@ class PdArray(PdObject):
         s += f" {self.name}"
       if "array" == self.className and hasattr(self, 'size'):
         s += f" {self.size}"
+      if hasattr(self, 'struct_ref'):
+        s += f" -s {self.struct_ref['name']} {self.struct_ref['template']}"
+        if 'element' in self.struct_ref:
+          s += f" -f {self.struct_ref['element']['name']} {self.struct_ref['element']['template']}"
     return super().__pd__(s)
