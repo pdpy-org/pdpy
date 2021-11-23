@@ -12,7 +12,7 @@ class PdData(Base):
   def __init__(self,
                data=None,
                head=None,
-               struct=None,
+               template=None,
                json_dict=None):
 
     self.__pdpy__ = self.__class__.__name__
@@ -21,12 +21,9 @@ class PdData(Base):
     if json_dict is not None:
       super().__populate__(self, json_dict)
     else:
-      self.struct = struct
-
       if head is not None:
         # 'set' or 'saved' for symbols, otherwise '0' for arrays of floats
         self.__cls__ = str(head)
-
         if '0' == self.__cls__:
           self.data = [float(d) for d in data]
         elif 'saved' == self.__cls__:
@@ -34,22 +31,23 @@ class PdData(Base):
         elif 'set' == self.__cls__:
           self.data = splitByEscapedChar(data, char=';')
         else:
-          raise ValueError(f"Unknown data type {head} for:\n{self.dumps()}")
+          log(1,f"Unknown data type {head} for:\n{self.__json__()}")
       else:
-        if self.struct is not None:
-          self.data = struct.parse(splitByEscapedChar(data, char=';'))
+        if template is not None:
+          self.data = template.parse(splitByEscapedChar(data, char=';'))
         else:
           raise ValueError("Struct and Data must be present.")
-
 
   def __pd__(self, template=None):
     """ Parses the pd object into a string """
     if hasattr(self, 'data'):
-      if self.__cls__ == 0:
+      if self.__cls__ == '0':
         return ' '.join(list(map(lambda x:f"{self.num(x)}", self.data)))
       elif self.__cls__ == 'set' or self.__cls__ == 'saved':
         return ' '.join(list(map(lambda x:str(x), self.data)))
+      # FIXME: this is a hack to get the 'obj' class working as float arrays
       elif self.__cls__ == 'obj':
+        self.__cls__ = '0'
         s = ' '.join(list(map(lambda x:str(x), self.data)))
         return super().__pd__(s)
       elif template is not None:

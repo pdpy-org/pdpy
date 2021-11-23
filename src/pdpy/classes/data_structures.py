@@ -48,7 +48,7 @@ class PdType(Base):
       super().__populate__(self, json_dict)
     if hasattr(self, 'className') and self.className == 'goparray':
       self.__cls__ = 'array'
-
+    # print("Pdtype", self.__type__, self.__cls__)
 
   def addflag(self, flag):
     # log(1, "Adding flag: {}".format(flag))
@@ -61,11 +61,16 @@ class PdType(Base):
 
   def __pd__(self):
     """ Return a string representation of the PdType """
+    # log(1, "PdType:", self.__dict__)
     if self.__cls__ == 'array':
-      s=f"{self.name} {self.size} {self.type} {self.flag}"
-      return super().__pd__(s)
+      s = super().__pd__(f"{self.name} {self.size} {self.type} {self.flag}")
+      for x in getattr(self, 'data', []):
+        s += x.__pd__()
+      return s
+    
     elif hasattr(self, 'template'):
       return f"array {self.name} {self.template}"
+    
     else:
       log(1, "PdType: {}".format(self.__cls__))
 
@@ -299,23 +304,23 @@ class Scalar(Base):
       for s in struct:
         if self.name == s.name:
           if _symbol:
-            setattr(self, 'data',PdData(data=_symbol.text, struct=s))
+            setattr(self, 'data',PdData(data = _symbol.text, template = s))
           if _float:
-            setattr(self, 'data',PdData(data=_float.text, struct=s))
+            setattr(self, 'data',PdData(data = _float.text, template = s))
           if _array:
-            setattr(self, 'data',PdData(data=list(map(lambda x:x.text, _array.findall('*'))), struct=s))
+            setattr(self, 'data',PdData(data = list(map(lambda x:x.text, _array.findall('*'))), template = s))
 
   def parsePd(self, struct, argv):
     self.name = argv[0]
     for s in struct:
       if self.name == s.name:
         # print('parsing struct', argv)
-        setattr(self, 'data', PdData(data=argv[1:],struct=s))
+        setattr(self, 'data', PdData(data = argv[1:],template = s))
 
   def __pd__(self):
 
-    if hasattr(self, 'data'):
+    s = self.name
+    for x in getattr(self, 'data', []):
       _, template = self.getroot(self).getTemplate(self.name)
-      return super().__pd__(self.name+ ' ' + template.unparse(self.data.data))
-    else:
-      return super().__pd__(self.name)
+      s += ' ' + template.unparse(x.data)
+    return super().__pd__(s)
