@@ -53,6 +53,10 @@ class Canvas(Base):
     self.__pdpy__ = self.__class__.__name__
     self.isroot = False
     self.__obj_idx__ = -1
+    # This is a dictionary with 
+    # - the node indices as keys, and 
+    # - the last self.__depth_list__ index as values
+    self.__obj_map__ = {}
     
     if json_dict is not None:
       super().__populate__(self, json_dict)
@@ -201,6 +205,14 @@ class Canvas(Base):
     # recurse through the nodes
     for x in getattr(self,'nodes',[]):
       # log(1,"Canvas", f"Node: {x.__json__()}")
+      # If the node has an ID, get it and use it to update the object map
+      if hasattr(x,"id"):
+        # increment the index by one
+        self.__obj_idx__ += 1
+        # add the node to the map
+        self.__obj_map__.update({
+          int(getattr(x,'id')) : self.__obj_idx__
+        })
       s += f"{x.__pd__()}"
 
     # recurse through the comments
@@ -213,10 +225,10 @@ class Canvas(Base):
       if hasattr(self, 'coords'):
         s += self.coords.__pd__()
       for x in getattr(self, 'edges', []):
-        s += f"{x.__pd__()}"
+        s += f"{x.__pd__(self.__obj_map__)}"
     else:
       for x in getattr(self, 'edges', []):
-        s += f"{x.__pd__()}"
+        s += f"{x.__pd__(self.__obj_map__)}"
       if hasattr(self, 'coords'):
         s += self.coords.__pd__()
     

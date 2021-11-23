@@ -38,9 +38,13 @@ class PdPy(Base):
     self.patchname = name
     self.encoding = encoding
     self.__pdpy__ = self.__class__.__name__
-    self.__obj_idx__ = 0
     self.__canvas_idx__ = []
     self.__depth__ = 0
+    self.__obj_idx__ = 0
+    # This is a dictionary with 
+    # - the node indices as keys, and 
+    # - the last self.__depth_list__ index as values
+    self.__obj_map__ = {}
 
     if pd_lines is not None:
       # parse the pd lines and populate the pdpy instance
@@ -311,7 +315,7 @@ class PdPy(Base):
           if "graph" == body[-1]: last = self.restore(body)
           else:                   last = self.restore(body)
         else: log(1,"What is this?", argv, self.patchname)
-  
+
   def __pd__(self):
     """ Unparse this class' scope into a list of pure data argument vectors
 
@@ -331,6 +335,14 @@ class PdPy(Base):
       s += f"{self.dependencies.__pd__()}"
     
     for x in getattr(self, 'nodes', []):
+      # If the node has an ID, get it and use it to update the object map
+      if hasattr(x,"id"):
+        # increment the index by one
+        self.__obj_idx__ += 1
+        # add the node to the map
+        self.__obj_map__.update({
+          int(getattr(x,'id')) : self.__obj_idx__
+        })
       s += f"{x.__pd__()}"
 
     for x in getattr(self, 'comments', []):
@@ -340,7 +352,7 @@ class PdPy(Base):
       s += f"{self.coords.__pd__()}"
     
     for x in getattr(self, 'edges', []):
-      s += f"{x.__pd__()}"
+      s += f"{x.__pd__(self.__obj_map__)}"
 
     if hasattr(self, 'coords'):
       s += f"{self.coords.__pd__()}"

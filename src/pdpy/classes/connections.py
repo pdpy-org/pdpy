@@ -3,6 +3,7 @@
 
 """ Class Definitions """
 
+from pdpy.util.utils import log
 from .base import Base
 
 __all__ = [
@@ -54,9 +55,23 @@ class Source(Base):
       self.port = xml_object.findtext('port', None)
     else:
       raise ValueError(f"{self.__pdpy__}: No valid parameters given")
+  
+  def remap(self, obj_map):
+    """ Get the value from the mapped indices """
+    s = '-1'
+    try:
+      # query the map for the value at the id key
+      s = str( obj_map[int(self.id)] )
+    except KeyError:
+      # if the key is not found, log the error
+      log(1, "remap()::Key Not Found", self.id)
+      print(obj_map)
+    finally:
+      # return the value
+      return s
 
-  def __pd__(self):
-    return f"{self.id} {self.port}"
+  def __pd__(self, obj_map=None):
+    return f"{self.remap(obj_map) if obj_map else self.id} {self.port}"
 
 class Edge(Base):
   """ A Pd Connection 
@@ -85,5 +100,5 @@ class Edge(Base):
     else:
       raise ValueError(f"{self.__pdpy__}: No valid parameters given")
 
-  def __pd__(self):
-    return super().__pd__(f"{self.source.__pd__()} {self.sink.__pd__()}")
+  def __pd__(self, o=None):
+    return super().__pd__(f"{self.source.__pd__(o)} {self.sink.__pd__(o)}")
