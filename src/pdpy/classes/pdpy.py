@@ -291,7 +291,7 @@ class PdPy(Base):
           if    7 == len(argv): last = self.addRoot(body)
           elif  8 == len(argv): last = self.addCanvas(body)
       elif "#A" == head[0]: #A -> text, savestate, or array  data
-        setattr(last, 'data', PdData(data=body, head=head[1]))
+        super().__setdata__(last, PdData(data=body, head=head[1]))
       else: #X -----------------> anything else is an "#X"
         if   "declare"    == head[1]: self.addDependencies(body)
         elif "coords"     == head[1]: self.addCoords(body)
@@ -357,8 +357,13 @@ class PdPy(Base):
     if hasattr(self, 'coords'):
       s += f"{self.coords.__pd__()}"
     
-    if hasattr(self, 'title') and hasattr(self, 'position'):
-      s += f"#X restore {self.position.__pd__()} {self.title} {self.__end__}"
+    # TODO: pdpy should really be an extended Base class 
+    # with Canvas handling stuff, like obj_map, obj_idx, restore stuff, etc
+    if hasattr(self, 'position'):
+      s += f"#X restore {self.position.__pd__()}"
+      if hasattr(self, 'title'):
+        s += f" {self.title}"
+      s += self.__end__
     
     return s
 

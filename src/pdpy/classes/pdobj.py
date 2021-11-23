@@ -53,8 +53,8 @@ class PdObj(Base):
     s = super().__pd__(s)
     
     # check if we have data and append it (this calls the PdData.__pd__ method)
-    if hasattr(self, 'data'):
-      s += self.data.__pd__()
+    for x in getattr(self, 'data', []):
+      s += x.__pd__()
 
     # return the pd line
     return s

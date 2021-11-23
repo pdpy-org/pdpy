@@ -233,8 +233,11 @@ class Canvas(Base):
         s += self.coords.__pd__()
     
     # the restore line
-    if hasattr(self, 'title'):
-      s += f"#X restore {self.position.__pd__()} {self.title} {self.__end__}"
+    if hasattr(self, 'position'):
+      s += f"#X restore {self.position.__pd__()}"
+      if hasattr(self, 'title'):
+        s += f" {self.title}"
+      s += self.__end__
     
     # the border, only if not root
     if not self.isroot and hasattr(self, 'border'):

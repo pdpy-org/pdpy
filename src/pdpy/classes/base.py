@@ -80,6 +80,13 @@ class Base(object):
   def getstruct(self):
     return getattr(self.getroot(self), 'struct', None)
 
+  def __setdata__(self, scope, data):
+    """ Sets the data of the object """
+    # log(1, "scope:",scope.__class__.__name__, "data:", data)
+    if not hasattr(scope, 'data'):
+      scope.data = []
+    scope.data.append(data)
+
   def __setattr__(self, name, value):
     """ Hijack setattr to return ourselves as a dictionary """
     if value is not None:
