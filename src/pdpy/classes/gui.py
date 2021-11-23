@@ -33,7 +33,11 @@ class PdNativeGui(PdObj):
 
   """
   def __init__(self, className=None, pd_lines=None, json_dict=None):
-    if className is not None and pd_lines is not None:
+
+    if json_dict is not None:
+      super().__init__(json_dict=json_dict)
+    
+    elif className is not None and pd_lines is not None:
       super().__init__(*pd_lines[:3], cls=className)
       self.__pdpy__ = self.__class__.__name__
       self.className = self.__cls__
@@ -42,19 +46,23 @@ class PdNativeGui(PdObj):
         self.limits = Bounds(lower=pd_lines[4], upper=pd_lines[5])
         self.flag = pd_lines[6] if 6 < len(pd_lines) else None
         if 7 < len(pd_lines):
-          self.label = pd_lines[7] if self.__d__.label != pd_lines[7] else None
+          self.label = self.__d__.label if pd_lines[7] is None else pd_lines[7]
           self.comm = Comm(send=pd_lines[8], receive=pd_lines[9], default=self.__d__.receive)
-    elif json_dict is not None:
-      super().__init__(json_dict=json_dict)
-
+    if self.__cls__ == 'obj':
+      self.__cls__ = self.className
+  
   def __pd__(self):
     """ Returns the pd-code representation of the object """
-    s = f" {int(getattr(self,'digit_width',self.__d__.digits_width))}"
+    
+    s = f"{int(getattr(self,'digit_width',self.__d__.digits_width))}"
     if hasattr(self, "limits"):
-      s += self.limits.__pd__()
+      s += ' ' + self.limits.__pd__()
     else:
       s += f" {self.__d__.limits['lower']} {self.__d__.limits['upper']}"
     s += f" {int(getattr(self,'flag', self.__d__.flag))}"
     s += f" {getattr(self,'label',self.__d__.label)}"
-    s += f" {self.comm.__pd__(order=1)}"
+
+    comm = getattr(self, 'comm', Comm(default=self.__d__.receive))
+    s += f" {comm.__pd__(order=1)}"
+    
     return super().__pd__(s)
