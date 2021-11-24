@@ -97,6 +97,9 @@ class PdArray(PdObject):
         
         # print('FOURTH',i, argv[i])
         if 'array' == self.className:
+          # TODO: this fix is working
+          # but we need a general approach to account for dollarsymbols 
+          # as arguments (the value is somewhere else in the patch)
           setattr(self, 'size', self.num(argv[i]) if argv[i].isnumeric() else argv[i])
           i += 1
         
