@@ -67,16 +67,16 @@ class PdArray(PdObject):
           i += 1
         
         if '-s' == argv[i]:
-          # print('struct-ref', i, argv[i])
-          setattr(self, 'struct_ref', {
+          # the struct reference 's'
+          setattr(self, 's', {
             'name' : argv[i + 1], 
             'template' : argv[i + 2]
           })
           i += 3
         
         if '-f' == argv[i]:
-          # print('element-ref', i, argv[i])
-          self.struct_ref.update({ 'element' : {
+          # the struct field reference 'f'
+          self.s.update({ 'f' : {
             'name' : argv[i + 1],
             'template' : argv[i + 2]
           }})
@@ -85,10 +85,20 @@ class PdArray(PdObject):
         # print('THIRD',i, argv[i])
         setattr(self, 'name', argv[i])
         i += 1
+
+        if "-g" == argv[i]:
+          setattr(self, 'global', True)
+          i += 1
+        
+        if '-w' == argv[i]:
+          wait = self.num(argv[i+1]) if argv[i+1].isnumeric() else argv[i+1]
+          setattr(self, 'wait', wait)
+          i += 2
         
         # print('FOURTH',i, argv[i])
-        setattr(self, 'size', self.num(argv[i]))
-        i += 1
+        if 'array' == self.className:
+          setattr(self, 'size', self.num(argv[i]))
+          i += 1
         
         # print('FIFTH',i, argv[i])
         self.addargs(argv[i:])
@@ -100,16 +110,38 @@ class PdArray(PdObject):
   def __pd__(self):
     """ Return the pd code of the object. """
     s = ''
-    if hasattr(self, 'subclass'):
+    if hasattr(self, 'subclass'):  
       s += f"{self.subclass}"
-      if hasattr(self, 'keep'):
-        s += " -k"
-      if hasattr(self, 'name'):
-        s += f" {self.name}"
-      if "array" == self.className and hasattr(self, 'size'):
-        s += f" {self.size}"
-      if hasattr(self, 'struct_ref'):
-        s += f" -s {self.struct_ref['name']} {self.struct_ref['template']}"
-        if 'element' in self.struct_ref:
-          s += f" -f {self.struct_ref['element']['name']} {self.struct_ref['element']['template']}"
+
+    if hasattr(self, 'keep'):
+      s += " -k"
+    
+    if hasattr(self, 's'):
+      s += " -s"
+      s += f" {self.s['name']}"  # struct name
+      s += f" {self.s['template']}"  # struct template
+      if hasattr(self.s, 'f'):
+        s += " -f"
+        s += f" {self.s['f']['name']}"
+        s += f" {self.s['f']['template']}"
+
+    if hasattr(self, 'name'):
+      s += f" {self.name}"
+    
+    if hasattr(self, 'global'):
+      s += " -g"
+    
+    if hasattr(self, 'wait'):
+      s += f" -w {self.wait}"
+    
+    if hasattr(self, 'size'):
+      s += f" {self.size}"
+
+    if hasattr(self, 's'):
+      # the struct reference 's'
+      s += f" -s {self.s['name']} {self.s['template']}"
+      if 'f' in self.s:
+        # the struct field reference 'f'
+        s += f" -f {self.s['f']['name']} {self.s['f']['template']}"
+
     return super().__pd__(s)
