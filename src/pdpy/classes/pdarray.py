@@ -97,7 +97,7 @@ class PdArray(PdObject):
         
         # print('FOURTH',i, argv[i])
         if 'array' == self.className:
-          setattr(self, 'size', self.num(argv[i]))
+          setattr(self, 'size', self.num(argv[i]) if argv[i].isnumeric() else argv[i])
           i += 1
         
         # print('FIFTH',i, argv[i])
