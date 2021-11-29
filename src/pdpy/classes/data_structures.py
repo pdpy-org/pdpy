@@ -6,15 +6,13 @@
 from .base import Base
 from .classes import Area # for the Graph class
 from .exceptions import ArgumentException
-from .pddata import PdData
 from .default import GOPArrayFlags
 from ..util.utils import  log
 
 __all__ = [
   "PdType",
   "Struct",
-  "Graph",
-  "Scalar"
+  "Graph"
 ]
 
 class PdType(Base):
@@ -139,7 +137,7 @@ class Struct(Base):
 
   def parse(self, data):
     """ Returns a list of scalar data structured by the corresponding struct """
-    _data = []
+    _data = {}
     # log(1,"DATA",data)
     # data = list(filter(lambda x:x==' ',data))
     if len(data) == 0: 
@@ -152,10 +150,16 @@ class Struct(Base):
     # log(1,'ARR',arr)
     
     if hasattr(self, 'float'):
-      _data.append({f:self.num(v) for f,v in zip(self.float, fs[:len(self.float)])})
+      _data.update({
+        'float': {
+            f:self.num(v) for f,v in zip(self.float, fs[:len(self.float)])
+          }
+      })
     if hasattr(self, 'symbol'):
       # log(1, "SYMBOLS", self.symbol, fs)
-      _data.append({f:v for f,v in zip(self.symbol, fs[len(self.float):])})
+      _data.update({
+        'symbol': {f:v for f,v in zip(self.symbol, fs[len(self.float):])}
+      })
       # log(1, "DATA", _data)
     
     if arr is not None and hasattr(self, 'array'):
@@ -173,7 +177,9 @@ class Struct(Base):
                 _arr_obj[key].append(self.num(val))
               else:
                 _arr_obj[key] = [self.num(val)]
-          _data.append(_arr_obj)
+          _data.update({
+            'array' : _arr_obj
+          })
 
         if hasattr(template, 'symbol'):
           # fill the corresponding named arrays with tring arrays
@@ -193,54 +199,6 @@ class Struct(Base):
     
     if len(_data):
       return _data
-
-  def unparse(self, data):
-    """ Returns a pd scalar structured by the corresponding struct """
-   
-    if not len(data): return ''
-    
-    s = ''
-    # fs = data[0]
-    # arr = None
-    # if len(data) >= 2:
-      # arr = data[1:]
-    # log(1,"DATA",data)
-    # log(1,'FS',fs)
-    # log(1,'ARR',arr)
-    for d in data:
-      if isinstance(d, dict):
-        if hasattr(self, 'float'):
-          s += ' '.join([str(d[f]) for f in self.float if f in d])
-          s += ' \\;'
-        if hasattr(self, 'symbol'):
-          s += ' '.join([str(d[f]) for f in self.symbol if f in d])
-          s += ' \\;'
-      else:
-        if hasattr(self, 'array'):
-          # find the correct template
-          for a in self.array:
-            _, _template = self.__parent__.getTemplate(a.template)
-          # if we found it, go on:
-          if _template is not None:
-            for x in d:
-              for f in getattr(_template, 'float', []):
-                val = x[f]
-                if isinstance(val, list):
-                  s += f"{' '.join(list(map(lambda x:str(x),val)))}"
-                else:
-                  s += f"{val}"
-              for f in getattr(_template, 'symbol', []):
-                val = x[f]
-                if isinstance(val, list):
-                  s += f"{' '.join(list(map(lambda x:str(x),val)))}"
-                else:
-                  s += f"{val}"
-              s += ' \\;'
-            if hasattr(_template, 'array'):
-              #TODO: implement this
-              log(1,"DS recursion on arrays implemented")
-    if len(s):
-      return s
 
   def __pd__(self):
     """ Returns the struct instruction for the pd file """
@@ -271,55 +229,4 @@ class Graph(Struct):
       self.name = xml_object.findtext('name')
       self.area = Area(xml_object=xml_object.find('area'))
       self.range = Area(xml_object=xml_object.find('range'))
-    
-# TODO: so, what if we just fill the Struct with the scalar data
-# instead of this Scalar class? maybe forget this class and use only Struct?
-# Not really, though. Let's just use one Struct to define many scalars, 
-# like pd does.
-
-class Scalar(Base):
-  def __init__(self, 
-               struct=None,
-               pd_lines=None,
-               json_dict=None,
-               xml_object=None):
-    self.__pdpy__ = self.__class__.__name__
-    super().__init__(cls='scalar')
-    self.className = self.__cls__
-    
-    if pd_lines is not None:
-      self.parsePd(struct, pd_lines)
-    elif json_dict is not None:
-      super().__populate__(self, json_dict)
-    elif xml_object is not None:
-      self.parseXml(struct, xml_object)
-
-  def parseXml(self, struct, argv):
-    self.name = argv.findtext('name')
-    _data = argv.find('data')
-    if _data:
-      _symbol = _data.find('symbol')
-      _array  = _data.find('array')
-      _float  = _data.find('float')
-      for s in struct:
-        if self.name == s.name:
-          if _symbol:
-            setattr(self, 'data',PdData(data = _symbol.text, template = s))
-          if _float:
-            setattr(self, 'data',PdData(data = _float.text, template = s))
-          if _array:
-            setattr(self, 'data',PdData(data = list(map(lambda x:x.text, _array.findall('*'))), template = s))
-
-  def parsePd(self, struct, argv):
-    self.name = argv[0]
-    for s in struct:
-      if self.name == s.name:
-        setattr(self, 'data', PdData(data = argv[1:], template = s))
-    
-  def __pd__(self):
-
-    s = self.name
-    if hasattr(self, 'data'):
-      _, template = self.getroot(self).getTemplate(self.name)
-      s += ' ' + template.unparse(self.data.data)
-    return super().__pd__(s)
+ 
