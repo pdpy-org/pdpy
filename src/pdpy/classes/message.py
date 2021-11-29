@@ -65,8 +65,8 @@ class PdMsg(Base):
     If there is a address, output an escaped semicolon 
     and the address before the message
     """
-    s = f'\\; {self.address} ' if self.address != 'outlet' else ''
-    s += ' \\, '.join(self.message) if hasattr(self, 'message') else ''
+    s = f'\; {self.address} ' if self.address != 'outlet' else ''
+    s += '\\, '.join(self.message) if hasattr(self, 'message') else ''
     return s
 
 class PdMessage(PdObj):
