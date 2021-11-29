@@ -80,12 +80,12 @@ class Base(object):
   def getstruct(self):
     return getattr(self.getroot(self), 'struct', None)
 
-  def __setdata__(self, scope, data):
+  def __setdata__(self, scope, data, attrib='data'):
     """ Sets the data of the object """
     # log(1, "scope:",scope.__class__.__name__, "data:", data)
-    if not hasattr(scope, 'data'):
-      scope.data = []
-    scope.data.append(data)
+    if not hasattr(scope, attrib):
+      setattr(scope, attrib, [])
+    getattr(scope, attrib).append(data)
 
   def __setattr__(self, name, value):
     """ Hijack setattr to return ourselves as a dictionary """
@@ -195,5 +195,5 @@ class Base(object):
         s += self.__end__
     # TODO: split line at 80 chars: 
     # insert \r\n on or before the last space char
-    return s
+    return s.replace('  ', ' ')
 
