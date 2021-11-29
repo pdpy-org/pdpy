@@ -16,6 +16,7 @@ from .dependencies import Dependencies
 from .comment import Comment
 from .connections import Edge
 from .data_structures import *
+from .pdscalar import *
 from .default import *
 from .iemgui import *
 
