@@ -5,7 +5,7 @@
 
 from .base import Base
 from .pdtypes import *
-from ..util.utils import splitByEscapedChar, log
+from ..util.utils import splitByEscapedChar, log, splitByNone
 
 class PdData(Base):
   """ A PdData base class """
@@ -59,39 +59,37 @@ class PdData(Base):
     def fill_array(target, template, data):
       # log(1,'TEMPLATE',template.name)
       # log(1,'ARRAY',data)
-
-      for e in getattr(template, 'array', []):
-        _, _template = template.__parent__.getTemplate(e.template)
       
-      if _template is None:
-        log(1, f"Did not find a template candidate for an array in {template}")
-        return None
-      # isthere=False
-      if hasattr(target, 'array'):
-        pdlist = getattr(target, 'array')
-        # isthere=True
-      else:
-        pdlist = PdList()
-        setattr(target, 'array', pdlist)
+      arrays = getattr(template, 'array', [])
+      data = splitByNone(data)
+      
+      for e, d in zip(arrays, data):
+        _, _template = template.__parent__.getTemplate(e.template)
 
-      # log(1, "Filling array",isthere, pdlist.__json__())
+        if _template is None:
+          log(1,f"Did not find a template array candidate for {template}")
+          continue
 
-      for v in data:
+        # log(1, 'Filling array', d)
         
-        if hasattr(_template, 'float'):
-          k = getattr(_template, 'float')
-          # log(1, 'float: keys, values:', k, v)
-          for key,val in zip(k,v):
-            # log(1, 'add float element', key, val)
-            pdlist.addelement('float', key, self.num(val))
+        pdlist = PdList(name=e.template)
         
-        if hasattr(_template, 'symbol'):
-          k = getattr(_template, 'symbol')
-          # log(1, 'symbol: keys, values:', k, v)
-          for key,val in zip(k,v):
-            # log(1, 'add symbol element', key, val)
-            pdlist.addelement('symbol', key, str(val))
-        
+        for v in d:
+          if hasattr(_template, 'float'):
+            k = getattr(_template, 'float')
+            # log(1, 'float: keys, values:', k, v)
+            for key,val in zip(k,v):
+              # log(1, 'add float element', key, val)
+              pdlist.addelement('float', key, self.num(val))
+          
+          if hasattr(_template, 'symbol'):
+            k = getattr(_template, 'symbol')
+            # log(1, 'symbol: keys, values:', k, v)
+            for key,val in zip(k,v):
+              # log(1, 'add symbol element', key, val)
+              pdlist.addelement('symbol', key, str(val))
+          
+        super(PdData, self).__setdata__(target, pdlist, 'array')
 
         # if hasattr(_template, 'array'):
         #   log(1,'RECURSE ON ARRAY', v)
@@ -136,6 +134,7 @@ class PdData(Base):
     
     if hasattr(template, 'array') and arr is not []:
       # log(1,'FILL ARRAY',arr)
+      # log(1, 'Template', template.__json__())
       fill_array(self, template, arr) # fill the array
 
     # self.dumps()
@@ -181,18 +180,20 @@ class PdData(Base):
       if hasattr(self, 'float') and hasattr(template, 'float'):
         for x in getattr(self, 'float', []):
           s += ' ' + x.__pd__()
-        s += ' \\;'
       
       # call the pd method on every symbol (PdSymbol) element
       if hasattr(self, 'symbol') and hasattr(template, 'symbol'):
         for x in getattr(self, 'symbol', []):
           s += ' ' + x.__pd__()
-        s += ' \\;'
       
+      if s != '': s += self.__semi__
+
       # call the pd method on the array (PdList) element
       if hasattr(self, 'array') and hasattr(template, 'array'):
-        s += ' ' + self.array.__pd__(template)
-
+        for x, t in zip(getattr(self, 'array', []), template.array):
+          _, _template = template.__parent__.getTemplate(t.template)
+          s += ' ' + x.__pd__(_template)
+      
       return s
 
     # return an empty string if nothing else happened    
