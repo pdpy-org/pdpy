@@ -77,6 +77,7 @@ class Struct(Base):
   """
   def __init__(self, pd_lines=None, json_dict=None, xml_obj=None):
     self.__pdpy__ = self.__class__.__name__
+    self.order = []
     super().__init__(pdtype='N', cls='struct')
     if json_dict is not None: 
       super().__populate__(self, json_dict)
@@ -114,22 +115,26 @@ class Struct(Base):
   def addFloat(self, pd_name):
     if not hasattr(self, 'float'):
       self.float = []
+      self.order.append('float')
     self.float.append(pd_name)
 
   def addSymbol(self, pd_name):
     if not hasattr(self, 'symbol'):
       self.symbol = []
+      self.order.append('symbol')
     self.symbol.append(pd_name)
 
   def addText(self, pd_name):
     if not hasattr(self, 'text'):
       self.text = []
+      self.order.append('text')
     self.text.append(pd_name)
 
   def addArray(self, pd_name, array_name):
     """ Append an array structure with symbols for name and template """
     if not hasattr(self, 'array'):
       self.array = []
+      self.order.append('array')
     self.array.append(PdType(json_dict={
       'name' : pd_name,
       'template' : array_name
