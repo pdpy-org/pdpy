@@ -204,6 +204,6 @@ class Base(object):
 
     # split line at 80 chars: 
     # insert \r\n on the last space char
-    s = '\n'.join(s[i:i+79] for i in range(0, len(s), 79))
+    # s = '\n'.join(s[i:i+79] for i in range(0, len(s), 79))
     return s
 
