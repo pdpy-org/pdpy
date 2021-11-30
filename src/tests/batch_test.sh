@@ -61,7 +61,7 @@ function translate_all
   json_out="$outdir/$name.json"
   pkl_out="$outdir/$name.pkl"
   xml_out="$outdir/$name.xml"
-  json_ref="$outdir/$name-json_ref.pd"
+  json_ref="$outdir/$name"
   pkl_ref="$outdir/$name-pkl_ref.pd"
   xml_jref="$outdir/$name-xml_ref.json"
   xml_ref="$outdir/$name-xml_ref.pd"
