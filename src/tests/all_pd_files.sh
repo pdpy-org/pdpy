@@ -26,10 +26,10 @@ REM_DUPES=$DEV/pdpy/src/tests/remove_dupes.py
 function finder {
   # This function finds all the patches in the given folder
   # and places their paths into separate files.
-  local path=$1
+  local path="$1"
   local name=$OUT/individual/$(basename $path).txt
   echo "$path -> $name"
-  find $path -name "*.pd" -type f > $name
+  find $path -name "*.pd" -type f | awk '{printf "\"%s\"\n",$0}' > $name
   cat $name >> /tmp/allfiles
 }
 
