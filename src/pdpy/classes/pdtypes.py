@@ -57,6 +57,8 @@ class PdList(Base):
       setattr(self, e_type, defaultdict(list))
     
     attr = getattr(self, e_type)
+
+    e_value = self.num(e_value) if e_type == 'float' else str(e_value)
     
     attr[e_key].append(e_value)
 
@@ -78,7 +80,7 @@ class PdList(Base):
       5. filling empty values with empty strings
       """
       # log(1, 'interleave', s, attr, keys)
-      for values in zip_longest(*[attr[k] for k in keys], fillvalue=''):
+      for values in zip_longest(*[attr[k] for k in keys if k in attr], fillvalue=''):
         # log(1, 'values:', values)
         # on every paired value
         for v in values:

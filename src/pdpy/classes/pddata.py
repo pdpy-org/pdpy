@@ -47,6 +47,7 @@ class PdData(Base):
       return None
 
     # log(1,"DATAA", data)
+    # log(1,"TEMPLATE", template.__json__())
 
     def fill_element(target, template, data, attrib='float', cls=PdFloat):
       # for k,v in zip(getattr(template, 'float', []), flt):
@@ -69,38 +70,52 @@ class PdData(Base):
         if _template is None:
           log(1,f"Did not find a template array candidate for {template}")
           continue
-
+        
         # log(1, 'Filling array', d)
+        # log(1, 'Template:', _template.__json__())
         
         pdlist = PdList(name=e.template)
         
+
+        attributes = [ {
+          'attr':a,
+          'keys':getattr(_template, a)
+          } for a in _template.order ]
+        # log(1, 'Attributes:', attributes)
+        # log(1, 'Length:', len(attributes))
+        # log(1, 'Lengths:', lengths)
+
         for v in d:
-          if hasattr(_template, 'float'):
-            k = getattr(_template, 'float')
-            # log(1, 'float: keys, values:', k, v)
-            for key,val in zip(k,v):
-              # log(1, 'add float element', key, val)
-              pdlist.addelement('float', key, self.num(val))
+          # log(1, 'Filling:', v)
+          if len(attributes) == 1:
+            attr = attributes[0]['attr']
+            keys = attributes[0]['keys']
+            # log(1, 'Attr:', attr, 'Keys:', keys)
+            for key, val in zip(keys, v):
+              # log(1, f"add {attr} element", key, val)
+              pdlist.addelement(attr, key, val)
+          else:
+            for idx, att in enumerate(attributes):
+              attr = att['attr']
+              keys = att['keys']
+              # log(1, 'Keys:', keys, 'Attr:', attr)
+              for key in keys:
+                # log(1, f"add {attr} element", key, v)
+                pdlist.addelement(attr, key, v[idx])
+          # TODO: Array recursion ??
+          # if hasattr(_template, 'array'):
+          #   log(1,'RECURSE ON ARRAY', v)
+          #   log(1,'RECURSE ON TEMPLATE', _template.name)
+          #   k = getattr(_template, 'array')
+          #   # log(1, 'array: keys, values:', k, v)
+          #   for key,val in zip(k,v):
+          #     # log(1, 'add array element', key, val)
+          #     target.addelement('array', key, str(val))
+          #   fill_array(target.array, _template, v) # recursion ??????
           
-          if hasattr(_template, 'symbol'):
-            k = getattr(_template, 'symbol')
-            # log(1, 'symbol: keys, values:', k, v)
-            for key,val in zip(k,v):
-              # log(1, 'add symbol element', key, val)
-              pdlist.addelement('symbol', key, str(val))
-          
+        
         super(PdData, self).__setdata__(target, pdlist, 'array')
 
-        # if hasattr(_template, 'array'):
-        #   log(1,'RECURSE ON ARRAY', v)
-        #   log(1,'RECURSE ON TEMPLATE', _template.name)
-        #   k = getattr(_template, 'array')
-        #   # log(1, 'array: keys, values:', k, v)
-        #   for key,val in zip(k,v):
-        #     # log(1, 'add array element', key, val)
-        #     target.addelement('array', key, str(val))
-        #   fill_array(target.array, _template, v) # recursion ??????
-        
 
     fs = data[0].split(' ')
     
@@ -136,10 +151,6 @@ class PdData(Base):
       # log(1,'FILL ARRAY',arr)
       # log(1, 'Template', template.__json__())
       fill_array(self, template, arr) # fill the array
-
-    # self.dumps()
-    # log(1, '=' * 60)
-
 
   def __pd__(self, template=None):
     """ Parses the pd object into a string """
