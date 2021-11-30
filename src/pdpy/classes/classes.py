@@ -101,8 +101,12 @@ class Area(Base):
       self.a = Point()
       self.b = Point()
   
-  def __pd__(self):
-    return f"{self.a.x} {self.b.x} {self.a.y} {self.b.y}"
+  def __pd__(self, order=0):
+    if order == 1:
+      return f"{self.a.x} {self.b.x} {self.a.y} {self.b.y}"
+    else:
+      return f"{self.a.x} {self.a.y} {self.b.x} {self.b.y}"
+
 
 class Coords(Base):
   """ 

@@ -218,15 +218,17 @@ class Struct(Base):
      
     return super().__pd__(s)
 
-class Graph(Struct):
+class Graph(Base):
   """ The ye-olde array """
   def __init__(self, pd_lines=None, json_dict=None, xml_object=None):
     self.__pdpy__ = self.__class__.__name__
+    super().__init__(cls='graph')
+
     if pd_lines is not None:
       self.id = pd_lines[0]
       self.name = pd_lines[1]
-      self.area = Area(pd_lines[2:5])
-      self.range = Area(pd_lines[5:8])
+      self.area = Area(pd_lines[2:6])
+      self.range = Area(pd_lines[6:10])
     elif json_dict is not None:
       super().__populate__(self, json_dict)
     elif xml_object is not None:
@@ -235,3 +237,25 @@ class Graph(Struct):
       self.area = Area(xml_object=xml_object.find('area'))
       self.range = Area(xml_object=xml_object.find('range'))
  
+  def addArray(self, *args):
+    """ Append an array structure with symbols for name and template """
+    if not hasattr(self, 'array'):
+      self.array = []
+
+    self.array.append({
+      'name' : args[1],
+      'size' : self.num(args[2]),
+      'type' : args[3]
+    })
+
+  def __pd__(self):
+    """ Returns the graph instruction for the pd file """
+    s = self.name
+    s += ' ' + self.range.__pd__(order=1)
+    s += ' ' + self.area.__pd__(order=1)
+    s = super().__pd__(s)
+    for x in getattr(self, 'array', []):
+      s += f"#X array {x['name']} {x['size']} {x['type']}"
+      s += self.__end__
+    s += '#X pop' + self.__end__
+    return s

@@ -217,7 +217,7 @@ class PdPy(Base):
     """ The ye-olde array ancestor
     """
     self.__obj_idx__ = self.__last_canvas__().grow()
-    graph = Graph(pd_lines=[self.__obj_idx__, argv[0]] + argv[4:9] + argv[1:5])
+    graph = Graph(pd_lines=[self.__obj_idx__, argv[0]] + argv[5:9] + argv[1:5])
     self.__last_canvas__().add(graph)
     return graph
 
@@ -310,7 +310,7 @@ class PdPy(Base):
           last = self.addGraph(body)
           store_graph = True
         elif "array"      == head[1]: # fill; check if we are in a graph
-          if store_graph: last.addArray(head[1], body[1])
+          if store_graph: last.addArray(head[1], *body)
           else: last = self.addGOPArray(body)
         elif "restore"    == head[1]: #TODO do something to graph restore...?
           if "graph" == body[-1]: last = self.restore(body)
