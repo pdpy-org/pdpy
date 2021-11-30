@@ -58,6 +58,7 @@ function translate_all
   # to translate files into all formats
   local input=$1
   local name=$(basename $input)
+  # echo "Translating $input -- $name"
   json_out="$outdir/$name.json"
   pkl_out="$outdir/$name.pkl"
   xml_out="$outdir/$name.xml"
@@ -81,18 +82,18 @@ function translate_all
 }
 
 while read line; do
-  echo $i $line
+  echo $i "${line}"
 
   if [[ ! $3 ]]; then
-    translate_all $line
+    translate_all "${line}"
     if grep -q "ERROR" $err; then
-      echo "Stopped at: " $line
+      echo "Stopped at: " "${line}"
       echo "line number"
-      echo $(grep -n $line $1 | cut -f 1 -d:)
+      echo $(grep -n "${line}" $1 | cut -f 1 -d:)
       break
     fi 
   else
-    translate_all $line
+    translate_all "${line}"
     break
   fi
   i=$((i+1))

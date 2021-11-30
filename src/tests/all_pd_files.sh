@@ -29,7 +29,7 @@ function finder {
   local path="$1"
   local name=$OUT/individual/$(basename $path).txt
   echo "$path -> $name"
-  find $path -name "*.pd" -type f | awk '{printf "\"%s\"\n",$0}' > $name
+  find $path -name "*.pd" -type f | awk '{gsub(" ","\\ ",$0);print $0}' > $name
   cat $name >> /tmp/allfiles
 }
 
