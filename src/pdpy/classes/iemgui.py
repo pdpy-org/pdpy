@@ -117,7 +117,7 @@ class Vu(PdObject):
     s += f" {self.label.lbcolor}"
     if self.scale is not None:
       s += f" {1 if self.scale else 0}"
-    if self.flag is not None:
+    if hasattr(self, 'flag') and self.flag is not None:
       s += f" {1 if self.flag else 0}"
     return super().__pd__(s)
 class Toggle(PdObject):
