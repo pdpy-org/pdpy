@@ -75,24 +75,78 @@ def log(l, *argv):
   else:
     print(*argv)
 
+def findIndices(data, cond_func):
+  """ Find the start and stop slice indices 
+  of elements in a list that satisfy a condition function `cond_func`
+
+  Returns
+  -------
+  list of tuples (start, stop)
+
+  Example
+  -------
+  `indices = findIndices(data, lambda x: not len(x))`
+
+  """
+
+  indices = []
+  start_index = 0
+  for stop_index, datum in enumerate(data):
+    if cond_func(datum):
+      indices.append((start_index, stop_index))
+      start_index = stop_index + 1
+  return indices
+
+def splitByNone(data):
+  """ Split a list by None elements
+
+  Description
+  -----------
+  This function splits a list by None elements
+  and returns a list of lists
+  """
+  
+  indices = findIndices(data, lambda x: not len(x))
+
+  if not len(indices): return data
+  else:
+    # if there are indices, split the list
+    # iterate over the indices and split accordingly
+    return [ data[i[0]:i[1]] for i in indices ]
+
+
 def splitByEscapedChar(data, char=";"):
+  """ Split a string by escaped char
+
+  Description
+  -----------
+  This function splits a string by escaped char
+  and returns a list of lists or the original string
+
+  Parameters
+  ----------
+  data : list
+    list to be split
+  char : str
+    char to split by (default ";")
+
+  """
 
   regex = r"(?<=\\)" + re.escape(char)
   idx = [i for i, d in enumerate(data) if re.search(regex,d) ]
 
-  if len(idx):
+  if not len(idx): 
+    return data
+  else:
     result = [list(data[1+idx[i]:idx[i+1]]) for i in range(len(idx)-1)]
-    result = list(filter(None,result))
+    # result = list(filter(None,result)) # do not filter out empty elements
     
+    # account for the first index
     if len(data[:idx[0]]):
-      if not re.search(regex," ".join(data[:idx[0]])):
+      if not re.search(regex, " ".join(data[:idx[0]])):
         result = [" ".join(data[:idx[0]])] + result
 
     return result
-
-  else:
-
-    return data
 
 def splitSemi(argv):
   lines = []
