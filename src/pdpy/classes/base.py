@@ -4,6 +4,7 @@
 """ Base Class """
 
 import json
+from textwrap import wrap
 from ..util.utils import log
 from .default import Default
 
@@ -41,6 +42,8 @@ class Base(object):
     
     # The pd line end character sequence
     self.__end__ = ';\r\n' 
+    # The pd end symbol for data structures
+    self.__semi__ = ' \\;'
 
   def parent(self, parent=None):
     """ 
@@ -85,7 +88,9 @@ class Base(object):
     # log(1, "scope:",scope.__class__.__name__, "data:", data)
     if not hasattr(scope, attrib):
       setattr(scope, attrib, [])
-    getattr(scope, attrib).append(data)
+    attribute = getattr(scope, attrib)
+    attribute.append(data)
+    return attribute[-1]
 
   def __setattr__(self, name, value):
     """ Hijack setattr to return ourselves as a dictionary """
@@ -193,7 +198,12 @@ class Base(object):
       else:
         s += f' {args}'
         s += self.__end__
-    # TODO: split line at 80 chars: 
-    # insert \r\n on or before the last space char
-    return s.replace('  ', ' ')
+    
+    s = s.replace('  ', ' ')
+
+
+    # split line at 80 chars: 
+    # insert \r\n on the last space char
+    s = '\n'.join(s[i:i+79] for i in range(0, len(s), 79))
+    return s
 
