@@ -29,6 +29,7 @@ from .classes.pdarray import *
 from .classes.pdobject import *
 from .classes.translator import *
 from .classes.exceptions import *
+from .classes.pdpyencoder import *
 
 
 # The parsers

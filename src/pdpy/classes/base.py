@@ -3,7 +3,7 @@
 
 """ Base Class """
 
-import json
+from json import dumps as json_dumps
 # from textwrap import wrap
 from ..util.utils import log
 from .default import Default
@@ -25,20 +25,20 @@ class Base(object):
     Type of the Pd object (one of X, N, or A). Defaults to 'X': `#X ...`
   cls : `str` (optional) 
     Class of the Pd object (eg. msg, text, etc.) Defaults to `obj`. `#X obj ...`
-  json_dict : `dict` (optional)
+  json : `dict` (optional)
     A dictionary of key/value pairs to populate the object. 
 
   """
   
-  def __init__(self, patchname=None, pdtype=None, cls=None, json_dict=None):
+  def __init__(self, patchname=None, pdtype=None, cls=None, json=None):
     """ Initialize the object """
     self.patchname = patchname
     self.__type__ = pdtype if pdtype is not None else 'X'
     self.__cls__ = cls if cls is not None else 'obj'
     self.__d__ = Default()
     
-    if json_dict:
-      self.__populate__(self, json_dict)
+    if json:
+      self.__populate__(self, json)
     
     # The pd line end character sequence
     self.__end__ = ';\r\n' 
@@ -59,29 +59,29 @@ class Base(object):
     else:
       raise ValueError("No parent set")
 
-  def addparents(self, parent, children='nodes'):
+  def __addparents__(self, parent, children='nodes'):
     """ Sets the parents of all children (aka, nodes)
     
     Example:
-    addparents(self, 'nodes')
+    __addparents__(self, 'nodes')
     """
     for child in getattr(parent, children, []):
       child.parent(parent)
       # print(child.__pdpy__,repr(dir(child)))
       if hasattr(child, children):
-        child.addparents(child)
+        child.__addparents__(child)
 
-  def getroot(self, child):
+  def __getroot__(self, child):
     """ Returns the parent of this object """
     if hasattr(child, '__parent__'):
       # log(1, child.__class__.__name__, "parented")
-      return self.getroot(child.__parent__)
+      return self.__getroot__(child.__parent__)
     else:
       # log(1, child.__class__.__name__, "has no parent")
       return child
 
-  def getstruct(self):
-    return getattr(self.getroot(self), 'struct', None)
+  def __getstruct__(self):
+    return getattr(self.__getroot__(self), 'struct', None)
 
   def __setdata__(self, scope, data, attrib='data'):
     """ Sets the data of the object """
@@ -110,17 +110,17 @@ class Base(object):
         if not k.startswith("__") or k=="__pdpy__"
       }
 
-    return json.dumps(
+    return json_dumps(
       self,
       default   = __filter__,
       sort_keys = False,
       indent    = 4
     )
   
-  def dumps(self):
+  def __dumps__(self):
     log(0, self.__json__())
 
-  def num(self, n):
+  def __num__(self, n):
     """ Returns a number (or list of number) object from a Pd file string """
     pdnm = None
     if isinstance(n, str):
@@ -131,15 +131,15 @@ class Base(object):
       else:
         pdnm = int(n)
     elif isinstance(n, list):
-      # print("num(): input was a list of str numbers", n)
-      pdnm = list(map(lambda x:self.num(x),n))
+      # print("__num__(): input was a list of str numbers", n)
+      pdnm = list(map(lambda x:self.__num__(x),n))
     elif 0.0 == n:
       return 0
     else:
       pdnm = n
     return pdnm
 
-  def pdbool(self, n):
+  def __pdbool__(self, n):
     """ Returns a boolean object from a Pd file string """
     if n == "True" or n == "true":
       return True
@@ -148,17 +148,17 @@ class Base(object):
     else:
       return bool(int(float(n)))
 
-  def __populate__(self, child, json_dict):
+  def __populate__(self, child, json):
     """ Populates the derived/child class instance with a dictionary """
     # TODO: protect against overblowing child scope
-    if not hasattr(json_dict, 'items'):
-      log(1, child.__class__.__name__, "json_dict is not a dict")
-      if not hasattr(json_dict, '__dict__'):
-        raise log(2, child.__class__.__name__, "json_dict is not a class")
-      json_dict = json_dict.__dict__
+    if not hasattr(json, 'items'):
+      log(1, child.__class__.__name__, "json is not a dict")
+      if not hasattr(json, '__dict__'):
+        raise log(2, child.__class__.__name__, "json is not a class")
+      json = json.__dict__
     
-    # map(lambda k,v: setattr(child, k, v), json_dict.items())
-    for k,v in json_dict.items():
+    # map(lambda k,v: setattr(child, k, v), json.items())
+    for k,v in json.items():
       setattr(child, k, v)
     
     if hasattr(child, 'className') and self.__cls__ is None:

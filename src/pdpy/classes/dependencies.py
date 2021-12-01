@@ -8,12 +8,12 @@ from .base import Base
 __all__ = ['Dependencies']
 
 class Dependencies(Base):
-  def __init__(self, *argv, json_dict=None, xml_object=None):
+  def __init__(self, *argv, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
     super().__init__(cls='declare')
-    if json_dict is not None:
-      super().__populate__(self, json_dict)
-    elif xml_object is not None:
+    if json is not None:
+      super().__populate__(self, json)
+    elif xml is not None:
       pass
     else:
       # python magic to split a list in pairs

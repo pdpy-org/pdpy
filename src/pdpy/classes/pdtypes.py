@@ -3,7 +3,6 @@
 
 """ Pd Types Class Definitions """
 
-from pdpy.util.utils import log
 from .base import Base
 from collections import defaultdict
 from itertools import zip_longest
@@ -16,12 +15,12 @@ __all__ = [
 
 class PdFloat(Base):
   """ A PdFloat base class """
-  def __init__(self, value=None, name=None, json_dict=None):
+  def __init__(self, value=None, name=None, json=None):
     self.__pdpy__ = self.__class__.__name__
-    if json_dict is not None:
-      super().__populate__(self, json_dict)
+    if json is not None:
+      super().__populate__(self, json)
     else:
-      self.value = self.num(value) if value is not None else None
+      self.value = self.__num__(value) if value is not None else None
       self.name = name
     
   def __pd__(self):
@@ -29,10 +28,10 @@ class PdFloat(Base):
 
 class PdSymbol(Base):
   """ A PdSymbol base class """
-  def __init__(self, value=None, name=None, json_dict=None):
+  def __init__(self, value=None, name=None, json=None):
     self.__pdpy__ = self.__class__.__name__
-    if json_dict is not None:
-      super().__populate__(self, json_dict)
+    if json is not None:
+      super().__populate__(self, json)
     else:
       self.value = str(value) if value is not None else None
       self.name = name
@@ -42,11 +41,11 @@ class PdSymbol(Base):
 
 class PdList(Base):
   """ A PdList base class """
-  def __init__(self, name=None, json_dict=None):
+  def __init__(self, name=None, json=None):
     self.__pdpy__ = self.__class__.__name__
     super().__init__()
-    if json_dict is not None:
-      super().__populate__(self, json_dict)
+    if json is not None:
+      super().__populate__(self, json)
     else:
       self.name = name
 
@@ -58,7 +57,7 @@ class PdList(Base):
     
     attr = getattr(self, e_type)
 
-    e_value = self.num(e_value) if e_type == 'float' else str(e_value)
+    e_value = self.__num__(e_value) if e_type == 'float' else str(e_value)
     
     attr[e_key].append(e_value)
 

@@ -22,14 +22,14 @@ __all__ = [
 ]
 
 class PdFont(Base):
-  def __init__(self, face=None, size=None, json_dict=None):
+  def __init__(self, face=None, size=None, json=None):
     if face is not None and size is not None:
       self.__pdpy__ = self.__class__.__name__
-      self.face = self.num(face)
+      self.face = self.__num__(face)
       self.name = PdFonts[self.face if self.face < len(PdFonts) else -1]
-      self.size = self.num(size)
-    elif json_dict is not None:
-      super().__populate__(self, json_dict)
+      self.size = self.__num__(size)
+    elif json is not None:
+      super().__populate__(self, json)
   
   def __pd__(self):
     """ Return the pd lines for this object """
@@ -62,16 +62,16 @@ class IEMLabel(Base):
               fface=None,
               fsize=None,
               lbcolor=None,
-              json_dict=None):
-    if json_dict is not None:
-      super().__populate__(self, json_dict)
+              json=None):
+    if json is not None:
+      super().__populate__(self, json)
 
     else:
       self.__pdpy__ = self.__class__.__name__
       self.label = label if label is not None else self.__d__.iemgui['symbol']
       self.offset = Point(xoff, yoff)
       self.font = PdFont(fface, fsize)
-      self.lbcolor = self.num(lbcolor)
+      self.lbcolor = self.__num__(lbcolor)
 
   def __pd__(self):
     """ Return the pd string for this iem label """
@@ -94,7 +94,7 @@ class Vu(PdObject):
   6. 15: `flag`: another flag.
   """
 
-  def __init__(self, pd_lines=None, json_dict=None):
+  def __init__(self, pd_lines=None, json=None):
     self.__pdpy__ = self.__class__.__name__
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
@@ -102,11 +102,11 @@ class Vu(PdObject):
       self.area = Size(*pd_lines[:2])
       self.comm = Comm(send=False, receive=pd_lines[2])
       self.label = IEMLabel(*pd_lines[3:8], pd_lines[9])
-      self.bgcolor = self.num(pd_lines[8])
-      self.scale= self.pdbool(pd_lines[10]) if 10 < len(pd_lines) else None
-      self.flag = self.pdbool(pd_lines[11]) if 11 < len(pd_lines) else None
-    elif json_dict is not None:
-      super().__init__(json_dict=json_dict)
+      self.bgcolor = self.__num__(pd_lines[8])
+      self.scale= self.__pdbool__(pd_lines[10]) if 10 < len(pd_lines) else None
+      self.flag = self.__pdbool__(pd_lines[11]) if 11 < len(pd_lines) else None
+    elif json is not None:
+      super().__init__(json=json)
 
   def __pd__(self):
     """ Return the pd string for this object """
@@ -139,21 +139,21 @@ class Toggle(PdObject):
   6. 16: `nonzero`: the non-zero value when toggle is on.
   """
 
-  def __init__(self, pd_lines=None, json_dict=None):
+  def __init__(self, pd_lines=None, json=None):
     self.__pdpy__ = self.__class__.__name__
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
-      self.size = self.num(pd_lines[0])
-      self.init = self.pdbool(pd_lines[1])
+      self.size = self.__num__(pd_lines[0])
+      self.init = self.__pdbool__(pd_lines[1])
       self.comm = Comm(send=pd_lines[2], receive=pd_lines[3])
       self.label = IEMLabel(*pd_lines[4:9], pd_lines[11])
-      self.bgcolor = self.num(pd_lines[9])
-      self.fgcolor = self.num(pd_lines[10])
-      self.flag    = self.num(pd_lines[12])
-      self.nonzero = self.num(pd_lines[13])
-    elif json_dict is not None:
-      super().__init__(json_dict=json_dict)
+      self.bgcolor = self.__num__(pd_lines[9])
+      self.fgcolor = self.__num__(pd_lines[10])
+      self.flag    = self.__num__(pd_lines[12])
+      self.nonzero = self.__num__(pd_lines[13])
+    elif json is not None:
+      super().__init__(json=json)
 
   def __pd__(self):
     """ Return the pd string for this object """
@@ -185,12 +185,12 @@ class Cnv(PdObject):
     4. 10-15: `IEMLabel` Parameters
     5. 16: `flag`: a flag
   """
-  def __init__(self, pd_lines=None, json_dict=None):
+  def __init__(self, pd_lines=None, json=None):
     self.__pdpy__ = self.__class__.__name__
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
-      self.size = self.num(pd_lines[0])
+      self.size = self.__num__(pd_lines[0])
       self.area = Size(*pd_lines[1:3])
       if 12 < len(pd_lines):
         self.comm = Comm(send=pd_lines[3], receive=pd_lines[4])
@@ -199,10 +199,10 @@ class Cnv(PdObject):
         self.comm = Comm(send=False,receive=pd_lines[3])
         off = 1
       self.label = IEMLabel(*pd_lines[5-off:10-off], pd_lines[11-off])
-      self.bgcolor = self.num(pd_lines[10-off])
-      self.flag    = self.num(pd_lines[12-off])
-    elif json_dict is not None:
-      super().__init__(json_dict=json_dict)
+      self.bgcolor = self.__num__(pd_lines[10-off])
+      self.flag    = self.__num__(pd_lines[12-off])
+    elif json is not None:
+      super().__init__(json=json)
   
   def __pd__(self):
     """ Return the pd string for this object """
@@ -233,22 +233,22 @@ class Radio(PdObject):
   5. 17: `value`: the initial value of the radio button (with `init`)
   """
 
-  def __init__(self, pd_lines=None, json_dict=None):
+  def __init__(self, pd_lines=None, json=None):
     self.__pdpy__ = self.__class__.__name__
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
-      self.size   = self.num(pd_lines[0])
-      self.flag   = self.num(pd_lines[1])
-      self.init   = self.pdbool(pd_lines[2])
-      self.number = self.num(pd_lines[3])
+      self.size   = self.__num__(pd_lines[0])
+      self.flag   = self.__num__(pd_lines[1])
+      self.init   = self.__pdbool__(pd_lines[2])
+      self.number = self.__num__(pd_lines[3])
       self.comm = Comm(send=pd_lines[4], receive=pd_lines[5])
       self.label = IEMLabel(*pd_lines[6:11], pd_lines[13])
-      self.bgcolor = self.num(pd_lines[11])
-      self.fgcolor = self.num(pd_lines[12])
-      self.value   = self.num(pd_lines[14])
-    elif json_dict is not None:
-      super().__init__(json_dict=json_dict)
+      self.bgcolor = self.__num__(pd_lines[11])
+      self.fgcolor = self.__num__(pd_lines[12])
+      self.value   = self.__num__(pd_lines[14])
+    elif json is not None:
+      super().__init__(json=json)
   
   def __pd__(self):
     """ Return the pd string for this object """
@@ -280,22 +280,22 @@ class Bng(PdObject):
   """
   
 
-  def __init__(self, pd_lines=None, json_dict=None):
+  def __init__(self, pd_lines=None, json=None):
     self.__pdpy__ = self.__class__.__name__
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
       # log(1, "bng pd_lines: {}".format(pd_lines))
-      self.size   = self.num(pd_lines[0])
-      self.hold   = self.num(pd_lines[1])
-      self.intrrpt= self.num(pd_lines[2])
-      self.init   = self.pdbool(pd_lines[3])
+      self.size   = self.__num__(pd_lines[0])
+      self.hold   = self.__num__(pd_lines[1])
+      self.intrrpt= self.__num__(pd_lines[2])
+      self.init   = self.__pdbool__(pd_lines[3])
       self.comm = Comm(send=pd_lines[4], receive=pd_lines[5])
       self.label = IEMLabel(*pd_lines[6:11], pd_lines[13])
-      self.bgcolor = self.num(pd_lines[11])
-      self.fgcolor = self.num(pd_lines[12])
-    elif json_dict is not None:
-      super().__init__(json_dict=json_dict)
+      self.bgcolor = self.__num__(pd_lines[11])
+      self.fgcolor = self.__num__(pd_lines[12])
+    elif json is not None:
+      super().__init__(json=json)
   
   def __pd__(self):
     """ Return the pd string for this object """
@@ -328,24 +328,24 @@ class Nbx(PdObject):
   5. 19: `value`: the initial value of the number box (with `init`)
   5. 20: `log_height`: upper limit of the log scale (with `log_flag`)
   """
-  def __init__(self, pd_lines=None, json_dict=None):
+  def __init__(self, pd_lines=None, json=None):
     self.__pdpy__ = self.__class__.__name__
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
-      self.digit_width = self.num(pd_lines[0])
-      self.height   = self.num(pd_lines[1])
+      self.digit_width = self.__num__(pd_lines[0])
+      self.height   = self.__num__(pd_lines[1])
       self.limits = Bounds(*pd_lines[2:4])
-      self.log_flag = self.pdbool(pd_lines[4])
-      self.init    = self.pdbool(pd_lines[5])
+      self.log_flag = self.__pdbool__(pd_lines[4])
+      self.init    = self.__pdbool__(pd_lines[5])
       self.comm = Comm(send=pd_lines[6], receive=pd_lines[7])
       self.label = IEMLabel(*pd_lines[8:13], pd_lines[15])
-      self.bgcolor = self.num(pd_lines[13])
-      self.fgcolor = self.num(pd_lines[14])
+      self.bgcolor = self.__num__(pd_lines[13])
+      self.fgcolor = self.__num__(pd_lines[14])
       self.value = float(pd_lines[16])
-      self.log_height = self.num(pd_lines[17])
-    elif json_dict is not None:
-      super().__init__(json_dict=json_dict)
+      self.log_height = self.__num__(pd_lines[17])
+    elif json is not None:
+      super().__init__(json=json)
   
   def __pd__(self):
     """ Return the pd string for this object """
@@ -383,23 +383,23 @@ class Slider(PdObject):
   5. 19: `value`: the initial value of the number box (with `init`)
   5. 20: `log_height`: upper limit of the log scale (with `log_flag`)
   """
-  def __init__(self, pd_lines=None, json_dict=None):
+  def __init__(self, pd_lines=None, json=None):
     self.__pdpy__ = self.__class__.__name__
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
       self.area = Size(*pd_lines[:2])
       self.limits = Bounds(*pd_lines[2:4])
-      self.log_flag = self.pdbool(pd_lines[4])
-      self.init    = self.pdbool(pd_lines[5])
+      self.log_flag = self.__pdbool__(pd_lines[4])
+      self.init    = self.__pdbool__(pd_lines[5])
       self.comm = Comm(send=pd_lines[6], receive=pd_lines[7])
       self.label = IEMLabel(*pd_lines[8:13], pd_lines[15])
-      self.bgcolor = self.num(pd_lines[13])
-      self.fgcolor = self.num(pd_lines[14])
+      self.bgcolor = self.__num__(pd_lines[13])
+      self.fgcolor = self.__num__(pd_lines[14])
       self.value = float(pd_lines[16])
-      self.steady = self.num(pd_lines[17])
-    elif json_dict is not None:
-      super().__init__(json_dict=json_dict)
+      self.steady = self.__num__(pd_lines[17])
+    elif json is not None:
+      super().__init__(json=json)
 
   def __pd__(self):
     """ Return the pd string for this object """

@@ -26,13 +26,13 @@ class PdObject(PdObj):
   5. `args`: The argument `list` of the pd object.
 
   """
-  def __init__(self, pd_lines=None, json_dict=None, **kwargs):
+  def __init__(self, pd_lines=None, json=None, **kwargs):
 
     self.__pdpy__ = self.__class__.__name__
 
-    if json_dict is not None:
+    if json is not None:
       super().__init__(**kwargs)
-      super().__populate__(self, json_dict)
+      super().__populate__(self, json)
 
     elif pd_lines is not None:
       super().__init__(*pd_lines[:3])

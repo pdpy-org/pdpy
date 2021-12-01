@@ -19,14 +19,14 @@ def PdPyEncoder(obj):
     # this line grabs the class from the module
     # and creates an instance of it
     # passing the json object as the argument
-    return getattr(pdpy, pdpyName)(json_dict=obj)
+    return getattr(pdpy, pdpyName)(json=obj)
   return obj
 
 file="/Users/fd/Development/pdpy/src/tests/json_files/all_objects.pd.json"
 
 with open(file, "r", encoding='utf-8') as fp:
   data = json.load(fp, object_hook=PdPyEncoder)
-  data = PdPy(json_dict=data)
+  data = PdPy(json=data)
 
 with open('test.json','w') as fp:
   fp.write(data.__json__())

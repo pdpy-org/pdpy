@@ -47,7 +47,7 @@ class Canvas(Base):
   `__pdpy__` (`str`) PdPy className (`self.__class__.__name__`)
   
   """
-  def __init__(self, json_dict=None):
+  def __init__(self, json=None):
 
     super().__init__(pdtype='N', cls='canvas')
     self.__pdpy__ = self.__class__.__name__
@@ -58,8 +58,8 @@ class Canvas(Base):
     # - the last self.__depth_list__ index as values
     self.__obj_map__ = {}
     
-    if json_dict is not None:
-      super().__populate__(self, json_dict)
+    if json is not None:
+      super().__populate__(self, json)
     else:
       self.screen = Point(x=0, y=22)
       self.dimension = Size(w=450, h=300)
@@ -67,10 +67,10 @@ class Canvas(Base):
       self.vis = 0
       self.name = None
     
-    self.isroot = self.pdbool(self.isroot)
+    self.isroot = self.__pdbool__(self.isroot)
     
     if hasattr(self, 'font'):
-      self.font = self.num(self.font)
+      self.font = self.__num__(self.font)
       self.__pad__ = Size(w=self.font, h=self.font)
       self.__cursor_init__ = Point(x=self.font, y=self.font)
       self.__cursor__ = Point(x=self.font, y=self.font)

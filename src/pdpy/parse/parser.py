@@ -53,7 +53,7 @@ class PdPyParser(PdPy):
     for i, s in enumerate(self.__lines__):
       self.__line_num__ = i
       self.parsePdPyLine(s)
-    # self.dumps()
+    # self.__dumps__()
 
 
   def arg_count(self, q):
@@ -390,7 +390,7 @@ class PdPyParser(PdPy):
     edge = Edge(pd=pd_edge)
     __canvas__.edge(edge)
     
-    # edge.dumps()
+    # edge.__dumps__()
 
   @printer
   def is_ignored(self, s): 
@@ -630,8 +630,8 @@ class PdPyParser(PdPy):
           # else:
 
           # if checknum(t): 
-            # print("number", self.num(t))
-            # self.objectCreator(PdMessage, (self.num(t)))
+            # print("number", self.__num__(t))
+            # self.objectCreator(PdMessage, (self.__num__(t)))
           
           # else:
             # log(2,"Unable to create object", obj)

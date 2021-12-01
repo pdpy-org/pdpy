@@ -19,18 +19,18 @@ class Scalar(Base):
   def __init__(self, 
                struct=None,
                pd_lines=None,
-               json_dict=None,
-               xml_object=None):
+               json=None,
+               xml=None):
     self.__pdpy__ = self.__class__.__name__
     super().__init__(cls='scalar')
     self.className = self.__cls__
     
     if pd_lines is not None:
       self.parsePd(struct, pd_lines)
-    elif json_dict is not None:
-      super().__populate__(self, json_dict)
-    elif xml_object is not None:
-      self.parseXml(struct, xml_object)
+    elif json is not None:
+      super().__populate__(self, json)
+    elif xml is not None:
+      self.parseXml(struct, xml)
 
   def parseXml(self, struct, argv):
     self.name = argv.findtext('name')
@@ -57,7 +57,7 @@ class Scalar(Base):
   def __pd__(self):
     """ Returns the data of this scalar as a pd string """
     if hasattr(self, 'data'):
-      _, template = self.getroot(self).getTemplate(self.name)
+      _, template = self.__getroot__(self).getTemplate(self.name)
       return super().__pd__(self.name + ' ' + self.data.__pd__(template))
     else:
       return ''

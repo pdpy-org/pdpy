@@ -26,7 +26,7 @@ class PdType(Base):
 
   Parameters
   ----------
-  json_dict : dict
+  json : dict
     A dictionary of the JSON object. For example: 
     ```
     {
@@ -39,11 +39,11 @@ class PdType(Base):
     ```
 
   """
-  def __init__(self, json_dict=None, **kwargs):
+  def __init__(self, json=None, **kwargs):
     self.__pdpy__ = self.__class__.__name__
     super().__init__(**kwargs)
-    if json_dict is not None:
-      super().__populate__(self, json_dict)
+    if json is not None:
+      super().__populate__(self, json)
     if hasattr(self, 'className') and self.className == 'goparray':
       self.__cls__ = 'array'
     # print("Pdtype", self.__type__, self.__cls__)
@@ -75,12 +75,12 @@ class PdType(Base):
 class Struct(Base):
   """ An object containing a Pure Data 'struct' header
   """
-  def __init__(self, pd_lines=None, json_dict=None, xml_obj=None):
+  def __init__(self, pd_lines=None, json=None, xml_obj=None):
     self.__pdpy__ = self.__class__.__name__
     self.order = []
     super().__init__(pdtype='N', cls='struct')
-    if json_dict is not None: 
-      super().__populate__(self, json_dict)
+    if json is not None: 
+      super().__populate__(self, json)
     elif xml_obj is not None:
       # log(1,xml_obj.findall('*'))
       self.name = xml_obj.findtext('name')
@@ -107,7 +107,7 @@ class Struct(Base):
         else:
           log(1, f"Unparsed Struct Field #{i}")
           log(1, self.name, pd_lines)
-          self.dumps()
+          self.__dumps__()
         i += 2
     else: 
       raise ArgumentException("Struct: Incorrect arguments given")
@@ -135,7 +135,7 @@ class Struct(Base):
     if not hasattr(self, 'array'):
       self.array = []
       self.order.append('array')
-    self.array.append(PdType(json_dict={
+    self.array.append(PdType(json={
       'name' : pd_name,
       'template' : array_name
     }))
@@ -157,7 +157,7 @@ class Struct(Base):
     if hasattr(self, 'float'):
       _data.update({
         'float': {
-            f:self.num(v) for f,v in zip(self.float, fs[:len(self.float)])
+            f:self.__num__(v) for f,v in zip(self.float, fs[:len(self.float)])
           }
       })
     if hasattr(self, 'symbol'):
@@ -179,9 +179,9 @@ class Struct(Base):
             # zip key and value from template names and data float values
             for key, val in zip(template.float, val_list):
               if key in _arr_obj:
-                _arr_obj[key].append(self.num(val))
+                _arr_obj[key].append(self.__num__(val))
               else:
-                _arr_obj[key] = [self.num(val)]
+                _arr_obj[key] = [self.__num__(val)]
           _data.update({
             'array' : _arr_obj
           })
@@ -220,7 +220,7 @@ class Struct(Base):
 
 class Graph(Base):
   """ The ye-olde array """
-  def __init__(self, pd_lines=None, json_dict=None, xml_object=None):
+  def __init__(self, pd_lines=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
     super().__init__(cls='graph')
 
@@ -229,13 +229,13 @@ class Graph(Base):
       self.name = pd_lines[1]
       self.area = Area(pd_lines[2:6])
       self.range = Area(pd_lines[6:10])
-    elif json_dict is not None:
-      super().__populate__(self, json_dict)
-    elif xml_object is not None:
-      self.id = xml_object.findtext('id')
-      self.name = xml_object.findtext('name')
-      self.area = Area(xml_object=xml_object.find('area'))
-      self.range = Area(xml_object=xml_object.find('range'))
+    elif json is not None:
+      super().__populate__(self, json)
+    elif xml is not None:
+      self.id = xml.findtext('id')
+      self.name = xml.findtext('name')
+      self.area = Area(xml=xml.find('area'))
+      self.range = Area(xml=xml.find('range'))
  
   def addArray(self, *args):
     """ Append an array structure with symbols for name and template """
@@ -244,7 +244,7 @@ class Graph(Base):
 
     self.array.append({
       'name' : args[1],
-      'size' : self.num(args[2]),
+      'size' : self.__num__(args[2]),
       'type' : args[3]
     })
 

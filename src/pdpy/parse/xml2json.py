@@ -31,7 +31,7 @@ class XmlToJson(Base):
   def __init__(self, xml_file):
     self.tree = ET.parse(xml_file)
     self.__conv__ = XmlTagConvert()
-    self.__root__ = self.tree.getroot()
+    self.__root__ = self.tree.__getroot__()
     self.__x__ = self.__root__.find('canvas')
     if self.__root__.get('encoding') is None:
       encoding = 'utf-8'
@@ -41,7 +41,7 @@ class XmlToJson(Base):
     self.patch = PdPy(self.__root__.get('name'), encoding)
 
     # add the root canvas
-    self.patch.root = Canvas(json_dict={
+    self.patch.root = Canvas(json={
       'name' : self.patch.patchname,
       'vis' : self.__x__.findtext('vis', default=self.__d__.vis),
       'screen' : [
@@ -74,12 +74,12 @@ class XmlToJson(Base):
 
   def addComments(self, x, __last_canvas__):
     if 'comment' == x.tag:
-      __last_canvas__.comment(Comment(xml_object=x))
+      __last_canvas__.comment(Comment(xml=x))
       return
 
   def addConnections(self, x, __last_canvas__):
     if 'connect' == x.tag:
-      __last_canvas__.edge(Edge(xml_object=x))
+      __last_canvas__.edge(Edge(xml=x))
 
   def addCanvas(self, node):
     __canvas__ = self.patch.__get_canvas__()
@@ -110,12 +110,12 @@ class XmlToJson(Base):
   # end of addCanvas -----------------------------------------------------------
   
   def addScalar(self, x, __last_canvas__):
-    scalar = Scalar(struct=self.patch.struct, xml_object=x)
+    scalar = Scalar(struct=self.patch.struct, xml=x)
     __last_canvas__.add(scalar)
 
   def addGOPArray(self, x, __last_canvas__):
     # log(1, "goparray", x)
-    arr = PdType(json_dict={
+    arr = PdType(json={
       'name' : x.findtext('name'),
       'size' : x.findtext('size'),
       'type' : x.findtext('type'),
@@ -130,7 +130,7 @@ class XmlToJson(Base):
 
   def addCoords(self, x, __last_canvas__):
     # log(1, "coords", x)
-    __last_canvas__.coords = Coords(xml_object=x)
+    __last_canvas__.coords = Coords(xml=x)
 
   def addNodes(self, x, __last_canvas__):
     border = None # the border of the object box
@@ -147,7 +147,7 @@ class XmlToJson(Base):
     elif 'border' == x.tag:
       border = x.text
     elif 'isroot' == x.tag:
-      __last_canvas__.isroot = self.pdbool(x.text)
+      __last_canvas__.isroot = self.__pdbool__(x.text)
     elif x.find('x') is None:
       log(1, "Unknown Tag:", x.tag)
     else:
@@ -379,7 +379,7 @@ class XmlToJson(Base):
       print('Unknown IEMGUI object type:', x.tag)
     
     # end iemgui if statement -----------------------------------------------
-    # obj.dumps()
+    # obj.__dumps__()
 
     return obj
 

@@ -3,8 +3,13 @@
 
 """ Translator class """
 
-import json
-import pickle
+from pathlib import Path
+from types import SimpleNamespace
+from json import load as json_load
+from json import loads as json_loads
+from pickle import dump as pickle_dump
+from pickle import load as pickle_load
+from pickle import HIGHEST_PROTOCOL as PICKLE_HIGHEST_PROTOCOL
 from pdpy.classes.base import Base
 from pdpy.classes.exceptions import ArgumentException
 from pdpy.classes.pdpy import PdPy
@@ -12,9 +17,8 @@ from pdpy.parse.parser import PdPyParser
 from pdpy.parse.xml2json import XmlToJson
 from pdpy.parse.json2xml import JsonToXml
 from pdpy.classes.default import getFormat
-from pdpy.util.utils import PdPyEncoder, log, parsePdBinBuf, parsePdFileLines
-from pathlib import Path
-from types import SimpleNamespace
+from pdpy.util.utils import log, parsePdBinBuf, parsePdFileLines
+from pdpy.classes.pdpyencoder import PdPyEncoder
 
 __all__ = [ "Translator" ] 
 
@@ -40,9 +44,9 @@ class Translator(Base):
   `source`    (`str`, inferred from `input_file`): Source file type
   `reflect`   (`bool`): If set to `True`, performs a reflected translation
   """
-  def __init__(self, json_dict):
+  def __init__(self, json):
 
-    super().__populate__(self, json_dict)
+    super().__populate__(self, json)
     
     self.source = getFormat(self.fro) if self.fro else None
     self.target = getFormat(self.to) if self.to else None
@@ -74,9 +78,8 @@ class Translator(Base):
     # store an object containing a pd object database
     if self.internals is not None:
       with open(self.internals, "r", encoding=self.encoding) as fp:
-        self.internals=json.load(fp,object_hook=lambda o:SimpleNamespace(**o))
+        self.internals=json_load(fp,object_hook=lambda o:SimpleNamespace(**o))
       # print(self.internals)
-    
 
     # Load the source file
     
@@ -89,13 +92,13 @@ class Translator(Base):
 
     elif self.source == "json":
       with open(self.input_file, "r", encoding=self.encoding) as fp:
-        self.pdpy = json.load(fp, object_hook = PdPyEncoder())
+        self.pdpy = json_load(fp, object_hook = PdPyEncoder())
       self.pdpy.__tree__()
 
     elif self.source == "pkl":
       with open(self.input_file, "rb") as fp:
-        data = pickle.load(fp, encoding=self.encoding)
-        self.pdpy = json.loads(data, object_hook = PdPyEncoder())
+        data = pickle_load(fp, encoding=self.encoding)
+        self.pdpy = json_loads(data, object_hook = PdPyEncoder())
       self.pdpy.__tree__()
     
     elif self.source == "pdpy":
@@ -120,7 +123,7 @@ class Translator(Base):
       # self.pdpy = PdPy(
       #     name = self.input_file.name,
       #     encoding = self.encoding,
-      #     xml_object = )
+      #     xml = )
       # )
     
     else:
@@ -149,14 +152,14 @@ class Translator(Base):
         elif target == "pkl":
           ofname = out.with_suffix(".pkl")
           with open(out.with_suffix(".pkl"), "wb") as fp:
-            pickle.dump(self.json, fp, pickle.HIGHEST_PROTOCOL)
+            pickle_dump(self.json, fp, PICKLE_HIGHEST_PROTOCOL)
 
         # the Pd reflection logic when json is the target
         if self.reflect:
           self.pd_ref = PdPy(
             name = self.input_file.name,
             encoding = self.encoding,
-            json_dict = self.json
+            json = self.json
           ).__pd__()
           if self.pd_ref is not None:
             out = out.parent / (out.stem + '_ref')

@@ -3,8 +3,6 @@
 
 """ Class Definitions """
 
-from pdpy.classes.data_structures import PdType
-from pdpy.util.utils import log
 from .pdobject import PdObject
 
 __all__ = [
@@ -35,12 +33,12 @@ class PdArray(PdObject):
   A `PdArray` object.
   
   """
-  def __init__(self, pd_lines = None, json_dict = None):
+  def __init__(self, pd_lines = None, json = None):
 
     self.__pdpy__ = self.__class__.__name__
 
-    if json_dict is not None:
-      super().__init__(json_dict=json_dict)
+    if json is not None:
+      super().__init__(json=json)
 
     elif pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
@@ -91,7 +89,7 @@ class PdArray(PdObject):
           i += 1
         
         if '-w' == argv[i]:
-          wait = self.num(argv[i+1]) if argv[i+1].isnumeric() else argv[i+1]
+          wait = self.__num__(argv[i+1]) if argv[i+1].isnumeric() else argv[i+1]
           setattr(self, 'wait', wait)
           i += 2
         
@@ -100,7 +98,7 @@ class PdArray(PdObject):
           # TODO: this fix is working
           # but we need a general approach to account for dollarsymbols 
           # as arguments (the value is somewhere else in the patch)
-          setattr(self, 'size', self.num(argv[i]) if argv[i].isnumeric() else argv[i])
+          setattr(self, 'size', self.__num__(argv[i]) if argv[i].isnumeric() else argv[i])
           i += 1
         
         # print('FIFTH',i, argv[i])

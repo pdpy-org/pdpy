@@ -42,12 +42,12 @@ class PdMsg(Base):
     This method outputs a semicolon if the address is not the default.
 
   """
-  def __init__(self, address=None, json_dict=None):
+  def __init__(self, address=None, json=None):
     """ Initialize with a address or default to 'outlet' """
     self.__pdpy__ = self.__class__.__name__
     
-    if json_dict is not None:
-      super().__populate__(self, json_dict)
+    if json is not None:
+      super().__populate__(self, json)
     else:
       if address is not None:
         self.address = address
@@ -78,7 +78,7 @@ class PdMessage(PdObj):
   each target being a ::class::`PdMsg` instance
   
   """
-  def __init__(self, pd_lines=None, json_dict=None):
+  def __init__(self, pd_lines=None, json=None):
 
     self.__pdpy__ = self.__class__.__name__
 
@@ -88,8 +88,8 @@ class PdMessage(PdObj):
       argv = pd_lines[3:]
       if len(pd_lines[3:]):
         self.addMessages(argv)
-    elif json_dict is not None:
-      super().__init__(cls='msg',json_dict=json_dict)
+    elif json is not None:
+      super().__init__(cls='msg',json=json)
       
   def addTarget(self, address):
     if not hasattr(self, "targets"):
@@ -102,7 +102,7 @@ class PdMessage(PdObj):
   def addMessages(self, argv):
       
     if 2 < len(argv) and "f" == argv[-2] and argv[-1].isnumeric():
-      self.border = self.num(argv[-1])
+      self.border = self.__num__(argv[-1])
       argv = argv[:-2]
       argv[-1] = argv[-1].replace(",","")
   

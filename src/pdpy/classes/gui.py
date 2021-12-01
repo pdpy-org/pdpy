@@ -32,10 +32,10 @@ class PdNativeGui(PdObj):
   11. `send`: the sender symbol of the object
 
   """
-  def __init__(self, className=None, pd_lines=None, json_dict=None):
+  def __init__(self, className=None, pd_lines=None, json=None):
 
-    if json_dict is not None:
-      super().__init__(json_dict=json_dict)
+    if json is not None:
+      super().__init__(json=json)
     
     elif className is not None and pd_lines is not None:
       super().__init__(*pd_lines[:3], cls=className)

@@ -3,8 +3,8 @@
 
 """ Class Definitions """
 
-from pdpy.util.utils import log
 from .base import Base
+from pdpy.util.utils import log
 
 __all__ = [
   'Comm',
@@ -19,15 +19,15 @@ class Comm(Base):
   def __init__(self, 
                send=None,
                receive=None,
-               json_dict=None,
+               json=None,
                default=None):
     """ Takes in a send and receive symbol pair or a json dict """
     self.__pdpy__ = self.__class__.__name__
     super().__init__()
     if default is None:
       default = self.__d__.iemgui['symbol']
-    if json_dict is not None:
-      super().__init__(json_dict=json_dict)
+    if json is not None:
+      super().__init__(json=json)
     else:
       self.send = send if send is not None else default
       self.receive = receive if receive is not None else default
@@ -43,16 +43,16 @@ class Comm(Base):
         return f"{self.receive}"
 
 class Source(Base):
-  def __init__(self, id=None, port=None, json_dict=None, xml_object=None):
+  def __init__(self, id=None, port=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
     if id is not None and port is not None:
       self.id = id
       self.port = port
-    elif json_dict is not None:
-      super().__populate__(self, json_dict)
-    elif xml_object is not None:
-      self.id = xml_object.findtext('id', None)
-      self.port = xml_object.findtext('port', None)
+    elif json is not None:
+      super().__populate__(self, json)
+    elif xml is not None:
+      self.id = xml.findtext('id', None)
+      self.port = xml.findtext('port', None)
     else:
       raise ValueError(f"{self.__pdpy__}: No valid parameters given")
   
@@ -86,17 +86,17 @@ class Edge(Base):
   3. `target`: The target id of the connection
   4. `port`: The port inlet of the target
   """
-  def __init__(self, pd=None, json_dict=None, xml_object=None):
+  def __init__(self, pd=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
     super().__init__(cls="connect")
     if pd is not None:
       self.source = Source(id=pd[0], port=pd[1]) 
       self.sink = Source(id=pd[2], port=pd[3])
-    elif json_dict is not None:
-      super().__populate__(self, json_dict)
-    elif xml_object is not None:
-      self.source = Source(xml_object=xml_object.find('source', None))
-      self.sink = Source(xml_object=xml_object.find('sink', None))
+    elif json is not None:
+      super().__populate__(self, json)
+    elif xml is not None:
+      self.source = Source(xml=xml.find('source', None))
+      self.sink = Source(xml=xml.find('sink', None))
     else:
       raise ValueError(f"{self.__pdpy__}: No valid parameters given")
 

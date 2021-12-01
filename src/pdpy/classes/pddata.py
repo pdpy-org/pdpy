@@ -14,13 +14,13 @@ class PdData(Base):
                data=None,
                head=None,
                template=None,
-               json_dict=None):
+               json=None):
 
     self.__pdpy__ = self.__class__.__name__
     super().__init__(pdtype='A', cls=head)
     
-    if json_dict is not None:
-      super().__populate__(self, json_dict)
+    if json is not None:
+      super().__populate__(self, json)
     else:
       if head is not None:
         # 'set' or 'saved' for symbols, otherwise '0' for arrays of floats
@@ -159,7 +159,7 @@ class PdData(Base):
 
       if hasattr(self, 'header'):
         if self.header == '0':
-          return ' '.join(list(map(lambda x:f"{self.num(x)}", self.data)))
+          return ' '.join(list(map(lambda x:f"{self.__num__(x)}", self.data)))
         
         if self.header == 'set' or self.header == 'saved':
           self.__cls__ = self.header
@@ -180,7 +180,7 @@ class PdData(Base):
         
       else:
         
-        raise ValueError(f"Unknown type {self.header} for:\n{self.dumps()}")
+        raise ValueError(f"Unknown type {self.header} for:\n{self.__dumps__()}")
     
     else:
      # TODO: order is important here. Template should take priority.

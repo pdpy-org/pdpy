@@ -3,22 +3,22 @@
 
 """ PdPy class definition """
 
-from ..util.utils import log
 from .base import Base
 from .classes import *
+from .data_structures import *
+from .pdscalar import *
+from .default import *
+from .iemgui import *
+from .canvas import Canvas
 from .pddata import PdData
 from .pdobject import PdObject
 from .pdarray import PdArray
 from .gui import PdNativeGui
 from .message import PdMessage
-from .canvas import Canvas
 from .dependencies import Dependencies
 from .comment import Comment
 from .connections import Edge
-from .data_structures import *
-from .pdscalar import *
-from .default import *
-from .iemgui import *
+from ..util.utils import log
 
 __all__ = [ "PdPy" ]
 
@@ -29,8 +29,8 @@ class PdPy(Base):
                encoding='utf-8',
                root=False,
                pd_lines=None,
-               json_dict=None,
-               xml_object=None):
+               json=None,
+               xml=None):
 
     """ Initialize a PdPy object """
 
@@ -52,18 +52,18 @@ class PdPy(Base):
       # account for pure data line endings and split into a list
       self.parse(pd_lines)
     
-    elif json_dict is not None:
-      # populate this class scope from the json_dict
-      super().__populate__(self, json_dict)
+    elif json is not None:
+      # populate this class scope from the json
+      super().__populate__(self, json)
     
-    elif xml_object is not None:
+    elif xml is not None:
       log(2,"XML INPUT NOT IMPLEMENTED")
     
     else:
-      log(1,f"{self.__pdpy__}: Neither json_dict nor xml_object nor pd_lines keyword arguments were passed")
+      log(1,f"{self.__pdpy__}: Neither json nor xml nor pd_lines keyword arguments were passed")
     
     if root:
-      self.root = Canvas(json_dict={'name':self.patchname,'isroot':True})
+      self.root = Canvas(json={'name':self.patchname,'isroot':True})
   
   def getTemplate(self, template_name):
     for idx, s in enumerate(getattr(self, 'struct')):
@@ -78,7 +78,7 @@ class PdPy(Base):
     self.struct.append(struct)  
   
   def addRoot(self, argv):
-    self.root = Canvas(json_dict={
+    self.root = Canvas(json={
             'name' : self.patchname,
             'vis' : 1,
             'id' : None, 
@@ -133,9 +133,9 @@ class PdPy(Base):
     This 
     """
     __canvas__ = self.__get_canvas__()
-    canvas = Canvas(json_dict={
+    canvas = Canvas(json={
             'name'   : argv[4],
-            'vis'    : self.num(argv[5]),
+            'vis'    : self.__num__(argv[5]),
             'id'     : self.__obj_idx__,
             'screen' : Point(x=argv[0], y=argv[1]), 
             'dimension' : Size(w=argv[2], h=argv[3]),
@@ -223,7 +223,7 @@ class PdPy(Base):
 
   def addGOPArray(self, argv):
     # log(1,"addGOPArray", argv)
-    arr = PdType(json_dict={
+    arr = PdType(json={
       'name' : argv[0],
       'size' : argv[1],
       'type' : argv[2],
@@ -372,4 +372,4 @@ class PdPy(Base):
     self.root.parent(self)
     for x in getattr(self, 'struct', []):
       x.parent(self)
-    self.addparents(self.root)
+    self.__addparents__(self.root)
