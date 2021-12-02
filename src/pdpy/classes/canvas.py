@@ -77,6 +77,25 @@ class Canvas(Base):
       self.__box__ = Size(w=self.font * 1.25, h=self.font * 2)
       self.__margin__ = Size()
 
+  def __update_obj_map__(self, x):
+    """ Update the object map with the current object
+
+    Description:
+    ------------
+    This method updates the object map with the current object. This is meant
+    to keep track of the objects in the current canvas, so we can connect
+    them later with their respective edges.
+    """
+    # If the node has an ID, get it and use it to update the object map
+    if hasattr(x, "id"):
+      # increment the index by one
+      self.__obj_idx__ += 1
+      # add the node to the map so that 
+      # key is the id and value is the index
+      self.__obj_map__.update({
+        int(getattr(x,'id')) : self.__obj_idx__
+      })
+
   def grow(self):
     """ Increments the canvas object index by 1
     """
@@ -205,14 +224,7 @@ class Canvas(Base):
     # recurse through the nodes
     for x in getattr(self,'nodes',[]):
       # log(1,"Canvas", f"Node: {x.__json__()}")
-      # If the node has an ID, get it and use it to update the object map
-      if hasattr(x,"id"):
-        # increment the index by one
-        self.__obj_idx__ += 1
-        # add the node to the map
-        self.__obj_map__.update({
-          int(getattr(x,'id')) : self.__obj_idx__
-        })
+      self.__update_obj_map__(x)
       s += f"{x.__pd__()}"
 
     # recurse through the comments
@@ -244,3 +256,28 @@ class Canvas(Base):
       s += f"#X f {self.border} {self.__end__}"
 
     return s
+
+
+  def __xml__(self):
+    """ Return the XML Element for this object """
+    
+    x = super().__element__(self)
+    
+    for e in ('font', 'name', 'vis', 'isroot', 'border', 'title'):
+      if hasattr(self, e):
+        super().__subelement__(x, e, text=getattr(self, e))
+    
+    for e in ('screen', 'dimension', 'position', 'coords'):
+      super().__subelement__(x, e.__xml__())
+    
+    for e in getattr(self, 'nodes', []):
+      self.__update_obj_map__(e)
+      super().__subelement__(x, e.__xml__())
+
+    for e in getattr(self, 'comments', []):
+      super().__subelement__(x, e.__xml__())
+
+    for e in getattr(self, 'edges', []):
+      super().__subelement__(x, e.__xml__(self.__obj_map__))
+          
+    return x

@@ -73,8 +73,8 @@ function translate_all
   $py $file -int $INT -f 'json' -t 'pd'   -i $json_out -o $json_ref >> $err 2>&1
   if [[ ! -f $json_ref ]]; then return; fi
   $py $file -int $INT -f 'pkl'  -t 'pd'   -i $pkl_out  -o $pkl_ref  >> $err 2>&1
-  # if [[ ! -f $pkl_ref ]]; then return; fi
-  # $py $file -int $INT -f 'json' -t 'xml'  -i $json_out -o $xml_out  >> $err 2>&1
+  if [[ ! -f $pkl_ref ]]; then return; fi
+  $py $file -int $INT -f 'json' -t 'xml'  -i $json_out -o $xml_out  >> $err 2>&1
   # if [[ ! -f $xml_out ]]; then return; fi
   # $py $file -int $INT -f 'xml'  -t 'json' -i $xml_out  -o $xml_jref >> $err 2>&1
   # if [[ ! -f $xml_jref ]]; then return; fi

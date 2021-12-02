@@ -66,6 +66,7 @@ class PdArray(PdObject):
         
         if '-s' == argv[i]:
           # the struct reference 's'
+          # TODO: this should really its own class
           setattr(self, 's', {
             'name' : argv[i + 1], 
             'template' : argv[i + 2]
@@ -118,13 +119,11 @@ class PdArray(PdObject):
       s += " -k"
     
     if hasattr(self, 's'):
-      s += " -s"
-      s += f" {self.s['name']}"  # struct name
-      s += f" {self.s['template']}"  # struct template
-      if hasattr(self.s, 'f'):
-        s += " -f"
-        s += f" {self.s['f']['name']}"
-        s += f" {self.s['f']['template']}"
+      # the struct reference 's'
+      s += f" -s {self.s['name']} {self.s['template']}"
+      if 'f' in self.s:
+        # the struct field reference 'f'
+        s += f" -f {self.s['f']['name']} {self.s['f']['template']}"
 
     if hasattr(self, 'name'):
       s += f" {self.name}"
@@ -138,11 +137,33 @@ class PdArray(PdObject):
     if hasattr(self, 'size'):
       s += f" {self.size}"
 
+    return super().__pd__(s)
+
+
+  def __xml__(self):
+    """ Return the XML Element for this object """
+    x = super().__element__(self)
+    
+    for e in ('subclass', 'name', 'wait', 'size'):
+      if hasattr(self, e):
+        super().__subelement__(x, e, text = getattr(self, e))
+
+    for e in ('keep', 'global'):
+      super().__subelement__(x, e, text = 1 if hasattr(self, e) else 0)
+
     if hasattr(self, 's'):
       # the struct reference 's'
-      s += f" -s {self.s['name']} {self.s['template']}"
+      s = super().__element__('s')
+      super().__subelement__(s, 'name', text = self.s['name'])
+      super().__subelement__(s, 'template', text = self.s['template'])
+
       if 'f' in self.s:
         # the struct field reference 'f'
-        s += f" -f {self.s['f']['name']} {self.s['f']['template']}"
-
-    return super().__pd__(s)
+        f = super().__element__('f')
+        super().__subelement__(f, 'name', text = self.s['f']['name'])
+        super().__subelement__(f, 'template', text = self.s['f']['template'])
+        super().__subelement__(s, f)
+      
+      super().__subelement__(x, s)
+    
+    return x

@@ -366,9 +366,6 @@ class PdPy(Base):
     
     for x in getattr(self, 'edges', []):
       s += f"{x.__pd__(self.__obj_map__)}"
-
-    if hasattr(self, 'coords'):
-      s += f"{self.coords.__pd__()}"
     
     # TODO: PdPy should really be an extended Base class 
     # with Canvas handling stuff, like obj_map, obj_idx, restore stuff, etc
@@ -388,38 +385,34 @@ class PdPy(Base):
 
 
   def __xml__(self):
-    """ Unparse this instance's scope into an xml string """
+    """ Return the XML Element for this object """
     
-    s = ''
-    for x in getattr(self,'struct', []):
-      s += x.__xml__()
+    x = super().__element__(self)
+    for e in getattr(self,'struct', []):
+      super().__subelement__(x, e.__xml__())
     
-    s += self.root.__xml__()
+    super().__subelement__(x, self.root.__xml__())
 
     if hasattr(self, 'dependencies'):
-      s += self.dependencies.__xml__()
+      super().__subelement__(x, self.dependencies.__xml__())
     
-    for x in getattr(self, 'nodes', []):
-      self.__update_obj_map__(x)
-      s += x.__xml__()
+    for e in getattr(self, 'nodes', []):
+      self.__update_obj_map__(e)
+      super().__subelement__(x, e.__xml__())
 
-    for x in getattr(self, 'comments', []):
-      s += x.__xml__()
-
-    if hasattr(self, 'coords'):
-      s += self.coords.__xml__()
-    
-    for x in getattr(self, 'edges', []):
-      s += x.__xml__(self.__obj_map__)
+    for e in getattr(self, 'comments', []):
+      super().__subelement__(x, e.__xml__())
 
     if hasattr(self, 'coords'):
-      s += self.coords.__xml__()
+      super().__subelement__(x, self.coords.__xml__())
     
-    # FIXME: this is not working
-    # if hasattr(self, 'position'):
-    #   s += f"#X restore {self.position.__xml__()}"
-    #   if hasattr(self, 'title'):
-    #     s += f" {self.title}"
-    #   s += self.__end__
+    for e in getattr(self, 'edges', []):
+      super().__subelement__(x, e.__xml__(self.__obj_map__))
     
-    return s
+    if hasattr(self, 'position'):
+      super().__subelement__(x, self.position.__xml__())
+    
+    if hasattr(self, 'title'):
+      super().__subelement__(x, 'title', text=self.title)
+    
+    return x

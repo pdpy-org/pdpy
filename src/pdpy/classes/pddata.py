@@ -209,3 +209,42 @@ class PdData(Base):
 
     # return an empty string if nothing else happened    
     return ''
+
+
+  def __xml__(self, template=None):
+    """ Returns the XML Element for this object """
+
+    x = super().__element__(self)
+    
+    if hasattr(self, 'data'):
+      data = super().__element__('data')      
+      if hasattr(self, 'header'):
+        super().__subelement__(data, 'header', self.header)  
+      for d in self.data:
+        super().__subelement__(data, 'data', d)
+      super().__subelement__(x, data)
+
+    else:
+      # call the pd method on every float (PdFLoat) element
+      if hasattr(self, 'float') and hasattr(template, 'float'):
+        flt = super().__element__('float')
+        for e in getattr(self, 'float', []):
+          super().__subelement__(flt, e.__xml__())
+        super().__subelement__(x, flt)
+      
+      # call the pd method on every symbol (PdSymbol) element
+      if hasattr(self, 'symbol') and hasattr(template, 'symbol'):
+        sym = super().__element__('symbol')
+        for x in getattr(self, 'symbol', []):
+          super().__subelement__(sym, x.__xml__())
+        super().__subelement__(x, sym)
+      
+      # call the pd method on the array (PdList) element
+      if hasattr(self, 'array') and hasattr(template, 'array'):
+        arr = super().__element__('array')
+        for x, t in zip(getattr(self, 'array', []), template.array):
+          _, _template = template.__parent__.getTemplate(t.template)
+          super().__subelement__(arr, x.__xml__(_template))
+        super().__subelement__(x, arr)
+
+    return x

@@ -58,3 +58,18 @@ class PdObj(Base):
 
     # return the pd line
     return s
+
+
+  def __xml__(self, subclass=None, args=None):
+    """ Returns an XML Element for this object """
+    x = super().__element__(self)
+    super().__subelement__(x, self.position.__xml__())
+    if subclass is not None:
+      super().__subelement__(x, 'subclass', subclass)
+    if args is not None:
+      super().__subelement__(x, 'arguments', args)
+    for e in getattr(self, 'args', []):
+      super().__subelement__(x, 'arg', text=e)
+    for e in getattr(self, 'data', []):
+      super().__subelement__(x, e.__xml__())
+    return x

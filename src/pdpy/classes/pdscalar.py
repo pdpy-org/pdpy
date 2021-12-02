@@ -60,4 +60,13 @@ class Scalar(Base):
       _, template = self.__getroot__(self).getTemplate(self.name)
       return super().__pd__(self.name + ' ' + self.data.__pd__(template))
     else:
-      return ''
+      return super().__pd__(self.name)
+
+  def __xml__(self):
+    """ Returns the XML Element for this objcet """
+    x = super().__element__(self)
+    super().__subelement__(x, 'name', self.name)
+    if hasattr(self, 'data'):
+      _, template = self.__getroot__(self).getTemplate(self.name)
+      super().__subelement__(x, self.data.__xml__(template))
+    return x

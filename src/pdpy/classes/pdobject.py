@@ -51,3 +51,7 @@ class PdObject(PdObj):
       args = self.className + ' ' + args
     # log(1, "PdObject args:", args)
     return super().__pd__(args)
+
+  def __xml__(self, args=None):
+    """ Return the XML Element for this object. """
+    return super().__xml__(subclass=self.className, args=args)

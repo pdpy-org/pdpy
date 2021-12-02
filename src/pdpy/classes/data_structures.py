@@ -71,7 +71,19 @@ class PdType(Base):
     
     else:
       log(1, "PdType: {}".format(self.__cls__))
-
+  
+  def __xml__(self):
+    """ Return the XML Element for this object """
+    x = super().__element__(self)
+    for e in ('name', 'template', 'size', 'type', 'flag'):
+      if hasattr(self, e):
+        super().__subelement__(x, e, getattr(self, e))
+    if hasattr(self, 'data'):
+      data = super().__element__('data')
+      for d in self.data:
+        super().__subelement__(data, 'data', d)
+      super().__subelement__(x, data)
+    return x
 class Struct(Base):
   """ An object containing a Pure Data 'struct' header
   """
@@ -209,7 +221,7 @@ class Struct(Base):
     """ Returns the struct instruction for the pd file """
     s = self.name
 
-    for a in ['float', 'symbol', 'text']:
+    for a in ('float', 'symbol', 'text'):
       if hasattr(self, a):
         s += ' ' + ' '.join(list(map(lambda x:a+' '+x, getattr(self, a))))
     
@@ -217,6 +229,18 @@ class Struct(Base):
       s += ' ' + ' '.join(list(map(lambda x:x.__pd__(), self.array)))
      
     return super().__pd__(s)
+  
+  def __xml__(self):
+    """ Return the XML Element for this object """
+    x = super().__element__(self)
+    super().__subelement__(x, 'name', self.name)
+    for a in ('float', 'symbol', 'text'):
+      for f in getattr(self, a, []):
+        super().__subelement__(x, a, text=f)
+    if hasattr(self, 'array'):
+      for a in self.array:
+        super().__subelement__(x, a.__xml__())
+    return x
 
 class Graph(Base):
   """ The ye-olde array """
@@ -259,3 +283,17 @@ class Graph(Base):
       s += self.__end__
     s += '#X pop' + self.__end__
     return s
+
+  def __xml__(self):
+    """ Return the XML Element for this object """
+    x = super().__element__(self)
+    super().__subelement__(x, 'name', self.name)
+    super().__subelement__(x, self.area.__xml__())
+    super().__subelement__(x, self.range.__xml__())
+    for a in getattr(self, 'array', []):
+      arr = super().__element__(a)
+      for y in ('name', 'size', 'type'):
+        super().__subelement__(arr, y, text=a[y])
+      super().__subelement__(x, arr)
+    return x
+

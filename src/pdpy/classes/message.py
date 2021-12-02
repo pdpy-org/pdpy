@@ -69,6 +69,14 @@ class PdMsg(Base):
     s += ' \, '.join(self.message) if hasattr(self, 'message') else ''
     return s
 
+  def __xml__(self):
+    """ Returns the XML Element for this object """
+    x = super().__element__(self)
+    super().__subelement__(x, 'address', text=self.address)
+    for m in getattr(self, "message", []):
+      super().__subelement__(x, 'message', text=m)
+    return x
+
 class PdMessage(PdObj):
   """ Representation of a Pd Message box
 
@@ -150,4 +158,12 @@ class PdMessage(PdObj):
       s += f', f {self.border}'
     
     return super().__pd__(s) if s else ''
-    
+  
+  def __xml__(self):
+    """ Return the XML Element for this object """
+    x = super().__element__(self)
+    for target in getattr(self, "targets", []):
+      super().__subelement__(x, target.__xml__())
+    if hasattr(self, "border"):
+      super().__subelement__(x, 'border', text=self.border)
+    return x

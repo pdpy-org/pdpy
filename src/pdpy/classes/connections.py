@@ -42,6 +42,20 @@ class Comm(Base):
       else:
         return f"{self.receive}"
 
+  def __xml__(self, order=0):
+    """ Returns a XML Element for this send/receive pair"""
+    x = super().__element__(self)
+    if order==1:
+      super().__subelement__(x, 'receive', self.receive)
+      super().__subelement__(x, 'send', self.send)
+    else:
+      if self.send is not False:
+        super().__subelement__(x, 'send', self.send)
+        super().__subelement__(x, 'receive', self.receive)
+      else:
+        super().__subelement__(x, 'receive', self.receive)
+    return x
+
 class Source(Base):
   def __init__(self, id=None, port=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
@@ -116,4 +130,3 @@ class Edge(Base):
     super().__subelement__(x, self.source.__xml__(o))
     super().__subelement__(x, self.sink.__xml__(o))
     return x
-    

@@ -55,10 +55,11 @@ class PdNativeGui(PdObj):
     """ Returns the pd-code representation of the object """
     
     s = f"{int(getattr(self,'digit_width',self.__d__.digits_width))}"
-    if hasattr(self, "limits"):
-      s += ' ' + self.limits.__pd__()
-    else:
-      s += f" {self.__d__.limits['lower']} {self.__d__.limits['upper']}"
+    
+    if not hasattr(self, "limits"):
+      self.limits = Bounds(lower=self.__d__.limits['lower'], upper=self.__d__.limits['upper'])
+    
+    s += ' ' + self.limits.__pd__()
     s += f" {int(getattr(self,'flag', self.__d__.flag))}"
     s += f" {getattr(self,'label',self.__d__.label)}"
 
@@ -66,3 +67,16 @@ class PdNativeGui(PdObj):
     s += f" {comm.__pd__(order=1)}"
     
     return super().__pd__(s)
+  
+  def __xml__(self):
+    """ Returns an XML Element for this object """
+    x = super().__xml__(self)
+    super().__subelement__(x, 'digit_width', getattr(self,'digit_width',self.__d__.digits_width))
+    if not hasattr(self, "limits"):
+      self.limits = Bounds(lower=self.__d__.limits['lower'], upper=self.__d__.limits['upper'])
+    super().__subelement__(x, self.limits.__xml__())
+    super().__subelement__(x, 'flag', getattr(self,'flag', self.__d__.flag))
+    super().__subelement__(x, 'label', getattr(self,'label', self.__d__.label))
+    comm = getattr(self, 'comm', Comm(default=self.__d__.receive))
+    super().__subelement__(x, comm.__xml__(order=1))
+    return x

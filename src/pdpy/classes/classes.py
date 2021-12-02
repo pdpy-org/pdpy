@@ -33,10 +33,10 @@ class Point(Base):
 
   def __xml__(self):
     """ Return an XML Element """
-    xml = super().__element__(self.__pdpy__)
+    x = super().__element__(self)
     for e in ('x', 'y'):
-      super().__subelement__(xml, e, text=getattr(self, e))
-    return xml
+      super().__subelement__(x, e, text=getattr(self, e))
+    return x
 
 class Size(Base):
   def __init__(self, w=None, h=None, json=None, xml=None):
@@ -55,6 +55,13 @@ class Size(Base):
 
   def __pd__(self):
     return f"{self.width} {self.height}"
+  
+  def __xml__(self):
+    """ Return an XML Element """
+    x = super().__element__(self)
+    for e in ('width', 'height'):
+      super().__subelement__(x, e, text=getattr(self, e))
+    return x
 
 class Bounds(Base):
   def __init__(self,
@@ -79,6 +86,13 @@ class Bounds(Base):
   
   def __pd__(self):
     return f"{self.lower} {self.upper}"
+
+  def __xml__(self):
+    """ Return an XML Element """
+    x = super().__element__(self)
+    for e in ('lower', 'upper'):
+      super().__subelement__(x, e, text=getattr(self, e))
+    return x
 class Area(Base):
   """ 
   Area
@@ -113,8 +127,14 @@ class Area(Base):
     if order == 1:
       return f"{self.a.x} {self.b.x} {self.a.y} {self.b.y}"
     else:
-      return f"{self.a.x} {self.a.y} {self.b.x} {self.b.y}"
+      return f"{self.a.__pd__()} {self.b.__pd__()}"
 
+  def __xml__(self):
+    """ Return an XML Element """
+    x = super().__element__(self)
+    for e in (self.a, self.b):
+      super().__subelement__(x, e.__xml__())
+    return x
 
 class Coords(Base):
   """ 
@@ -168,3 +188,12 @@ class Coords(Base):
     if hasattr(self, 'margin'):
       s += f" {self.margin.__pd__()}"
     return super().__pd__(s)
+
+  def __xml__(self):
+    """ Return an XML Element """
+    x = super().__element__(self)
+    for e in (self.range, self.dimension):
+      super().__subelement__(x, e.__xml__())
+    if hasattr(self, 'margin'):
+      super().__subelement__(x, self.margin.__xml__())
+    return x
