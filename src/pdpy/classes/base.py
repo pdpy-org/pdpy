@@ -4,6 +4,7 @@
 """ Base Class """
 
 from json import dumps as json_dumps
+import xml.etree.ElementTree as ET
 # from textwrap import wrap
 from ..util.utils import log
 from .default import Default
@@ -98,7 +99,7 @@ class Base(object):
       self.__dict__[name] = value
 
   def __json__(self):
-    """ Return a JSON representation of the class' scope as a string """
+    """ Return a JSON representation of the instance's scope as a string """
 
     # inner function to filter out variables that are
     # prefixed with two underscores ('_') 
@@ -206,4 +207,22 @@ class Base(object):
     # insert \r\n on the last space char
     # s = '\n'.join(s[i:i+79] for i in range(0, len(s), 79))
     return s
+
+  def __element__(self, child, text=None, attrib=None):
+    """ Returns an XML element for this object """
+    if not isinstance(child, str) and hasattr(child, '__pdpy__'):
+      child = str(child.__pdpy__).lower()
+    element = ET.Element(child)
+    if text is not None:
+      element.text = str(text)
+    if attrib is not None:
+      element.attrib = attrib
+    return element
+
+  def __subelement__(self, parent, child, **kwargs):
+    """ Create a sub element (child) of a parent element (parent) """
+    if not isinstance(child, ET.Element):
+      child = self.__element__(child, **kwargs)
+
+    return ET.SubElement(parent, child)
 

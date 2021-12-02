@@ -192,13 +192,35 @@ class Translator(Base):
         log(2, "No Pd representation available")
       
     if target == "xml" and self.pdpy is not None:
-      self.xml = JsonToXml(self.pdpy)
+      # get the xml representation
+      self.xml = self.pdpy.__xml__()
       if self.xml is not None:
         ofname = out.with_suffix(".xml")
-        with open(ofname, 'w') as fp:
+        with open(ofname, 'w', encoding=self.encoding) as fp:
           fp.write(self.xml.to_string())
+
+        # the Pd reflection logic when xml is the target
         if self.reflect:
-           self.xml_ref = JsonToXml(self.pdpy)
+          self.xml_ref = PdPy(
+            name = self.input_file.name,
+            encoding = self.encoding,
+            xml = self.xml.to_string() # give it an xml string
+           ).__pd__()
+          if self.xml_ref is not None:
+            out = out.parent / (out.stem + '_ref')
+            ofname = out.with_suffix(".pd")
+            with open(ofname, 'w', encoding=self.encoding) as fp:
+              fp.write(self.xml_ref)
+      else:
+        log(2, "No XML representation available")
+      
+      # self.xml = JsonToXml(self.pdpy)
+      # if self.xml is not None:
+      #   ofname = out.with_suffix(".xml")
+      #   with open(ofname, 'w') as fp:
+      #     fp.write(self.xml.to_string())
+      #   if self.reflect:
+      #      self.xml_ref = JsonToXml(self.pdpy)
 
   # end def __call__
 

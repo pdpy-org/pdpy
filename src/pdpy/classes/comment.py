@@ -49,4 +49,17 @@ class Comment(Base):
 
     return super().__pd__(s)
 
+  def __xml__(self):
+    """ Return an xml representation object """
+    
+    xml = super().__element__(self)
+    if hasattr(self, 'text'):
+      xml.text = ' '.join(getattr(self,'text'))
+    if hasattr(self, 'position'):
+      super().__subelement__(xml, self.position.__xml__())
+    if hasattr(self, 'border'):
+      super().__subelement__(xml, 'border', text=self.border)
+    
+    return xml
 
+  

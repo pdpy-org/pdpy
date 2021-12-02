@@ -30,6 +30,14 @@ class Point(Base):
 
   def __pd__(self):
     return f"{self.x} {self.y}"
+
+  def __xml__(self):
+    """ Return an XML Element """
+    xml = super().__element__(self.__pdpy__)
+    for e in ('x', 'y'):
+      super().__subelement__(xml, e, text=getattr(self, e))
+    return xml
+
 class Size(Base):
   def __init__(self, w=None, h=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__

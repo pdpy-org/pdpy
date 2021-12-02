@@ -317,8 +317,27 @@ class PdPy(Base):
           else:                   last = self.restore(body)
         else: log(1,"What is this?", argv, self.patchname)
 
+  def __update_obj_map__(self, x):
+    """ Update the object map with the current object
+
+    Description:
+    ------------
+    This method updates the object map with the current object. This is meant
+    to keep track of the objects in the current canvas, so we can connect
+    them later with their respective edges.
+    """
+    # If the node has an ID, get it and use it to update the object map
+    if hasattr(x, "id"):
+      # increment the index by one
+      self.__obj_idx__ += 1
+      # add the node to the map so that 
+      # key is the id and value is the index
+      self.__obj_map__.update({
+        int(getattr(x,'id')) : self.__obj_idx__
+      })
+
   def __pd__(self):
-    """ Unparse this class' scope into a list of pure data argument vectors
+    """ Unparse this instance's scope into a list of pure data argument vectors
 
     Description:
     ------------
@@ -336,14 +355,7 @@ class PdPy(Base):
       s += f"{self.dependencies.__pd__()}"
     
     for x in getattr(self, 'nodes', []):
-      # If the node has an ID, get it and use it to update the object map
-      if hasattr(x,"id"):
-        # increment the index by one
-        self.__obj_idx__ += 1
-        # add the node to the map
-        self.__obj_map__.update({
-          int(getattr(x,'id')) : self.__obj_idx__
-        })
+      self.__update_obj_map__(x)
       s += f"{x.__pd__()}"
 
     for x in getattr(self, 'comments', []):
@@ -358,7 +370,7 @@ class PdPy(Base):
     if hasattr(self, 'coords'):
       s += f"{self.coords.__pd__()}"
     
-    # TODO: pdpy should really be an extended Base class 
+    # TODO: PdPy should really be an extended Base class 
     # with Canvas handling stuff, like obj_map, obj_idx, restore stuff, etc
     if hasattr(self, 'position'):
       s += f"#X restore {self.position.__pd__()}"
@@ -373,3 +385,41 @@ class PdPy(Base):
     for x in getattr(self, 'struct', []):
       x.parent(self)
     self.__addparents__(self.root)
+
+
+  def __xml__(self):
+    """ Unparse this instance's scope into an xml string """
+    
+    s = ''
+    for x in getattr(self,'struct', []):
+      s += x.__xml__()
+    
+    s += self.root.__xml__()
+
+    if hasattr(self, 'dependencies'):
+      s += self.dependencies.__xml__()
+    
+    for x in getattr(self, 'nodes', []):
+      self.__update_obj_map__(x)
+      s += x.__xml__()
+
+    for x in getattr(self, 'comments', []):
+      s += x.__xml__()
+
+    if hasattr(self, 'coords'):
+      s += self.coords.__xml__()
+    
+    for x in getattr(self, 'edges', []):
+      s += x.__xml__(self.__obj_map__)
+
+    if hasattr(self, 'coords'):
+      s += self.coords.__xml__()
+    
+    # FIXME: this is not working
+    # if hasattr(self, 'position'):
+    #   s += f"#X restore {self.position.__xml__()}"
+    #   if hasattr(self, 'title'):
+    #     s += f" {self.title}"
+    #   s += self.__end__
+    
+    return s
