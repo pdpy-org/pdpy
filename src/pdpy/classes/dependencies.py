@@ -46,15 +46,18 @@ class Dependencies(Base):
 
   def __pd__(self):
     """ Parses the dependencies into paths and libs """
-    
     s = ''
-    
-    if hasattr(self, 'paths'):
-      for x in self.paths:
-        s += f" -path {x}"
-    
-    if hasattr(self, 'libs'):
-      for x in self.libs:
-        s += f" -lib {x}"
-
+    for x in getattr(self, 'paths', []):
+      s += f" -path {x}"
+    for x in hasattr(self, 'libs', []):
+      s += f" -lib {x}"
     return super().__pd__(s)
+
+  def __xml__(self):
+    """ Returns an XML Element for this object """
+    x = super().__xml__(self)
+    for path in getattr(self, 'paths', []):
+      super().__subelement__(x, 'path', text=path)
+    for lib in getattr(self, 'libs', []):
+      super().__subelement__(x, 'lib', text=lib)
+    return x

@@ -56,7 +56,7 @@ class Source(Base):
     else:
       raise ValueError(f"{self.__pdpy__}: No valid parameters given")
   
-  def remap(self, obj_map):
+  def __remap__(self, obj_map):
     """ Get the value from the mapped indices """
     s = '-1'
     try:
@@ -64,14 +64,21 @@ class Source(Base):
       s = str( obj_map[int(self.id)] )
     except KeyError:
       # if the key is not found, log the error
-      log(1, "remap()::Key Not Found", self.id)
+      log(1, "__remap__()::Key Not Found", self.id)
       print(obj_map)
     finally:
       # return the value
       return s
 
   def __pd__(self, obj_map=None):
-    return f"{self.remap(obj_map) if obj_map else self.id} {self.port}"
+    return f"{self.__remap__(obj_map) if obj_map else self.id} {self.port}"
+  
+  def __xml__(self, obj_map=None):
+    """ Returns an xml element for this source """
+    x = super().__element__(self)
+    super().__subelement__(x, 'id', text = self.__remap__(obj_map) if obj_map else self.id)
+    super().__subelement__(x, 'port', text = self.port)
+    return x
 
 class Edge(Base):
   """ A Pd Connection 
@@ -102,3 +109,11 @@ class Edge(Base):
 
   def __pd__(self, o=None):
     return super().__pd__(f"{self.source.__pd__(o)} {self.sink.__pd__(o)}")
+
+  def __xml__(self, o=None):
+    """ Returns an xml element for this edge """
+    x = super().__element__(self)
+    super().__subelement__(x, self.source.__xml__(o))
+    super().__subelement__(x, self.sink.__xml__(o))
+    return x
+    

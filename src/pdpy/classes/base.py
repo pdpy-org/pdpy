@@ -208,11 +208,11 @@ class Base(object):
     # s = '\n'.join(s[i:i+79] for i in range(0, len(s), 79))
     return s
 
-  def __element__(self, child, text=None, attrib=None):
+  def __element__(self, element, text=None, attrib=None):
     """ Returns an XML element for this object """
-    if not isinstance(child, str) and hasattr(child, '__pdpy__'):
-      child = str(child.__pdpy__).lower()
-    element = ET.Element(child)
+    if not isinstance(element, str) and hasattr(element, '__pdpy__'):
+      element = str(element.__pdpy__).lower()
+    element = ET.Element(element)
     if text is not None:
       element.text = str(text)
     if attrib is not None:
