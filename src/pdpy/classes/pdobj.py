@@ -60,16 +60,30 @@ class PdObj(Base):
     return s
 
 
-  def __xml__(self, subclass=None, args=None):
+  def __xml__(self, classname=None, args=None, **kwargs):
     """ Returns an XML Element for this object """
-    x = super().__element__(self)
-    super().__subelement__(x, self.position.__xml__())
-    if subclass is not None:
-      super().__subelement__(x, 'subclass', subclass)
+
+    x = super().__xml__(**kwargs)
+
+    super().__update_element__(x, self, ('position', 'args'))
+    
+    if hasattr(self, 'data'):
+      for d in getattr(self, 'data', []):
+        data = super().__element__('data')
+        data.set('header', getattr(d, 'header'))
+        for datum in getattr(d, 'data', []):
+          if not isinstance(datum, list) and not isinstance(datum, tuple):
+            super().__subelement__(data, 'datum', text=datum)
+          else:
+            data_mult = super().__element__('data')
+            for dd in datum:
+              super().__subelement__(data_mult, 'datum', text=dd)
+            super().__subelement__(data, data_mult)
+        super().__subelement__(x, data)
+    
+    if classname is not None:
+      super().__subelement__(x, 'classname', text=classname)
     if args is not None:
-      super().__subelement__(x, 'arguments', args)
-    for e in getattr(self, 'args', []):
-      super().__subelement__(x, 'arg', text=e)
-    for e in getattr(self, 'data', []):
-      super().__subelement__(x, e.__xml__())
+      super().__subelement__(x, 'arguments', text=args)
+    
     return x

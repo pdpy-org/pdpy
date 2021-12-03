@@ -20,15 +20,14 @@ class Comm(Base):
                send=None,
                receive=None,
                json=None,
+               xml=None,
                default=None):
     """ Takes in a send and receive symbol pair or a json dict """
     self.__pdpy__ = self.__class__.__name__
-    super().__init__()
+    super().__init__(json=json, xml=xml)
     if default is None:
       default = self.__d__.iemgui['symbol']
-    if json is not None:
-      super().__init__(json=json)
-    else:
+    if json is None and xml is None:
       self.send = send if send is not None else default
       self.receive = receive if receive is not None else default
     
@@ -44,31 +43,21 @@ class Comm(Base):
 
   def __xml__(self, order=0):
     """ Returns a XML Element for this send/receive pair"""
-    x = super().__element__(self)
     if order==1:
-      super().__subelement__(x, 'receive', self.receive)
-      super().__subelement__(x, 'send', self.send)
+      return super().__xml__(scope=self, attrib=('receive','send'))
     else:
       if self.send is not False:
-        super().__subelement__(x, 'send', self.send)
-        super().__subelement__(x, 'receive', self.receive)
+        return super().__xml__(scope=self, attrib=('send','receive'))
       else:
-        super().__subelement__(x, 'receive', self.receive)
-    return x
+        return super().__xml__(scope=self, attrib=('receive'))
 
 class Source(Base):
   def __init__(self, id=None, port=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
-    if id is not None and port is not None:
+    super().__init__(json=json, xml=xml)
+    if json is None and xml is None:
       self.id = id
       self.port = port
-    elif json is not None:
-      super().__populate__(self, json)
-    elif xml is not None:
-      self.id = xml.findtext('id', None)
-      self.port = xml.findtext('port', None)
-    else:
-      raise ValueError(f"{self.__pdpy__}: No valid parameters given")
   
   def __remap__(self, obj_map):
     """ Get the value from the mapped indices """
@@ -109,17 +98,10 @@ class Edge(Base):
   """
   def __init__(self, pd=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
-    super().__init__(cls="connect")
-    if pd is not None:
+    super().__init__(cls="connect", json=json, xml=xml)
+    if pd is not None and json is None and xml is None:
       self.source = Source(id=pd[0], port=pd[1]) 
       self.sink = Source(id=pd[2], port=pd[3])
-    elif json is not None:
-      super().__populate__(self, json)
-    elif xml is not None:
-      self.source = Source(xml=xml.find('source', None))
-      self.sink = Source(xml=xml.find('sink', None))
-    else:
-      raise ValueError(f"{self.__pdpy__}: No valid parameters given")
 
   def __pd__(self, o=None):
     return super().__pd__(f"{self.source.__pd__(o)} {self.sink.__pd__(o)}")

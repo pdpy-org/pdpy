@@ -15,11 +15,10 @@ __all__ = [
 
 class PdFloat(Base):
   """ A PdFloat base class """
-  def __init__(self, value=None, name=None, json=None):
+  def __init__(self, value=None, name=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
-    if json is not None:
-      super().__populate__(self, json)
-    else:
+    super().__init__(json=json, xml=xml)
+    if json is None and xml is None:
       self.value = self.__num__(value) if value is not None else None
       self.name = name
     
@@ -27,22 +26,19 @@ class PdFloat(Base):
     return f"{self.value}"
 
   def __xml__(self):
-    return self.__pd__()
-class PdSymbol(Base):
+    x = super().__element__(self)
+    super().__subelement__(x, 'name', text=self.name)
+    super().__subelement__(x, 'value', text=self.value)
+    return x
+
+class PdSymbol(PdFloat):
   """ A PdSymbol base class """
-  def __init__(self, value=None, name=None, json=None):
+  def __init__(self, value=None, name=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
-    if json is not None:
-      super().__populate__(self, json)
-    else:
+    super().__init__(json=json, xml=xml)
+    if json is None and xml is None:
       self.value = str(value) if value is not None else None
       self.name = name
-  
-  def __pd__(self):
-    return f"{self.value}"
-
-  def __xml__(self):
-    return self.__pd__()
 
 class PdList(Base):
   """ A PdList base class """
@@ -125,21 +121,26 @@ class PdList(Base):
     
     if hasattr(self, 'float') and hasattr(template, 'float'):
       keys = getattr(template, 'float')
-      flt = super().__subelement__(self, 'float')
+      flt = super().__element__('float')
       for k in keys:
         if k in self.float:
-          super().__subelement__(flt, k, text=self.float[k])
+          for v in self.float[k]:
+            super().__subelement__(flt, k, text=v)
       super().__subelement__(x, flt)
 
     if hasattr(self, 'symbol') and hasattr(template, 'symbol'):
       keys = getattr(template, 'symbol')
-      sym = super().__subelement__(self, 'symbol')
+      sym = super().__element__('symbol')
       for k in keys:
         if k in self.symbol:
-          super().__subelement__(sym, k, text=self.symbol[k])
+          for v in self.symbol[k]:
+            super().__subelement__(sym, k, text=v)
       super().__subelement__(x, sym)
     
-    if hasattr(self, 'array'):
-      super().__subelement__(x, self.array.__xml__())
+    if hasattr(self, 'array') and hasattr(template, 'array'):
+      for e, t in zip(getattr(self, 'array', []), template.array):
+        _, _template = template.__parent__.getTemplate(t.template)
+        super().__subelement__(x, e.__xml__(_template))
+        # super().__subelement__(x, self.array.__xml__())
     
     return x

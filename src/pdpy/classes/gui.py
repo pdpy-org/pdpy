@@ -70,13 +70,4 @@ class PdNativeGui(PdObj):
   
   def __xml__(self):
     """ Returns an XML Element for this object """
-    x = super().__xml__(self)
-    super().__subelement__(x, 'digit_width', getattr(self,'digit_width',self.__d__.digits_width))
-    if not hasattr(self, "limits"):
-      self.limits = Bounds(lower=self.__d__.limits['lower'], upper=self.__d__.limits['upper'])
-    super().__subelement__(x, self.limits.__xml__())
-    super().__subelement__(x, 'flag', getattr(self,'flag', self.__d__.flag))
-    super().__subelement__(x, 'label', getattr(self,'label', self.__d__.label))
-    comm = getattr(self, 'comm', Comm(default=self.__d__.receive))
-    super().__subelement__(x, comm.__xml__(order=1))
-    return x
+    return super().__xml__(scope=self, tag=self.className, attrib=('digit_width', 'limits', 'flag', 'label', 'comm'))

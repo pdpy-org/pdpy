@@ -142,14 +142,12 @@ class PdArray(PdObject):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__element__(self)
-    
-    for e in ('subclass', 'name', 'wait', 'size'):
-      if hasattr(self, e):
-        super().__subelement__(x, e, text = getattr(self, e))
+
+    x = super().__xml__(scope=self, attrib=('subclass', 'name', 'wait', 'size'))
 
     for e in ('keep', 'global'):
-      super().__subelement__(x, e, text = 1 if hasattr(self, e) else 0)
+      if hasattr(self, e):
+        super().__subelement__(x, e, text = 1 if getattr(self, e) else 0)
 
     if hasattr(self, 's'):
       # the struct reference 's'

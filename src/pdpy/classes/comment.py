@@ -51,15 +51,5 @@ class Comment(Base):
 
   def __xml__(self):
     """ Return an xml representation object """
-    
-    xml = super().__element__(self)
-    if hasattr(self, 'text'):
-      xml.text = ' '.join(getattr(self,'text'))
-    if hasattr(self, 'position'):
-      super().__subelement__(xml, self.position.__xml__())
-    if hasattr(self, 'border'):
-      super().__subelement__(xml, 'border', text=self.border)
-    
-    return xml
-
+    return super().__xml__(scope=self, attrib=('text','position','border'))
   

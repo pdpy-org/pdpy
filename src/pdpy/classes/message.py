@@ -42,13 +42,11 @@ class PdMsg(Base):
     This method outputs a semicolon if the address is not the default.
 
   """
-  def __init__(self, address=None, json=None):
+  def __init__(self, address=None, json=None, xml=None):
     """ Initialize with a address or default to 'outlet' """
     self.__pdpy__ = self.__class__.__name__
-    
-    if json is not None:
-      super().__populate__(self, json)
-    else:
+    super().__init__(json=json, xml=xml)
+    if json is None and xml is None:
       if address is not None:
         self.address = address
       else:

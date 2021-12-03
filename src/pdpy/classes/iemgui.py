@@ -22,24 +22,22 @@ __all__ = [
 ]
 
 class PdFont(Base):
-  def __init__(self, face=None, size=None, json=None):
-    if face is not None and size is not None:
+  def __init__(self, face=None, size=None, json=None, xml=None):
+    """ Initialize the object """
+    super().__init__(json=json, xml=xml)
+    if json is None and xml is None:
       self.__pdpy__ = self.__class__.__name__
       self.face = self.__num__(face)
       self.name = PdFonts[self.face if self.face < len(PdFonts) else -1]
       self.size = self.__num__(size)
-    elif json is not None:
-      super().__populate__(self, json)
   
   def __pd__(self):
     """ Return the pd lines for this object """
     return f"{self.face} {self.size}"
 
-  def __xml__(self):
+  def __xml__(self, tag=None):
     """ Return the XML Element for this object """
-    x = super().__element__(self)
-    super().__subelement__(x, 'face', text = self.face)
-    super().__subelement__(x, 'size', text = self.size)
+    return super().__xml__(scope=self, tag=tag, attrib=('face', 'size'))
 
 # end class PdFont -----------------------------------------------------------
 
@@ -68,11 +66,10 @@ class IEMLabel(Base):
               fface=None,
               fsize=None,
               lbcolor=None,
-              json=None):
-    if json is not None:
-      super().__populate__(self, json)
-
-    else:
+              json=None,
+              xml=None):
+    super().__init__(json=json, xml=xml)
+    if json is None and xml is None:
       self.__pdpy__ = self.__class__.__name__
       self.label = label if label is not None else self.__d__.iemgui['symbol']
       self.offset = Point(xoff, yoff)
@@ -83,12 +80,9 @@ class IEMLabel(Base):
     """ Return the pd string for this iem label """
     return f"{self.label} {self.offset.__pd__()} {self.font.__pd__()}"
 
-  def __xml__(self):
+  def __xml__(self, tag=None):
     """ Return the XML Element for this iem label """
-    x = super().__element__(self)
-    super().__subelement__(x, 'label', text = self.label)
-    super().__subelement__(x, self.offset.__xml__())
-    super().__subelement__(x, self.font.__xml__())
+    return super().__xml__(scope=self, tag=tag, attrib=('label', 'offset', 'font'))
 
 # end of class IEMLabel --------------------------------------------------------
 
@@ -136,16 +130,7 @@ class Vu(PdObject):
   
   def __xml__(self):
     """ Returns an XML Element for this object """
-    x = super().__element__(self)
-    super().__subelement__(x, self.area.__xml__())
-    super().__subelement__(x, self.comm.__xml__())
-    super().__subelement__(x, self.label.__xml__())
-    super().__subelement__(x, 'bgcolor', text=self.bgcolor)
-    if hasattr(self, 'scale') and self.scale is not None:
-      super().__subelement__(x, 'scale', text=1 if self.scale else 0)
-    if hasattr(self, 'flag') and self.flag is not None:
-      super().__subelement__(x, 'flag', text=1 if self.flag else 0)
-    return x
+    return super().__xml__(scope=self, attrib=('area', 'comm', 'label', 'bgcolor', 'scale', 'flag'))
 class Toggle(PdObject):
   """
   The IEM Toggle Object
@@ -196,16 +181,7 @@ class Toggle(PdObject):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__element__(self)
-    super().__subelement__(x, 'size', text=self.size)
-    super().__subelement__(x, 'init', text=1 if self.init else 0)
-    super().__subelement__(x, self.comm.__xml__())
-    super().__subelement__(x, self.label.__xml__())
-    super().__subelement__(x, 'bgcolor', text=self.bgcolor)
-    super().__subelement__(x, 'fgcolor', text=self.fgcolor)
-    super().__subelement__(x, 'flag', text=1 if self.flag else 0)
-    super().__subelement__(x, 'nonzero', text=self.nonzero)
-    return x
+    return super().__xml__(scope=self, attrib=('size', 'init', 'comm', 'label', 'bgcolor', 'fgcolor', 'flag', 'nonzero'))
 
 class Cnv(PdObject):
   """
@@ -256,14 +232,8 @@ class Cnv(PdObject):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__element__(self)
-    super().__subelement__(x, 'size', text=self.size)
-    super().__subelement__(x, self.area.__xml__())
-    super().__subelement__(x, self.comm.__xml__())
-    super().__subelement__(x, self.label.__xml__())
-    super().__subelement__(x, 'bgcolor', text=self.bgcolor)
-    super().__subelement__(x, 'flag', text=1 if self.flag else 0)
-    return x
+    return super().__xml__(scope=self, attrib=('size', 'area', 'comm', 'label', 'bgcolor', 'flag'))
+
 class Radio(PdObject):
   """
   The IEM Radio Object
@@ -316,18 +286,8 @@ class Radio(PdObject):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__element__(self)
-    super().__subelement__(x, 'size', text=self.size)
-    super().__subelement__(x, 'flag', text=1 if self.flag else 0)
-    super().__subelement__(x, 'init', text=1 if self.init else 0)
-    super().__subelement__(x, 'number', text=self.number)
-    super().__subelement__(x, self.comm.__xml__())
-    super().__subelement__(x, self.label.__xml__())
-    super().__subelement__(x, 'bgcolor', text=self.bgcolor)
-    super().__subelement__(x, 'fgcolor', text=self.fgcolor)
-    super().__subelement__(x, 'value', text=self.value)
-    return x
-
+    return super().__xml__(scope=self, attrib=('size', 'flag', 'init', 'number', 'comm', 'label', 'bgcolor', 'fgcolor', 'value'))
+    
 class Bng(PdObject):
   """
   The IEM Button Object
@@ -376,16 +336,8 @@ class Bng(PdObject):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__element__(self)
-    super().__subelement__(x, 'size', text=self.size)
-    super().__subelement__(x, 'hold', text=self.hold)
-    super().__subelement__(x, 'intrrpt', text=self.intrrpt)
-    super().__subelement__(x, 'init', text=1 if self.init else 0)
-    super().__subelement__(x, self.comm.__xml__())
-    super().__subelement__(x, self.label.__xml__())
-    super().__subelement__(x, 'bgcolor', text=self.bgcolor)
-    super().__subelement__(x, 'fgcolor', text=self.fgcolor)
-    return x
+    return super().__xml__(scope=self, attrib=('size', 'hold', 'intrrpt', 'init', 'comm', 'label', 'bgcolor', 'fgcolor'))
+
 class Nbx(PdObject):
   """
   The IEM Number Box Object
@@ -442,19 +394,7 @@ class Nbx(PdObject):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__element__(self)
-    super().__subelement__(x, 'digit_width', text=self.digit_width)
-    super().__subelement__(x, 'height', text=self.height)
-    super().__subelement__(x, 'limits', text=self.limits.__pd__())
-    super().__subelement__(x, 'log_flag', text=1 if self.log_flag else 0)
-    super().__subelement__(x, 'init', text=1 if self.init else 0)
-    super().__subelement__(x, self.comm.__xml__())
-    super().__subelement__(x, self.label.__xml__())
-    super().__subelement__(x, 'bgcolor', text=self.bgcolor)
-    super().__subelement__(x, 'fgcolor', text=self.fgcolor)
-    super().__subelement__(x, 'value', text=self.value)
-    super().__subelement__(x, 'log_height', text=self.log_height)
-    return x
+    return super().__xml__(scope=self, attrib=('digit_width', 'height', 'limits', 'log_flag', 'init', 'comm', 'label', 'bgcolor', 'fgcolor', 'value', 'log_height'))
 
 class Slider(PdObject):
   """
@@ -511,15 +451,4 @@ class Slider(PdObject):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__element__(self)
-    super().__subelement__(x, 'area', text=self.area.__pd__())
-    super().__subelement__(x, 'limits', text=self.limits.__pd__())
-    super().__subelement__(x, 'log_flag', text=1 if self.log_flag else 0)
-    super().__subelement__(x, 'init', text=1 if self.init else 0)
-    super().__subelement__(x, self.comm.__xml__())
-    super().__subelement__(x, self.label.__xml__())
-    super().__subelement__(x, 'bgcolor', text=self.bgcolor)
-    super().__subelement__(x, 'fgcolor', text=self.fgcolor)
-    super().__subelement__(x, 'value', text=self.value)
-    super().__subelement__(x, 'steady', text=1 if self.steady else 0)
-    return x
+    return super().__xml__(scope=self, attrib=('area', 'limits', 'log_flag', 'init', 'comm', 'label', 'bgcolor', 'fgcolor', 'value', 'steady'))

@@ -268,7 +268,8 @@ class Canvas(Base):
         super().__subelement__(x, e, text=getattr(self, e))
     
     for e in ('screen', 'dimension', 'position', 'coords'):
-      super().__subelement__(x, e.__xml__())
+      if hasattr(self, e):
+        super().__subelement__(x, getattr(self,e).__xml__(e))
     
     for e in getattr(self, 'nodes', []):
       self.__update_obj_map__(e)

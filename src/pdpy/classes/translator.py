@@ -196,8 +196,7 @@ class Translator(Base):
       self.xml = self.pdpy.__xml__()
       if self.xml is not None:
         ofname = out.with_suffix(".xml")
-        with open(ofname, 'w', encoding=self.encoding) as fp:
-          fp.write(self.xml.to_string())
+        self.xml.write(ofname.as_posix(), encoding=self.encoding)
 
         # the Pd reflection logic when xml is the target
         if self.reflect:

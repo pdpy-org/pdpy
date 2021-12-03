@@ -7,7 +7,7 @@ from json import dumps as json_dumps
 import xml.etree.ElementTree as ET
 # from textwrap import wrap
 from ..util.utils import log
-from .default import Default
+from .default import Default, XmlTagConvert
 
 __all__ = [ "Base" ]
 
@@ -31,12 +31,18 @@ class Base(object):
 
   """
   
-  def __init__(self, patchname=None, pdtype=None, cls=None, json=None):
+  def __init__(self,
+                patchname=None,
+                pdtype=None,
+                cls=None,
+                json=None,
+                xml=None):
     """ Initialize the object """
     self.patchname = patchname
     self.__type__ = pdtype if pdtype is not None else 'X'
     self.__cls__ = cls if cls is not None else 'obj'
     self.__d__ = Default()
+    self.__c__ = XmlTagConvert()
     
     if json:
       self.__populate__(self, json)
@@ -208,21 +214,77 @@ class Base(object):
     # s = '\n'.join(s[i:i+79] for i in range(0, len(s), 79))
     return s
 
+  def __tree__(self, root, autoindent=True):
+    tree = ET.ElementTree(root)
+    if autoindent:
+      ET.indent(tree, space='    ', level=0)
+    # return ET.tostring(self.__root__, encoding='unicode', method='xml')
+    return tree
+
   def __element__(self, element, text=None, attrib=None):
     """ Returns an XML element for this object """
+
     if not isinstance(element, str) and hasattr(element, '__pdpy__'):
-      element = str(element.__pdpy__).lower()
-    element = ET.Element(element)
+      tag = str(element.__pdpy__).lower()
+    elif isinstance(element, str):
+      # convert the tag to xml-friendly format before creating the element
+      tag = self.__c__.to_xml_tag(element)
+
+    element = ET.Element(tag)
+    
     if text is not None:
       element.text = str(text)
     if attrib is not None:
       element.attrib = attrib
+    
     return element
 
   def __subelement__(self, parent, child, **kwargs):
     """ Create a sub element (child) of a parent element (parent) """
     if not isinstance(child, ET.Element):
       child = self.__element__(child, **kwargs)
+    parent.append(child)
 
-    return ET.SubElement(parent, child)
+  def __update_element__(self, parent, scope, attrib):
+    """ Updates an element's attributes 
+    
+    Description
+    -----------
+    This method is used to update an element with pdpy attributes.
+    The element is updated with the attributes of the scope.
 
+    Parameters
+    -----------
+    parent : `ET.Element`
+      The element to update
+    scope : `object`
+      The PdPy object handle (aka, `self`) to update the element with
+    attrib : `list` or `tuple` of `str` 
+      The list of attributes to update the element with
+
+    """
+    if attrib is not None:
+      for e in attrib:
+        if hasattr(scope, e):
+          attr = getattr(scope, e)
+          if hasattr(attr, '__xml__'):
+            self.__subelement__(parent, getattr(scope,e).__xml__(e))
+          else:
+            if type(attr) in (list, tuple):
+              for a in attr:
+                if hasattr(a, '__xml__'):
+                  self.__subelement__(parent, a.__xml__(e))
+                else:
+                  self.__subelement__(parent, e, text=a)
+            else:
+              self.__subelement__(parent, e, text=attr)
+
+  def __xml__(self, scope=None, tag=None, attrib=None):
+    if tag is not None:
+      x = self.__element__(tag)
+    else:
+      x = self.__element__(scope)
+    
+    self.__update_element__(x, scope, attrib)
+
+    return x

@@ -49,13 +49,13 @@ class Dependencies(Base):
     s = ''
     for x in getattr(self, 'paths', []):
       s += f" -path {x}"
-    for x in hasattr(self, 'libs', []):
+    for x in getattr(self, 'libs', []):
       s += f" -lib {x}"
     return super().__pd__(s)
 
   def __xml__(self):
     """ Returns an XML Element for this object """
-    x = super().__xml__(self)
+    x = super().__element__(self)
     for path in getattr(self, 'paths', []):
       super().__subelement__(x, 'path', text=path)
     for lib in getattr(self, 'libs', []):

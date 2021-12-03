@@ -74,16 +74,14 @@ class PdType(Base):
   
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__element__(self)
-    for e in ('name', 'template', 'size', 'type', 'flag'):
-      if hasattr(self, e):
-        super().__subelement__(x, e, getattr(self, e))
+    x = super().__xml__(scope=self, attrib=('name', 'template', 'size', 'type', 'flag'))
     if hasattr(self, 'data'):
       data = super().__element__('data')
       for d in self.data:
-        super().__subelement__(data, 'data', d)
+        super().__subelement__(data, 'data', text=d)
       super().__subelement__(x, data)
     return x
+
 class Struct(Base):
   """ An object containing a Pure Data 'struct' header
   """
@@ -233,7 +231,7 @@ class Struct(Base):
   def __xml__(self):
     """ Return the XML Element for this object """
     x = super().__element__(self)
-    super().__subelement__(x, 'name', self.name)
+    super().__subelement__(x, 'name', text=self.name)
     for a in ('float', 'symbol', 'text'):
       for f in getattr(self, a, []):
         super().__subelement__(x, a, text=f)
@@ -286,10 +284,9 @@ class Graph(Base):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__element__(self)
-    super().__subelement__(x, 'name', self.name)
-    super().__subelement__(x, self.area.__xml__())
-    super().__subelement__(x, self.range.__xml__())
+
+    x = super().__xml__(scope=self, attrib=('name','area','range'))
+
     for a in getattr(self, 'array', []):
       arr = super().__element__(a)
       for y in ('name', 'size', 'type'):

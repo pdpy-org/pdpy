@@ -227,24 +227,24 @@ class PdData(Base):
     else:
       # call the pd method on every float (PdFLoat) element
       if hasattr(self, 'float') and hasattr(template, 'float'):
-        flt = super().__element__('float')
+        # flt = super().__element__('float')
         for e in getattr(self, 'float', []):
-          super().__subelement__(flt, e.__xml__())
-        super().__subelement__(x, flt)
+          super().__subelement__(x, e.__xml__())
+        # super().__subelement__(x, flt)
       
       # call the pd method on every symbol (PdSymbol) element
       if hasattr(self, 'symbol') and hasattr(template, 'symbol'):
-        sym = super().__element__('symbol')
-        for x in getattr(self, 'symbol', []):
-          super().__subelement__(sym, x.__xml__())
-        super().__subelement__(x, sym)
+        # sym = super().__element__('symbol')
+        for e in getattr(self, 'symbol', []):
+          super().__subelement__(x, e.__xml__())
+        # super().__subelement__(x, sym)
       
       # call the pd method on the array (PdList) element
       if hasattr(self, 'array') and hasattr(template, 'array'):
-        arr = super().__element__('array')
-        for x, t in zip(getattr(self, 'array', []), template.array):
+        # arr = super().__element__('array')
+        for e, t in zip(getattr(self, 'array', []), template.array):
           _, _template = template.__parent__.getTemplate(t.template)
-          super().__subelement__(arr, x.__xml__(_template))
-        super().__subelement__(x, arr)
+          super().__subelement__(x, e.__xml__(_template))
+        # super().__subelement__(x, arr)
 
     return x

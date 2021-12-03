@@ -387,7 +387,10 @@ class PdPy(Base):
   def __xml__(self):
     """ Return the XML Element for this object """
     
-    x = super().__element__(self)
+    x = super().__element__(self, attrib={
+      "encoding": self.encoding
+      })
+    
     for e in getattr(self,'struct', []):
       super().__subelement__(x, e.__xml__())
     
@@ -415,4 +418,4 @@ class PdPy(Base):
     if hasattr(self, 'title'):
       super().__subelement__(x, 'title', text=self.title)
     
-    return x
+    return super().__tree__(x)
