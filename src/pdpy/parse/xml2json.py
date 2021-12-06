@@ -6,7 +6,6 @@
 import xml.etree.ElementTree as ET
 
 from ..util.utils import log
-from ..classes.base import Base
 from ..classes.pddata import PdData
 from ..classes.pdpy import PdPy
 from ..classes.default import IEMGuiNames, XmlTagConvert
@@ -24,25 +23,28 @@ from ..classes.classes import Coords
 
 __all__ = [ "XmlToJson" ]
 
-class XmlToJson(Base):
+class XmlToJson(PdPy):
   """
   Convert XML to Json
   """
   def __init__(self, xml_file):
     self.tree = ET.parse(xml_file)
     self.__conv__ = XmlTagConvert()
-    self.__root__ = self.tree.__getroot__()
+    self.__root__ = self.tree.getroot()
+    # ET.dump(self.tree)
     self.__x__ = self.__root__.find('canvas')
+    
     if self.__root__.get('encoding') is None:
       encoding = 'utf-8'
     else:
       encoding = self.__root__.get('encoding')
     
-    self.patch = PdPy(self.__root__.get('name'), encoding)
-
+    super().__init__(encoding=encoding)
+    # self = PdPy(encoding=encoding)
+    # self.__dumps__()
     # add the root canvas
-    self.patch.root = Canvas(json={
-      'name' : self.patch.patchname,
+    self.root = Canvas(json={
+      'name' : self.__root__.findtext('name'),
       'vis' : self.__x__.findtext('vis', default=self.__d__.vis),
       'screen' : [
         self.__x__.findtext('x', default=self.__d__.screen['x']), 
@@ -58,19 +60,19 @@ class XmlToJson(Base):
 
     # NOTE: add struct to root, not to canvas root
     for child in self.tree.findall('struct/template'):
-      self.patch.addStruct(child, source='xml')
+      self.addStruct(child, source='xml')
 
     for child in self.tree.findall('declare/path'):
-      self.patch.addDependencies(['-path', child.text])
+      self.addDependencies(['-path', child.text])
     
     for child in self.tree.findall('declare/lib'):
-      self.patch.addDependencies(['-lib', child.text])
+      self.addDependencies(['-lib', child.text])
 
     for child in self.__x__.findall('*'):
       if child is not None:
-        self.addNodes(child, self.patch.root)
-        self.addComments(child, self.patch.root)
-        self.addConnections(child, self.patch.root)
+        self.addNodes(child, self.root)
+        self.addComments(child, self.root)
+        self.addConnections(child, self.root)
 
   def addComments(self, x, __last_canvas__):
     if 'comment' == x.tag:
@@ -82,11 +84,11 @@ class XmlToJson(Base):
       __last_canvas__.edge(Edge(xml=x))
 
   def addCanvas(self, node):
-    __canvas__ = self.patch.__get_canvas__()
+    __canvas__ = self.__get_canvas__()
     canvas = Canvas(
       name = node.findtext('name', default=self.__d__.name),
       vis = node.findtext('vis', default=self.__d__.vis),
-      id  = node.get('id', default=self.patch.__obj_idx__),
+      id  = node.get('id', default=self.__obj_idx__),
       screen = [
         node.findtext('x', default=self.__d__.screen['x']), 
         node.findtext('y', default=self.__d__.screen['x'])
@@ -100,7 +102,7 @@ class XmlToJson(Base):
     
     canvas.title=node.findtext('title', default=self.__d__.name)
     canvas.addpos(node.find('position').findtext('x'), node.find('position').findtext('y'))
-    self.patch.__canvas_idx__.append(__canvas__.add(canvas))
+    self.__canvas_idx__.append(__canvas__.add(canvas))
     
     for child in node.findall('*'):
       if child is not None:
@@ -110,7 +112,7 @@ class XmlToJson(Base):
   # end of addCanvas -----------------------------------------------------------
   
   def addScalar(self, x, __last_canvas__):
-    scalar = Scalar(struct=self.patch.struct, xml=x)
+    scalar = Scalar(struct=self.struct, xml=x)
     __last_canvas__.add(scalar)
 
   def addGOPArray(self, x, __last_canvas__):
@@ -151,8 +153,8 @@ class XmlToJson(Base):
     elif x.find('x') is None:
       log(1, "Unknown Tag:", x.tag)
     else:
-      self.patch.__obj_idx__ = __last_canvas__.grow()
-      __id__   = int(x.get('id', default = self.patch.__obj_idx__ ))
+      self.__obj_idx__ = __last_canvas__.grow()
+      __id__   = int(x.get('id', default = self.__obj_idx__ ))
       __xpos__ = int(x.findtext('x'))
       __ypos__ = int(x.findtext('y'))
       

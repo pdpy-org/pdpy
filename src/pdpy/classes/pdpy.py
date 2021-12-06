@@ -31,10 +31,7 @@ class PdPy(Base):
                pd_lines=None,
                json=None,
                xml=None):
-
     """ Initialize a PdPy object """
-
-    super().__init__()
 
     self.patchname = name
     self.encoding = encoding
@@ -47,20 +44,12 @@ class PdPy(Base):
     # - the last self.__depth_list__ index as values
     self.__obj_map__ = {}
 
-    if pd_lines is not None:
+    super().__init__(json=json, xml=xml)
+    
+    if json is None and xml is None and pd_lines is not None:
       # parse the pd lines and populate the pdpy instance
       # account for pure data line endings and split into a list
       self.parse(pd_lines)
-    
-    elif json is not None:
-      # populate this class scope from the json
-      super().__populate__(self, json)
-    
-    elif xml is not None:
-      log(2,"XML INPUT NOT IMPLEMENTED")
-    
-    else:
-      log(1,f"{self.__pdpy__}: Neither json nor xml nor pd_lines keyword arguments were passed")
     
     if root:
       self.root = Canvas(json={'name':self.patchname,'isroot':True})
@@ -261,7 +250,7 @@ class PdPy(Base):
     return last
 
   def parse(self, argvecs):
-    """ Parse a list of pure data argument vectors (1) into this class' scope
+    """ Parse a list of Pd argument vectors (1) into this instance's scope
 
     Description:
     ------------
@@ -316,6 +305,17 @@ class PdPy(Base):
           if "graph" == body[-1]: last = self.restore(body)
           else:                   last = self.restore(body)
         else: log(1,"What is this?", argv, self.patchname)
+
+  # def __parse_xml__(self, x):
+  #   """ Parse the xml file into this instance's scope
+
+  #   Description:
+  #   ------------
+  #   This method populates the current class with appropriate calls to 
+  #   individual classes refered to by parsing the xml file `x`.
+
+  #   """
+  #   pass
 
   def __update_obj_map__(self, x):
     """ Update the object map with the current object
@@ -387,35 +387,48 @@ class PdPy(Base):
   def __xml__(self):
     """ Return the XML Element for this object """
     
+    # root tag to which struct, 'root', and dependencies will be added
     x = super().__element__(self, attrib={
       "encoding": self.encoding
       })
     
     for e in getattr(self,'struct', []):
       super().__subelement__(x, e.__xml__())
-    
-    super().__subelement__(x, self.root.__xml__())
 
     if hasattr(self, 'dependencies'):
       super().__subelement__(x, self.dependencies.__xml__())
     
-    for e in getattr(self, 'nodes', []):
-      self.__update_obj_map__(e)
-      super().__subelement__(x, e.__xml__())
+    # make the 'root' tag to which all other elements will be added
+    root = self.root.__xml__(tag='root')
+    # add the 'root' tag to the xml root
+    super().__subelement__(x, root)
+    
+    if hasattr(self, 'nodes'):
+      nodes = super().__element__(tag='nodes')
+      for e in getattr(self, 'nodes', []):
+        self.__update_obj_map__(e)
+        super().__subelement__(nodes, e.__xml__())
+      super().__subelement__(root, nodes)
 
-    for e in getattr(self, 'comments', []):
-      super().__subelement__(x, e.__xml__())
+    if hasattr(self, 'comments'):
+      comments = super().__element__(tag='comments')
+      for e in getattr(self, 'comments', []):
+        super().__subelement__(comments, e.__xml__())
+      super().__subelement__(root, comments)
 
     if hasattr(self, 'coords'):
-      super().__subelement__(x, self.coords.__xml__())
+      super().__subelement__(root, self.coords.__xml__())
     
-    for e in getattr(self, 'edges', []):
-      super().__subelement__(x, e.__xml__(self.__obj_map__))
+    if hasattr(self, 'edges'):
+      edges = super().__element__(tag='edges')
+      for e in getattr(self, 'edges', []):
+        super().__subelement__(edges, e.__xml__(self.__obj_map__))
+      super().__subelement__(root, edges)
     
     if hasattr(self, 'position'):
-      super().__subelement__(x, self.position.__xml__())
+      super().__subelement__(root, self.position.__xml__())
     
     if hasattr(self, 'title'):
-      super().__subelement__(x, 'title', text=self.title)
+      super().__subelement__(root, 'title', text=self.title)
     
     return super().__tree__(x)

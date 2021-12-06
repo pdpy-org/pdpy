@@ -4,10 +4,11 @@
 """ Base Class """
 
 from json import dumps as json_dumps
-import xml.etree.ElementTree as ET
+from .PdPyXMLParser import PdPyXMLParser
+from xml.etree.ElementTree import ElementTree, Element, indent #, tostring
 # from textwrap import wrap
 from ..util.utils import log
-from .default import Default, XmlTagConvert
+from .default import Default, XmlTagConvert, Namespace
 
 __all__ = [ "Base" ]
 
@@ -36,21 +37,19 @@ class Base(object):
                 pdtype=None,
                 cls=None,
                 json=None,
-                xml=None):
+                xml=None,
+                default=None):
     """ Initialize the object """
-    self.patchname = patchname
-    self.__type__ = pdtype if pdtype is not None else 'X'
-    self.__cls__ = cls if cls is not None else 'obj'
-    self.__d__ = Default()
-    self.__c__ = XmlTagConvert()
-    
-    if json:
-      self.__populate__(self, json)
-    
-    # The pd line end character sequence
-    self.__end__ = ';\r\n' 
-    # The pd end symbol for data structures
-    self.__semi__ = ' \\;'
+    self.patchname = patchname # the name of the patch
+    self.__type__ = pdtype if pdtype is not None else 'X' # pd's type
+    self.__cls__ = cls if cls is not None else 'obj' # pd's class
+    self.__d__ = Default() if default is None else default # object defaults
+    self.__c__ = XmlTagConvert() # utility for converting xml tags
+    self.__n__ = Namespace() # pdpy module namespace
+    self.__end__ = ';\r\n' # The pd line end character sequence
+    self.__semi__ = ' \\;' # The pd end symbol for data structures
+    if json: self.__populate__(self, json) # fill the object with the json data
+    if xml: self.__xmlparse__(xml) # fill the object with the xml data
 
   def parent(self, parent=None):
     """ 
@@ -215,34 +214,78 @@ class Base(object):
     return s
 
   def __tree__(self, root, autoindent=True):
-    tree = ET.ElementTree(root)
+    tree = ElementTree(root)
     if autoindent:
-      ET.indent(tree, space='    ', level=0)
-    # return ET.tostring(self.__root__, encoding='unicode', method='xml')
+      indent(tree, space='    ', level=0)
+    # return tostring(self.__root__, encoding='unicode', method='xml')
     return tree
 
-  def __element__(self, element, text=None, attrib=None):
+  def __element__(self, scope=None, tag=None, text=None, attrib=None):
     """ Returns an XML element for this object """
-
-    if not isinstance(element, str) and hasattr(element, '__pdpy__'):
-      tag = str(element.__pdpy__).lower()
-    elif isinstance(element, str):
-      # convert the tag to xml-friendly format before creating the element
-      tag = self.__c__.to_xml_tag(element)
-
-    element = ET.Element(tag)
+    __pdpy__ = None
+    __tag__ = None
     
+    if tag is not None and isinstance(tag, str):
+      # we have a tag, so the element will have a 
+      # different name than the PdPy class name
+      # we will need to put the PdPy class name
+      # in the '__pdpy__' attribute
+
+      # convert the tag to xml-friendly format
+      __tag__ = self.__c__.to_xml_tag(tag)
+
+    if scope is not None and hasattr(scope, '__pdpy__'):
+      # we have a scope, so we know the PdPy class name
+      # we can create the element with the PdPy class name
+      # and omit the '__pdpy__' attribute
+      
+      # get the pdpy name for the scope
+      __pdpy__ = getattr(scope, '__pdpy__')
+
+    if __tag__ is not None and __pdpy__ is not None:
+      # we have both a tag and a scope
+      
+      # store the class name in the attributes
+      # update the attrib dict if it's there
+      if attrib is not None:
+        attrib.update({'pdpy':__pdpy__})
+      else:
+        attrib = {'pdpy':__pdpy__}
+    
+    elif __tag__ is not None and __pdpy__ is None:
+      # we have a tag, but no scope
+      # we don't update the attrib dict
+      pass
+
+    elif __pdpy__ is not None and __tag__ is None:
+      # we have a scope, but no tag
+      # we don't update the attrib dict
+      # but we need to set the tag to the PdPy class name
+      __tag__ = str(__pdpy__).lower()
+
+    else:
+      # we have neither a tag nor a scope
+      raise AttributeError("Either tag or scope must be present")
+
+    # create the element
+    if attrib is not None:
+      element = Element(__tag__, attrib=attrib)
+    else:
+      element = Element(__tag__)
+
+    # store the text of the element as a string
     if text is not None:
       element.text = str(text)
-    if attrib is not None:
-      element.attrib = attrib
     
     return element
 
   def __subelement__(self, parent, child, **kwargs):
     """ Create a sub element (child) of a parent element (parent) """
-    if not isinstance(child, ET.Element):
-      child = self.__element__(child, **kwargs)
+    if not isinstance(child, Element):
+      if isinstance(child, str):
+        child = self.__element__(tag=child, **kwargs)
+      else:
+        child = self.__element__(scope=child, **kwargs)
     parent.append(child)
 
   def __update_element__(self, parent, scope, attrib):
@@ -255,7 +298,7 @@ class Base(object):
 
     Parameters
     -----------
-    parent : `ET.Element`
+    parent : `Element`
       The element to update
     scope : `object`
       The PdPy object handle (aka, `self`) to update the element with
@@ -280,11 +323,12 @@ class Base(object):
               self.__subelement__(parent, e, text=attr)
 
   def __xml__(self, scope=None, tag=None, attrib=None):
-    if tag is not None:
-      x = self.__element__(tag)
-    else:
-      x = self.__element__(scope)
-    
+    x = self.__element__(scope=scope, tag=tag)
     self.__update_element__(x, scope, attrib)
 
     return x
+  
+  def __xmlparse__(self, xml):
+    """ Parse an XML element into a PdPy object """
+    PdPyXMLParser(self, xml)
+    

@@ -258,10 +258,10 @@ class Canvas(Base):
     return s
 
 
-  def __xml__(self):
+  def __xml__(self, tag=None):
     """ Return the XML Element for this object """
     
-    x = super().__element__(self)
+    x = super().__element__(scope=self, tag=tag)
     
     for e in ('font', 'name', 'vis', 'isroot', 'border', 'title'):
       if hasattr(self, e):
@@ -271,14 +271,23 @@ class Canvas(Base):
       if hasattr(self, e):
         super().__subelement__(x, getattr(self,e).__xml__(e))
     
-    for e in getattr(self, 'nodes', []):
-      self.__update_obj_map__(e)
-      super().__subelement__(x, e.__xml__())
+    if hasattr(self, 'nodes'):
+      nodes = super().__element__(tag='nodes')
+      for e in getattr(self, 'nodes', []):
+        self.__update_obj_map__(e)
+        super().__subelement__(nodes, e.__xml__())
+      super().__subelement__(x, nodes)
 
-    for e in getattr(self, 'comments', []):
-      super().__subelement__(x, e.__xml__())
+    if hasattr(self, 'comments'):
+      comments = super().__element__(tag='comments')
+      for e in getattr(self, 'comments', []):
+        super().__subelement__(comments, e.__xml__())
+      super().__subelement__(x, comments)
 
-    for e in getattr(self, 'edges', []):
-      super().__subelement__(x, e.__xml__(self.__obj_map__))
+    if hasattr(self, 'edges'):
+      edges = super().__element__(tag='edges')
+      for e in getattr(self, 'edges', []):
+        super().__subelement__(edges, e.__xml__(self.__obj_map__))
+      super().__subelement__(x, edges)
           
     return x

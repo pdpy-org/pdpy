@@ -15,7 +15,7 @@ from pdpy.classes.exceptions import ArgumentException
 from pdpy.classes.pdpy import PdPy
 from pdpy.parse.parser import PdPyParser
 from pdpy.parse.xml2json import XmlToJson
-from pdpy.parse.json2xml import JsonToXml
+
 from pdpy.classes.default import getFormat
 from pdpy.util.utils import log, parsePdBinBuf, parsePdFileLines
 from pdpy.classes.pdpyencoder import PdPyEncoder
@@ -119,13 +119,12 @@ class Translator(Base):
       # which loads and populates an internal PdPy class
       
       with open(self.input_file, "r", encoding=self.encoding) as fp:
-        self.pdpy = XmlToJson(fp)
-      # self.pdpy = PdPy(
-      #     name = self.input_file.name,
-      #     encoding = self.encoding,
-      #     xml = )
-      # )
-    
+        # self.pdpy = XmlToJson(fp)
+        self.pdpy = PdPy(
+            name = self.input_file.name,
+            encoding = self.encoding,
+            xml = fp
+        )
     else:
       raise ValueError("Unknown source type: {}".format(self.source))
   

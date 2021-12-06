@@ -4,6 +4,7 @@
 """ Pure Data Default Definitions """
 
 __all__ = [
+  'Namespace',
   'Default',
   'XmlTagConvert',
   'GOPArrayFlags',
@@ -14,6 +15,29 @@ __all__ = [
   'getFormat'
 ]
 
+class Namespace:
+  """ PdPy Namespace """
+  def __init__(self):
+    import pdpy
+    self.__module__ = pdpy
+    self.__name__ = { e.lower().replace('__', ''):e for e in dir(self.__module__) }
+
+  def get(self, name=None, tag=None):
+    """ Get a PdPy Namespace Element """
+    if name is not None:
+      if name in self.__name__:
+        name = self.__name__[name]
+      elif name in self.__name__.values():
+        name = name
+      else:
+        return name
+      return getattr(self.__module__, name)
+    
+    elif tag is not None:
+      # recurse with the tag
+      return self.get(name=tag)
+
+    
 Formats = {
   "pkl" : [ "pickle", "pkl"],
   "json": [ "json" ],
