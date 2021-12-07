@@ -22,7 +22,7 @@ class Namespace:
     self.__module__ = pdpy
     self.__name__ = { e.lower().replace('__', ''):e for e in dir(self.__module__) }
 
-  def get(self, name=None, tag=None):
+  def __get__(self, name=None, tag=None):
     """ Get a PdPy Namespace Element """
     if name is not None:
       if name in self.__name__:
@@ -35,7 +35,13 @@ class Namespace:
     
     elif tag is not None:
       # recurse with the tag
-      return self.get(name=tag)
+      return self.__get__(name=tag)
+
+  def __check__(self, tag, attrib, attr_key='pdpy'):
+    __pdpy__ = self.__get__(name=getattr(attrib, attr_key, None), tag=tag)
+    if __pdpy__ is None:
+      raise KeyError(f"No PdPy class found for element: {tag}")
+    return __pdpy__
 
     
 Formats = {

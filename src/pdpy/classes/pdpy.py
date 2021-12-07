@@ -66,17 +66,21 @@ class PdPy(Base):
     struct.parent(self)
     self.struct.append(struct)  
   
-  def addRoot(self, argv):
-    self.root = Canvas(json={
-            'name' : self.patchname,
-            'vis' : 1,
-            'id' : None, 
-            'screen' : Point(x=argv[0], y=argv[1]),
-            'dimension' : Size(w=argv[2], h=argv[3]), 
-            'font' : int(argv[4]),
-            'isroot' : True,
-            '__parent__' : self
-    })
+  def addRoot(self, argv=None, json=None):
+    if argv is not None:
+      self.root = Canvas(json={
+              'name' : self.patchname,
+              'vis' : 1,
+              'id' : None, 
+              'screen' : Point(x=argv[0], y=argv[1]),
+              'dimension' : Size(w=argv[2], h=argv[3]), 
+              'font' : int(argv[4]),
+              'isroot' : True,
+              '__parent__' : self
+      })
+    elif json is not None:
+      self.root = Canvas(json=json)
+
     return self.root
   
   def addDependencies(self, argv):

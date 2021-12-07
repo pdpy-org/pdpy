@@ -3,9 +3,11 @@
 
 """ Base Class """
 
+from collections import OrderedDict
 from json import dumps as json_dumps
-from .PdPyXMLParser import PdPyXMLParser
-from xml.etree.ElementTree import ElementTree, Element, indent #, tostring
+from os import EX_SOFTWARE
+# from .PdPyXMLParser import PdPyXMLParser
+from xml.etree.ElementTree import ElementTree, Element, indent, parse as xparse, dump as xdump
 # from textwrap import wrap
 from ..util.utils import log
 from .default import Default, XmlTagConvert, Namespace
@@ -51,11 +53,14 @@ class Base(object):
     if json: self.__populate__(self, json) # fill the object with the json data
     if xml: self.__xmlparse__(xml) # fill the object with the xml data
 
-  def parent(self, parent=None):
+  def parent(self, parent=None, scope=None):
     """ 
     Sets the parent of this object if `parent` is present, 
     otherwise returns the parent of this object.
     """
+    if scope is None:
+      scope = self
+    
     if parent is not None:
       self.__parent__ = parent
       # print("adding parent to child", self.__class__.__name__, '<=', parent.__class__.__name__)
@@ -72,7 +77,7 @@ class Base(object):
     __addparents__(self, 'nodes')
     """
     for child in getattr(parent, children, []):
-      child.parent(parent)
+      self.parent(parent=parent, scope=child)
       # print(child.__pdpy__,repr(dir(child)))
       if hasattr(child, children):
         child.__addparents__(child)
@@ -321,14 +326,119 @@ class Base(object):
                   self.__subelement__(parent, e, text=a)
             else:
               self.__subelement__(parent, e, text=attr)
+    else:
+      print("MISSING ATTRIBUTES:",parent, scope, attrib)
 
   def __xml__(self, scope=None, tag=None, attrib=None):
+    # print("base",scope, tag, attrib)
     x = self.__element__(scope=scope, tag=tag)
     self.__update_element__(x, scope, attrib)
 
     return x
   
+
+  def strip_tag(self, tag):
+      strip_ns_tag = tag
+      split_array = tag.split('}')
+      if len(split_array) > 1:
+          strip_ns_tag = split_array[1]
+          tag = strip_ns_tag
+      return tag
+
+
+  def elem_to_internal(self, elem):
+      """Convert an Element into an internal dictionary."""
+
+      # d = OrderedDict()
+      d = dict()
+      cls = None
+      elem_tag = elem.tag
+      elem_tag = self.strip_tag(elem.tag)
+      
+      cls = self.__n__.__get__(name=getattr(elem.attrib, 'pdpy', None), tag=elem_tag)
+
+      # loop over subelements to merge them
+      for subelem in elem:
+        v = self.elem_to_internal(subelem)
+        tag = self.strip_tag(subelem.tag)
+        
+        if 'pdpy' in subelem.attrib:
+          # sub_cls = self.__n__.__get__(name=getattr(subelem.attrib, 'pdpy', None), tag=tag)
+          # print("Found subclass",sub_cls)
+          d.update({tag: v})
+        else:
+          if not isinstance(v, dict):
+            d.update({tag: v})
+          else:
+            for kk,vv in v.items():
+              d.update({kk:vv})
+
+      text = elem.text
+      # tail = elem.tail
+      
+      # ignore leading and trailing whitespace
+      if text:
+        text = text.strip()
+      # if tail:
+        # tail = tail.strip()
+
+      # if tail:
+        # d['#tail'] = tail
+        # print("FOUND TAIL", tail)
+
+      if d:
+        # use #text element if other attributes exist
+        if text:
+            d["#text"] = text
+      else:
+        # text is the value if no attributes
+        d = text or None
+      
+      if isinstance(cls, str) and not 'pdpy' in elem.attrib:
+        obj = {elem_tag: d}
+        # print("FOUND STRING CLASS", cls, obj)
+        return obj
+      else:
+        try:
+          if 'pdpy' in elem.attrib:
+            cls = self.__n__.__get__(name=elem.attrib['pdpy'])
+          c = cls(json=d)
+        except Exception as e:
+          log(2, e)
+          log(2, cls, d)
+          c = None
+        finally:
+          return c
+
+
+
   def __xmlparse__(self, xml):
     """ Parse an XML element into a PdPy object """
-    PdPyXMLParser(self, xml)
+    # PdPyXMLParser(self, xml)
+    xml_tree = xparse(xml)
+    xml_root = xml_tree.getroot()
+    self.encoding = xml_root.get('encoding', 'utf-8')
+    root_dict = {'__parent__' : self}
+    
+    for n in xml_root.find('root'):
+      # print('tag', n.tag)
+      if n.tag == 'pdpy' or n.tag == 'root':
+        if 'pdpy' in n.attrib:
+          root_dict.update({'__pdpy__': n.attrib['pdpy']})
+      elif n.tag == 'nodes':
+        root_dict.update({'nodes' : [self.elem_to_internal(x) for x in n]})
+      elif n.tag == 'comments':
+        root_dict.update({'comments' : [self.elem_to_internal(x) for x in n]})
+      elif n.tag == 'edges':
+        root_dict.update({'edges' : [self.elem_to_internal(x) for x in n]})
+      else:
+        # an element belonging to canvas' attributes
+        o = self.elem_to_internal(n)
+        if hasattr(o, 'items'):
+          for k,v in o.items():
+            root_dict.update({k:v})
+        else:
+          root_dict.update({n.tag:o})
+    
+    self.addRoot(json=root_dict)
     

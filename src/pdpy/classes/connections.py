@@ -76,9 +76,9 @@ class Source(Base):
   def __pd__(self, obj_map=None):
     return f"{self.__remap__(obj_map) if obj_map else self.id} {self.port}"
   
-  def __xml__(self, obj_map=None):
+  def __xml__(self, obj_map=None, tag=None):
     """ Returns an xml element for this source """
-    x = super().__element__(self)
+    x = super().__element__(scope=self, tag=tag)
     super().__subelement__(x, 'id', text = self.__remap__(obj_map) if obj_map else self.id)
     super().__subelement__(x, 'port', text = self.port)
     return x
@@ -109,6 +109,6 @@ class Edge(Base):
   def __xml__(self, o=None):
     """ Returns an xml element for this edge """
     x = super().__element__(self)
-    super().__subelement__(x, self.source.__xml__(o))
-    super().__subelement__(x, self.sink.__xml__(o))
+    super().__subelement__(x, self.source.__xml__(o, tag='source'))
+    super().__subelement__(x, self.sink.__xml__(o, tag='sink'))
     return x

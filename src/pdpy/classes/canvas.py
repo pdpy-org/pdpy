@@ -223,7 +223,7 @@ class Canvas(Base):
     
     # recurse through the nodes
     for x in getattr(self,'nodes',[]):
-      # log(1,"Canvas", f"Node: {x.__json__()}")
+      # print(1,"Canvas", f"Node: {x.__json__()}")
       self.__update_obj_map__(x)
       s += f"{x.__pd__()}"
 

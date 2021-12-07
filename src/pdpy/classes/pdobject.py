@@ -54,4 +54,5 @@ class PdObject(PdObj):
 
   def __xml__(self, args=None, **kwargs):
     """ Return the XML Element for this object. """
-    return super().__xml__(tag=self.className, args=args, **kwargs)
+    # print("pdobject",args, kwargs)
+    return super().__xml__(scope=self, tag=self.className, args=args, attrib={'pdpy':self.__pdpy__}, **kwargs)

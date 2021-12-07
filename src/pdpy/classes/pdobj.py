@@ -62,7 +62,7 @@ class PdObj(Base):
 
   def __xml__(self, classname=None, args=None, **kwargs):
     """ Returns an XML Element for this object """
-
+    # print("pdobj",classname, args, kwargs)
     x = super().__xml__(**kwargs)
 
     super().__update_element__(x, self, ('position', 'args'))

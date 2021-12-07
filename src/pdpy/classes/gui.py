@@ -48,8 +48,9 @@ class PdNativeGui(PdObj):
         if 7 < len(pd_lines):
           self.label = self.__d__.label if pd_lines[7] is None else pd_lines[7]
           self.comm = Comm(send=pd_lines[8], receive=pd_lines[9], default=self.__d__.receive)
-    if self.__cls__ == 'obj':
-      self.__cls__ = self.className
+    
+      if self.__cls__ == 'obj':
+        self.__cls__ = self.className
   
   def __pd__(self):
     """ Returns the pd-code representation of the object """
