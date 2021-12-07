@@ -3,12 +3,8 @@
 
 """ Base Class """
 
-from collections import OrderedDict
 from json import dumps as json_dumps
-from os import EX_SOFTWARE
-# from .PdPyXMLParser import PdPyXMLParser
-from xml.etree.ElementTree import ElementTree, Element, indent, parse as xparse, dump as xdump
-# from textwrap import wrap
+from xml.etree.ElementTree import ElementTree, Element, indent, parse as xparse
 from ..util.utils import log
 from .default import Default, XmlTagConvert, Namespace
 
@@ -311,8 +307,10 @@ class Base(object):
       The list of attributes to update the element with
 
     """
-    if attrib is not None:
-      for e in attrib:
+    # print(parent, scope, attrib)
+    
+    def parseattrib(a):
+      for e in a:
         if hasattr(scope, e):
           attr = getattr(scope, e)
           if hasattr(attr, '__xml__'):
@@ -326,6 +324,12 @@ class Base(object):
                   self.__subelement__(parent, e, text=a)
             else:
               self.__subelement__(parent, e, text=attr)
+    
+    if attrib is not None:
+      if isinstance(attrib, tuple):
+        parseattrib(attrib)
+      else:
+        print(attrib)
     else:
       print("MISSING ATTRIBUTES:",parent, scope, attrib)
 
@@ -333,7 +337,6 @@ class Base(object):
     # print("base",scope, tag, attrib)
     x = self.__element__(scope=scope, tag=tag)
     self.__update_element__(x, scope, attrib)
-
     return x
   
 
@@ -361,17 +364,22 @@ class Base(object):
       for subelem in elem:
         v = self.elem_to_internal(subelem)
         tag = self.strip_tag(subelem.tag)
-        
+
         if 'pdpy' in subelem.attrib:
           # sub_cls = self.__n__.__get__(name=getattr(subelem.attrib, 'pdpy', None), tag=tag)
           # print("Found subclass",sub_cls)
           d.update({tag: v})
         else:
+
           if not isinstance(v, dict):
             d.update({tag: v})
           else:
-            for kk,vv in v.items():
-              d.update({kk:vv})
+            if 'text' in v:
+              # a pd comment is a string
+              d.update({'text':[t for t in [v['text']]]})
+            else:
+              for kk,vv in v.items():
+                d.update({kk:vv})
 
       text = elem.text
       # tail = elem.tail
@@ -403,6 +411,8 @@ class Base(object):
           if 'pdpy' in elem.attrib:
             cls = self.__n__.__get__(name=elem.attrib['pdpy'])
           c = cls(json=d)
+          # print('-'*80)
+          # c.__dumps__()
         except Exception as e:
           log(2, e)
           log(2, cls, d)
@@ -418,8 +428,11 @@ class Base(object):
     xml_tree = xparse(xml)
     xml_root = xml_tree.getroot()
     self.encoding = xml_root.get('encoding', 'utf-8')
+    
+    # root element to which we add stuff
     root_dict = {'__parent__' : self}
     
+    # go through every element in 'root' and add it to the root_dict
     for n in xml_root.find('root'):
       # print('tag', n.tag)
       if n.tag == 'pdpy' or n.tag == 'root':
@@ -440,5 +453,6 @@ class Base(object):
         else:
           root_dict.update({n.tag:o})
     
+    # finally, add the root_dict to the PdPy object
     self.addRoot(json=root_dict)
     

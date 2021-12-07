@@ -202,7 +202,7 @@ class PdPy(Base):
 
   def addNativeGui(self, className, argv):
     self.__obj_idx__ = self.__last_canvas__().grow()
-    obj = PdNativeGui(className=className, pd_lines=[self.__obj_idx__]+argv)
+    obj = PdNativeGui(pd_lines=[ className, self.__obj_idx__ ] + argv)
     self.__last_canvas__().add(obj)
     return obj
 

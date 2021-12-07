@@ -52,4 +52,5 @@ class Comment(Base):
   def __xml__(self):
     """ Return an xml representation object """
     return super().__xml__(scope=self, attrib=('text','position','border'))
+
   

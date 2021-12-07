@@ -32,13 +32,13 @@ class PdNativeGui(PdObj):
   11. `send`: the sender symbol of the object
 
   """
-  def __init__(self, className=None, pd_lines=None, json=None):
+  def __init__(self, pd_lines=None, json=None):
 
-    if json is not None:
-      super().__init__(json=json)
+    super().__init__(json=json)
     
-    elif className is not None and pd_lines is not None:
-      super().__init__(*pd_lines[:3], cls=className)
+    if json is None:
+      cls = pd_lines.pop(0)
+      super().__init__(*pd_lines[:3], cls=cls)
       self.__pdpy__ = self.__class__.__name__
       self.className = self.__cls__
       if 3 < len(pd_lines):
@@ -49,9 +49,9 @@ class PdNativeGui(PdObj):
           self.label = self.__d__.label if pd_lines[7] is None else pd_lines[7]
           self.comm = Comm(send=pd_lines[8], receive=pd_lines[9], default=self.__d__.receive)
     
-      if self.__cls__ == 'obj':
-        self.__cls__ = self.className
-  
+    if self.__cls__ == 'obj':
+      self.__cls__ = self.className
+
   def __pd__(self):
     """ Returns the pd-code representation of the object """
     

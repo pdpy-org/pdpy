@@ -65,7 +65,7 @@ class PdObj(Base):
     # print("pdobj",classname, args, kwargs)
     x = super().__xml__(**kwargs)
 
-    super().__update_element__(x, self, ('position', 'args'))
+    super().__update_element__(x, self, ('id', 'position', 'args'))
     
     if hasattr(self, 'data'):
       for d in getattr(self, 'data', []):
@@ -82,7 +82,9 @@ class PdObj(Base):
         super().__subelement__(x, data)
     
     if classname is not None:
-      super().__subelement__(x, 'classname', text=classname)
+      super().__subelement__(x, 'className', text=classname)
+    elif 'tag' in kwargs:
+      super().__subelement__(x, 'className', text=kwargs.pop('tag'))
     if args is not None:
       super().__subelement__(x, 'arguments', text=args)
     

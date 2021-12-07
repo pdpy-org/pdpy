@@ -79,7 +79,7 @@ class Source(Base):
   def __xml__(self, obj_map=None, tag=None):
     """ Returns an xml element for this source """
     x = super().__element__(scope=self, tag=tag)
-    super().__subelement__(x, 'id', text = self.__remap__(obj_map) if obj_map else self.id)
+    super().__subelement__(x, 'id', text = self.id)
     super().__subelement__(x, 'port', text = self.port)
     return x
 
