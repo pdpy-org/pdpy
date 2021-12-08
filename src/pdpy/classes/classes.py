@@ -37,7 +37,14 @@ class Size(Base):
       self.height = self.__num__(h) if h is not None else None
     
   def __pd__(self):
-    return f"{self.width} {self.height}"
+    s = ''
+    if hasattr(self, 'width'):
+      s += f"{self.width}"
+    if hasattr(self, 'width') and hasattr(self, 'height'):
+      s += ' '
+    if hasattr(self, 'height'):
+      s += f"{self.height}"
+    return s
   
   def __xml__(self, tag=None):
     """ Return an XML Element """

@@ -69,7 +69,7 @@ class PdObj(Base):
     
     if hasattr(self, 'data'):
       for d in getattr(self, 'data', []):
-        data = super().__element__('data')
+        data = super().__element__(tag='data')
         data.set('header', getattr(d, 'header'))
         for datum in getattr(d, 'data', []):
           if not isinstance(datum, list) and not isinstance(datum, tuple):

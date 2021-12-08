@@ -59,7 +59,13 @@ class PdObject(PdObj):
       kwargs.update({'scope':self})
     if 'tag' not in kwargs:
       kwargs.update({'tag':self.className})
-    for i in [{'pdpy':self.__pdpy__},{'className':self.className}]:
-      kwargs.update({'attrib':{}.fromkeys(i)})
-    return super().__xml__(classname=self.className, args=args, **kwargs)
     
+    attrib = kwargs.pop('attrib') if 'attrib' in kwargs else {}
+    
+    if isinstance(attrib, dict):
+      for i in [{'pdpy':self.__pdpy__},{'className':self.className}]:
+        attrib.update({}.fromkeys(i))
+    
+    kwargs.update({'attrib':attrib})
+
+    return super().__xml__(classname=self.className, args=args, **kwargs)

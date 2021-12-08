@@ -5,6 +5,8 @@
 
 from json import dumps as json_dumps
 from xml.etree.ElementTree import ElementTree, Element, indent, parse as xparse
+
+from pdpy.classes.exceptions import ArgumentException
 from ..util.utils import log
 from .default import Default, XmlTagConvert, Namespace
 
@@ -161,7 +163,7 @@ class Base(object):
     if not hasattr(json, 'items'):
       log(1, child.__class__.__name__, "json is not a dict")
       if not hasattr(json, '__dict__'):
-        raise log(2, child.__class__.__name__, "json is not a class")
+        raise ArgumentException(f"{child.__class__.__name__}: json is not a class. It is of type: {type(json)}:\n{json}")
       json = json.__dict__
     
     # map(lambda k,v: setattr(child, k, v), json.items())
@@ -326,10 +328,12 @@ class Base(object):
               self.__subelement__(parent, e, text=attr)
     
     if attrib is not None:
-      if isinstance(attrib, tuple):
+      if type(attrib) in (list, tuple):
         parseattrib(attrib)
+      elif isinstance(attrib, str):
+        parseattrib([attrib])
       else:
-        print(attrib)
+        print("----- DICT ATTIRB: ",attrib)
     else:
       print("MISSING ATTRIBUTES:",parent, scope, attrib)
 
@@ -340,7 +344,7 @@ class Base(object):
     return x
   
 
-  def strip_tag(self, tag):
+  def __tag_strip__(self, tag):
       strip_ns_tag = tag
       split_array = tag.split('}')
       if len(split_array) > 1:
@@ -349,22 +353,21 @@ class Base(object):
       return tag
 
 
-  def elem_to_internal(self, elem):
-      """Convert an Element into an internal dictionary."""
-
-      # d = OrderedDict()
+  def __elem_to_obj__(self, elem):
+      """Convert an Element into an object """
+      # log(1, "elem_to_obj",elem)
       d = dict()
       cls = None
       elem_tag = elem.tag
-      elem_tag = self.strip_tag(elem.tag)
+      elem_tag = self.__tag_strip__(elem.tag)
       
       cls = self.__n__.__get__(name=getattr(elem.attrib, 'pdpy', None), tag=elem_tag)
 
       # loop over subelements to merge them
       for subelem in elem:
-        v = self.elem_to_internal(subelem)
-        tag = self.strip_tag(subelem.tag)
-
+        v = self.__elem_to_obj__(subelem)
+        tag = self.__tag_strip__(subelem.tag)
+        # print(tag, v)
         if 'pdpy' in subelem.attrib:
           # sub_cls = self.__n__.__get__(name=getattr(subelem.attrib, 'pdpy', None), tag=tag)
           # print("Found subclass",sub_cls)
@@ -410,7 +413,11 @@ class Base(object):
         try:
           if 'pdpy' in elem.attrib:
             cls = self.__n__.__get__(name=elem.attrib['pdpy'])
-          c = cls(json=d)
+          # log(1,'dict',d)
+          if isinstance(d, dict):
+            c = cls(json=d)
+          else:
+            log(1,"json object is not a dict:",d)
           # print('-'*80)
           # c.__dumps__()
         except Exception as e:
@@ -439,14 +446,14 @@ class Base(object):
         if 'pdpy' in n.attrib:
           root_dict.update({'__pdpy__': n.attrib['pdpy']})
       elif n.tag == 'nodes':
-        root_dict.update({'nodes' : [self.elem_to_internal(x) for x in n]})
+        root_dict.update({'nodes' : [self.__elem_to_obj__(x) for x in n]})
       elif n.tag == 'comments':
-        root_dict.update({'comments' : [self.elem_to_internal(x) for x in n]})
+        root_dict.update({'comments' : [self.__elem_to_obj__(x) for x in n]})
       elif n.tag == 'edges':
-        root_dict.update({'edges' : [self.elem_to_internal(x) for x in n]})
+        root_dict.update({'edges' : [self.__elem_to_obj__(x) for x in n]})
       else:
         # an element belonging to canvas' attributes
-        o = self.elem_to_internal(n)
+        o = self.__elem_to_obj__(n)
         if hasattr(o, 'items'):
           for k,v in o.items():
             root_dict.update({k:v})

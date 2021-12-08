@@ -22,22 +22,23 @@ __all__ = [
 ]
 
 class PdFont(Base):
-  def __init__(self, face=None, size=None, json=None, xml=None):
+  def __init__(self, face=None, points=None, json=None, xml=None):
     """ Initialize the object """
+    self.__pdpy__ = self.__class__.__name__
     super().__init__(json=json, xml=xml)
     if json is None and xml is None:
       self.__pdpy__ = self.__class__.__name__
       self.face = self.__num__(face)
       self.name = PdFonts[self.face if self.face < len(PdFonts) else -1]
-      self.size = self.__num__(size)
+      self.points = self.__num__(points)
   
   def __pd__(self):
     """ Return the pd lines for this object """
-    return f"{self.face} {self.size}"
+    return f"{self.face} {self.points}"
 
   def __xml__(self, tag=None):
     """ Return the XML Element for this object """
-    return super().__xml__(scope=self, tag=tag, attrib=('face', 'size'))
+    return super().__xml__(scope=self, tag=tag, attrib=('face', 'points'))
 
 # end class PdFont -----------------------------------------------------------
 
@@ -68,6 +69,7 @@ class IEMLabel(Base):
               lbcolor=None,
               json=None,
               xml=None):
+    self.__pdpy__ = self.__class__.__name__
     super().__init__(json=json, xml=xml)
     if json is None and xml is None:
       self.__pdpy__ = self.__class__.__name__
@@ -82,7 +84,7 @@ class IEMLabel(Base):
 
   def __xml__(self, tag=None):
     """ Return the XML Element for this iem label """
-    return super().__xml__(scope=self, tag=tag, attrib=('label', 'offset', 'font'))
+    return super().__xml__(scope=self, tag=tag, attrib=('label', 'offset', 'font', 'lbcolor'))
 
 # end of class IEMLabel --------------------------------------------------------
 
@@ -155,7 +157,7 @@ class Toggle(PdObject):
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
-      self.size = self.__num__(pd_lines[0])
+      self.size = Size(pd_lines[0])
       self.init = self.__pdbool__(pd_lines[1])
       self.comm = Comm(send=pd_lines[2], receive=pd_lines[3])
       self.label = IEMLabel(*pd_lines[4:9], pd_lines[11])
@@ -168,7 +170,7 @@ class Toggle(PdObject):
 
   def __pd__(self):
     """ Return the pd string for this object """
-    s = str(self.size)
+    s = self.size.__pd__()
     s += f" {1 if self.init else 0}"
     s += f" {self.comm.__pd__()}"
     s += f" {self.label.__pd__()}"
@@ -205,7 +207,7 @@ class Cnv(PdObject):
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
-      self.size = self.__num__(pd_lines[0])
+      self.size = Size(pd_lines[0])
       self.area = Size(*pd_lines[1:3])
       if 12 < len(pd_lines):
         self.comm = Comm(send=pd_lines[3], receive=pd_lines[4])
@@ -221,7 +223,7 @@ class Cnv(PdObject):
   
   def __pd__(self):
     """ Return the pd string for this object """
-    s = str(self.size)
+    s = self.size.__pd__()
     s += f" {self.area.__pd__()}"
     s += f" {self.comm.__pd__()}"
     s += f" {self.label.__pd__()}"
@@ -258,7 +260,7 @@ class Radio(PdObject):
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
-      self.size   = self.__num__(pd_lines[0])
+      self.size   = Size(pd_lines[0])
       self.flag   = self.__num__(pd_lines[1])
       self.init   = self.__pdbool__(pd_lines[2])
       self.number = self.__num__(pd_lines[3])
@@ -272,7 +274,7 @@ class Radio(PdObject):
   
   def __pd__(self):
     """ Return the pd string for this object """
-    s = str(self.size)
+    s = self.size.__pd__()
     s += f" {1 if self.flag else 0}"
     s += f" {1 if self.init else 0}"
     s += f" {self.number}"
@@ -310,7 +312,7 @@ class Bng(PdObject):
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
       # log(1, "bng pd_lines: {}".format(pd_lines))
-      self.size   = self.__num__(pd_lines[0])
+      self.size   = Size(pd_lines[0])
       self.hold   = self.__num__(pd_lines[1])
       self.intrrpt= self.__num__(pd_lines[2])
       self.init   = self.__pdbool__(pd_lines[3])
@@ -323,7 +325,7 @@ class Bng(PdObject):
   
   def __pd__(self):
     """ Return the pd string for this object """
-    s = str(self.size)
+    s = self.size.__pd__()
     s += f" {self.hold}"
     s += f" {self.intrrpt}"
     s += f" {1 if self.init else 0}"
@@ -363,7 +365,7 @@ class Nbx(PdObject):
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
       self.digit_width = self.__num__(pd_lines[0])
-      self.height   = self.__num__(pd_lines[1])
+      self.size   = Size(h=pd_lines[1])
       self.limits = Bounds(*pd_lines[2:4])
       self.log_flag = self.__pdbool__(pd_lines[4])
       self.init    = self.__pdbool__(pd_lines[5])
@@ -379,7 +381,7 @@ class Nbx(PdObject):
   def __pd__(self):
     """ Return the pd string for this object """
     s = str(self.digit_width)
-    s += f" {self.height}"
+    s += f" {self.size.__pd__()}"
     s += f" {self.limits.__pd__()}"
     s += f" {1 if self.log_flag else 0}"
     s += f" {1 if self.init else 0}"    
@@ -394,7 +396,7 @@ class Nbx(PdObject):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    return super().__xml__(scope=self, attrib=('digit_width', 'height', 'limits', 'log_flag', 'init', 'comm', 'label', 'bgcolor', 'fgcolor', 'value', 'log_height'))
+    return super().__xml__(scope=self, attrib=('digit_width', 'size', 'limits', 'log_flag', 'init', 'comm', 'label', 'bgcolor', 'fgcolor', 'value', 'log_height'))
 
 class Slider(PdObject):
   """

@@ -36,7 +36,7 @@ class Comm(Base):
     if order==1:
       return f"{self.receive} {self.send}"
     else:
-      if self.send is not False:
+      if hasattr(self, 'send') and self.send is not False:
         return f"{self.send} {self.receive}"
       else:
         return f"{self.receive}"
@@ -46,7 +46,7 @@ class Comm(Base):
     if order==1:
       return super().__xml__(scope=self, attrib=('receive','send'))
     else:
-      if self.send is not False:
+      if hasattr(self, 'send') and self.send is not False:
         return super().__xml__(scope=self, attrib=('send','receive'))
       else:
         return super().__xml__(scope=self, attrib=('receive'))
