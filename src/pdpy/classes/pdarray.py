@@ -26,7 +26,7 @@ class PdArray(PdObject):
   4. `className`: The class name of the array.
   5. `subclass`: The sub family of the array, eg. `define` or `sum`, etc.
   6. `-k` flag (optional), or `name`: the name of the array
-  7. If it is an `array`, then the remaining argument is the array `size`
+  7. If it is an `array`, then the remaining argument is the array `length`
 
   Returns
   -------
@@ -99,7 +99,7 @@ class PdArray(PdObject):
           # TODO: this fix is working
           # but we need a general approach to account for dollarsymbols 
           # as arguments (the value is somewhere else in the patch)
-          setattr(self, 'size', self.__num__(argv[i]) if argv[i].isnumeric() else argv[i])
+          setattr(self, 'length', self.__num__(argv[i]) if argv[i].isnumeric() else argv[i])
           i += 1
         
         # print('FIFTH',i, argv[i])
@@ -134,8 +134,8 @@ class PdArray(PdObject):
     if hasattr(self, 'wait'):
       s += f" -w {self.wait}"
     
-    if hasattr(self, 'size'):
-      s += f" {self.size}"
+    if hasattr(self, 'length'):
+      s += f" {self.length}"
 
     return super().__pd__(s)
 
@@ -143,7 +143,7 @@ class PdArray(PdObject):
   def __xml__(self):
     """ Return the XML Element for this object """
 
-    x = super().__xml__(scope=self, attrib=('subclass', 'name', 'wait', 'size'))
+    x = super().__xml__(scope=self, attrib=('subclass', 'name', 'wait', 'length'))
 
     for e in ('keep', 'global'):
       if hasattr(self, e):
