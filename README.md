@@ -4,6 +4,29 @@ A python package to interact with Pure Data (Pd) from Python (py).
 
 Translate Pure Data files from the `.pd` format to other formats such as JSON or XML.
 
+## Example
+
+Translate the Pure Data 'testtone.pd' patch into a JSON-formatted string in 'testtone.json':
+
+``` python
+import pdpy
+# initialize the translator object with an input file and a target format
+translator = pdpy.Translator('../testtone.pd', to='json')
+# run the translator
+translator()
+```
+
+The result is something like this:
+
+``` json
+{
+    "patchname": "testtone.pd",
+    "encoding": "utf-8",
+    "__pdpy__": "PdPy",
+    "root": { ... 
+}
+```
+
 ## References
 
 Pure Data to XML:

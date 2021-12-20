@@ -38,55 +38,96 @@ class Translator(Base):
 
   Inputs:
   --------
-  A dictionary of arguments with the following keys:
+  file: str
+    The file name or path to the input file.
+  
+  json: dict
+    A dictionary containing the kwargs for the translation.
+  
+  kwargs:
+    The kwargs for the translation with the following keys:
+  
   `to`: the target format. Can be `json`, `xml`, `pd`, or `pkl`.
   `fro`: the source format. Can be `json`, `xml`, `pd`, or `pkl`.
-  `input`: An input file Path, will be formated using `pathlib.Path`
   `output`: An output file Path, will be formated using `pathlib.Path`
   `encoding`  (`str`, default is 'utf-8'): Encoding of the input file
   `source`    (`str`, inferred from `input_file`): Source file type
   `reflect`   (`bool`): If set to `True`, performs a reflected translation
   """
-  def __init__(self, json):
-
-    super().__populate__(self, json)
+  def __init__(self, file, json=None, **kwargs):
     
-    self.source = getFormat(self.fro) if self.fro else None
-    self.target = getFormat(self.to) if self.to else None
+    if file is None:
+      raise ArgumentException("No file specified.")
     
-    # grab the source extension from the input file
-    if self.source is None:
-      self.source = self.input_file.suffix
+    self.input_file = Path(file)
 
+    # check if the input file exists, exit if not
+    if not self.input_file.exists():
+      raise ArgumentException(f"File <{self.input_file}> does not exist.")
+
+    if json is not None:
+      super().__populate__(self, json)
+    else:
+      for k,v in kwargs.items():
+        setattr(self, k, v)
+    
+    if not hasattr(self, 'encoding') or self.encoding is None:
+      self.encoding = 'utf-8'
+
+    if not hasattr(self, 'source'):
+      # grab the source extension from the input file if not set
+      self.source = getFormat(self.fro) if hasattr(self, 'fro') else self.input_file.suffix
+    
+    if not hasattr(self, 'target'):
+      self.target = getFormat(self.to) if hasattr(self, 'to') else None
+
+    # prepend a dot '.' to the source and target formats; ie, to get '.json'
+    def _dot(f): return f".{f}" if not f.startswith('.') else f
+    
+    self.source = _dot(self.source)
+    self.target = _dot(self.target)
+
+    # exit if the source and target formats are the same
     if self.target == self.source:
-      raise ArgumentException("Source and target are the same, skipping translation")
+      raise ArgumentException("Source and target are the same.")
+
+    # exit if input suffix differs from source
+    if self.input_file.suffix != self.source:
+      raise ArgumentException(f"Input file <{self.input_file}> suffix does not match with source <{self.source}>")
 
     if self.target is None:
-      raise ArgumentException("To or fro are missing or malformed")
+      log(1, "Target not specified")
     else:
-      self.input_file = Path(self.input)
-      if self.input_file.suffix != "." + self.source:
-        log(2, self.source, self.target, self.input_file)
-        raise ArgumentException("Input file suffix does not match with -f argument")
-      if not self.input_file.exists():
-        raise ArgumentException(f"File {self.input_file} does not exist.")
-      if self.output is None:
-        self.output_file = self.input_file.with_suffix("." + self.target)
-        log(1, f"Using {self.output_file.as_posix()} as output file")
+      # if not defined, make the output file from the target and the input file
+      if not hasattr(self, 'output') or self.output is None:
+        self.output_file = self.input_file.with_suffix(self.target)
+        log(1, f"Using <{self.output_file.as_posix()}> as output file")
       else:
+        # if defined, make sure it's a Path object
         self.output_file = Path(self.output)
-        if self.output_file.suffix != "." + self.target:
-          raise ArgumentException("Input file suffix does not match with -f argument")
-    
-    # store an object containing a pd object database
-    if self.internals is not None:
-      with open(self.internals, "r", encoding=self.encoding) as fp:
-        self.internals=json_load(fp,object_hook=lambda o:SimpleNamespace(**o))
-      # print(self.internals)
 
-    # Load the source file
+    # exit if output suffix differs from target
+    if self.output_file.suffix != self.target:
+      raise ArgumentException(f"Output file <{self.output_file}> suffix does not match with source <{self.target}>")
     
-    if self.source == "pd":
+    # store the ref path
+    self.output_file_ref = self.output_file.parent / (self.output_file.stem + "_ref" + self.source)
+
+    if not hasattr(self, 'reflect'): self.reflect = False
+
+    # store an object containing a pd object database
+    if hasattr(self, 'internals'):
+      log(0, f"Internals file set to <{self.internals}>")
+      self.internals = Path(self.internals)
+      if self.internals.exists():
+        with open(self.internals, "r", encoding=self.encoding) as fp:
+          self.internals=json_load(fp,object_hook=lambda o:SimpleNamespace(**o))
+      else:
+        log(1, f"Internals file does not exist.")
+
+    log(0, f"Loading file <{self.input_file}>")
+    
+    if self.source == ".pd":
       pd_file_path = self.input_file.as_posix()
       pd_file = self.load_pd(pd_file_path)
       pd_lines = parsePdFileLines(pd_file)
@@ -96,18 +137,18 @@ class Translator(Base):
           pd_lines = pd_lines
       )
 
-    elif self.source == "json":
+    elif self.source == ".json":
       with open(self.input_file, "r", encoding=self.encoding) as fp:
         self.pdpy = json_load(fp, object_hook = PdPyEncoder())
       self.pdpy.__jsontree__()
 
-    elif self.source == "pkl":
+    elif self.source == ".pkl":
       with open(self.input_file, "rb") as fp:
         data = pickle_load(fp, encoding=self.encoding)
         self.pdpy = json_loads(data, object_hook = PdPyEncoder())
       self.pdpy.__jsontree__()
     
-    elif self.source == "pdpy":
+    elif self.source == ".pdpy":
       with open(self.input_file, "r", encoding=self.encoding) as fp:
         pdpy_file_pointer = fp
       
@@ -118,7 +159,7 @@ class Translator(Base):
         encoding = self.encoding
       )
     
-    elif self.source == "xml":
+    elif self.source == ".xml":
       with open(self.input_file, "r", encoding=self.encoding) as fp:
         self.pdpy = PdPy(
             name = self.input_file.name,
@@ -126,8 +167,9 @@ class Translator(Base):
             xml = fp
         )
     else:
-      raise ValueError("Unknown source type: {}".format(self.source))
+      raise ValueError(f"Unknown source type: {self.source}")
   
+    log(0, "Translator initialized")
 
   def __call__(self, target=None, out=None):
     
@@ -136,21 +178,22 @@ class Translator(Base):
     
     if out is None:
       out = self.output_file
+    else:
+      if not isinstance(out, Path):
+        out = Path(out)
     
-    if not isinstance(out, Path):
-      out = Path(out)
-    
-    if target == 'json' or target == 'pkl':
-      # return a json string representation from pdpy
-      self.json = self.pdpy.__json__()
+    if target == '.json' or target == '.pkl':
+      
+      log(0, "Returning a json string representation from pdpy")
+      
+      self.json = self.pdpy.__json__() # get the json string
+      
       if self.json is not None:
-        if target == 'json':
-          ofname = out.with_suffix(".json")
-          with open(ofname, 'w', encoding=self.encoding) as fp:
+        if target == '.json':
+          with open(self.output_file, 'w', encoding=self.encoding) as fp:
             fp.write(self.json)
-        elif target == "pkl":
-          ofname = out.with_suffix(".pkl")
-          with open(out.with_suffix(".pkl"), "wb") as fp:
+        elif target == '.pkl':
+          with open(self.output_file, 'wb') as fp:
             pickle_dump(self.json, fp, PICKLE_HIGHEST_PROTOCOL)
 
         # the Pd reflection logic when json is the target
@@ -161,66 +204,62 @@ class Translator(Base):
             json = self.json
           ).__pd__()
           if self.pd_ref is not None:
-            out = out.parent / (out.stem + '_ref')
-            ofname = out.with_suffix(".pd")
-            with open(ofname, 'w', encoding=self.encoding) as fp:
+            with open(self.output_file_ref, 'w', encoding=self.encoding) as fp:
               fp.write(self.pd_ref)
 
       else:
         log(2, "No JSON representation available")
 
-    if target == "pd" and self.pdpy is not None:
-      # get the pd representation
-      self.pd = self.pdpy.__pd__()
+    if target == 'pd' and self.pdpy is not None:
+      
+      log(0, "Returning a pd string representation from pdpy")
+      
+      self.pd = self.pdpy.__pd__() # get the pd representation
+      
       if self.pd is not None:
-        with open(out, 'w', encoding=self.encoding) as fp:
+        with open(self.output_file, 'w', encoding=self.encoding) as fp:
           fp.write(self.pd)
+        
         # the Json reflection logic when Pd is the target
         if self.reflect:
+          
           self.json_ref = PdPy(
             name = self.input_file.name,
             encoding = self.encoding,
             pd_lines = parsePdBinBuf(self.pd)
            ).__json__()
+          
           if self.json_ref is not None:
-            out = out.parent / (out.stem + '_ref')
-            ofname = out.with_suffix(".json")
-            with open(ofname, 'w', encoding=self.encoding) as fp:
+            with open(self.output_file_ref, 'w', encoding=self.encoding) as fp:
               fp.write(self.json_ref)
       else:
         log(2, "No Pd representation available")
       
-    if target == "xml" and self.pdpy is not None:
-      # get the xml representation
-      self.xml = self.pdpy.__xml__()
+    if target == ".xml" and self.pdpy is not None:
+      
+      log(0, "Returning a XML string representation from pdpy")
+      
+      self.xml = self.pdpy.__xml__() # get the xml representation
+      
       if self.xml is not None:
-        ofname = out.with_suffix(".xml")
-        self.xml.write(ofname.as_posix(), encoding=self.encoding)
+        self.xml.write(self.output_file.as_posix(), encoding=self.encoding)
 
         # the Pd reflection logic when xml is the target
         if self.reflect:
+          
           self.xml_ref = PdPy(
             name = self.input_file.name,
             encoding = self.encoding,
             xml = self.xml.to_string() # give it an xml string
            ).__pd__()
+          
           if self.xml_ref is not None:
-            out = out.parent / (out.stem + '_ref')
-            ofname = out.with_suffix(".pd")
-            with open(ofname, 'w', encoding=self.encoding) as fp:
+            with open(self.output_file_ref, 'w', encoding=self.encoding) as fp:
               fp.write(self.xml_ref)
       else:
         log(2, "No XML representation available")
       
-      # self.xml = JsonToXml(self.pdpy)
-      # if self.xml is not None:
-      #   ofname = out.with_suffix(".xml")
-      #   with open(ofname, 'w') as fp:
-      #     fp.write(self.xml.to_string())
-      #   if self.reflect:
-      #      self.xml_ref = JsonToXml(self.pdpy)
-
-  # end def __call__
+  # end def __call__ -------------------------------------------------------
 
   def load_pd_data(self, encoding, filename):
     # log(1,"Trying", encoding)
@@ -230,15 +269,15 @@ class Translator(Base):
 
   def load_pd(self, filename):
     try:
-      self.pd_data, self.encoding = self.load_pd_data(self.encoding, filename)
+      data, self.encoding = self.load_pd_data(self.encoding, filename)
     except UnicodeDecodeError:
       try:
-        self.pd_data, self.encoding = self.load_pd_data("ascii", filename)
+        data, self.encoding = self.load_pd_data("ascii", filename)
       except UnicodeDecodeError:
         try:
-          self.pd_data, self.encoding = self.load_pd_data("latin-1", filename)
+          data, self.encoding = self.load_pd_data("latin-1", filename)
         except Exception as e:
-          self.pd_data = None
+          data = None
           raise ValueError("Could not load input file", e)
     finally:
-      return self.pd_data
+      return data
