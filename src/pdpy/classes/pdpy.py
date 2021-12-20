@@ -218,7 +218,7 @@ class PdPy(Base):
     # log(1,"addGOPArray", argv)
     arr = PdType(json={
       'name' : argv[0],
-      'size' : argv[1],
+      'length' : argv[1],
       'type' : argv[2],
       'flag' : argv[3],
       'className' : "goparray"

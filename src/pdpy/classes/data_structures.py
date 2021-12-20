@@ -31,7 +31,7 @@ class PdType(Base):
     ```
     {
       'name' : 'array_name',
-      'size' : 100,
+      'length' : 100,
       'type' : 'float',
       'flag' : 0,
       'className' : 'goparray'
@@ -61,7 +61,7 @@ class PdType(Base):
     """ Return a string representation of the PdType """
     # log(1, "PdType:", self.__dict__)
     if self.__cls__ == 'array':
-      s = super().__pd__(f"{self.name} {self.size} {self.type} {self.flag}")
+      s = super().__pd__(f"{self.name} {self.length} {self.type} {self.flag}")
       for x in getattr(self, 'data', []):
         s += x.__pd__()
       return s
@@ -74,11 +74,11 @@ class PdType(Base):
   
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__xml__(scope=self, attrib=('name', 'template', 'size', 'type', 'flag'))
+    x = super().__xml__(scope=self, attrib=('name', 'template', 'length', 'type', 'flag'))
     if hasattr(self, 'data'):
-      data = super().__element__('data')
+      data = super().__element__(tag='data')
       for d in self.data:
-        super().__subelement__(data, 'data', text=d)
+        super().__subelement__(data, d.__xml__())
       super().__subelement__(x, data)
     return x
 
@@ -266,7 +266,7 @@ class Graph(Base):
 
     self.array.append({
       'name' : args[1],
-      'size' : self.__num__(args[2]),
+      'length' : self.__num__(args[2]),
       'type' : args[3]
     })
 
@@ -277,7 +277,7 @@ class Graph(Base):
     s += ' ' + self.area.__pd__(order=1)
     s = super().__pd__(s)
     for x in getattr(self, 'array', []):
-      s += f"#X array {x['name']} {x['size']} {x['type']}"
+      s += f"#X array {x['name']} {x['length']} {x['type']}"
       s += self.__end__
     s += '#X pop' + self.__end__
     return s
@@ -289,7 +289,7 @@ class Graph(Base):
 
     for a in getattr(self, 'array', []):
       arr = super().__element__(a)
-      for y in ('name', 'size', 'type'):
+      for y in ('name', 'length', 'type'):
         super().__subelement__(arr, y, text=a[y])
       super().__subelement__(x, arr)
     return x
