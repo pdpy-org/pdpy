@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-""" Class Definitions """
+# **************************************************************************** #
+# This file is part of the pdpy project
+# Copyright (C) 2021 Fede Camara Halac
+# **************************************************************************** #
+""" PdObj Class Definitions """
 
 from . import Base, Point
 from ..util import log

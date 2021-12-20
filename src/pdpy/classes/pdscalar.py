@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-""" Class Definitions for Pure Data's Data Structures """
+# **************************************************************************** #
+# This file is part of the pdpy project
+# Copyright (C) 2021 Fede Camara Halac
+# **************************************************************************** #
+""" Scalar Class Definition """
 
 from .base import Base
 from .pddata import PdData

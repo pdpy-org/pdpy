@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
-""" Canvas Class Definition """
+# **************************************************************************** #
+# This file is part of the pdpy project
+# Copyright (C) 2021 Fede Camara Halac
+# **************************************************************************** #
+""" PdData Class Definition """
 
 from .base import Base
 from .pdtypes import *
