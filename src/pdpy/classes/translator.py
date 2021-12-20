@@ -84,22 +84,25 @@ class Translator(Base):
     # Load the source file
     
     if self.source == "pd":
+      pd_file_path = self.input_file.as_posix()
+      pd_file = self.load_pd(pd_file_path)
+      pd_lines = parsePdFileLines(pd_file)
       self.pdpy = PdPy(
           name = self.input_file.name,
           encoding = self.encoding,
-          pd_lines = parsePdFileLines(self.load_pd(self.input_file.as_posix()))
+          pd_lines = pd_lines
       )
 
     elif self.source == "json":
       with open(self.input_file, "r", encoding=self.encoding) as fp:
         self.pdpy = json_load(fp, object_hook = PdPyEncoder())
-      self.pdpy.__tree__()
+      self.pdpy.__jsontree__()
 
     elif self.source == "pkl":
       with open(self.input_file, "rb") as fp:
         data = pickle_load(fp, encoding=self.encoding)
         self.pdpy = json_loads(data, object_hook = PdPyEncoder())
-      self.pdpy.__tree__()
+      self.pdpy.__jsontree__()
     
     elif self.source == "pdpy":
       with open(self.input_file, "r", encoding=self.encoding) as fp:
@@ -113,13 +116,7 @@ class Translator(Base):
       )
     
     elif self.source == "xml":
-      #TODO: here is the problem, 
-      # xml should load from within the PdPy class
-      # now it's loading inside the XmlToJson class, 
-      # which loads and populates an internal PdPy class
-      
       with open(self.input_file, "r", encoding=self.encoding) as fp:
-        # self.pdpy = XmlToJson(fp)
         self.pdpy = PdPy(
             name = self.input_file.name,
             encoding = self.encoding,
