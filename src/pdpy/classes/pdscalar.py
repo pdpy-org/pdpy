@@ -56,11 +56,8 @@ class Scalar(Base):
     
   def __pd__(self):
     """ Returns the data of this scalar as a pd string """
-    # self.__dumps__()
     if hasattr(self, 'data'):
-      root = super().__getroot__(self)
-      # print(root.__dict__)
-      _, template = root.getTemplate(self.name)
+      _, template = super().__getroot__(self).getTemplate(self.name)
       return super().__pd__(self.name + ' ' + self.data.__pd__(template))
     else:
       return super().__pd__(self.name)
