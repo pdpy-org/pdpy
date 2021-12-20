@@ -65,7 +65,7 @@ class PdData(Base):
       data = splitByNone(data)
       
       for e, d in zip(arrays, data):
-        _, _template = template.__parent__.getTemplate(e.template)
+        _, _template = template.__p__.getTemplate(e.template)
 
         if _template is None:
           log(1,f"Did not find a template array candidate for {template}")
@@ -202,7 +202,7 @@ class PdData(Base):
       # call the pd method on the array (PdList) element
       if hasattr(self, 'array') and hasattr(template, 'array'):
         for x, t in zip(getattr(self, 'array', []), template.array):
-          _, _template = template.__parent__.getTemplate(t.template)
+          _, _template = template.__p__.getTemplate(t.template)
           s += ' ' + x.__pd__(_template)
       
       return s
@@ -213,16 +213,21 @@ class PdData(Base):
 
   def __xml__(self, template=None):
     """ Returns the XML Element for this object """
-
-    x = super().__element__(self)
+    # log(1, 'XML:', template)
+    # self.__dumps__()
+    
+    x = super().__element__(scope=self)
     
     if hasattr(self, 'data'):
-      data = super().__element__('data')      
+  
       if hasattr(self, 'header'):
-        super().__subelement__(data, 'header', self.header)  
-      for d in self.data:
-        super().__subelement__(data, 'data', d)
-      super().__subelement__(x, data)
+        x.attrib.update({'header':self.header})
+      
+      if self.__d__.xml['data_as_text']:
+        x.text = ' '.join(list(map(lambda x:str(x),self.data)))
+      else:
+        for d in self.data:
+          super().__subelement__(x, 'datum', text=d)
 
     else:
       # call the pd method on every float (PdFLoat) element
@@ -243,7 +248,7 @@ class PdData(Base):
       if hasattr(self, 'array') and hasattr(template, 'array'):
         # arr = super().__element__('array')
         for e, t in zip(getattr(self, 'array', []), template.array):
-          _, _template = template.__parent__.getTemplate(t.template)
+          _, _template = template.__p__.getTemplate(t.template)
           super().__subelement__(x, e.__xml__(_template))
         # super().__subelement__(x, arr)
 

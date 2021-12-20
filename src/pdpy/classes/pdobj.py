@@ -3,8 +3,8 @@
 
 """ Class Definitions """
 
-from .base import Base
-from .classes import Point
+from . import Base, Point
+from ..util import log
 
 __all__ = [
   "PdObj"
@@ -40,6 +40,7 @@ class PdObj(Base):
   def __pd__(self, args=None):
     """ Parses the pd object into a string """
     # log(1, "PdObj args:", args)
+    # self.__dumps__()
     
     # add the position
     s = self.position.__pd__()
@@ -68,18 +69,24 @@ class PdObj(Base):
     super().__update_element__(x, self, ('id', 'position', 'args'))
     
     if hasattr(self, 'data'):
+      data = super().__element__(tag='data')
       for d in getattr(self, 'data', []):
-        data = super().__element__(tag='data')
-        data.set('header', getattr(d, 'header'))
-        for datum in getattr(d, 'data', []):
-          if not isinstance(datum, list) and not isinstance(datum, tuple):
-            super().__subelement__(data, 'datum', text=datum)
-          else:
-            data_mult = super().__element__('data')
-            for dd in datum:
-              super().__subelement__(data_mult, 'datum', text=dd)
-            super().__subelement__(data, data_mult)
-        super().__subelement__(x, data)
+        super().__subelement__(data, d.__xml__())
+      super().__subelement__(x, data)
+    
+    # if hasattr(self, 'data'):
+      # for d in getattr(self, 'data', []):
+        # data = super().__element__(tag='data')
+        # data.set('header', getattr(d, 'header'))
+        # for datum in getattr(d, 'data', []):
+        #   if not isinstance(datum, list) and not isinstance(datum, tuple):
+        #     super().__subelement__(data, 'datum', text=datum)
+        #   else:
+        #     data_mult = super().__element__('data')
+        #     for dd in datum:
+        #       super().__subelement__(data_mult, 'datum', text=dd)
+        #     super().__subelement__(data, data_mult)
+        # super().__subelement__(x, data)
     
     if classname is not None:
       super().__subelement__(x, 'className', text=classname)
