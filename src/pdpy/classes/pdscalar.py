@@ -29,24 +29,24 @@ class Scalar(Base):
       self.parsePd(struct, pd_lines)
     elif json is not None:
       super().__populate__(self, json)
-    elif xml is not None:
-      self.parseXml(struct, xml)
+    # elif xml is not None:
+    #   self.parseXml(struct, xml)
 
-  def parseXml(self, struct, argv):
-    self.name = argv.findtext('name')
-    _data = argv.find('data')
-    if _data:
-      _symbol = _data.find('symbol')
-      _array  = _data.find('array')
-      _float  = _data.find('float')
-      for s in struct:
-        if self.name == s.name:
-          if _symbol:
-            setattr(self, 'data',PdData(data = _symbol.text, template = s))
-          if _float:
-            setattr(self, 'data',PdData(data = _float.text, template = s))
-          if _array:
-            setattr(self, 'data',PdData(data = list(map(lambda x:x.text, _array.findall('*'))), template = s))
+  # def parseXml(self, struct, argv):
+  #   self.name = argv.findtext('name')
+  #   _data = argv.find('data')
+  #   if _data:
+  #     _symbol = _data.find('symbol')
+  #     _array  = _data.find('array')
+  #     _float  = _data.find('float')
+  #     for s in struct:
+  #       if self.name == s.name:
+  #         if _symbol:
+  #           setattr(self, 'data',PdData(data = _symbol.text, template = s))
+  #         if _float:
+  #           setattr(self, 'data',PdData(data = _float.text, template = s))
+  #         if _array:
+  #           setattr(self, 'data',PdData(data = list(map(lambda x:x.text, _array.findall('*'))), template = s))
 
   def parsePd(self, struct, argv):
     self.name = argv[0]
@@ -56,8 +56,11 @@ class Scalar(Base):
     
   def __pd__(self):
     """ Returns the data of this scalar as a pd string """
+    # self.__dumps__()
     if hasattr(self, 'data'):
-      _, template = self.__getroot__(self).getTemplate(self.name)
+      root = super().__getroot__(self)
+      # print(root.__dict__)
+      _, template = root.getTemplate(self.name)
       return super().__pd__(self.name + ' ' + self.data.__pd__(template))
     else:
       return super().__pd__(self.name)
@@ -67,6 +70,6 @@ class Scalar(Base):
     x = super().__element__(self)
     super().__subelement__(x, 'name', text=self.name)
     if hasattr(self, 'data'):
-      _, template = self.__getroot__(self).getTemplate(self.name)
+      _, template = super().__getroot__(self).getTemplate(self.name)
       super().__subelement__(x, self.data.__xml__(template))
     return x
