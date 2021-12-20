@@ -51,7 +51,7 @@ class Base(object):
     if json: self.__populate__(self, json) # fill the object with the json data
     if xml: self.__xmlparse__(xml) # fill the object with the xml data
 
-  def parent(self, parent=None, scope=None):
+  def __parent__(self, parent=None, scope=None):
     """ 
     Sets the parent of this object if `parent` is present, 
     otherwise returns the parent of this object.
@@ -60,11 +60,11 @@ class Base(object):
       scope = self
     
     if parent is not None:
-      self.__parent__ = parent
-      # print("adding parent to child", self.__class__.__name__, '<=', parent.__class__.__name__)
+      setattr(scope, '__p__', parent)
+      # print(f"adding parent {parent.__class__.__name__} to child {self.__class__.__name__}")
       return self
-    elif self.__parent__ is not None:
-      return self.__parent__
+    elif self.__p__ is not None:
+      return self.__p__
     else:
       raise ValueError("No parent set")
 
@@ -72,19 +72,22 @@ class Base(object):
     """ Sets the parents of all children (aka, nodes)
     
     Example:
-    __addparents__(self, 'nodes')
+    super().__addparents__(self, 'nodes')
     """
+    # log(1,'addparents: parent <--',parent.__pdpy__)#,repr(dir(child)))
     for child in getattr(parent, children, []):
-      self.parent(parent=parent, scope=child)
-      # print(child.__pdpy__,repr(dir(child)))
+      # log(1,'addparents: child --> ',child.__pdpy__)#,repr(dir(child)))
+      # self.__parent__(parent=parent, scope=child)
+      setattr(child, '__p__', parent)
       if hasattr(child, children):
-        child.__addparents__(child)
+        # log(1, 'addparents: child has children')
+        self.__addparents__(child)
 
   def __getroot__(self, child):
     """ Returns the parent of this object """
-    if hasattr(child, '__parent__'):
+    if hasattr(child, '__p__'):
       # log(1, child.__class__.__name__, "parented")
-      return self.__getroot__(child.__parent__)
+      return self.__getroot__(child.__p__)
     else:
       # log(1, child.__class__.__name__, "has no parent")
       return child
@@ -106,7 +109,7 @@ class Base(object):
     if value is not None:
       self.__dict__[name] = value
 
-  def __json__(self):
+  def __json__(self, indent=4):
     """ Return a JSON representation of the instance's scope as a string """
 
     # inner function to filter out variables that are
@@ -123,11 +126,11 @@ class Base(object):
       self,
       default   = __filter__,
       sort_keys = False,
-      indent    = 4
+      indent    = indent
     )
   
   def __dumps__(self):
-    log(0, self.__json__())
+    log(0, self.__class__.__name__, '-'*79,'\n', self.__json__(1))
 
   def __num__(self, n):
     """ Returns a number (or list of number) object from a Pd file string """
@@ -156,6 +159,13 @@ class Base(object):
       return False
     else:
       return bool(int(float(n)))
+
+  def __isnum__(self, n):
+    try:
+      n = self.__num__(n)
+      return True
+    except:
+      return False
 
   def __populate__(self, child, json):
     """ Populates the derived/child class instance with a dictionary """
@@ -228,6 +238,9 @@ class Base(object):
     __pdpy__ = None
     __tag__ = None
     
+    # protect against empty string on the tag for 'empty' objects
+    if tag == '': tag = None
+
     if tag is not None and isinstance(tag, str):
       # we have a tag, so the element will have a 
       # different name than the PdPy class name
@@ -270,6 +283,12 @@ class Base(object):
       # we have neither a tag nor a scope
       raise AttributeError("Either tag or scope must be present")
 
+    # log(1, f"""element
+    #   tag: {__tag__}
+    #   text: {text}
+    #   attrib: {attrib}
+    #   """)
+
     # create the element
     if attrib is not None:
       element = Element(__tag__, attrib=attrib)
@@ -311,7 +330,7 @@ class Base(object):
     """
     # print(parent, scope, attrib)
     
-    def parseattrib(a):
+    def _parseattrib(a):
       for e in a:
         if hasattr(scope, e):
           attr = getattr(scope, e)
@@ -329,11 +348,14 @@ class Base(object):
     
     if attrib is not None:
       if type(attrib) in (list, tuple):
-        parseattrib(attrib)
+        _parseattrib(attrib)
       elif isinstance(attrib, str):
-        parseattrib([attrib])
+        _parseattrib([attrib])
       else:
-        print("----- DICT ATTIRB: ",attrib)
+        pass
+        # print("----- DICT ATTIRB: ",attrib)
+        # for k,v in attrib.items():
+          # parent.attrib.update({k:v})
     else:
       print("MISSING ATTRIBUTES:",parent, scope, attrib)
 
@@ -355,34 +377,95 @@ class Base(object):
 
   def __elem_to_obj__(self, elem):
       """Convert an Element into an object """
-      # log(1, "elem_to_obj",elem)
-      d = dict()
-      cls = None
+
       elem_tag = elem.tag
+      # print('>'*80)
+      # log(1, f"Starting __elem_to_obj__ for {elem_tag}")
       elem_tag = self.__tag_strip__(elem.tag)
       
+
+      # the class
       cls = self.__n__.__get__(name=getattr(elem.attrib, 'pdpy', None), tag=elem_tag)
+      # print(cls)
+      
+      # Data is a special case, we need to create a list of PdData objects
+      if 'data' == elem_tag:
+        d = [] # a list of PdData objects
+      else:
+        d = {} # our usual dictionary
 
-      # loop over subelements to merge them
+      # handle header and data type loading
+      h = elem.attrib['header'] if 'header' in elem.attrib else None
+      h_type = str if h and h in ('set','saved') else self.__num__
+      
+      # d will be a PdData type if header was found
+      if h is not None:
+        d.update({'__pdpy__':'PdData'})
+        d.update({'data':[]})
+        d.update({'header':h})
+      
+      def _prnt(*argv):   
+        print(*argv)
+        log(1, 
+          f"""elem_to_obj
+          ELEM: {elem}
+          LENGTH: {len(list(elem))}
+          TAG: {elem_tag}
+          HEAD: {h}
+          HEAD TYPE: {h_type}
+          CLS: {cls}
+          """)
+      # _prnt('')
+      # loop over subelements to merge them ----------------------------------
       for subelem in elem:
-        v = self.__elem_to_obj__(subelem)
-        tag = self.__tag_strip__(subelem.tag)
-        # print(tag, v)
-        if 'pdpy' in subelem.attrib:
-          # sub_cls = self.__n__.__get__(name=getattr(subelem.attrib, 'pdpy', None), tag=tag)
-          # print("Found subclass",sub_cls)
-          d.update({tag: v})
-        else:
+        
+        subelem_tag = self.__tag_strip__(subelem.tag)
 
-          if not isinstance(v, dict):
-            d.update({tag: v})
+        # recurse into 'v'
+        # print('->'*40)
+        # log(1, f"-- BEGIN recursion __elem_to_obj__ for {elem_tag}")
+        # log(1, f"""subelement loop
+        # SUBELEMENT: {subelem}
+        # TAG: {subelem_tag}
+        # """)
+        v = self.__elem_to_obj__(subelem)
+        # log(1, f"-- END recursion __elem_to_obj__ for {elem_tag}")
+        # print('<-'*40)
+
+        if 'pdpy' in subelem.attrib:
+          # sub_cls = self.__n__.__get__(name=getattr(subelem.attrib, 'pdpy', None), subelem_tag=subelem_tag)
+          # print("Found subclass",sub_cls)
+          d.update({subelem_tag: v})
+        else:
+          # print(d, subelem_tag, v)
+          if not isinstance(d, dict):
+            # log(1, 'not a dict', subelem_tag, v)
+            # d.update({subelem_tag: [v]})
+            d.append(v)
           else:
-            if 'text' in v:
-              # a pd comment is a string
-              d.update({'text':[t for t in [v['text']]]})
+            if type(v) not in (dict, list, str, int, float, bool):
+              # log(1, 'not a dict', subelem_tag, v)
+              d.update({subelem_tag: v})
             else:
-              for kk,vv in v.items():
-                d.update({kk:vv})
+              if 'text' in v:
+                # a pd comment is a string
+                # log(1, 'found comment', subelem_tag, v)
+                d.update({'text':[t for t in [v['text']]]})
+              else:
+                if h is None:
+                  # log(1, 'found anything', subelem_tag, v)
+                  # if 'pdtype' == subelem_tag:
+                  #   for e in v:
+                  #     d.update({subelem_tag:e})
+                  # else:
+                  for kk,vv in v.items():
+                    d.update({kk:vv})
+                else:
+                  # log(1, '--------> found header', subelem_tag, v)
+                  for _,vv in v.items():
+                    d['data'].append(h_type(vv))
+
+      # end subelement loop -----------------------------------------------
 
       text = elem.text
       # tail = elem.tail
@@ -408,16 +491,33 @@ class Base(object):
       if isinstance(cls, str) and not 'pdpy' in elem.attrib:
         obj = {elem_tag: d}
         # print("FOUND STRING CLASS", cls, obj)
+        # log(1, f"Ending __elem_to_obj__ for {elem_tag}")
+        # print('<'*80)
         return obj
+      elif d is None:
+        cls = self.__n__.__get__(name=elem_tag)
+        if not isinstance(cls, str):
+          # print("FOUND CLASS", cls)
+          # log(1, f"Ending __elem_to_obj__ for {elem_tag}")
+          # print('<'*80)
+          return cls()
+        else:
+          _prnt("DICT IS", d)
       else:
         try:
-          if 'pdpy' in elem.attrib:
+          # log(1,'UPDATING:',d)
+          if 'pdpy' in elem.attrib and isinstance(d, dict):
             cls = self.__n__.__get__(name=elem.attrib['pdpy'])
-          # log(1,'dict',d)
-          if isinstance(d, dict):
             c = cls(json=d)
+          elif isinstance(d, list):
+            c = d
           else:
-            log(1,"json object is not a dict:",d)
+            # _prnt(f"updating: {d}")
+            cls = self.__n__.__get__(name=d.get('__pdpy__',None), tag=elem_tag)
+            if isinstance(cls, type):
+              c = cls(json=d)
+            else:
+              log(2,"Unknown JSON object:", d)
           # print('-'*80)
           # c.__dumps__()
         except Exception as e:
@@ -425,9 +525,9 @@ class Base(object):
           log(2, cls, d)
           c = None
         finally:
+          # log(1, f"Ending __elem_to_obj__ for {elem_tag}")
+          # print('<'*80)
           return c
-
-
 
   def __xmlparse__(self, xml):
     """ Parse an XML element into a PdPy object """
@@ -445,8 +545,20 @@ class Base(object):
       if n.tag == 'pdpy' or n.tag == 'root':
         if 'pdpy' in n.attrib:
           root_dict.update({'__pdpy__': n.attrib['pdpy']})
+      elif n.tag == 'struct':
+        root_dict.update({'struct' : [self.__elem_to_obj__(x) for x in n]})
       elif n.tag == 'nodes':
-        root_dict.update({'nodes' : [self.__elem_to_obj__(x) for x in n]})
+        nodes = []
+        log(1,'ALLNODES',n.findall('*'))
+        for x in n:
+          log(0, 'TYPE', x.tag, x.attrib)
+          if 'pdtype' == x.tag:
+            for child in x:
+              log(1, '-- CHILD', child.tag, child.attrib)
+              nodes.append(self.__elem_to_obj__(child))
+          else:
+            nodes.append(self.__elem_to_obj__(x))
+        root_dict.update({'nodes' : nodes})
       elif n.tag == 'comments':
         root_dict.update({'comments' : [self.__elem_to_obj__(x) for x in n]})
       elif n.tag == 'edges':
@@ -460,6 +572,16 @@ class Base(object):
         else:
           root_dict.update({n.tag:o})
     
-    # finally, add the root_dict to the PdPy object
+    # these method is an attribute of the PdPy class
+    # add the root_dict to the PdPy object
     self.addRoot(json=root_dict)
-    
+    # self.__dumps__()
+    # spawn the __parent__ json tree
+    self.__jsontree__()
+
+  def __jsontree__(self):
+    # log(0, f"{self.__class__.__name__}.__jsontree__()")
+    setattr(self.root, '__p__', self)
+    for x in getattr(self, 'struct', []):
+      setattr(x, '__p__', self)
+    self.__addparents__(self.root)
