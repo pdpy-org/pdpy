@@ -381,13 +381,6 @@ class PdPy(Base):
     
     return s
 
-  def __tree__(self):
-    self.root.parent(self)
-    for x in getattr(self, 'struct', []):
-      x.parent(self)
-    self.__addparents__(self.root)
-
-
   def __xml__(self):
     """ Return the XML Element for this object """
     
