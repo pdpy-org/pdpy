@@ -1,79 +1,209 @@
-# pdpy
+# PdPy
 
-A python package to interact with Pure Data (Pd) from Python (py).
+A python package to interact with Pure Data (Pd) from Python.
 
-Translate Pure Data files from the `.pd` format to other formats such as JSON or XML.
+Translate Pure Data files from the `.pd` format to other formats such as [JSON](https://www.json.org/json-en.html) and [Pickle](https://docs.python.org/3/library/pickle.html#module-pickle), or [XML](https://www.w3.org/standards/xml).
 
 ## Example
 
 Translate the Pure Data 'hello-world.pd' patch into a JSON-formatted string in 'hello-world.json':
 
+The code to run is:
+
 ``` python
 import pdpy
-# initialize the translator object with an input file and a target format
-translator = pdpy.Translator('./tests/hello-world.pd', to='json')
+# initialize the translator object
+# with an input file and a target format
+filename = './tests/hello-world.pd'
+translator = pdpy.Translator(filename, to='json')
 # run the translator
 translator()
 ```
 
-The result is something like this:
+The original file looks like this:
 
-``` json
+```c
+#N canvas 47 51 450 300 12;
+#X obj 37 37 loadbang;
+#X msg 37 61 hello world;
+#X obj 37 85 print;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+```
+
+![src/tests/hello-world.png](src/tests/hello-world.png)
+
+The result is something like this in JSON:
+
+```json
 {
-    "patchname": "testtone.pd",
+    "patchname": "hello-world.pd",
     "encoding": "utf-8",
     "__pdpy__": "PdPy",
     "root": {
         "__pdpy__": "Canvas",
         "isroot": true,
-        "name": "testtone.pd",
+        "name": "hello-world.pd",
         "vis": 1,
         "screen": {
             "__pdpy__": "Point",
-            "x": 273,
-            "y": 107
+            "x": 47,
+            "y": 51
         },
         "dimension": {
             "__pdpy__": "Size",
-            "width": 607,
-            "height": 373
+            "width": 450,
+            "height": 300
         },
         "font": 12,
         "nodes": [
             {
-                "__pdpy__": "PdNativeGui",
+                "__pdpy__": "PdObject",
                 "id": 0,
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 86,
-                    "y": 273
+                    "x": 37,
+                    "y": 37
                 },
-                "className": "floatatom",
-                "digit_width": "3",
-                "limits": {
-                    "__pdpy__": "Bounds",
-                    "lower": 0.0,
-                    "upper": 0.0
-                },
-                "flag": "0",
-                "label": "-",
-                "comm": {
-                    "__pdpy__": "Comm",
-                    "send": "-",
-                    "receive": "-"
-                }
+                "className": "loadbang"
             },
             {
-                "__pdpy__": "PdObject",
+                "__pdpy__": "PdMessage",
                 "id": 1,
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 27,
-                    "y": 221
+                    "x": 37,
+                    "y": 61
                 },
-                "className": "notein"
-            }, ...
+                "className": "msg",
+                "targets": [
+                    {
+                        "__pdpy__": "PdMsg",
+                        "address": "outlet",
+                        "message": [
+                            "hello world"
+                        ]
+                    }
+                ]
+            },
+            {
+                "__pdpy__": "PdObject",
+                "id": 2,
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 37,
+                    "y": 85
+                },
+                "className": "print"
+            }
+        ],
+        "edges": [
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": "0",
+                    "port": "0"
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": "1",
+                    "port": "0"
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": "1",
+                    "port": "0"
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": "2",
+                    "port": "0"
+                }
+            }
+        ]
+    }
+}
 ```
+
+And this is the XML output if initialized with `to='xml'`
+
+```xml
+<pdpy encoding="utf-8">
+    <root pdpy="Canvas">
+        <font>12</font>
+        <name>hello-world.pd</name>
+        <vis>1</vis>
+        <isroot>True</isroot>
+        <screen pdpy="Point">
+            <x>47</x>
+            <y>51</y>
+        </screen>
+        <dimension pdpy="Size">
+            <width>450</width>
+            <height>300</height>
+        </dimension>
+        <nodes>
+            <loadbang pdpy="PdObject">
+                <id>0</id>
+                <position pdpy="Point">
+                    <x>37</x>
+                    <y>37</y>
+                </position>
+                <className>loadbang</className>
+            </loadbang>
+            <pdmessage>
+                <id>1</id>
+                <position pdpy="Point">
+                    <x>37</x>
+                    <y>61</y>
+                </position>
+                <pdmsg>
+                    <address>outlet</address>
+                    <message>hello world</message>
+                </pdmsg>
+            </pdmessage>
+            <print pdpy="PdObject">
+                <id>2</id>
+                <position pdpy="Point">
+                    <x>37</x>
+                    <y>85</y>
+                </position>
+                <className>print</className>
+            </print>
+        </nodes>
+        <edges>
+            <edge>
+                <source pdpy="Source">
+                    <id>0</id>
+                    <port>0</port>
+                </source>
+                <sink pdpy="Source">
+                    <id>1</id>
+                    <port>0</port>
+                </sink>
+            </edge>
+            <edge>
+                <source pdpy="Source">
+                    <id>1</id>
+                    <port>0</port>
+                </source>
+                <sink pdpy="Source">
+                    <id>2</id>
+                    <port>0</port>
+                </sink>
+            </edge>
+        </edges>
+    </root>
+</pdpy>
+```
+
+</td>
+</tr>
+</table>
 
 ## References
 
