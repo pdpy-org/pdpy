@@ -23,8 +23,56 @@ The result is something like this:
     "patchname": "testtone.pd",
     "encoding": "utf-8",
     "__pdpy__": "PdPy",
-    "root": { ... 
-}
+    "root": {
+        "__pdpy__": "Canvas",
+        "isroot": true,
+        "name": "testtone.pd",
+        "vis": 1,
+        "screen": {
+            "__pdpy__": "Point",
+            "x": 273,
+            "y": 107
+        },
+        "dimension": {
+            "__pdpy__": "Size",
+            "width": 607,
+            "height": 373
+        },
+        "font": 12,
+        "nodes": [
+            {
+                "__pdpy__": "PdNativeGui",
+                "id": 0,
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 86,
+                    "y": 273
+                },
+                "className": "floatatom",
+                "digit_width": "3",
+                "limits": {
+                    "__pdpy__": "Bounds",
+                    "lower": 0.0,
+                    "upper": 0.0
+                },
+                "flag": "0",
+                "label": "-",
+                "comm": {
+                    "__pdpy__": "Comm",
+                    "send": "-",
+                    "receive": "-"
+                }
+            },
+            {
+                "__pdpy__": "PdObject",
+                "id": 1,
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 27,
+                    "y": 221
+                },
+                "className": "notein"
+            }, ...
 ```
 
 ## References
