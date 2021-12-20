@@ -87,15 +87,14 @@ class PdMessage(PdObj):
   def __init__(self, pd_lines=None, json=None):
 
     self.__pdpy__ = self.__class__.__name__
+    super().__init__(cls='msg',json=json)
 
-    if pd_lines is not None:
+    if json is None and pd_lines is not None:
       super().__init__(*pd_lines[:3], cls='msg')
       self.className = self.__cls__
       argv = pd_lines[3:]
       if len(pd_lines[3:]):
         self.addMessages(argv)
-    elif json is not None:
-      super().__init__(cls='msg',json=json)
       
   def addTarget(self, address):
     if not hasattr(self, "targets"):
@@ -159,9 +158,8 @@ class PdMessage(PdObj):
   
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__element__(self)
+    x = super().__xml__(scope=self)
+    super().__update_element__(x, self, ('border'))
     for target in getattr(self, "targets", []):
       super().__subelement__(x, target.__xml__())
-    if hasattr(self, "border"):
-      super().__subelement__(x, 'border', text=self.border)
     return x
