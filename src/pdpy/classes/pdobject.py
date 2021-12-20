@@ -29,19 +29,27 @@ class PdObject(PdObj):
   def __init__(self, pd_lines=None, json=None, **kwargs):
 
     self.__pdpy__ = self.__class__.__name__
+    super().__init__(json=json, **kwargs)
 
-    if json is not None:
-      super().__init__(**kwargs)
-      super().__populate__(self, json)
-
-    elif pd_lines is not None:
+    if json is None and pd_lines is not None:
       super().__init__(*pd_lines[:3])
       try:
         self.className = pd_lines[3] if 3 < len(pd_lines) else ''
-        if 4 < len(pd_lines):
-          self.addargs(pd_lines[4:])
+        if super().__isnum__(self.className):
+          if 4 < len(pd_lines):
+            self.className = 'list'
+            self.addargs(pd_lines[3:])
+          else:
+            self.className = 'float'
+            self.addargs(pd_lines[3])
+        else:
+          if 4 < len(pd_lines):
+            self.addargs(pd_lines[4:])
       except:
         raise ValueError("Invalid arguments for PdObject")
+    
+    if not hasattr(self, 'className'):
+      self.className = self.__cls__
   
   def __pd__(self, args=None):
     """ Return the pd code of the object. """
@@ -62,9 +70,9 @@ class PdObject(PdObj):
     
     attrib = kwargs.pop('attrib') if 'attrib' in kwargs else {}
     
-    if isinstance(attrib, dict):
-      for i in [{'pdpy':self.__pdpy__},{'className':self.className}]:
-        attrib.update({}.fromkeys(i))
+    if isinstance(attrib, dict) and self.className is not None:
+      # attrib.update({'pdpy':self.__pdpy__})
+      attrib.update({'className':self.className})
     
     kwargs.update({'attrib':attrib})
 
