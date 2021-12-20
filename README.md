@@ -11,7 +11,7 @@ Translate the Pure Data 'testtone.pd' patch into a JSON-formatted string in 'tes
 ``` python
 import pdpy
 # initialize the translator object with an input file and a target format
-translator = pdpy.Translator('../testtone.pd', to='json')
+translator = pdpy.Translator('./tests/testtone.pd', to='json')
 # run the translator
 translator()
 ```
