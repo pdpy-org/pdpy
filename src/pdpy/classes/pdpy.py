@@ -63,7 +63,7 @@ class PdPy(Base):
     if not hasattr(self, 'struct'): 
       self.struct = []
     struct = Struct(pd_lines=argv)
-    struct.parent(self)
+    struct.__parent__(self)
     self.struct.append(struct)  
   
   def addRoot(self, argv=None, json=None):
