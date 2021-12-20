@@ -6,12 +6,12 @@ Translate Pure Data files from the `.pd` format to other formats such as JSON or
 
 ## Example
 
-Translate the Pure Data 'testtone.pd' patch into a JSON-formatted string in 'testtone.json':
+Translate the Pure Data 'hello-world.pd' patch into a JSON-formatted string in 'hello-world.json':
 
 ``` python
 import pdpy
 # initialize the translator object with an input file and a target format
-translator = pdpy.Translator('./tests/testtone.pd', to='json')
+translator = pdpy.Translator('./tests/hello-world.pd', to='json')
 # run the translator
 translator()
 ```

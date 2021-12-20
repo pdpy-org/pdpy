@@ -1,0 +1,67 @@
+<pdpy encoding="utf-8">
+    <root pdpy="Canvas">
+        <font>12</font>
+        <name>hello-world.pd</name>
+        <vis>1</vis>
+        <isroot>True</isroot>
+        <screen pdpy="Point">
+            <x>47</x>
+            <y>51</y>
+        </screen>
+        <dimension pdpy="Size">
+            <width>450</width>
+            <height>300</height>
+        </dimension>
+        <nodes>
+            <loadbang pdpy="PdObject">
+                <id>0</id>
+                <position pdpy="Point">
+                    <x>37</x>
+                    <y>37</y>
+                </position>
+                <className>loadbang</className>
+            </loadbang>
+            <pdmessage>
+                <id>1</id>
+                <position pdpy="Point">
+                    <x>37</x>
+                    <y>61</y>
+                </position>
+                <pdmsg>
+                    <address>outlet</address>
+                    <message>hello world</message>
+                </pdmsg>
+            </pdmessage>
+            <print pdpy="PdObject">
+                <id>2</id>
+                <position pdpy="Point">
+                    <x>37</x>
+                    <y>85</y>
+                </position>
+                <className>print</className>
+            </print>
+        </nodes>
+        <edges>
+            <edge>
+                <source pdpy="Source">
+                    <id>0</id>
+                    <port>0</port>
+                </source>
+                <sink pdpy="Source">
+                    <id>1</id>
+                    <port>0</port>
+                </sink>
+            </edge>
+            <edge>
+                <source pdpy="Source">
+                    <id>1</id>
+                    <port>0</port>
+                </source>
+                <sink pdpy="Source">
+                    <id>2</id>
+                    <port>0</port>
+                </sink>
+            </edge>
+        </edges>
+    </root>
+</pdpy>

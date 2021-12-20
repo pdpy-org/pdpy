@@ -1,0 +1,219 @@
+<pdpy encoding="utf-8">
+    <root pdpy="Canvas">
+        <font>12</font>
+        <name>load-meter.pd</name>
+        <vis>1</vis>
+        <isroot>True</isroot>
+        <screen pdpy="Point">
+            <x>418</x>
+            <y>159</y>
+        </screen>
+        <dimension pdpy="Size">
+            <width>299</width>
+            <height>317</height>
+        </dimension>
+        <nodes>
+            <floatatom pdpy="PdNativeGui">
+                <digit_width>0</digit_width>
+                <limits pdpy="Bounds">
+                    <lower>0.0</lower>
+                    <upper>0.0</upper>
+                </limits>
+                <flag>0</flag>
+                <label>-</label>
+                <comm>
+                    <send>-</send>
+                    <receive>-</receive>
+                </comm>
+                <id>0</id>
+                <position pdpy="Point">
+                    <x>99</x>
+                    <y>238</y>
+                </position>
+                <className>floatatom</className>
+            </floatatom>
+            <cputime pdpy="PdObject">
+                <id>1</id>
+                <position pdpy="Point">
+                    <x>99</x>
+                    <y>150</y>
+                </position>
+                <className>cputime</className>
+            </cputime>
+            <loadbang pdpy="PdObject">
+                <id>2</id>
+                <position pdpy="Point">
+                    <x>99</x>
+                    <y>30</y>
+                </position>
+                <className>loadbang</className>
+            </loadbang>
+            <metro pdpy="PdObject">
+                <id>3</id>
+                <position pdpy="Point">
+                    <x>99</x>
+                    <y>94</y>
+                </position>
+                <args>1000</args>
+                <className>metro</className>
+            </metro>
+            <t pdpy="PdObject">
+                <id>4</id>
+                <position pdpy="Point">
+                    <x>99</x>
+                    <y>122</y>
+                </position>
+                <args>b</args>
+                <args>b</args>
+                <className>t</className>
+            </t>
+            <op_mul pdpy="PdObject">
+                <id>5</id>
+                <position pdpy="Point">
+                    <x>99</x>
+                    <y>210</y>
+                </position>
+                <args>0.1</args>
+                <className>*</className>
+            </op_mul>
+            <int pdpy="PdObject">
+                <id>6</id>
+                <position pdpy="Point">
+                    <x>99</x>
+                    <y>179</y>
+                </position>
+                <className>int</className>
+            </int>
+            <tgl pdpy="Toggle">
+                <size pdpy="Size">
+                    <width>15</width>
+                </size>
+                <init>False</init>
+                <comm>
+                    <send>empty</send>
+                    <receive>empty</receive>
+                </comm>
+                <label pdpy="IEMLabel">
+                    <label>empty</label>
+                    <offset pdpy="Point">
+                        <x>17</x>
+                        <y>7</y>
+                    </offset>
+                    <font pdpy="PdFont">
+                        <face>0</face>
+                        <points>10</points>
+                    </font>
+                    <lbcolor>-1</lbcolor>
+                </label>
+                <bgcolor>-262144</bgcolor>
+                <fgcolor>-1</fgcolor>
+                <flag>0</flag>
+                <nonzero>1</nonzero>
+                <id>9</id>
+                <position pdpy="Point">
+                    <x>99</x>
+                    <y>61</y>
+                </position>
+                <className>tgl</className>
+            </tgl>
+        </nodes>
+        <comments>
+            <comment>
+                <text>CPU load in percent</text>
+                <position pdpy="Point">
+                    <x>76</x>
+                    <y>279</y>
+                </position>
+            </comment>
+            <comment>
+                <text>&lt;= on/off</text>
+                <position pdpy="Point">
+                    <x>122</x>
+                    <y>60</y>
+                </position>
+            </comment>
+        </comments>
+        <edges>
+            <edge>
+                <source pdpy="Source">
+                    <id>1</id>
+                    <port>0</port>
+                </source>
+                <sink pdpy="Source">
+                    <id>6</id>
+                    <port>0</port>
+                </sink>
+            </edge>
+            <edge>
+                <source pdpy="Source">
+                    <id>2</id>
+                    <port>0</port>
+                </source>
+                <sink pdpy="Source">
+                    <id>9</id>
+                    <port>0</port>
+                </sink>
+            </edge>
+            <edge>
+                <source pdpy="Source">
+                    <id>3</id>
+                    <port>0</port>
+                </source>
+                <sink pdpy="Source">
+                    <id>4</id>
+                    <port>0</port>
+                </sink>
+            </edge>
+            <edge>
+                <source pdpy="Source">
+                    <id>4</id>
+                    <port>0</port>
+                </source>
+                <sink pdpy="Source">
+                    <id>1</id>
+                    <port>0</port>
+                </sink>
+            </edge>
+            <edge>
+                <source pdpy="Source">
+                    <id>4</id>
+                    <port>1</port>
+                </source>
+                <sink pdpy="Source">
+                    <id>1</id>
+                    <port>1</port>
+                </sink>
+            </edge>
+            <edge>
+                <source pdpy="Source">
+                    <id>5</id>
+                    <port>0</port>
+                </source>
+                <sink pdpy="Source">
+                    <id>0</id>
+                    <port>0</port>
+                </sink>
+            </edge>
+            <edge>
+                <source pdpy="Source">
+                    <id>6</id>
+                    <port>0</port>
+                </source>
+                <sink pdpy="Source">
+                    <id>5</id>
+                    <port>0</port>
+                </sink>
+            </edge>
+            <edge>
+                <source pdpy="Source">
+                    <id>9</id>
+                    <port>0</port>
+                </source>
+                <sink pdpy="Source">
+                    <id>3</id>
+                    <port>0</port>
+                </sink>
+            </edge>
+        </edges>
+    </root>
+</pdpy>

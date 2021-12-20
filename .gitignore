@@ -19,7 +19,6 @@ src/tests/patch_paths/
 src/tests/pd_files/
 src/tests/pdpy_tests/
 src/tests/all_objects.json
-src/tests/testtone.json
 **/*.test.*.py
 
 # from vscode-pdpy

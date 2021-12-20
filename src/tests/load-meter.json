@@ -1,0 +1,287 @@
+{
+    "patchname": "load-meter.pd",
+    "encoding": "utf-8",
+    "__pdpy__": "PdPy",
+    "root": {
+        "__pdpy__": "Canvas",
+        "isroot": true,
+        "name": "load-meter.pd",
+        "vis": 1,
+        "screen": {
+            "__pdpy__": "Point",
+            "x": 418,
+            "y": 159
+        },
+        "dimension": {
+            "__pdpy__": "Size",
+            "width": 299,
+            "height": 317
+        },
+        "font": 12,
+        "nodes": [
+            {
+                "__pdpy__": "PdNativeGui",
+                "id": 0,
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 99,
+                    "y": 238
+                },
+                "className": "floatatom",
+                "digit_width": "0",
+                "limits": {
+                    "__pdpy__": "Bounds",
+                    "lower": 0.0,
+                    "upper": 0.0
+                },
+                "flag": "0",
+                "label": "-",
+                "comm": {
+                    "__pdpy__": "Comm",
+                    "send": "-",
+                    "receive": "-"
+                }
+            },
+            {
+                "__pdpy__": "PdObject",
+                "id": 1,
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 99,
+                    "y": 150
+                },
+                "className": "cputime"
+            },
+            {
+                "__pdpy__": "PdObject",
+                "id": 2,
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 99,
+                    "y": 30
+                },
+                "className": "loadbang"
+            },
+            {
+                "__pdpy__": "PdObject",
+                "id": 3,
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 99,
+                    "y": 94
+                },
+                "className": "metro",
+                "args": [
+                    "1000"
+                ]
+            },
+            {
+                "__pdpy__": "PdObject",
+                "id": 4,
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 99,
+                    "y": 122
+                },
+                "className": "t",
+                "args": [
+                    "b",
+                    "b"
+                ]
+            },
+            {
+                "__pdpy__": "PdObject",
+                "id": 5,
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 99,
+                    "y": 210
+                },
+                "className": "*",
+                "args": [
+                    "0.1"
+                ]
+            },
+            {
+                "__pdpy__": "PdObject",
+                "id": 6,
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 99,
+                    "y": 179
+                },
+                "className": "int"
+            },
+            {
+                "__pdpy__": "Toggle",
+                "id": 9,
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 99,
+                    "y": 61
+                },
+                "className": "tgl",
+                "size": {
+                    "__pdpy__": "Size",
+                    "width": 15
+                },
+                "init": false,
+                "comm": {
+                    "__pdpy__": "Comm",
+                    "send": "empty",
+                    "receive": "empty"
+                },
+                "label": {
+                    "__pdpy__": "IEMLabel",
+                    "label": "empty",
+                    "offset": {
+                        "__pdpy__": "Point",
+                        "x": 17,
+                        "y": 7
+                    },
+                    "font": {
+                        "__pdpy__": "PdFont",
+                        "face": 0,
+                        "name": "Menlo",
+                        "points": 10
+                    },
+                    "lbcolor": -1
+                },
+                "bgcolor": -262144,
+                "fgcolor": -1,
+                "flag": 0,
+                "nonzero": 1
+            }
+        ],
+        "comments": [
+            {
+                "__pdpy__": "Comment",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 76,
+                    "y": 279
+                },
+                "text": [
+                    "CPU load in percent"
+                ]
+            },
+            {
+                "__pdpy__": "Comment",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 122,
+                    "y": 60
+                },
+                "text": [
+                    "<= on/off"
+                ]
+            }
+        ],
+        "edges": [
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": "1",
+                    "port": "0"
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": "6",
+                    "port": "0"
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": "2",
+                    "port": "0"
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": "9",
+                    "port": "0"
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": "3",
+                    "port": "0"
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": "4",
+                    "port": "0"
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": "4",
+                    "port": "0"
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": "1",
+                    "port": "0"
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": "4",
+                    "port": "1"
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": "1",
+                    "port": "1"
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": "5",
+                    "port": "0"
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": "0",
+                    "port": "0"
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": "6",
+                    "port": "0"
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": "5",
+                    "port": "0"
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": "9",
+                    "port": "0"
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": "3",
+                    "port": "0"
+                }
+            }
+        ]
+    }
+}
