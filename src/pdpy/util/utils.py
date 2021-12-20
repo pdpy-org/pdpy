@@ -66,7 +66,9 @@ def log(l, *argv):
   -----------
   This function printst to console with error `level` 
   """
-  if 1==l:
+  if 0==l:
+    print("NORMAL:",*argv)
+  elif 1==l:
     print("WARNING:",*argv)
   elif 2==l:
     print("ERROR:",*list(map(lambda x:x.__repr__(),argv)))

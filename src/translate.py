@@ -30,6 +30,8 @@ def main():
   
   try:
     # create an instance of the Translator class
+    print("-"*80)
+    print("Creating translator instance...")
     translator = Translator(arguments)
     
     # check if the class was created
@@ -37,8 +39,8 @@ def main():
       raise Exception("Translator could not be created.")
     else:
       # print some nice messages
+      print("Done.")
       direction = translator.source + ' -> ' + translator.target
-      print("-"*80)
       print(f"BEGIN: {start_time} - {direction}")
       print(f"From: {translator.input_file}")
       print(f"To: {translator.output_file}")

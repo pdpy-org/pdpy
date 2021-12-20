@@ -121,7 +121,7 @@ class PdList(Base):
     
     if hasattr(self, 'float') and hasattr(template, 'float'):
       keys = getattr(template, 'float')
-      flt = super().__element__('float')
+      flt = super().__element__(tag='float')
       for k in keys:
         if k in self.float:
           for v in self.float[k]:
@@ -130,7 +130,7 @@ class PdList(Base):
 
     if hasattr(self, 'symbol') and hasattr(template, 'symbol'):
       keys = getattr(template, 'symbol')
-      sym = super().__element__('symbol')
+      sym = super().__element__(tag='symbol')
       for k in keys:
         if k in self.symbol:
           for v in self.symbol[k]:
