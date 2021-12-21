@@ -19,7 +19,7 @@ from pdpy.classes.pdpy import PdPy
 from pdpy.parse.parser import PdPyParser
 from pdpy.parse.xml2json import XmlToJson
 
-from pdpy.classes.default import getFormat
+from pdpy.classes.default import Formats, getFormat
 from pdpy.util.utils import log, parsePdBinBuf, parsePdFileLines
 from pdpy.classes.pdpyencoder import PdPyEncoder
 
@@ -76,10 +76,17 @@ class Translator(Base):
 
     if not hasattr(self, 'source'):
       # grab the source extension from the input file if not set
-      self.source = getFormat(self.fro) if hasattr(self, 'fro') else self.input_file.suffix
+      if hasattr(self, 'fro'):
+        self.source = getFormat(self.fro)
+      else:
+        self.source = self.input_file.suffix
     
+    if self.source.replace('.','') not in Formats:
+      raise ArgumentException(f"Source format <{self.source}> is not supported.")
+
+    # default target to JSON if not set
     if not hasattr(self, 'target'):
-      self.target = getFormat(self.to) if hasattr(self, 'to') else None
+      self.target = getFormat(getattr(self, 'to', 'json'))
 
     # prepend a dot '.' to the source and target formats; ie, to get '.json'
     def _dot(f): return f".{f}" if not f.startswith('.') else f
@@ -125,6 +132,92 @@ class Translator(Base):
       else:
         log(1, f"Internals file does not exist.")
 
+    log(0, "Translator initialized")
+
+  def write_xml_ref(self):
+    """ The XML reflection logic """
+    with open((self.output_file.parent / (self.output_file.stem + '_ref_xml')).with_suffix('pd'), 'w', encoding=self.encoding) as fp:
+      fp.write(PdPy(
+        name = self.input_file.name,
+        encoding = self.encoding,
+        pd_lines = self.xml.to_string()
+      ).__pd__())
+
+  def write_json_ref(self):
+    """ The JSON reflection logic """
+    with open((self.output_file.parent / (self.output_file.stem + '_ref_pd')).with_suffix('.json'), 'w', encoding=self.encoding) as fp:
+      fp.write(PdPy(
+        name = self.input_file.name,
+        encoding = self.encoding,
+        pd_lines = parsePdBinBuf(self.pdpy.__pd__())
+      ).__json__())
+
+  def write_pd_ref(self):
+    """ The Pd reflection logic """
+    with open((self.output_file.parent / (self.output_file.stem + '_ref')).with_suffix('.pd'), 'w', encoding=self.encoding) as fp:
+      fp.write(PdPy(
+        name = self.input_file.name,
+        encoding = self.encoding,
+        json = self.json
+      ).__pd__())
+
+  def write_pd(self, out=None):
+    """ Writes a Pd representation of the PdPy object to the output file. """
+    with open(out or (self.output_file.parent / self.output_file.stem).with_suffix('.pd'), 'w', encoding=self.encoding) as fp:
+      fp.write(self.pd)
+
+  def write_json(self, out=None):
+    """ Writes a JSON string of the PdPy object to the output file. """
+    with open(out or (self.output_file.parent / self.output_file.stem).with_suffix('.json'), 'w', encoding=self.encoding) as fp:
+      fp.write(self.json)
+
+  def write_pickle(self, out=None):
+    """ Writes a pkl binary file of the PdPy object to the output file. """
+    with open(out or (self.output_file.parent / self.output_file.stem).with_suffix('.pkl'), 'wb') as fp:
+      pickle_dump(self.json, fp, PICKLE_HIGHEST_PROTOCOL)
+
+  def write_xml(self, out=None):
+    """ Writes an XML file of the PdPy object to the output file. """
+    self.xml.write(out or (self.output_file.parent / self.output_file.stem).with_suffix('.xml').as_posix(), encoding=self.encoding)
+
+  def load_pd_data(self, encoding, filename):
+    # log(1,"Trying", encoding)
+    with open(filename, "r", encoding=encoding) as fp:
+      lines = [line for line in fp.readlines()]
+    return lines, encoding
+
+  def load_pd(self, filename):
+    try:
+      data, self.encoding = self.load_pd_data(self.encoding, filename)
+    except UnicodeDecodeError:
+      try:
+        data, self.encoding = self.load_pd_data("ascii", filename)
+      except UnicodeDecodeError:
+        try:
+          data, self.encoding = self.load_pd_data("latin-1", filename)
+        except Exception as e:
+          data = None
+          raise ValueError("Could not load input file", e)
+    finally:
+      return data
+  
+  def translate(self, target):
+    
+    if target in ('xml', 'XML', 'Xml'):
+      self.xml = self.pdpy.__xml__()
+    elif target in ('json', 'JSON', 'Json'):
+      self.json = self.pdpy.__json__()
+    elif target in ('pd', 'PD', 'Pd', 'puredata', 'PureData', 'PureData'):
+      self.pd = self.pdpy.__pd__()
+    else:
+      raise ValueError(f"Invalid target: {target}")
+    
+    return self
+
+
+
+  def __call__(self):
+
     log(0, f"Loading file <{self.input_file}>")
     
     if self.source == ".pd":
@@ -168,116 +261,3 @@ class Translator(Base):
         )
     else:
       raise ValueError(f"Unknown source type: {self.source}")
-  
-    log(0, "Translator initialized")
-
-  def __call__(self, target=None, out=None):
-    
-    if target is None:
-      target = self.target
-    
-    if out is None:
-      out = self.output_file
-    else:
-      if not isinstance(out, Path):
-        out = Path(out)
-    
-    if target == '.json' or target == '.pkl':
-      
-      log(0, "Returning a json string representation from pdpy")
-      
-      self.json = self.pdpy.__json__() # get the json string
-      
-      if self.json is not None:
-        if target == '.json':
-          with open(self.output_file, 'w', encoding=self.encoding) as fp:
-            fp.write(self.json)
-        elif target == '.pkl':
-          with open(self.output_file, 'wb') as fp:
-            pickle_dump(self.json, fp, PICKLE_HIGHEST_PROTOCOL)
-
-        # the Pd reflection logic when json is the target
-        if self.reflect:
-          self.pd_ref = PdPy(
-            name = self.input_file.name,
-            encoding = self.encoding,
-            json = self.json
-          ).__pd__()
-          if self.pd_ref is not None:
-            with open(self.output_file_ref, 'w', encoding=self.encoding) as fp:
-              fp.write(self.pd_ref)
-
-      else:
-        log(2, "No JSON representation available")
-
-    if target == 'pd' and self.pdpy is not None:
-      
-      log(0, "Returning a pd string representation from pdpy")
-      
-      self.pd = self.pdpy.__pd__() # get the pd representation
-      
-      if self.pd is not None:
-        with open(self.output_file, 'w', encoding=self.encoding) as fp:
-          fp.write(self.pd)
-        
-        # the Json reflection logic when Pd is the target
-        if self.reflect:
-          
-          self.json_ref = PdPy(
-            name = self.input_file.name,
-            encoding = self.encoding,
-            pd_lines = parsePdBinBuf(self.pd)
-           ).__json__()
-          
-          if self.json_ref is not None:
-            with open(self.output_file_ref, 'w', encoding=self.encoding) as fp:
-              fp.write(self.json_ref)
-      else:
-        log(2, "No Pd representation available")
-      
-    if target == ".xml" and self.pdpy is not None:
-      
-      log(0, "Returning a XML string representation from pdpy")
-      
-      self.xml = self.pdpy.__xml__() # get the xml representation
-      
-      if self.xml is not None:
-        self.xml.write(self.output_file.as_posix(), encoding=self.encoding)
-
-        # the Pd reflection logic when xml is the target
-        if self.reflect:
-          
-          self.xml_ref = PdPy(
-            name = self.input_file.name,
-            encoding = self.encoding,
-            xml = self.xml.to_string() # give it an xml string
-           ).__pd__()
-          
-          if self.xml_ref is not None:
-            with open(self.output_file_ref, 'w', encoding=self.encoding) as fp:
-              fp.write(self.xml_ref)
-      else:
-        log(2, "No XML representation available")
-      
-  # end def __call__ -------------------------------------------------------
-
-  def load_pd_data(self, encoding, filename):
-    # log(1,"Trying", encoding)
-    with open(filename, "r", encoding=encoding) as fp:
-      lines = [line for line in fp.readlines()]
-    return lines, encoding
-
-  def load_pd(self, filename):
-    try:
-      data, self.encoding = self.load_pd_data(self.encoding, filename)
-    except UnicodeDecodeError:
-      try:
-        data, self.encoding = self.load_pd_data("ascii", filename)
-      except UnicodeDecodeError:
-        try:
-          data, self.encoding = self.load_pd_data("latin-1", filename)
-        except Exception as e:
-          data = None
-          raise ValueError("Could not load input file", e)
-    finally:
-      return data

@@ -26,8 +26,8 @@ def main():
 
   # get the arguments as a dictionary
   args = parser.parse_args()
-  # arguments = vars(args)
-  
+  arguments = vars(args)
+
   # get time before translation
   start_time = time.process_time()
   
@@ -35,7 +35,7 @@ def main():
     # create an instance of the Translator class
     print("-"*80)
     print("Creating translator instance...")
-    translator = Translator(**args)
+    translator = Translator(arguments)
     
     # check if the class was created
     if translator is None:
