@@ -6,15 +6,12 @@
 # **************************************************************************** #
 """ PdPyXMLParser Class Definition """
 
-from collections import defaultdict
 import json
-from io import IOBase
 import xml.etree.ElementTree as ET
+from io import IOBase
 from .default import Namespace
 
-__all__ = [
-  "PdPyXMLParser"
-]
+__all__ = [ 'PdPyXMLParser' ]
 
 class PdPyXMLParser:
 

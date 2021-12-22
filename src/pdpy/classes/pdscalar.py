@@ -9,9 +9,7 @@
 from .base import Base
 from .pddata import PdData
 
-__all__ = [
-  "Scalar"
-]
+__all__ = [ 'Scalar' ]
 
 # TODO: so, what if we just fill the Struct with the scalar data
 # instead of this Scalar class? maybe forget this class and use only Struct?

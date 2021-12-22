@@ -8,9 +8,7 @@
 
 from json.encoder import JSONEncoder
 
-__all__ = [
-  "PdPyEncoder"
-]
+__all__ = [ 'PdPyEncoder' ]
 
 class PdPyEncoder(JSONEncoder):
   

@@ -5,7 +5,6 @@
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
 """ Pure Data Default Definitions """
-import re
 
 __all__ = [
   'Namespace',

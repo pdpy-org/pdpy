@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+# **************************************************************************** #
+# This file is part of the pdpy project
+# Copyright (C) 2021 Fede Camara Halac
+# **************************************************************************** #
 """ Translator class """
 
 from pathlib import Path
@@ -13,14 +16,12 @@ from pickle import HIGHEST_PROTOCOL as PICKLE_HIGHEST_PROTOCOL
 from pdpy.classes.base import Base
 from pdpy.classes.exceptions import ArgumentException
 from pdpy.classes.pdpy import PdPy
-from pdpy.parse.parser import PdPyParser
-from pdpy.parse.xml2json import XmlToJson
-
+from pdpy.classes.pdpyparser import PdPyParser
 from pdpy.classes.default import getFormat
 from pdpy.util.utils import log, parsePdBinBuf, parsePdFileLines
 from pdpy.classes.pdpyencoder import PdPyEncoder
 
-__all__ = [ "Translator" ] 
+__all__ = [ 'Translator' ] 
 
 class Translator(Base):
   """ This class maintains and translates a `pdpy` Object in memory. 

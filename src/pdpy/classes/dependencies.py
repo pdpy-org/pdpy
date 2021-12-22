@@ -8,7 +8,7 @@
 
 from .base import Base
 
-__all__ = ['Dependencies']
+__all__ = [ 'Dependencies' ]
 
 class Dependencies(Base):
   def __init__(self, pd_lines=None, json=None, xml=None):

@@ -8,9 +8,7 @@
 
 from .pdobj import PdObj
 
-__all__ = [
-  "PdObject"
-]
+__all__ = [ 'PdObject' ]
 
 class PdObject(PdObj):
   """ A Pure Data Object object

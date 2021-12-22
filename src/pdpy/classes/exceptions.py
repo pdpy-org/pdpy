@@ -6,9 +6,7 @@
 # **************************************************************************** #
 """ Exception Definitions """
 
-__all__ = [
-  "ArgumentException"
-]
+__all__ = [ 'ArgumentException' ]
 
 class ArgumentException(Exception):
   pass

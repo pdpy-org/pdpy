@@ -8,9 +8,7 @@
 
 from .pdobject import PdObject
 
-__all__ = [
-  "PdArray"
-]
+__all__ = [ 'PdArray' ]
 
 class PdArray(PdObject):
   """ A Pure Data array object

@@ -25,3 +25,4 @@ src/tests/all_objects.json
 node_modules/
 
 structure.txt
+private/

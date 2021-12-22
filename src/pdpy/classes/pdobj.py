@@ -6,8 +6,8 @@
 # **************************************************************************** #
 """ PdObj Class Definitions """
 
-from . import Base, Point
-from ..util import log
+from .base import Base
+from .classes import Point
 
 __all__ = [
   "PdObj"

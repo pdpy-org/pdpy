@@ -8,11 +8,10 @@
 
 import re
 
-from ..classes.pdobject import PdObject
 from ..util.utils import log, printer
+from ..classes.pdobject import PdObject
 
-__all__ = [ "PdPyLoad" ]
-
+__all__ = [ 'PdPyLoad' ]
 
 @printer
 def is_ignored(s): 
