@@ -6,18 +6,12 @@ Translate Pure Data files from the `.pd` format to other formats such as [JSON](
 
 ## Example
 
-Translate the Pure Data 'hello-world.pd' patch into a JSON-formatted string in 'hello-world.json':
+Translate a Pure Data patch into a JSON-formatted file. See [translate.py](src/translate.py).
 
 The code to run is:
 
-``` python
-import pdpy
-# initialize the translator object
-# with an input file and a target format
-filename = './tests/hello-world.pd'
-translator = pdpy.Translator(filename, to='json')
-# run the translator
-translator()
+``` bash
+python3 translate.py -t json -f pd -i tests/hello-world.pd -o tests/hello-world.json 
 ```
 
 The original file looks like this:
@@ -129,7 +123,11 @@ The result is something like this in JSON:
 }
 ```
 
-And this is the XML output if initialized with `to='xml'`
+...or run this to get XML:
+
+``` bash
+python3 translate.py -t json -f pd -i tests/hello-world.pd -o tests/hello-world.json 
+```
 
 ```xml
 <pdpy encoding="utf-8">
@@ -200,10 +198,6 @@ And this is the XML output if initialized with `to='xml'`
     </root>
 </pdpy>
 ```
-
-</td>
-</tr>
-</table>
 
 ## References
 
