@@ -115,7 +115,7 @@ class XmlToJson(PdPy):
   # end of addCanvas -----------------------------------------------------------
   
   def addScalar(self, x, __last_canvas__):
-    scalar = Scalar(struct=self.struct, xml=x)
+    scalar = Scalar(struct=self.structs, xml=x)
     __last_canvas__.add(scalar)
 
   def addGOPArray(self, x, __last_canvas__):

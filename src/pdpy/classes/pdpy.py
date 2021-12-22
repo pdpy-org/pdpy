@@ -63,11 +63,11 @@ class PdPy(Base):
         return idx, s
   
   def addStruct(self, argv):
-    if not hasattr(self, 'struct'): 
-      self.struct = []
+    if not hasattr(self, 'structs'): 
+      self.structs = []
     struct = Struct(pd_lines=argv)
     struct.__parent__(self)
-    self.struct.append(struct)  
+    self.structs.append(struct)  
   
   def addRoot(self, argv=None, json=None):
     if argv is not None:
@@ -230,7 +230,7 @@ class PdPy(Base):
     return arr
   
   def addScalar(self, argv):
-    scalar = Scalar(struct=self.struct, pd_lines=argv)
+    scalar = Scalar(struct=self.structs, pd_lines=argv)
     self.__last_canvas__().add(scalar)
     return scalar
 
@@ -353,7 +353,7 @@ class PdPy(Base):
 
     """
     s = ''
-    for x in getattr(self,'struct', []):
+    for x in getattr(self,'structs', []):
       s += x.__pd__()
     
     s += f"{self.root.__pd__()}"
@@ -392,7 +392,7 @@ class PdPy(Base):
       "encoding": self.encoding
       })
     
-    for e in getattr(self,'struct', []):
+    for e in getattr(self,'structs', []):
       super().__subelement__(x, e.__xml__())
 
     if hasattr(self, 'dependencies'):

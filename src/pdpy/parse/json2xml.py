@@ -64,11 +64,11 @@ class JsonToXml:
     return ET.tostring(self.__root__, encoding='unicode', method='xml')
 
   def getStruct(self, x, root):
-    if hasattr(x, 'struct'):
-      self.struct = []
+    if hasattr(x, 'structs'):
+      self.structs = []
       struct = ET.SubElement(root, 'struct')
       for d in getattr(x,'struct'):
-        self.struct.append(Struct(d, source='json'))
+        self.structs.append(Struct(d, source='json'))
         template = ET.SubElement(struct, 'template')
         self.update_with_sub(d, 'name', template)
         self.update_with_sub(d, 'text', template)

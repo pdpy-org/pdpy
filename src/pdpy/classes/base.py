@@ -391,8 +391,10 @@ class Base(object):
       cls = self.__n__.__get__(name=getattr(elem.attrib, 'pdpy', None), tag=elem_tag)
       # print(cls)
       
+      is_list = False
       # Data is a special case, we need to create a list of PdData objects
-      if 'data' == elem_tag:
+      if elem_tag in ('nodes', 'data', 'edges', 'structs', 'comments'):
+        is_list = True
         d = [] # a list of PdData objects
       else:
         d = {} # our usual dictionary
@@ -438,10 +440,13 @@ class Base(object):
         if 'pdpy' in subelem.attrib:
           # sub_cls = self.__n__.__get__(name=getattr(subelem.attrib, 'pdpy', None), subelem_tag=subelem_tag)
           # print("Found subclass",sub_cls)
-          d.update({subelem_tag: v})
+          if is_list:
+            d.append(v)
+          else:
+            d.update({subelem_tag: v})
         else:
           # print(d, subelem_tag, v)
-          if not isinstance(d, dict):
+          if not isinstance(d, dict) and is_list:
             # log(1, 'not a dict', subelem_tag, v)
             # d.update({subelem_tag: [v]})
             d.append(v)
@@ -540,8 +545,17 @@ class Base(object):
     self.encoding = xml_root.get('encoding', 'utf-8')
     
     # root element to which we add stuff
-    root_dict = {'__parent__' : self}
+    root_dict = {'__p__' : self}
     
+    def _addNodes(nodes, current_node):
+      log(1,'Adding Node', current_node)
+      for child in current_node:
+        if 'nodes' == child.tag: 
+          nodes = _addNodes(nodes, child) # recurse
+        else:
+          nodes.append(self.__elem_to_obj__(child))
+      return nodes
+
     # go through every element in 'root' and add it to the root_dict
     for n in xml_root.find('root'):
       # print('tag', n.tag)
@@ -551,17 +565,7 @@ class Base(object):
       elif n.tag == 'struct':
         root_dict.update({'struct' : [self.__elem_to_obj__(x) for x in n]})
       elif n.tag == 'nodes':
-        nodes = []
-        log(1,'ALLNODES',n.findall('*'))
-        for x in n:
-          log(0, 'TYPE', x.tag, x.attrib)
-          if 'pdtype' == x.tag:
-            for child in x:
-              log(1, '-- CHILD', child.tag, child.attrib)
-              nodes.append(self.__elem_to_obj__(child))
-          else:
-            nodes.append(self.__elem_to_obj__(x))
-        root_dict.update({'nodes' : nodes})
+        root_dict.update({'nodes' : [self.__elem_to_obj__(x) for x in n]})
       elif n.tag == 'comments':
         root_dict.update({'comments' : [self.__elem_to_obj__(x) for x in n]})
       elif n.tag == 'edges':
@@ -578,7 +582,7 @@ class Base(object):
     # these method is an attribute of the PdPy class
     # add the root_dict to the PdPy object
     self.addRoot(json=root_dict)
-    # self.__dumps__()
+    self.__dumps__()
     # spawn the __parent__ json tree
     self.__jsontree__()
 
