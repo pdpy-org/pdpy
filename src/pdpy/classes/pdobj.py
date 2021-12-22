@@ -37,14 +37,12 @@ class PdObj(Base):
   def addargs(self, argv):
     if not hasattr(self,'args') or self.args is None: 
       self.args = []
-    for arg in argv:
-      self.args += [arg]
+    if not isinstance(argv, list):
+      argv = [argv]
+    self.args += argv
 
   def __pd__(self, args=None):
     """ Parses the pd object into a string """
-    # log(1, "PdObj args:", args)
-    # self.__dumps__()
-    
     # add the position
     s = self.position.__pd__()
     # check if called with argumnts (array, text, etc) and append them
@@ -69,7 +67,13 @@ class PdObj(Base):
     # print("pdobj",classname, args, kwargs)
     x = super().__xml__(**kwargs)
 
-    super().__update_element__(x, self, ('id', 'position', 'args'))
+    super().__update_element__(x, self, ('id', 'position'))
+    
+    if hasattr(self, 'args'):
+      a = super().__element__(tag='args')
+      for _arg in getattr(self, 'args', []):
+        super().__subelement__(a, 'arg', text=_arg)
+      super().__subelement__(x, a)
     
     if hasattr(self, 'data'):
       data = super().__element__(tag='data')

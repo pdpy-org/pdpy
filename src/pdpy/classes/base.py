@@ -395,7 +395,7 @@ class Base(object):
       
       is_list = False
       # Data is a special case, we need to create a list of PdData objects
-      if elem_tag in ('nodes', 'data', 'edges', 'structs', 'comments'):
+      if elem_tag in ('nodes', 'data', 'edges', 'args', 'comments'):
         is_list = True
         d = [] # a list of PdData objects
       else:
@@ -438,7 +438,6 @@ class Base(object):
         v = self.__elem_to_obj__(subelem)
         # log(1, f"-- END recursion __elem_to_obj__ for {elem_tag}")
         # print('<-'*40)
-
         if 'pdpy' in subelem.attrib:
           # sub_cls = self.__n__.__get__(name=getattr(subelem.attrib, 'pdpy', None), subelem_tag=subelem_tag)
           # print("Found subclass",sub_cls)
@@ -499,11 +498,10 @@ class Base(object):
         d = text or None
       
       if isinstance(cls, str) and not 'pdpy' in elem.attrib:
-        obj = {elem_tag: d}
-        # print("FOUND STRING CLASS", cls, obj)
-        # log(1, f"Ending __elem_to_obj__ for {elem_tag}")
-        # print('<'*80)
-        return obj
+        if 'arg' == elem_tag:
+          return d
+        else:
+          return {elem_tag: d}
       elif d is None:
         cls = self.__n__.__get__(name=elem_tag)
         if not isinstance(cls, str):
