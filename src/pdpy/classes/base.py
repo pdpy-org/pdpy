@@ -96,7 +96,7 @@ class Base(object):
       return child
 
   def __getstruct__(self):
-    return getattr(self.__getroot__(self), 'struct', None)
+    return getattr(self.__getroot__(self), 'structs', None)
 
   def __setdata__(self, scope, data, attrib='data'):
     """ Sets the data of the object """
@@ -350,17 +350,19 @@ class Base(object):
               self.__subelement__(parent, e, text=attr)
     
     if attrib is not None:
+      # log(0, 'Updating attrib:', attrib)
       if type(attrib) in (list, tuple):
         _parseattrib(attrib)
       elif isinstance(attrib, str):
         _parseattrib([attrib])
       else:
-        pass
         # print("----- DICT ATTIRB: ",attrib)
         # for k,v in attrib.items():
           # parent.attrib.update({k:v})
+        pass
     else:
-      print("MISSING ATTRIBUTES:",parent, scope, attrib)
+      # log(1, "MISSING ATTRIBUTES:",parent, scope, attrib)
+      pass
 
   def __xml__(self, scope=None, tag=None, attrib=None):
     # print("base",scope, tag, attrib)
@@ -546,15 +548,16 @@ class Base(object):
     
     # root element to which we add stuff
     root_dict = {'__p__' : self}
+
+    # find the structs tag
+    structs = xml_root.find('structs')
+    if structs is not None:
+      for n in structs.findall('struct'):
+        self.addStruct(xml=n)
     
-    def _addNodes(nodes, current_node):
-      log(1,'Adding Node', current_node)
-      for child in current_node:
-        if 'nodes' == child.tag: 
-          nodes = _addNodes(nodes, child) # recurse
-        else:
-          nodes.append(self.__elem_to_obj__(child))
-      return nodes
+    # find the dependencies tag
+    for n in xml_root.findall('dependencies'):
+      self.addDependencies(xml=n)
 
     # go through every element in 'root' and add it to the root_dict
     for n in xml_root.find('root'):
@@ -562,14 +565,12 @@ class Base(object):
       if n.tag == 'pdpy' or n.tag == 'root':
         if 'pdpy' in n.attrib:
           root_dict.update({'__pdpy__': n.attrib['pdpy']})
-      elif n.tag == 'struct':
-        root_dict.update({'struct' : [self.__elem_to_obj__(x) for x in n]})
-      elif n.tag == 'nodes':
-        root_dict.update({'nodes' : [self.__elem_to_obj__(x) for x in n]})
+      elif n.tag == 'nodes': 
+        root_dict.update({'nodes': [self.__elem_to_obj__(x) for x in n]})
       elif n.tag == 'comments':
-        root_dict.update({'comments' : [self.__elem_to_obj__(x) for x in n]})
+        root_dict.update({'comments': [self.__elem_to_obj__(x) for x in n]})
       elif n.tag == 'edges':
-        root_dict.update({'edges' : [self.__elem_to_obj__(x) for x in n]})
+        root_dict.update({'edges': [self.__elem_to_obj__(x) for x in n]})
       else:
         # an element belonging to canvas' attributes
         o = self.__elem_to_obj__(n)
@@ -582,13 +583,12 @@ class Base(object):
     # these method is an attribute of the PdPy class
     # add the root_dict to the PdPy object
     self.addRoot(json=root_dict)
-    self.__dumps__()
     # spawn the __parent__ json tree
     self.__jsontree__()
 
   def __jsontree__(self):
     # log(0, f"{self.__class__.__name__}.__jsontree__()")
     setattr(self.root, '__p__', self)
-    for x in getattr(self, 'struct', []):
+    for x in getattr(self, 'structs', []):
       setattr(x, '__p__', self)
     self.__addparents__(self.root)

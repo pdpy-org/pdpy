@@ -58,14 +58,14 @@ class PdPy(Base):
       self.root = Canvas(json={'name':self.patchname,'isroot':True})
   
   def getTemplate(self, template_name):
-    for idx, s in enumerate(getattr(self, 'struct')):
+    for idx, s in enumerate(getattr(self, 'structs')):
       if template_name == getattr(s, 'name'):
         return idx, s
   
-  def addStruct(self, argv):
+  def addStruct(self, pd_lines=None, json=None, xml=None):
     if not hasattr(self, 'structs'): 
       self.structs = []
-    struct = Struct(pd_lines=argv)
+    struct = Struct(pd_lines=pd_lines, json=json, xml=xml)
     struct.__parent__(self)
     self.structs.append(struct)  
   
@@ -86,13 +86,13 @@ class PdPy(Base):
 
     return self.root
   
-  def addDependencies(self, argv):
+  def addDependencies(self, **kwargs):
     """ handle embedded declarations
     """
     if not hasattr(self,"dependencies"):
-      self.dependencies = Dependencies(*argv)
+      self.dependencies = Dependencies(**kwargs)
     else:
-      self.dependencies.update(Dependencies(*argv))
+      self.dependencies.update(Dependencies(**kwargs))
 
   def __last_canvas__(self):
     """ Returns the most recent canvas (from the nodes list)
@@ -290,7 +290,7 @@ class PdPy(Base):
       elif "#A" == head[0]: #A -> text, savestate, or array  data
         super().__setdata__(last, PdData(data=body, head=head[1]))
       else: #X -----------------> anything else is an "#X"
-        if   "declare"    == head[1]: self.addDependencies(body)
+        if   "declare"    == head[1]: self.addDependencies(pd_lines=body)
         elif "coords"     == head[1]: self.addCoords(body)
         elif "connect"    == head[1]: self.addConnection(body) # edges
         elif "floatatom"  == head[1]: last = self.addNativeGui(head[1], body)
@@ -392,8 +392,11 @@ class PdPy(Base):
       "encoding": self.encoding
       })
     
-    for e in getattr(self,'structs', []):
-      super().__subelement__(x, e.__xml__())
+    if hasattr(self, 'structs'):
+      structs = super().__element__(tag="structs")
+      for e in getattr(self,'structs', []):
+        super().__subelement__(structs, e.__xml__())
+      super().__subelement__(x, structs)
 
     if hasattr(self, 'dependencies'):
       super().__subelement__(x, self.dependencies.__xml__())

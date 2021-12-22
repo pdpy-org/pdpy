@@ -161,8 +161,7 @@ class PdMessage(PdObj):
   
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__xml__(scope=self)
-    super().__update_element__(x, self, ('border'))
+    x = super().__xml__(scope=self, attrib=('border'))
     for target in getattr(self, "targets", []):
       super().__subelement__(x, target.__xml__())
     return x

@@ -11,16 +11,17 @@ from .base import Base
 __all__ = ['Dependencies']
 
 class Dependencies(Base):
-  def __init__(self, *argv, json=None, xml=None):
+  def __init__(self, pd_lines=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
     super().__init__(cls='declare')
     if json is not None:
       super().__populate__(self, json)
     elif xml is not None:
-      pass
-    else:
+      for s in xml.findall('path'): self.updatePath(s.text)
+      for s in xml.findall('lib'): self.updateLib(s.text)
+    elif pd_lines is not None:
       # python magic to split a list in pairs
-      deps = list(zip(*[iter(argv)]*2))
+      deps = list(zip(*[iter(pd_lines)]*2))
       for dep in deps:
         if "-path" == dep[0]:
           self.updatePath(dep[1])

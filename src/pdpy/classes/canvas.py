@@ -266,7 +266,7 @@ class Canvas(Base):
     
     x = super().__element__(scope=self, tag=tag)
     
-    for e in ('font', 'name', 'vis', 'isroot', 'border', 'title'):
+    for e in ('id', 'font', 'name', 'vis', 'isroot', 'border', 'title'):
       if hasattr(self, e):
         super().__subelement__(x, e, text=getattr(self, e))
     

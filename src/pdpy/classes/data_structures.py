@@ -62,18 +62,21 @@ class PdType(Base):
 
   def __pd__(self):
     """ Return a string representation of the PdType """
-    # log(1, "PdType:", self.__dict__)
-    if self.__cls__ == 'array':
+    
+    if hasattr(self, 'template'):
+      return f"array {self.name} {self.template}"
+    
+    elif self.__cls__ in ('array','obj'):
       s = super().__pd__(f"{self.name} {self.length} {self.type} {self.flag}")
       for x in getattr(self, 'data', []):
         s += x.__pd__()
       return s
     
-    elif hasattr(self, 'template'):
-      return f"array {self.name} {self.template}"
     
     else:
-      log(1, "PdType: {}".format(self.__cls__))
+      log(1, "Unknown PdType format: {}".format(self.__cls__))
+      self.__dumps__()
+      return 
   
   def __xml__(self):
     """ Return the XML Element for this object """
@@ -88,19 +91,19 @@ class PdType(Base):
 class Struct(Base):
   """ An object containing a Pure Data 'struct' header
   """
-  def __init__(self, pd_lines=None, json=None, xml_obj=None):
+  def __init__(self, pd_lines=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
     self.order = []
     super().__init__(pdtype='N', cls='struct')
     if json is not None: 
       super().__populate__(self, json)
-    elif xml_obj is not None:
-      # log(1,xml_obj.findall('*'))
-      self.name = xml_obj.findtext('name')
-      for s in xml_obj.findall('float'): self.addFloat(s.text)
-      for s in xml_obj.findall('symbol'): self.addSymbol(s.text)
-      for s in xml_obj.findall('text'): self.addText(s.text)
-      for s in xml_obj.findall('array'): 
+    elif xml is not None:
+      # log(1,xml.findall('*'))
+      self.name = xml.findtext('name')
+      for s in xml.findall('float'): self.addFloat(s.text)
+      for s in xml.findall('symbol'): self.addSymbol(s.text)
+      for s in xml.findall('text'): self.addText(s.text)
+      for s in xml.findall('array'): 
         self.addArray(s.findtext('name'),s.findtext('template'))
     elif pd_lines is not None: 
       self.name = pd_lines[0]
