@@ -79,7 +79,7 @@ class PdPy(Base):
               'dimension' : Size(w=argv[2], h=argv[3]), 
               'font' : int(argv[4]),
               'isroot' : True,
-              '__parent__' : self
+              '__p__' : self
       })
     elif json is not None:
       self.root = Canvas(json=json)

@@ -9,9 +9,7 @@
 from .base import Base
 from .classes import Point, Size
 
-__all__ = [
-  "Canvas"
-]
+__all__ = [ 'Canvas' ]
 class Canvas(Base):
   """ A Pure Data 'canvas' or 'subpatch' represented as a `pdpy` object
 

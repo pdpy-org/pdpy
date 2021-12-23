@@ -61,20 +61,18 @@ class Source(Base):
     if json is None and xml is None:
       self.id = id
       self.port = port
+    # cast to int
+    self.id = int(self.id)
+    self.port = int(self.port)
   
   def __remap__(self, obj_map):
     """ Get the value from the mapped indices """
-    s = '-1'
-    try:
-      # query the map for the value at the id key
-      s = str( obj_map[int(self.id)] )
-    except KeyError:
-      # if the key is not found, log the error
-      log(1, "__remap__()::Key Not Found", self.id)
-      print(obj_map)
-    finally:
-      # return the value
-      return s
+    # query the map for the value at the id key
+    if self.id in obj_map:
+      return f"{obj_map.get(self.id)}"
+    else:
+      log(1, f"__remap__()::Key Not Found: {self.id}")
+      return self.id
 
   def __pd__(self, obj_map=None):
     return f"{self.__remap__(obj_map) if obj_map else self.id} {self.port}"
@@ -82,7 +80,7 @@ class Source(Base):
   def __xml__(self, obj_map=None, tag=None):
     """ Returns an xml element for this source """
     x = super().__element__(scope=self, tag=tag)
-    super().__subelement__(x, 'id', text = self.id)
+    super().__subelement__(x, 'id', text = self.__remap__(obj_map) if obj_map else self.id)
     super().__subelement__(x, 'port', text = self.port)
     return x
 
