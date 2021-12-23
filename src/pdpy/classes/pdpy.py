@@ -234,8 +234,8 @@ class PdPy(Base):
     self.__last_canvas__().add(scalar)
     return scalar
 
-  def addConnection(self, argv):
-    self.__last_canvas__().edge(Edge(pd=argv))
+  def addConnection(self, pd_lines):
+    self.__last_canvas__().edge(Edge(pd_lines=pd_lines))
 
   def addCoords(self, coords):
     """ the coords constructor

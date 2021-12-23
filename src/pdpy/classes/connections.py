@@ -65,6 +65,14 @@ class Source(Base):
     self.id = int(self.id)
     self.port = int(self.port)
   
+  def locate(self, parent):
+    """ Locates the node in the parent (Canvas) object """
+    for obj in getattr(parent, 'nodes', []):
+      if getattr(obj, 'id') == self.id:
+        setattr(self, '__obj__', obj) # update with a new attribute
+    # log(1, f"locate()::{self.__dict__}")
+    
+
   def __remap__(self, obj_map):
     """ Get the value from the mapped indices """
     # query the map for the value at the id key
@@ -75,12 +83,16 @@ class Source(Base):
       return self.id
 
   def __pd__(self, obj_map=None):
-    return f"{self.__remap__(obj_map) if obj_map else self.id} {self.port}"
+    """ Returns a pd string for this source """
+    if not hasattr(self, '__obj__'):
+      return f"{self.__remap__(obj_map) if obj_map else self.id} {self.port}"
+    else:
+      return f"{self.__obj__.id} {self.port}"
   
   def __xml__(self, obj_map=None, tag=None):
     """ Returns an xml element for this source """
     x = super().__element__(scope=self, tag=tag)
-    super().__subelement__(x, 'id', text = self.__remap__(obj_map) if obj_map else self.id)
+    super().__subelement__(x, 'id', text = self.id)
     super().__subelement__(x, 'port', text = self.port)
     return x
 
@@ -97,14 +109,26 @@ class Edge(Base):
   3. `target`: The target id of the connection
   4. `port`: The port inlet of the target
   """
-  def __init__(self, pd=None, json=None, xml=None):
+  def __init__(self, pd_lines=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
     super().__init__(cls="connect", json=json, xml=xml)
-    if pd is not None and json is None and xml is None:
-      self.source = Source(id=pd[0], port=pd[1]) 
-      self.sink = Source(id=pd[2], port=pd[3])
+    if pd_lines is not None and json is None and xml is None:
+      self.source = Source(id=pd_lines[0], port=pd_lines[1]) 
+      self.sink = Source(id=pd_lines[2], port=pd_lines[3])
+
+  def connect(self):
+    if not hasattr(self, '__p__'):
+      log(1, f"connect(): No parent Instance Attached")
+    else:
+      canvas = getattr(self,'__p__')
+      # log(1, f"connect(): locating source")
+      self.source.locate(canvas)
+      # log(1, f"connect(): locating sink")
+      self.sink.locate(canvas)
+    return self
 
   def __pd__(self, o=None):
+    # log(1,'EDGE to PD',self.__dict__)
     return super().__pd__(f"{self.source.__pd__(o)} {self.sink.__pd__(o)}")
 
   def __xml__(self, o=None):

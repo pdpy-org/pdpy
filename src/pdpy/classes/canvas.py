@@ -135,8 +135,9 @@ class Canvas(Base):
     """
     if not hasattr(self, 'edges'): 
       self.edges = []
-    self.edges.append(edge)
-    # log(1,"Edge",edge.__json__())
+    super().__parent__(self, edge)
+    self.edges.append(edge.connect())
+    # log(1,"Edge",edge.__dict__)
 
   def comment(self, comment):
     """ Append a pure data comment

@@ -71,20 +71,17 @@ class Base(object):
     else:
       raise ValueError("No parent set")
 
-  def __addparents__(self, parent, children='nodes'):
-    """ Sets the parents of all children (aka, nodes)
-    
-    Example:
-    super().__addparents__(self, 'nodes')
-    """
+  def __addparents__(self, parent, children=('nodes','edges','comments')):
+    """ Sets the parents of all children """
     # log(1,'addparents: parent <--',parent.__pdpy__)#,repr(dir(child)))
-    for child in getattr(parent, children, []):
-      # log(1,'addparents: child --> ',child.__pdpy__)#,repr(dir(child)))
-      # self.__parent__(parent=parent, scope=child)
-      setattr(child, '__p__', parent)
-      if hasattr(child, children):
-        # log(1, 'addparents: child has children')
-        self.__addparents__(child)
+    for c in children:
+      for child in getattr(parent, c, []):
+        # log(1,f"addparents: child {c} --> ",child.__pdpy__)#,repr(dir(child)))
+        # self.__parent__(parent=parent, scope=child)
+        setattr(child, '__p__', parent)
+        if hasattr(child, c):
+          # log(1, 'addparents: child has children')
+          self.__addparents__(child)
 
   def __getroot__(self, child):
     """ Returns the parent of this object """
