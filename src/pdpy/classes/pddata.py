@@ -218,21 +218,25 @@ class PdData(Base):
 
   def __xml__(self, template=None):
     """ Returns the XML Element for this object """
-    # log(1, 'XML:', template)
-    # self.__dumps__()
-    
+
+    self.__dumps__()
+
     x = super().__element__(scope=self)
     
     if hasattr(self, 'data'):
   
       if hasattr(self, 'header'):
-        x.attrib.update({'header':self.header})
+        super().__update_attrib__(x, 'header', self.header)
       
       if self.__d__.xml['data_as_text']:
         x.text = ' '.join(list(map(lambda x:str(x),self.data)))
       else:
         for d in self.data:
-          super().__subelement__(x, 'datum', text=d)
+          if isinstance(d, list):
+            for dd in d:
+              super().__subelement__(x, 'datum', text=str(dd))
+          else:
+            super().__subelement__(x, 'datum', text=d)
 
     else:
       # call the pd method on every float (PdFLoat) element

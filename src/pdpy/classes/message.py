@@ -71,7 +71,9 @@ class PdMsg(Base):
     and the address before the message
     """
     s = f' \; {self.address} ' if self.address != 'outlet' else ''
-    s += ' \, '.join(self.message) if hasattr(self, 'message') else ''
+    if hasattr(self, 'message'):
+      s += ' \, '.join(list(map(lambda x:str(x), self.message))) 
+
     return s
 
   def __xml__(self):

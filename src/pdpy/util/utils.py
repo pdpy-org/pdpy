@@ -28,7 +28,8 @@ def checknum(num):
     try:
       float(num)
       return True
-    except ValueError: return False
+    except ValueError: 
+      return False
 
 
 # def printer2(argument):

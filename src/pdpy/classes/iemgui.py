@@ -174,7 +174,7 @@ class Toggle(PdObject):
   def __pd__(self):
     """ Return the pd string for this object """
     s = self.size.__pd__()
-    s += f" {1 if self.init else 0}"
+    s += f" {1 if self.init is False else 0}"
     s += f" {self.comm.__pd__()}"
     s += f" {self.label.__pd__()}"
     s += f" {self.bgcolor}"
@@ -279,7 +279,7 @@ class Radio(PdObject):
     """ Return the pd string for this object """
     s = self.size.__pd__()
     s += f" {1 if self.flag else 0}"
-    s += f" {1 if self.init else 0}"
+    s += f" {1 if self.init is False else 0}"
     s += f" {self.number}"
     s += f" {self.comm.__pd__()}"
     s += f" {self.label.__pd__()}"
@@ -331,7 +331,7 @@ class Bng(PdObject):
     s = self.size.__pd__()
     s += f" {self.hold}"
     s += f" {self.intrrpt}"
-    s += f" {1 if self.init else 0}"
+    s += f" {1 if self.init is False else 0}"
     s += f" {self.comm.__pd__()}"
     s += f" {self.label.__pd__()}"
     s += f" {self.bgcolor}"
@@ -387,7 +387,7 @@ class Nbx(PdObject):
     s += f" {self.size.__pd__()}"
     s += f" {self.limits.__pd__()}"
     s += f" {1 if self.log_flag else 0}"
-    s += f" {1 if self.init else 0}"    
+    s += f" {1 if self.init is False else 0}"    
     s += f" {self.comm.__pd__()}"
     s += f" {self.label.__pd__()}"
     s += f" {self.bgcolor}"
@@ -444,7 +444,7 @@ class Slider(PdObject):
     s = self.area.__pd__()
     s += f" {self.limits.__pd__()}"
     s += f" {1 if self.log_flag else 0}"
-    s += f" {1 if self.init else 0}"
+    s += f" {1 if self.init is False else 0}"
     s += f" {self.comm.__pd__()}"
     s += f" {self.label.__pd__()}"
     s += f" {self.bgcolor}"

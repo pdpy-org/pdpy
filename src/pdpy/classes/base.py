@@ -10,7 +10,7 @@ from json import dumps as json_dumps
 from xml.etree.ElementTree import ElementTree, Element, indent, parse as xparse
 
 from pdpy.classes.exceptions import ArgumentException
-from ..util.utils import log
+from ..util.utils import checknum, log
 from .default import Default, XmlTagConvert, Namespace
 
 __all__ = [ "Base" ]
@@ -153,12 +153,15 @@ class Base(object):
 
   def __pdbool__(self, n):
     """ Returns a boolean object from a Pd file string """
+    b = False
     if n == "True" or n == "true":
-      return True
+      b = True
     elif n == "False" or n == "false":
-      return False
+      b = False
     else:
-      return bool(int(float(n)))
+      b = bool(int(float(n)))
+    # log(1, "__pdbool__():", n, '->', b)
+    return b
 
   def __isnum__(self, n):
     try:
@@ -178,6 +181,13 @@ class Base(object):
     
     # map(lambda k,v: setattr(child, k, v), json.items())
     for k,v in json.items():
+      try:
+        v = self.__num__(v)
+      except:
+        try:
+          v = self.__pdbool__(v)
+        except:
+          pass
       setattr(child, k, v)
     
     if hasattr(child, 'className') and self.__cls__ is None:
@@ -360,6 +370,9 @@ class Base(object):
     else:
       # log(1, "MISSING ATTRIBUTES:",parent, scope, attrib)
       pass
+
+  def __update_attrib__(self, element, key, value):
+    element.attrib.update({key: str(value)})
 
   def __xml__(self, scope=None, tag=None, attrib=None):
     # print("base",scope, tag, attrib)
