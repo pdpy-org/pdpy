@@ -391,8 +391,8 @@ class Base(object):
       # print(cls)
       
       is_list = False
-      # Data is a special case, we need to create a list of PdData objects
-      if elem_tag in ('nodes', 'data', 'edges', 'args', 'comments'):
+      # Handle list-type tags, we need to create lists for these:
+      if elem_tag in ('nodes', 'data', 'edges', 'args', 'comments', 'targets', 'message'):
         is_list = True
         d = [] # a list of PdData objects
       else:
@@ -445,9 +445,13 @@ class Base(object):
         else:
           # print(d, subelem_tag, v)
           if not isinstance(d, dict) and is_list:
-            # log(1, 'not a dict', subelem_tag, v)
-            # d.update({subelem_tag: [v]})
-            d.append(v)
+            # _prnt("Found list", subelem_tag, '-->', v)
+            # drop the keys of the <msg> tag and keep values only
+            if isinstance(v, dict):
+              d += v.values()
+            else:
+              # these are proper xml Element objects, not dicts
+              d.append(v)
           else:
             if type(v) not in (dict, list, str, int, float, bool):
               # log(1, 'not a dict', subelem_tag, v)

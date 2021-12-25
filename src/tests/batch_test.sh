@@ -49,6 +49,7 @@ echo Logfile created by batch_test.sh on $(date) > $err
 # Make the output directory
 mkdir -p $outdir
 
+
 # store the number of lines
 i=0
 
@@ -76,9 +77,9 @@ function translate_all
   if [[ ! -f $pkl_ref ]]; then return; fi
   $py $file -int $INT -f 'json' -t 'xml'  -i $json_out -o $xml_out  >> $err 2>&1
   if [[ ! -f $xml_out ]]; then return; fi
-  $py $file -int $INT -f 'xml'  -t 'json' -i $xml_out  -o $xml_jref >> $err 2>&1
-  if [[ ! -f $xml_jref ]]; then return; fi
-  $py $file -int $INT -f 'json' -t 'pd'   -i $xml_jref -o $xml_ref  >> $err 2>&1
+  $py $file -int $INT -f 'xml'  -t 'pd' -i $xml_out  -o $xml_ref >> $err 2>&1
+  if [[ ! -f $xml_ref ]]; then return; fi
+  $py $file -int $INT -f 'xml' -t 'json'   -i $xml_out -o $xml_jref  >> $err 2>&1
 }
 
 while read line; do

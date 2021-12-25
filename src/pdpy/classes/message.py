@@ -6,6 +6,7 @@
 # **************************************************************************** #
 """ Class Definitions """
 
+from pdpy.util.utils import log
 from .base import Base
 from .pdobj import PdObj
 
@@ -54,10 +55,13 @@ class PdMsg(Base):
         self.address = address
       else:
         self.address = 'outlet'
+    # log(0, self.address, 'initialized.')
   
   def add(self, msg):
     if not hasattr(self, 'message'):
       self.message = []
+    msg = " ".join(msg) if isinstance(msg, list) else msg
+    # log(0, f'{self.address} -> adding message: {msg}')
     self.message.append(msg)
 
   def __pd__(self):
@@ -74,8 +78,11 @@ class PdMsg(Base):
     """ Returns the XML Element for this object """
     x = super().__element__(self)
     super().__subelement__(x, 'address', text=self.address)
-    for m in getattr(self, "message", []):
-      super().__subelement__(x, 'message', text=m)
+    if hasattr(self, 'message'):
+      msg = super().__element__(tag='message')
+      for m in getattr(self, 'message', []):
+        super().__subelement__(msg, 'msg', text=m)
+      super().__subelement__(x, msg)
     return x
 
 class PdMessage(PdObj):
@@ -99,54 +106,84 @@ class PdMessage(PdObj):
       if len(pd_lines[3:]):
         self.addMessages(argv)
       
-  def addTarget(self, address):
+  def addTarget(self, address=None):
     if not hasattr(self, "targets"):
       self.targets = []
-    if isinstance(address, dict):
-      self.targets.append(PdMsg(address['address'])) 
-    else:
-      self.targets.append(PdMsg(address))  
+    target = PdMsg(address=address)
+    self.targets.append(target)
+    return target
+
 
   def addMessages(self, argv):
-      
+    
     if 2 < len(argv) and "f" == argv[-2] and argv[-1].isnumeric():
       self.border = self.__num__(argv[-1])
       argv = argv[:-2]
       argv[-1] = argv[-1].replace(",","")
-  
-    if len(argv) >= 1:
-      self.targets = []
-      self.targets.append(PdMsg())
-      i = 0
-      msgbuf = ''
-    
-      while i < len(argv) :    
-        if "\\," == argv[i]:
-          if len(msgbuf) and len(self.targets):
-            self.targets[-1].add(msgbuf)
-            msgbuf = ''
+
+    # log(1, f'adding messages: {argv}')
+    # parse the argument vector
+    if len(argv) >= 1: # if there is at least one argument
+      i = 0 # index of the current argument
+      msgbuf = [] # buffer for the current message
+      
+      # add the first target
+      last_target = None
+
+      if "\\;" == argv[i]:
+        if i + 1 < len(argv):
+          i += 1
+          last_target = self.addTarget(argv[i])
+        i += 1
+      else:
+        last_target = self.addTarget()
+      
+      def _addmsg(msgbuf=msgbuf, target=last_target):
+        # if the message buffer is not empty
+        if len(msgbuf):
+          # if there are targets,
+          if target is not None:
+            # add the message buffer to the last target
+            target.add(msgbuf)
           else:
-            self.targets.pop()
+            # if there are no targets, add one and fill it with the message
+            self.addTarget().add(msgbuf)
+        return []
+      
+      
+      # we will increment the index i until we reach the end of the arguments
+      while i < len(argv):
+        
+        # if the current element is an escaped comma
+        if "\\," == argv[i]:
+          msgbuf = _addmsg(msgbuf) # add the message buffer to the last target
           i += 1
           continue
+        
+        # if the current element is an escaped semicolon, we have a new TARGET
         if "\\;" == argv[i]:
-          if len(msgbuf) and len(self.targets):
-            self.targets[-1].add(msgbuf)
-            msgbuf = ''
-          else:
-            self.targets.pop()
+          msgbuf = _addmsg(msgbuf) # add the message buffer to the last target
+          
+          # special case for the first target
+          # if i == 0:
+            # last_target = self.addTarget()
+
           if i + 1 < len(argv):
-            self.targets.append(PdMsg(argv[i+1]))
-          i += 2
+            # the next element is the address
+            i += 1
+            if argv[i] != '': # if the address is not empty
+              # add a new target with the address
+              last_target = self.addTarget(argv[i]) 
+          
+          i += 1
           continue
-        if len(msgbuf):
-          msgbuf += " " + argv[i]
-        else:
-          msgbuf = argv[i]
-        i += 1
-      
-      if len(self.targets):
-        self.targets[-1].add(msgbuf)
+        
+        # if the current argument is neither escaped comma nor semi, 
+        msgbuf.append(argv[i]) # add the current argument to the message buffer
+        i += 1 # increment the index
+      # end loop section while i < len(argv)
+      # add the message if we still have 1 in the buffer
+      msgbuf = _addmsg(msgbuf)
 
   def __pd__(self):
     """ Return a pd message in pd lang """
@@ -161,7 +198,10 @@ class PdMessage(PdObj):
   
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__xml__(scope=self, attrib=('border'))
-    for target in getattr(self, "targets", []):
-      super().__subelement__(x, target.__xml__())
+    x = super().__xml__(scope=self, attrib=('border', 'className'))
+    if hasattr(self, 'targets'):
+      targets = super().__element__(tag='targets')
+      for target in getattr(self, "targets", []):
+        super().__subelement__(targets, target.__xml__())
+      super().__subelement__(x, targets)
     return x
