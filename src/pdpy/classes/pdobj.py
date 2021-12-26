@@ -9,9 +9,7 @@
 from .base import Base
 from .classes import Point
 
-__all__ = [
-  "PdObj"
-]
+__all__ = [ 'PdObj' ]
 
 class PdObj(Base):
   """ A PdObj base class 

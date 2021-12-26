@@ -10,7 +10,7 @@ from json import dumps as json_dumps
 from xml.etree.ElementTree import ElementTree, Element, indent, parse as xparse
 
 from pdpy.classes.exceptions import ArgumentException
-from ..util.utils import checknum, log
+from ..util.utils import log
 from .default import Default, XmlTagConvert, Namespace
 
 __all__ = [ "Base" ]
@@ -84,7 +84,7 @@ class Base(object):
           self.__addparents__(child)
 
   def __getroot__(self, child):
-    """ Returns the parent of this object """
+    """ Recursively, return the parent root of this object """
     if hasattr(child, '__p__'):
       # log(1, child.__class__.__name__, "parented")
       return self.__getroot__(child.__p__)
@@ -394,6 +394,10 @@ class Base(object):
       """Convert an Element into an object """
 
       elem_tag = elem.tag
+      
+      if elem_tag == 'scalar':
+        return self.__n__.__get__(name='Scalar')(xml=elem)
+
       # print('>'*80)
       # log(1, f"Starting __elem_to_obj__ for {elem_tag}")
       elem_tag = self.__tag_strip__(elem.tag)
@@ -405,13 +409,17 @@ class Base(object):
       
       is_list = False
       # Handle list-type tags, we need to create lists for these:
-      if elem_tag in ('nodes',
-                      'data', 
-                      'edges', 
-                      'args', 
-                      'comments', 
-                      'targets', 
-                      'message'):
+      if elem_tag in ('nodes',   # any node
+                      'edges',   # connections
+                      'args',    # objects
+                      'comments',# comments
+                      'targets', # messages
+                      'message', # messages
+                      # 'floats',  # scalars
+                      # 'symbols', # scalars
+                      # 'texts',   # scalars
+                      # 'arrays',   # scalars
+                      ):
         is_list = True
         d = [] # a list of PdData objects
       else:
@@ -482,8 +490,9 @@ class Base(object):
                 d.update({'text':[t for t in [v['text']]]})
               else:
                 if h is None:
+                  # if isinstance(v, list):
+                    # d.update({subelem_tag:v})
                   # log(1, 'found anything', subelem_tag, v)
-                  # if 'pdtype' == subelem_tag:
                   #   for e in v:
                   #     d.update({subelem_tag:e})
                   # else:

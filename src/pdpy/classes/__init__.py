@@ -18,8 +18,10 @@ from .message import *
 from .pdpyencoder import *
 from .default import *
 from .pdarray import *
-from .data_structures import *
+from .struct import *
 from .exceptions import *
+from .goparray import *
+from .graph import *
 from .iemgui import *
 from .classes import *
 from .translator import *

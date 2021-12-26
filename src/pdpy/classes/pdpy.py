@@ -8,11 +8,13 @@
 
 from .base import Base
 from .classes import *
-from .data_structures import *
+from .struct import *
 from .pdscalar import *
 from .default import *
 from .iemgui import *
 from .canvas import Canvas
+from .graph import Graph
+from .goparray import PdGOPArray
 from .pddata import PdData
 from .pdobject import PdObject
 from .pdarray import PdArray
@@ -23,7 +25,7 @@ from .comment import Comment
 from .connections import Edge
 from ..util.utils import log
 
-__all__ = [ "PdPy" ]
+__all__ = [ 'PdPy' ]
 
 class PdPy(Base):
   
@@ -219,7 +221,7 @@ class PdPy(Base):
 
   def addGOPArray(self, argv):
     # log(1,"addGOPArray", argv)
-    arr = PdType(json={
+    arr = PdGOPArray(json={
       'name' : argv[0],
       'length' : argv[1],
       'type' : argv[2],

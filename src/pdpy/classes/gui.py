@@ -10,7 +10,7 @@ from .connections import Comm
 from .pdobj import PdObj
 from .classes import Bounds
 
-__all__ = ["PdNativeGui"]
+__all__ = [ 'PdNativeGui' ]
 
 class PdNativeGui(PdObj):
   """ A Pd Native Gui object 

@@ -19,13 +19,16 @@ class PdData(Base):
                data=None,
                head=None,
                template=None,
-               json=None):
+               json=None,
+               xml=None):
 
     self.__pdpy__ = self.__class__.__name__
     super().__init__(pdtype='A', cls=head)
     
     if json is not None:
       super().__populate__(self, json)
+    elif xml is not None:
+      self.parseXml(xml)
     else:
       if head is not None:
         # 'set' or 'saved' for symbols, otherwise '0' for arrays of floats
@@ -45,6 +48,21 @@ class PdData(Base):
           self.data = self.fill(template, splitByEscapedChar(data, char=';'))
         else:
           raise ValueError("Struct and Data must be present.")
+  
+  def add(self, attr, value):
+    """ Adds a value to the data list in attr """
+    if not hasattr(self, attr):
+      setattr(self, attr, [])
+    getattr(self, attr).append(value)
+
+  def parseXml(self, xml):
+    """ Parses the xml string into a pd object """
+    for x in xml.findall('pdfloat'):
+      self.add('float', PdFloat(xml=x))
+    for x in xml.findall('pdsymbol'):
+      self.add('symbol', PdSymbol(xml=x))
+    for x in xml.findall('pdlist'):
+      self.add('array', PdList(xml=x))
 
   def fill(self, template, data):
     """ Fills the data with a template """
@@ -188,22 +206,23 @@ class PdData(Base):
         raise ValueError(f"Unknown type {self.header} for:\n{self.__dumps__()}")
     
     else:
+      
       s = ''
       # call the pd method on every float (PdFLoat) element
-      if hasattr(self, 'float') and hasattr(template, 'float'):
-        for x in getattr(self, 'float', []):
+      if (hasattr(self, 'float') or hasattr(self, 'floats')) and hasattr(template, 'float'):
+        for x in getattr(self, 'float', getattr(self, 'floats', [])):
           s += ' ' + x.__pd__()
       
       # call the pd method on every symbol (PdSymbol) element
-      if hasattr(self, 'symbol') and hasattr(template, 'symbol'):
-        for x in getattr(self, 'symbol', []):
+      if (hasattr(self, 'symbol') or hasattr(self, 'symbols'))  and hasattr(template, 'symbol'):
+        for x in getattr(self, 'symbol', getattr(self, 'symbols', [])):
           s += ' ' + x.__pd__()
       
       if s != '': s += self.__semi__
 
       # call the pd method on the array (PdList) element
-      if hasattr(self, 'array') and hasattr(template, 'array'):
-        for x, t in zip(getattr(self, 'array', []), template.array):
+      if (hasattr(self, 'array') or hasattr(self, 'arrays')) and hasattr(template, 'array'):
+        for x, t in zip(getattr(self, 'array', getattr(self, 'arrays', [])), template.array):
           _, _template = template.__p__.getTemplate(t.template)
           s += ' ' + x.__pd__(_template)
       
@@ -216,7 +235,7 @@ class PdData(Base):
   def __xml__(self, template=None):
     """ Returns the XML Element for this object """
 
-    x = super().__element__(scope=self)
+    x = super().__element__(scope=self, tag='data')
     
     if hasattr(self, 'data'):
   
@@ -234,26 +253,29 @@ class PdData(Base):
             super().__subelement__(x, 'datum', text=d)
 
     else:
-      # call the pd method on every float (PdFLoat) element
+      # call the xml method on every float (PdFLoat) element
       if hasattr(self, 'float') and hasattr(template, 'float'):
-        # flt = super().__element__('float')
+        # flt = super().__element__(tag='floats')
         for e in getattr(self, 'float', []):
           super().__subelement__(x, e.__xml__())
+          # super().__subelement__(flt, e.__xml__())
         # super().__subelement__(x, flt)
       
-      # call the pd method on every symbol (PdSymbol) element
+      # call the xml method on every symbol (PdSymbol) element
       if hasattr(self, 'symbol') and hasattr(template, 'symbol'):
-        # sym = super().__element__('symbol')
+        # sym = super().__element__(tag='symbols')
         for e in getattr(self, 'symbol', []):
           super().__subelement__(x, e.__xml__())
+          # super().__subelement__(sym, e.__xml__())
         # super().__subelement__(x, sym)
       
-      # call the pd method on the array (PdList) element
+      # call the xml method on the array (PdList) element
       if hasattr(self, 'array') and hasattr(template, 'array'):
-        # arr = super().__element__('array')
+        # arr = super().__element__(tag='arrays')
         for e, t in zip(getattr(self, 'array', []), template.array):
           _, _template = template.__p__.getTemplate(t.template)
           super().__subelement__(x, e.__xml__(_template))
+          # super().__subelement__(arr, e.__xml__(_template))
         # super().__subelement__(x, arr)
 
     return x

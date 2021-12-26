@@ -19,8 +19,10 @@ from .classes.message import *
 from .classes.pdpyencoder import *
 from .classes.default import *
 from .classes.pdarray import *
-from .classes.data_structures import *
+from .classes.struct import *
 from .classes.exceptions import *
+from .classes.goparray import *
+from .classes.graph import *
 from .classes.iemgui import *
 from .classes.classes import *
 from .classes.translator import *

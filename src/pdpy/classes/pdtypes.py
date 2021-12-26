@@ -6,6 +6,7 @@
 # **************************************************************************** #
 """ Pd Types Class Definitions """
 
+from pdpy.util.utils import log
 from .base import Base
 from collections import defaultdict
 from itertools import zip_longest
@@ -20,11 +21,15 @@ class PdFloat(Base):
   """ A PdFloat base class """
   def __init__(self, value=None, name=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
-    super().__init__(json=json, xml=xml)
-    if json is None and xml is None:
+    super().__init__()
+    if xml is not None:
+      self.name = xml.findtext('name')
+      self.value = self.__num__(xml.findtext('value'))
+    elif json is not None:
+      super().__populate__(self, json=json)
+    elif json is None and xml is None:
       self.value = self.__num__(value) if value is not None else None
       self.name = name
-    
   def __pd__(self):
     return f"{self.value}"
 
@@ -38,29 +43,41 @@ class PdSymbol(PdFloat):
   """ A PdSymbol base class """
   def __init__(self, value=None, name=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
-    super().__init__(json=json, xml=xml)
-    if json is None and xml is None:
+    super().__init__()
+    if xml is not None:
+      self.name = xml.findtext('name')
+      self.value = xml.findtext('value')
+    elif json is not None:
+      super().__populate__(self, json=json)
+    elif json is None and xml is None:
       self.value = str(value) if value is not None else None
       self.name = name
 
 class PdList(Base):
   """ A PdList base class """
-  def __init__(self, name=None, json=None):
+  def __init__(self, name=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
     super().__init__()
-    if json is not None:
+    if xml is not None:
+      self.name = xml.findtext('name')
+      for e_type in ('float', 'symbol', 'array'):
+        if xml.find(e_type):
+          for x in xml.find(e_type).findall('*'):
+            self.addelement(e_type, x.tag, x.text)
+    elif json is not None:
       super().__populate__(self, json)
     else:
       self.name = name
 
   def addelement(self, e_type, e_key, e_value):
     """ Add a type to the list """
+    # log(1, f"e_type:{e_type}, e_key:{e_key}, e_value:{e_value}")
     
     if not hasattr(self, e_type):
       setattr(self, e_type, defaultdict(list))
     
     attr = getattr(self, e_type)
-
+    
     e_value = self.__num__(e_value) if e_type == 'float' else str(e_value)
     
     attr[e_key].append(e_value)

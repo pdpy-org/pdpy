@@ -20,7 +20,7 @@ from ..classes.pdobject import PdObject
 from ..classes.pdarray import PdArray
 from ..util.utils import log, printer, tokenize
 
-__all__ = [ "PdPyParser" ]
+__all__ = [ 'PdPyParser' ]
 
 class PdPyParser(PdPy):
   """ Reads the lines from a .pdpy file pointer `fp` and populates a `PdPy` obj
