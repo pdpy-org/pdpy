@@ -405,7 +405,13 @@ class Base(object):
       
       is_list = False
       # Handle list-type tags, we need to create lists for these:
-      if elem_tag in ('nodes', 'data', 'edges', 'args', 'comments', 'targets', 'message'):
+      if elem_tag in ('nodes',
+                      'data', 
+                      'edges', 
+                      'args', 
+                      'comments', 
+                      'targets', 
+                      'message'):
         is_list = True
         d = [] # a list of PdData objects
       else:

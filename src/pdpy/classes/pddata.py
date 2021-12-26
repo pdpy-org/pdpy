@@ -188,9 +188,6 @@ class PdData(Base):
         raise ValueError(f"Unknown type {self.header} for:\n{self.__dumps__()}")
     
     else:
-     # TODO: order is important here. Template should take priority.
-      if template: pass # leave this here for now
-
       s = ''
       # call the pd method on every float (PdFLoat) element
       if hasattr(self, 'float') and hasattr(template, 'float'):
@@ -218,8 +215,6 @@ class PdData(Base):
 
   def __xml__(self, template=None):
     """ Returns the XML Element for this object """
-
-    self.__dumps__()
 
     x = super().__element__(scope=self)
     
