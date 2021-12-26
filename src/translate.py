@@ -34,6 +34,8 @@ def main():
   try:
     # create an instance of the Translator class
     print("-"*80)
+    direction = args.fro + ' -> ' + args.to
+    print(f"BEGIN: {start_time} - {direction}")
     print("Creating translator instance...")
     translator = Translator(arguments)
     
@@ -43,8 +45,6 @@ def main():
     else:
       # print some nice messages
       print("Done.")
-      direction = translator.source + ' -> ' + translator.target
-      print(f"BEGIN: {start_time} - {direction}")
       print(f"From: {translator.input_file}")
       print(f"To: {translator.output_file}")
       # call the translator class (defaults to args)
