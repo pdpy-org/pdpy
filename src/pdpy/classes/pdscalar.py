@@ -33,8 +33,8 @@ class Scalar(Base):
       super().__populate__(self, json)
     elif xml is not None:
       self.name = xml.findtext('name')
-      if xml.find('data'):
-        self.data = PdData(xml=xml.find('data'))
+      if xml.find('pddata'):
+        self.data = PdData(xml=xml.find('pddata'))
 
   def parsePd(self, struct, argv):
     self.name = argv[0]
@@ -50,11 +50,10 @@ class Scalar(Base):
       if hasattr(self.data, '__pd__'):
         s = self.data.__pd__(template)
       else:
-        for d in getattr(self, 'data', []):
-          if d.__pdpy__ == 'PdList':
-            s += ' ' + d.__pd__(template)
-          else:
-            s += ' ' + d.__pd__()
+        if self.data.__pdpy__ == 'PdList':
+          s += ' ' + self.data.__pd__(template)
+        else:
+          s += ' ' + self.data.__pd__()
         s += self.__semi__
       return super().__pd__(self.name + ' ' + s)
     else:

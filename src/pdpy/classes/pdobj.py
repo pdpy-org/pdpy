@@ -41,6 +41,7 @@ class PdObj(Base):
 
   def __pd__(self, args=None):
     """ Parses the pd object into a string """
+
     # add the position
     s = self.position.__pd__()
     # check if called with argumnts (array, text, etc) and append them

@@ -57,12 +57,22 @@ class PdData(Base):
 
   def parseXml(self, xml):
     """ Parses the xml string into a pd object """
-    for x in xml.findall('pdfloat'):
-      self.add('float', PdFloat(xml=x))
-    for x in xml.findall('pdsymbol'):
-      self.add('symbol', PdSymbol(xml=x))
-    for x in xml.findall('pdlist'):
-      self.add('array', PdList(xml=x))
+    if 'header' in xml.attrib:
+      self.header = xml.attrib.get('header')
+      self.__cls__ = str(self.header)
+      data = xml.findall('datum')
+      if len(data):
+        if '0' == self.header:
+          self.data = [self.__num__(d.text) for d in data]
+        elif self.header in ('set', 'saved'):
+          self.data = [str(d.text) for d in data]
+    else:
+      for x in xml.findall('pdfloat'):
+        self.add('float', PdFloat(xml=x))
+      for x in xml.findall('pdsymbol'):
+        self.add('symbol', PdSymbol(xml=x))
+      for x in xml.findall('pdlist'):
+        self.add('array', PdList(xml=x))
 
   def fill(self, template, data):
     """ Fills the data with a template """
@@ -235,7 +245,7 @@ class PdData(Base):
   def __xml__(self, template=None):
     """ Returns the XML Element for this object """
 
-    x = super().__element__(scope=self, tag='data')
+    x = super().__element__(scope=self)
     
     if hasattr(self, 'data'):
   
