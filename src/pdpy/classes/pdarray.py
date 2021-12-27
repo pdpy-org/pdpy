@@ -152,13 +152,13 @@ class PdArray(PdObject):
 
     if hasattr(self, 's'):
       # the struct reference 's'
-      s = super().__element__('s')
+      s = super().__element__(tag='s')
       super().__subelement__(s, 'name', text = self.s['name'])
       super().__subelement__(s, 'template', text = self.s['template'])
 
       if 'f' in self.s:
         # the struct field reference 'f'
-        f = super().__element__('f')
+        f = super().__element__(tag='f')
         super().__subelement__(f, 'name', text = self.s['f']['name'])
         super().__subelement__(f, 'template', text = self.s['f']['template'])
         super().__subelement__(s, f)
