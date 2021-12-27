@@ -4,7 +4,7 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" Class Definitions """
+""" Pure Data Text Comment Definitions """
 
 from .base import Base
 from .classes import Point
@@ -42,13 +42,13 @@ class Comment(Base):
 
     if hasattr(self, 'text') and len(self.text):
       if len(self.text) == 1:
-        s += ' ' + self.text[0]
+        s += f" {self.text[0]}"
       else:
         s += ' ' + ' '.join(list(map(lambda x:f"{x} \\;",list(self.text[:-1]))))
-        s += ' ' + self.text[-1]
+        s += f" {self.text[-1]}"
 
     if hasattr(self, "border"):
-      s += f', f {self.border}'
+      s += f", f {self.border}"
 
     return super().__pd__(s)
 
