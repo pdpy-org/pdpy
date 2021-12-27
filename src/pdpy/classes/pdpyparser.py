@@ -12,12 +12,12 @@ import re
 
 from ..classes.pdpy import PdPy
 from ..classes.canvas import Canvas
-from ..classes.message import PdMessage
+from ..classes.message import Message
 from ..classes.comment import Comment
 from ..classes.connections import Edge
 from ..classes.classes import Point
-from ..classes.pdobject import PdObject
-from ..classes.pdarray import PdArray
+from ..classes.object import Object
+from .array import Array
 from ..util.utils import log, printer, tokenize
 
 __all__ = [ 'PdPyParser' ]
@@ -149,7 +149,7 @@ class PdPyParser(PdPy):
 
       # if "->" == t: 
       #   log(0,"loadbang forward",obj)
-      #   self.__last__ = self.objectCreator(PdObject, ("loadbang"))
+      #   self.__last__ = self.objectCreator(Object, ("loadbang"))
       #   self.objectConnector()
       #   return
 
@@ -157,7 +157,7 @@ class PdPyParser(PdPy):
         log(0,"forward",obj)
         if self.__store_cmd__:
           self.__store_cmd__ = False
-          self.__last__ = self.objectCreator(PdMessage,(" ".join(self.__cmd__)))
+          self.__last__ = self.objectCreator(Message,(" ".join(self.__cmd__)))
           self.objectConnector(self.__prev__, self.__last__.id)
           self.__cmd__ = []
           return
@@ -167,7 +167,7 @@ class PdPyParser(PdPy):
       
       # if "<-" == t: 
       #   log(0,"loadbang backwards",obj)
-      #   self.__last__ = self.objectCreator(PdObject, ("loadbang"))
+      #   self.__last__ = self.objectCreator(Object, ("loadbang"))
       #   self.objectConnector(self.__last__.id,self.__prev__)
       #   return
 
@@ -183,7 +183,7 @@ class PdPyParser(PdPy):
       return
 
     if ((t.startswith("'") or t.startswith("\"")) and t.endswith("'") or t.endswith("\"")) or t.isnumeric():
-      return self.objectCreator(PdMessage, t.replace("'",""))
+      return self.objectCreator(Message, t.replace("'",""))
 
     """ Messages
     """
@@ -203,7 +203,7 @@ class PdPyParser(PdPy):
       self.__msg__.append(t.replace("'",""))
       if t.endswith("'") or t.endswith("\""):
         self.__store_msg__ = False
-        self.__last__ = self.objectCreator(PdMessage, (" ".join(self.__msg__)))
+        self.__last__ = self.objectCreator(Message, (" ".join(self.__msg__)))
         self.__msg__ = []
         return self.__last__
       return
@@ -213,13 +213,13 @@ class PdPyParser(PdPy):
     if t.startswith('\\'):
       t = t.replace('\\','') 
       log(0,'symbol', t)
-      return self.objectCreator(PdArray, ('array', 'define', '-k', t))
+      return self.objectCreator(Array, ('array', 'define', '-k', t))
     
     """ Objects
     """
     if self.__is_obj_map__[i]: 
       # print("CREATING AN OBJECT", t)
-      return self.objectCreator(PdObject, (t))
+      return self.objectCreator(Object, (t))
 
 
   def pdpyCreate(self, string, autoconnect=True):
@@ -450,7 +450,7 @@ class PdPyParser(PdPy):
       if bool(piped):
         if 'outlet' not in self.__canvases__[-1].nodes:
           self.__prev__ = self.__last_canvas__().__obj_idx__
-          self.__last__ = self.objectCreator(PdObject, ('outlet'))
+          self.__last__ = self.objectCreator(Object, ('outlet'))
         self.objectConnector(self.__prev__,self.__last__.id)
       # restore the canvas
       self.pdpyRestore()
@@ -483,7 +483,7 @@ class PdPyParser(PdPy):
     if re.search(r"^\s+[\*\w\d\\\-%\+\/].+$", s): 
       objects = re.findall(r"^\s+([\*\w\d\\\-%\+\/].+)$", s) 
       if bool(objects):
-        print("pdobj",objects)
+        print("obj",objects)
         self.pdpyCreate(" ".join(objects).strip())
       return True
 
@@ -515,12 +515,12 @@ class PdPyParser(PdPy):
   #   Description
   #   -----------
   #   Allowed `pdpy` class definitions are:
-  #     - `PdObject`    : `PdObject.__doc__`
-  #     - `PdArray`     : `PdArray.__doc__`
+  #     - `Object`    : `Object.__doc__`
+  #     - `Array`     : `Array.__doc__`
   #     - `PdIEMGui`    : `PdIEMGui.__doc__`
-  #     - `PdNativeGui` : `PdNativeGui.__doc__` 
+  #     - `Gui` : `Gui.__doc__` 
   #     - `Graph`       : `Graph.__doc__`
-  #     - `PdMessage`   : `PdMessage.__doc__`
+  #     - `Message`   : `Message.__doc__`
   #     - `Comment`     : `Comment.__doc__`
   #   """
   #   self.__obj_idx__ = self.__last_canvas__().grow()
@@ -557,71 +557,71 @@ class PdPyParser(PdPy):
           # else:
           #   log(1, "Unknown signal object", obj)
           
-          # self.objectCreator(PdObject, (t))
+          # self.objectCreator(Object, (t))
           
         
         # else:
 
           # if   t in internals.interface.midi:     
           #   print("i midi obj", obj)
-          # self.__last__ = self.objectCreator(PdObject, (t))
+          # self.__last__ = self.objectCreator(Object, (t))
           # elif t in internals.interface.keyboard: 
           #   print("i key obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
           # elif t in internals.interface.system:   
           #   print("i sys obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
           # elif t in internals.interface.gui:      
           #   print("i gui obj", obj)
             # self.objectCreator(PdIEMGui, (t))
 
           # elif t in internals.operators.math:       
           #   print("o math obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
           # elif t in internals.operators.binary:     
           #   print("o bin obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
           # elif t in internals.operators.comparison: 
           #   print("o comp obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
 
           # elif t in internals.data.array: 
           #   print("d array obj", obj)
-          #   self.objectCreator(PdArray, (t))
+          #   self.objectCreator(Array, (t))
           # elif t in internals.data.struct: 
           #   print("d struct obj", obj)
           # elif t in internals.data.text: 
           #   print("d text obj", obj)
-          #   self.objectCreator(PdArray, (t))
+          #   self.objectCreator(Array, (t))
           # elif t in internals.data.other: 
           #   print("d other obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
     
           # elif t in internals.parsing.list: 
           #   print("p list obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
           # elif t in internals.parsing.stream: 
           #   print("p stream obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
           # elif t in internals.parsing.format: 
           #   print("p format obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
     
           # elif t in internals.control.flow: 
           #   print("c flow obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
           # elif t in internals.control.network: 
           #   print("c net obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
           # elif t in internals.control.math: 
           #   print("c math obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
           # elif t in internals.control.time: 
           #   print("c time obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
           # elif t in internals.control.generators: 
           #   print("c gen obj", obj)
-          #   self.objectCreator(PdObject, (t))
+          #   self.objectCreator(Object, (t))
 
           # elif t in internals.nonobj: 
           #   print("nonobj", obj)
@@ -634,7 +634,7 @@ class PdPyParser(PdPy):
 
           # if checknum(t): 
             # print("number", self.__num__(t))
-            # self.objectCreator(PdMessage, (self.__num__(t)))
+            # self.objectCreator(Message, (self.__num__(t)))
           
           # else:
             # log(2,"Unable to create object", obj)

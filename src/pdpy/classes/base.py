@@ -401,7 +401,7 @@ class Base(object):
       if elem_tag == 'scalar':
         return self.__n__.__get__(name='Scalar')(xml=elem)
       elif elem_tag == 'data':
-        return {'data':[self.__n__.__get__(name='PdData')(xml=c) for c in elem]}
+        return {'data':[self.__n__.__get__(name='Data')(xml=c) for c in elem]}
 
       # print('>'*80)
       # log(1, f"Starting __elem_to_obj__ for {elem_tag}")
@@ -419,7 +419,7 @@ class Base(object):
                       'args',    # objects
                       'comments',# comments
                       'targets', # messages
-                      'message', # messages
+                      'messages', # messages
                       # 'data',    # data
                       # 'symbols', # scalars
                       # 'texts',   # scalars

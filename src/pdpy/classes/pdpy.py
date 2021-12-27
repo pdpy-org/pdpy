@@ -9,17 +9,17 @@
 from .base import Base
 from .classes import *
 from .struct import *
-from .pdscalar import *
+from .scalar import *
 from .default import *
 from .iemgui import *
 from .canvas import Canvas
 from .graph import Graph
 from .goparray import PdGOPArray
-from .pddata import PdData
-from .pdobject import PdObject
-from .pdarray import PdArray
-from .gui import PdNativeGui
-from .message import PdMessage
+from .data import Data
+from .object import Object
+from .array import Array
+from .gui import Gui
+from .message import Message
 from .dependencies import Dependencies
 from .comment import Comment
 from .connections import Edge
@@ -149,7 +149,7 @@ class PdPy(Base):
     self.__obj_idx__ = self.__last_canvas__().grow()
     if 2 == len(argv):
       # an empty object
-      obj = PdObject(pd_lines = [self.__obj_idx__] + argv)
+      obj = Object(pd_lines = [self.__obj_idx__] + argv)
       self.__last_canvas__().add(obj)
     else:
       # protect against argv not being a list
@@ -157,11 +157,11 @@ class PdPy(Base):
         argv = [argv]
       # text-group object
       if "text" == argv[2]:
-        obj = PdArray(pd_lines = [self.__obj_idx__] + argv)
+        obj = Array(pd_lines = [self.__obj_idx__] + argv)
         self.__last_canvas__().add(obj)
       # array-group object
       elif "array" == argv[2]:
-        obj = PdArray(pd_lines = [self.__obj_idx__] + argv)
+        obj = Array(pd_lines = [self.__obj_idx__] + argv)
         self.__last_canvas__().add(obj)
       # IEMGUI-group object
       elif argv[2] in IEMGuiNames:
@@ -187,14 +187,14 @@ class PdPy(Base):
       # TODO: make special cases for data structures
       # - drawing instructions
       else:
-        obj = PdObject(pd_lines = [self.__obj_idx__] + argv)
+        obj = Object(pd_lines = [self.__obj_idx__] + argv)
         self.__last_canvas__().add(obj)
     return obj
   
   def addMsg(self, argv):
     # log(1,"msg", nodes)
     self.__obj_idx__ = self.__last_canvas__().grow()
-    msg = PdMessage(pd_lines=[self.__obj_idx__]+argv)
+    msg = Message(pd_lines=[self.__obj_idx__]+argv)
     self.__last_canvas__().add(msg)
     return msg
   
@@ -207,7 +207,7 @@ class PdPy(Base):
 
   def addNativeGui(self, className, argv):
     self.__obj_idx__ = self.__last_canvas__().grow()
-    obj = PdNativeGui(pd_lines=[ className, self.__obj_idx__ ] + argv)
+    obj = Gui(pd_lines=[ className, self.__obj_idx__ ] + argv)
     self.__last_canvas__().add(obj)
     return obj
 
@@ -290,7 +290,7 @@ class PdPy(Base):
           if    7 == len(argv): last = self.addRoot(body)
           elif  8 == len(argv): last = self.addCanvas(body)
       elif "#A" == head[0]: #A -> text, savestate, or array  data
-        super().__setdata__(last, PdData(data=body, head=head[1]))
+        super().__setdata__(last, Data(data=body, head=head[1]))
       else: #X -----------------> anything else is an "#X"
         if   "declare"    == head[1]: self.addDependencies(pd_lines=body)
         elif "coords"     == head[1]: self.addCoords(body)

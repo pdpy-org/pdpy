@@ -12,13 +12,13 @@ from collections import defaultdict
 from itertools import zip_longest
 
 __all__ = [
-  'PdFloat',
-  'PdSymbol',
-  'PdList',
+  'Float',
+  'Symbol',
+  'List',
 ]
 
-class PdFloat(Base):
-  """ A PdFloat base class """
+class Float(Base):
+  """ A Float base class """
   def __init__(self, value=None, name=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
     super().__init__()
@@ -39,8 +39,8 @@ class PdFloat(Base):
     super().__subelement__(x, 'value', text=self.value)
     return x
 
-class PdSymbol(PdFloat):
-  """ A PdSymbol base class """
+class Symbol(Float):
+  """ A Symbol base class """
   def __init__(self, value=None, name=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
     super().__init__()
@@ -53,8 +53,8 @@ class PdSymbol(PdFloat):
       self.value = str(value) if value is not None else None
       self.name = name
 
-class PdList(Base):
-  """ A PdList base class """
+class List(Base):
+  """ A List base class """
   def __init__(self, name=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
     super().__init__()

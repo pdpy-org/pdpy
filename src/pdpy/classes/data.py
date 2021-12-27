@@ -4,16 +4,16 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" PdData Class Definition """
+""" Data Class Definition """
 
 from .base import Base
-from .pdtypes import *
+from .types import *
 from ..util.utils import splitByEscapedChar, log, splitByNone
 
-__all__ = [ 'PdData' ]
+__all__ = [ 'Data' ]
 
-class PdData(Base):
-  """ A PdData base class """
+class Data(Base):
+  """ A Data base class """
   
   def __init__(self,
                data=None,
@@ -67,12 +67,12 @@ class PdData(Base):
         elif self.header in ('set', 'saved'):
           self.data = [str(d.text) for d in data]
     else:
-      for x in xml.findall('pdfloat'):
-        self.add('float', PdFloat(xml=x))
-      for x in xml.findall('pdsymbol'):
-        self.add('symbol', PdSymbol(xml=x))
-      for x in xml.findall('pdlist'):
-        self.add('array', PdList(xml=x))
+      for x in xml.findall('float'):
+        self.add('float', Float(xml=x))
+      for x in xml.findall('symbol'):
+        self.add('symbol', Symbol(xml=x))
+      for x in xml.findall('list'):
+        self.add('array', List(xml=x))
 
   def fill(self, template, data):
     """ Fills the data with a template """
@@ -82,13 +82,13 @@ class PdData(Base):
     # log(1,"DATAA", data)
     # log(1,"TEMPLATE", template.__json__())
 
-    def fill_element(target, template, data, attrib='float', cls=PdFloat):
+    def fill_element(target, template, data, attrib='float', cls=Float):
       # for k,v in zip(getattr(template, 'float', []), flt):
-      #   super().__setdata__(self, PdFloat(v, name=k), 'float')
+      #   super().__setdata__(self, Float(v, name=k), 'float')
       if hasattr(template, attrib):
         # log(1,'Filling '+str(attrib).upper(),data)
         for k,v in zip(getattr(template, attrib, []), data):
-          super(PdData, self).__setdata__(target, cls(v, name=k), attrib)
+          super(Data, self).__setdata__(target, cls(v, name=k), attrib)
 
     def fill_array(target, template, data):
       # log(1,'TEMPLATE',template.name)
@@ -107,7 +107,7 @@ class PdData(Base):
         # log(1, 'Filling array', d)
         # log(1, 'Template:', _template.__json__())
         
-        pdlist = PdList(name=e.template)
+        pdlist = List(name=e.template)
         
 
         attributes = [ {
@@ -147,7 +147,7 @@ class PdData(Base):
           #   fill_array(target.array, _template, v) # recursion ??????
           
         
-        super(PdData, self).__setdata__(target, pdlist, 'array')
+        super(Data, self).__setdata__(target, pdlist, 'array')
 
 
     fs = data[0].split(' ')
@@ -173,10 +173,10 @@ class PdData(Base):
 
     if flt is not None:
       # log(1,'FILL FLOAT',flt)
-      fill_element(self, template, flt, attrib='float', cls=PdFloat)
+      fill_element(self, template, flt, attrib='float', cls=Float)
     if sym is not None:
       # log(1,'FILL SYMBOL',sym)
-      fill_element(self, template, flt, attrib='symbol', cls=PdSymbol)
+      fill_element(self, template, flt, attrib='symbol', cls=Symbol)
 
     arr = data[1:] if len(data) >= 2 else []
     
@@ -223,14 +223,14 @@ class PdData(Base):
         for x in getattr(self, 'float', getattr(self, 'floats', [])):
           s += ' ' + x.__pd__()
       
-      # call the pd method on every symbol (PdSymbol) element
+      # call the pd method on every symbol (Symbol) element
       if (hasattr(self, 'symbol') or hasattr(self, 'symbols'))  and hasattr(template, 'symbol'):
         for x in getattr(self, 'symbol', getattr(self, 'symbols', [])):
           s += ' ' + x.__pd__()
       
       if s != '': s += self.__semi__
 
-      # call the pd method on the array (PdList) element
+      # call the pd method on the array (List) element
       if (hasattr(self, 'array') or hasattr(self, 'arrays')) and hasattr(template, 'array'):
         for x, t in zip(getattr(self, 'array', getattr(self, 'arrays', [])), template.array):
           _, _template = template.__p__.getTemplate(t.template)
@@ -271,7 +271,7 @@ class PdData(Base):
           # super().__subelement__(flt, e.__xml__())
         # super().__subelement__(x, flt)
       
-      # call the xml method on every symbol (PdSymbol) element
+      # call the xml method on every symbol (Symbol) element
       if hasattr(self, 'symbol') and hasattr(template, 'symbol'):
         # sym = super().__element__(tag='symbols')
         for e in getattr(self, 'symbol', []):
@@ -279,7 +279,7 @@ class PdData(Base):
           # super().__subelement__(sym, e.__xml__())
         # super().__subelement__(x, sym)
       
-      # call the xml method on the array (PdList) element
+      # call the xml method on the array (List) element
       if hasattr(self, 'array') and hasattr(template, 'array'):
         # arr = super().__element__(tag='arrays')
         for e, t in zip(getattr(self, 'array', []), template.array):

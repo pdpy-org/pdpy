@@ -4,13 +4,13 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" PdObject Class Definition """
+""" Object Class Definition """
 
-from .pdobj import PdObj
+from .obj import Obj
 
-__all__ = [ 'PdObject' ]
+__all__ = [ 'Object' ]
 
-class PdObject(PdObj):
+class Object(Obj):
   """ A Pure Data Object object
   
   Description
@@ -19,7 +19,7 @@ class PdObject(PdObj):
 
   Initialization Arguments
   ----------
-  The first three arguments correspond to the `PdObj` class.
+  The first three arguments correspond to the `Obj` class.
   1. `id`: The id of the pd object.
   2. `x`: The x-coordinate of the pd object.
   3. `y`: The y-coordinate of the pd object.
@@ -47,7 +47,7 @@ class PdObject(PdObj):
           if 4 < len(pd_lines):
             self.addargs(pd_lines[4:])
       except:
-        raise ValueError("Invalid arguments for PdObject")
+        raise ValueError("Invalid arguments for Object")
     
     if not hasattr(self, 'className'):
       self.className = self.__cls__
@@ -58,12 +58,12 @@ class PdObject(PdObj):
       args = self.className
     else:
       args = self.className + ' ' + args
-    # log(1, "PdObject args:", args)
+    # log(1, "Object args:", args)
     return super().__pd__(args)
 
   def __xml__(self, args=None, **kwargs):
     """ Return the XML Element for this object. """
-    # print("pdobject",args, kwargs)
+    # print("object",args, kwargs)
     attrib = kwargs.pop('attrib') if 'attrib' in kwargs else {}
     
     if 'scope' not in kwargs:

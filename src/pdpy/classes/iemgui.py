@@ -9,12 +9,12 @@
 from .base import Base
 from .classes import Point, Size, Bounds
 from .connections import Comm
-from .pdobject import PdObject
+from .object import Object
 from .default import PdFonts
 
 __all__ = [ 
   'IEMLabel',
-  'PdFont',
+  'IEMFont',
   'Vu',
   'Toggle',
   'Cnv',
@@ -24,7 +24,7 @@ __all__ = [
   'Slider'
 ]
 
-class PdFont(Base):
+class IEMFont(Base):
   def __init__(self, face=None, points=None, json=None, xml=None):
     """ Initialize the object """
     self.__pdpy__ = self.__class__.__name__
@@ -43,11 +43,11 @@ class PdFont(Base):
     """ Return the XML Element for this object """
     return super().__xml__(scope=self, tag=tag, attrib=('face', 'points'))
 
-# end class PdFont -----------------------------------------------------------
+# end class IEMFont -----------------------------------------------------------
 
 class IEMLabel(Base):
   """ 
-  The IEM Label Object
+  The IEM IEMLabel Object
   ====================
 
   Description
@@ -78,7 +78,7 @@ class IEMLabel(Base):
       self.__pdpy__ = self.__class__.__name__
       self.label = label if label is not None else self.__d__.iemgui['symbol']
       self.offset = Point(xoff, yoff)
-      self.font = PdFont(fface, fsize)
+      self.font = IEMFont(fface, fsize)
       self.lbcolor = self.__num__(lbcolor)
 
   def __pd__(self):
@@ -91,7 +91,7 @@ class IEMLabel(Base):
 
 # end of class IEMLabel --------------------------------------------------------
 
-class Vu(PdObject):
+class Vu(Object):
   """ 
   The IEM Vu Object
   ==================
@@ -136,7 +136,7 @@ class Vu(PdObject):
   def __xml__(self):
     """ Returns an XML Element for this object """
     return super().__xml__(scope=self, attrib=('area', 'comm', 'label', 'bgcolor', 'scale', 'flag'))
-class Toggle(PdObject):
+class Toggle(Object):
   """
   The IEM Toggle Object
   ======================
@@ -188,7 +188,7 @@ class Toggle(PdObject):
     """ Return the XML Element for this object """
     return super().__xml__(scope=self, attrib=('size', 'init', 'comm', 'label', 'bgcolor', 'fgcolor', 'flag', 'nonzero'))
 
-class Cnv(PdObject):
+class Cnv(Object):
   """
   The IEM Canvas Object
   ======================
@@ -239,7 +239,7 @@ class Cnv(PdObject):
     """ Return the XML Element for this object """
     return super().__xml__(scope=self, attrib=('size', 'area', 'comm', 'label', 'bgcolor', 'flag'))
 
-class Radio(PdObject):
+class Radio(Object):
   """
   The IEM Radio Object
   =====================
@@ -293,7 +293,7 @@ class Radio(PdObject):
     """ Return the XML Element for this object """
     return super().__xml__(scope=self, attrib=('size', 'flag', 'init', 'number', 'comm', 'label', 'bgcolor', 'fgcolor', 'value'))
     
-class Bng(PdObject):
+class Bng(Object):
   """
   The IEM Button Object
   =====================
@@ -343,7 +343,7 @@ class Bng(PdObject):
     """ Return the XML Element for this object """
     return super().__xml__(scope=self, attrib=('size', 'hold', 'intrrpt', 'init', 'comm', 'label', 'bgcolor', 'fgcolor'))
 
-class Nbx(PdObject):
+class Nbx(Object):
   """
   The IEM Number Box Object
   ==========================
@@ -401,7 +401,7 @@ class Nbx(PdObject):
     """ Return the XML Element for this object """
     return super().__xml__(scope=self, attrib=('digit_width', 'size', 'limits', 'log_flag', 'init', 'comm', 'label', 'bgcolor', 'fgcolor', 'value', 'log_height'))
 
-class Slider(PdObject):
+class Slider(Object):
   """
   The IEM Slider Object
   =====================

@@ -4,13 +4,13 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" PdArray Class Definition """
+""" Array Class Definition """
 
-from .pdobject import PdObject
+from .object import Object
 
-__all__ = [ 'PdArray' ]
+__all__ = [ 'Array' ]
 
-class PdArray(PdObject):
+class Array(Object):
   """ A Pure Data array object
   
   Description
@@ -19,8 +19,8 @@ class PdArray(PdObject):
 
   Initialization Arguments
   ----------
-  The first four arguments correspond to the `PdObject` arguments. 
-  See the `PdObject` class.
+  The first four arguments correspond to the `Object` arguments. 
+  See the `Object` class.
   1. `id`: The id of the pd object.
   2. `x`: The x-coordinate of the pd object.
   3. `y`: The y-coordinate of the pd object.
@@ -31,7 +31,7 @@ class PdArray(PdObject):
 
   Returns
   -------
-  A `PdArray` object.
+  A `Array` object.
   
   """
   def __init__(self, pd_lines = None, json = None):

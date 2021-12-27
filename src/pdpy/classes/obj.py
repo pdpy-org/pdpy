@@ -4,19 +4,19 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" PdObj Class Definitions """
+""" Obj Class Definitions """
 
 from .base import Base
 from .classes import Point
 
-__all__ = [ 'PdObj' ]
+__all__ = [ 'Obj' ]
 
-class PdObj(Base):
-  """ A PdObj base class 
+class Obj(Base):
+  """ A Obj base class 
   
   Description
   -----------
-  A PdObj holds the id, and the x and y coordinates of the pd object,
+  A Obj holds the id, and the x and y coordinates of the pd object,
   as well as the arguments array.
 
   Methods
@@ -53,7 +53,7 @@ class PdObj(Base):
     # wrap and close the pd line
     s = super().__pd__(s)
     
-    # check if we have data and append it (this calls the PdData.__pd__ method)
+    # check if we have data and append it (this calls the Data.__pd__ method)
     for x in getattr(self, 'data', []):
       s += x.__pd__()
 
@@ -63,7 +63,7 @@ class PdObj(Base):
 
   def __xml__(self, classname=None, args=None, **kwargs):
     """ Returns an XML Element for this object """
-    # print("pdobj",classname, args, kwargs)
+    # print("obj",classname, args, kwargs)
     x = super().__xml__(**kwargs)
 
     super().__update_element__(x, self, ('id', 'position'))

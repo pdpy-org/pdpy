@@ -8,7 +8,7 @@
 
 from pdpy.util.utils import log
 from .base import Base
-from .pddata import PdData
+from .data import Data
 
 __all__ = [ 'Scalar' ]
 
@@ -33,14 +33,14 @@ class Scalar(Base):
       super().__populate__(self, json)
     elif xml is not None:
       self.name = xml.findtext('name')
-      if xml.find('pddata'):
-        self.data = PdData(xml=xml.find('pddata'))
+      if xml.find('data'):
+        self.data = Data(xml=xml.find('data'))
 
   def parsePd(self, struct, argv):
     self.name = argv[0]
     for s in struct:
       if self.name == s.name:
-        setattr(self, 'data', PdData(data = argv[1:], template = s))
+        setattr(self, 'data', Data(data = argv[1:], template = s))
     
   def __pd__(self):
     """ Returns the data of this scalar as a pd string """
@@ -50,7 +50,7 @@ class Scalar(Base):
       if hasattr(self.data, '__pd__'):
         s = self.data.__pd__(template)
       else:
-        if self.data.__pdpy__ == 'PdList':
+        if self.data.__pdpy__ == 'List':
           s += ' ' + self.data.__pd__(template)
         else:
           s += ' ' + self.data.__pd__()

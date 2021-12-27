@@ -35,9 +35,9 @@
   "__file__" : "classes",
  "__subclass__" : "Base"
 },
-  "PdObj" : {
+  "Obj" : {
   "__file__" : "classes",
- "__subclass__" : "PdData"
+ "__subclass__" : "Data"
 },
   "Comment" : {
   "__file__" : "comment",
@@ -51,13 +51,13 @@
   "__file__" : "connections",
  "__subclass__" : "Base"
 },
-  "PdData" : {
+  "Data" : {
   "__file__" : "data_structures",
  "__subclass__" : "Base"
 },
   "PdType" : {
   "__file__" : "data_structures",
- "__subclass__" : "PdData"
+ "__subclass__" : "Data"
 },
   "Struct" : {
   "__file__" : "data_structures",
@@ -65,7 +65,7 @@
 },
   "Scalar" : {
   "__file__" : "data_structures",
- "__subclass__" : "PdData"
+ "__subclass__" : "Data"
 },
   "XmlTagConvert" : {
   "__file__" : "default",
@@ -79,37 +79,37 @@
   "__file__" : "dependencies",
  "__subclass__" : "Base"
 },
-  "PdNativeGui" : {
+  "Gui" : {
   "__file__" : "gui",
- "__subclass__" : "PdObj"
+ "__subclass__" : "Obj"
 },
-  "PdFont" : {
+  "Font" : {
   "__file__" : "iemgui",
  "__subclass__" : "Base"
 },
-  "IEMLabel" : {
+  "Label" : {
   "__file__" : "iemgui",
  "__subclass__" : "Base"
 },
   "PdIEMGui" : {
   "__file__" : "iemgui",
- "__subclass__" : "IEMLabel"
+ "__subclass__" : "Label"
 },
-  "PdMsg" : {
+  "Msg" : {
   "__file__" : "message",
  "__subclass__" : "Base"
 },
-  "PdMessage" : {
+  "Message" : {
   "__file__" : "message",
  "__subclass__" : "Base"
 },
-  "PdArray" : {
+  "Array" : {
   "__file__" : "pdarray",
- "__subclass__" : "PdObject"
+ "__subclass__" : "Object"
 },
-  "PdObject" : {
-  "__file__" : "pdobject",
- "__subclass__" : "PdObj"
+  "Object" : {
+  "__file__" : "object",
+ "__subclass__" : "Obj"
 },
   "PdPy" : {
   "__file__" : "p",

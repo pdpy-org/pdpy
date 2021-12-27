@@ -9,7 +9,7 @@
 import re
 
 from ..util.utils import log, printer
-from ..classes.pdobject import PdObject
+from ..classes.object import Object
 
 __all__ = [ 'PdPyLoad' ]
 
@@ -84,7 +84,7 @@ def PdPyLoad(fp, patch, pddb):
       if bool(piped):
         if 'outlet' not in canvases[-1].nodes:
           prev = patch.__last_canvas__().__obj_idx__
-          last = patch.objectCreator(PdObject, ('outlet'))
+          last = patch.objectCreator(Object, ('outlet'))
         patch.objectConnector(prev,last.id)
       # restore the canvas
       patch.pdpyRestore()
@@ -117,7 +117,7 @@ def PdPyLoad(fp, patch, pddb):
     if re.search(r"^\s+[\*\w\d\\\-%].+$", s): 
       objects = re.findall(r"^\s+([\*\w\d\\\-%].+)$", s) 
       if bool(objects):
-        print("pdobj",objects)
+        print("obj",objects)
         patch.pdpyCreate(" ".join(objects).strip(), pddb)
       return True
 

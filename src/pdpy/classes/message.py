@@ -8,14 +8,14 @@
 
 from pdpy.util.utils import log
 from .base import Base
-from .pdobj import PdObj
+from .obj import Obj
 
 __all__ = [
-  'PdMessage',
-  'PdMsg'
+  'Message',
+  'Msg'
 ]
 
-class PdMsg(Base):
+class Msg(Base):
   """ Representation of a Pd Message
   
   Description
@@ -58,11 +58,11 @@ class PdMsg(Base):
     # log(0, self.address, 'initialized.')
   
   def add(self, msg):
-    if not hasattr(self, 'message'):
-      self.message = []
+    if not hasattr(self, 'messages'):
+      self.messages = []
     msg = " ".join(msg) if isinstance(msg, list) else msg
-    # log(0, f'{self.address} -> adding message: {msg}')
-    self.message.append(msg)
+    # log(0, f'{self.address} -> adding messages: {msg}')
+    self.messages.append(msg)
 
   def __pd__(self):
     """ 
@@ -71,8 +71,8 @@ class PdMsg(Base):
     and the address before the message
     """
     s = f' \; {self.address} ' if self.address != 'outlet' else ''
-    if hasattr(self, 'message'):
-      s += ' \, '.join(list(map(lambda x:str(x), self.message))) 
+    if hasattr(self, 'messages'):
+      s += ' \, '.join(list(map(lambda x:str(x), self.messages))) 
 
     return s
 
@@ -80,20 +80,20 @@ class PdMsg(Base):
     """ Returns the XML Element for this object """
     x = super().__element__(self)
     super().__subelement__(x, 'address', text=self.address)
-    if hasattr(self, 'message'):
-      msg = super().__element__(tag='message')
-      for m in getattr(self, 'message', []):
-        super().__subelement__(msg, 'msg', text=m)
+    if hasattr(self, 'messages'):
+      msg = super().__element__(tag='messages')
+      for m in getattr(self, 'messages', []):
+        super().__subelement__(msg, 'm', text=m)
       super().__subelement__(x, msg)
     return x
 
-class PdMessage(PdObj):
+class Message(Obj):
   """ Representation of a Pd Message box
 
   Description
   -----------
   This class represents a Pd message box with a list of targets
-  each target being a ::class::`PdMsg` instance
+  each target being a ::class::`Msg` instance
   
   """
   def __init__(self, pd_lines=None, json=None):
@@ -111,7 +111,7 @@ class PdMessage(PdObj):
   def addTarget(self, address=None):
     if not hasattr(self, "targets"):
       self.targets = []
-    target = PdMsg(address=address)
+    target = Msg(address=address)
     self.targets.append(target)
     return target
 

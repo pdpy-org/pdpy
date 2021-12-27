@@ -7,18 +7,18 @@
 """ Class Definitions """
 
 from .connections import Comm
-from .pdobj import PdObj
+from .obj import Obj
 from .classes import Bounds
 
-__all__ = [ 'PdNativeGui' ]
+__all__ = [ 'Gui' ]
 
-class PdNativeGui(PdObj):
+class Gui(Obj):
   """ A Pd Native Gui object 
   
   Description
   -----------
   A Pd Native Gui object is a graphical user interface that is implemented in
-  pure data. It is a sublcass of the `PdObj`
+  pure data. It is a sublcass of the `Obj`
 
   Initialization Arguments
   -----------------------
