@@ -54,6 +54,12 @@ class Comment(Base):
 
   def __xml__(self):
     """ Return an xml representation object """
-    return super().__xml__(scope=self, attrib=('text','position','border'))
+    x = super().__xml__(scope=self, attrib=('position','border'))
+    if hasattr(self, 'text'):
+      text = super().__element__(tag='text')
+      for t in getattr(self, 'text', []):
+        super().__subelement__(text, 'txt', text=t)
+      super().__subelement__(x, text)
+    return x
 
   
