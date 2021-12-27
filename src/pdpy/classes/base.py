@@ -7,7 +7,7 @@
 """ Base Class """
 
 from json import dumps as json_dumps
-from xml.etree.ElementTree import ElementTree, Element, indent, parse as xparse
+from xml.etree.ElementTree import ElementTree, Element, XMLParser, indent, parse as xparse, XMLParser, ParseError
 
 from pdpy.classes.exceptions import ArgumentException
 from ..util.utils import log
@@ -300,10 +300,13 @@ class Base(object):
     #   """)
 
     # create the element
-    if attrib is not None:
-      element = Element(__tag__, attrib=attrib)
-    else:
+    if self.__c__.isvalid(__tag__):
       element = Element(__tag__)
+    else:
+      element = Element(str(__pdpy__).lower())
+   
+    if attrib is not None:
+      element.attrib.update(attrib)
 
     # store the text of the element as a string
     if text is not None:

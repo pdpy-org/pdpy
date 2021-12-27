@@ -64,12 +64,14 @@ class PdObject(PdObj):
   def __xml__(self, args=None, **kwargs):
     """ Return the XML Element for this object. """
     # print("pdobject",args, kwargs)
+    attrib = kwargs.pop('attrib') if 'attrib' in kwargs else {}
+    
     if 'scope' not in kwargs:
       kwargs.update({'scope':self})
+    
     if 'tag' not in kwargs:
       kwargs.update({'tag':self.className})
     
-    attrib = kwargs.pop('attrib') if 'attrib' in kwargs else {}
     
     if isinstance(attrib, dict) and self.className is not None:
       # attrib.update({'pdpy':self.__pdpy__})

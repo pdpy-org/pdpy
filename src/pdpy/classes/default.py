@@ -144,6 +144,17 @@ class XmlTagConvert(object):
       if key in _tag:
         _tag = _tag.replace(value, key) 
     return _tag
+  
+  def isvalid(self, tag):
+    """ Returns True if the tag is valid """
+    if self.find('.', tag):
+      return False
+    elif self.find('/', tag):
+      return False
+    elif self.find('\\', tag):
+      return False
+    else:
+      return self.to_xml_tag(tag)
 
 class Default(object):
   def __init__(self):
