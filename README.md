@@ -52,7 +52,7 @@ The result is something like this in JSON:
         "font": 12,
         "nodes": [
             {
-                "__pdpy__": "PdObject",
+                "__pdpy__": "Object",
                 "id": 0,
                 "position": {
                     "__pdpy__": "Point",
@@ -62,7 +62,7 @@ The result is something like this in JSON:
                 "className": "loadbang"
             },
             {
-                "__pdpy__": "PdMessage",
+                "__pdpy__": "Message",
                 "id": 1,
                 "position": {
                     "__pdpy__": "Point",
@@ -72,7 +72,7 @@ The result is something like this in JSON:
                 "className": "msg",
                 "targets": [
                     {
-                        "__pdpy__": "PdMsg",
+                        "__pdpy__": "Msg",
                         "address": "outlet",
                         "message": [
                             "hello world"
@@ -81,7 +81,7 @@ The result is something like this in JSON:
                 ]
             },
             {
-                "__pdpy__": "PdObject",
+                "__pdpy__": "Object",
                 "id": 2,
                 "position": {
                     "__pdpy__": "Point",
@@ -145,7 +145,7 @@ python3 translate.py -t json -f pd -i tests/hello-world.pd -o tests/hello-world.
             <height>300</height>
         </dimension>
         <nodes>
-            <loadbang pdpy="PdObject">
+            <loadbang pdpy="Object">
                 <id>0</id>
                 <position pdpy="Point">
                     <x>37</x>
@@ -164,7 +164,7 @@ python3 translate.py -t json -f pd -i tests/hello-world.pd -o tests/hello-world.
                     <message>hello world</message>
                 </pdmsg>
             </pdmessage>
-            <print pdpy="PdObject">
+            <print pdpy="Object">
                 <id>2</id>
                 <position pdpy="Point">
                     <x>37</x>
