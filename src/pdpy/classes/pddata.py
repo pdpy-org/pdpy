@@ -198,8 +198,8 @@ class PdData(Base):
           self.__cls__ = self.header
           s = ''
           for d in self.data:
-            if isinstance(d, str):
-              s += d
+            if type(d) in (int, float, str):
+              s += str(d)
             else:
               s += ' ' + ' '.join(list(map(lambda x:str(x), d)))
             s += ' \\;'
