@@ -57,7 +57,7 @@ class Scalar(Base):
         s += self.__semi__
       return super().__pd__(self.name + ' ' + s)
     else:
-      return super().__pd__(self.name)
+      return super().__pd__(self.name if hasattr(self, 'name') else '')
 
   def __xml__(self):
     """ Returns the XML Element for this objcet """
