@@ -2,8 +2,8 @@
 
 ## Fixes
 
+- [ ] add new file object classes
 - [ ] pd method in arrays returns obj instead of array as cls
-- [ ] 1st element of text in comments in xml input is lost
 
 ## Improvements
 
@@ -21,4 +21,5 @@
 - [X] xml input
 - [X] doubly escaped comma characters when going from json to pd
 - [X] rename classes coherently
+- [X] 1st element of text in comments in xml input is lost
   
