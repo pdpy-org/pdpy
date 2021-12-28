@@ -397,12 +397,21 @@ class Base(object):
       """Convert an Element into an object """
 
       elem_tag = elem.tag
+      pdpy_tag = elem.attrib['pdpy'] if 'pdpy' in elem.attrib else None
+
       
-      if elem_tag == 'scalar':
+      if elem_tag == 'scalar' and pdpy_tag != 'Array':
         return self.__n__.__get__(name='Scalar')(xml=elem)
-      elif elem_tag == 'data':
+
+      if elem_tag == 'data':
         return {'data':[self.__n__.__get__(name='Data')(xml=c) for c in elem]}
 
+      if elem_tag == 'comments':
+        return [self.__n__.__get__(name='Comment')(xml=c) for c in elem]
+    
+      if elem_tag == 'comment':
+        return self.__n__.__get__(name='Comment')(xml=elem)
+    
       # print('>'*80)
       # log(1, f"Starting __elem_to_obj__ for {elem_tag}")
       elem_tag = self.__tag_strip__(elem.tag)
@@ -417,7 +426,6 @@ class Base(object):
       if elem_tag in ('nodes',   # any node
                       'edges',   # connections
                       'args',    # objects
-                      'comments',# comments
                       'targets', # messages
                       'messages', # messages
                       # 'data',    # data
@@ -495,14 +503,14 @@ class Base(object):
                 d.update({'text':[t for t in [v['text']]]})
               else:
                 if h is None:
-                  # if isinstance(v, list):
-                    # d.update({subelem_tag:v})
-                  # log(1, 'found anything', subelem_tag, v)
+                  if isinstance(v, list):
+                    d.update({subelem_tag:v})
+                  # log(1, 'found anything', subelem_tag, v, d)
                   #   for e in v:
                   #     d.update({subelem_tag:e})
-                  # else:
-                  for kk,vv in v.items():
-                    d.update({kk:vv})
+                  else:
+                    for kk,vv in v.items():
+                      d.update({kk:vv})
                 else:
                   # log(1, '--------> found header', subelem_tag, v)
                   for _,vv in v.items():
@@ -577,7 +585,7 @@ class Base(object):
     xml_tree = xparse(xml)
     xml_root = xml_tree.getroot()
     self.encoding = xml_root.get('encoding', 'utf-8')
-    
+
     # root element to which we add stuff
     root_dict = {'__p__' : self}
 

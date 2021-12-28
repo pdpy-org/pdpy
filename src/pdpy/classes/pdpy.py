@@ -163,6 +163,10 @@ class PdPy(Base):
       elif "array" == argv[2]:
         obj = Array(pd_lines = [self.__obj_idx__] + argv)
         self.__last_canvas__().add(obj)
+      # scalar-define object
+      elif "scalar" == argv[2]:
+        obj = Array(pd_lines = [self.__obj_idx__] + argv)
+        self.__last_canvas__().add(obj)
       # IEMGUI-group object
       elif argv[2] in IEMGuiNames:
         # log(1, "NODES:", argv)
@@ -231,8 +235,8 @@ class PdPy(Base):
     self.__last_canvas__().add(arr)
     return arr
   
-  def addScalar(self, argv):
-    scalar = Scalar(struct=self.structs, pd_lines=argv)
+  def addScalar(self, pd_lines):
+    scalar = Scalar(struct=self.structs, pd_lines=pd_lines)
     self.__last_canvas__().add(scalar)
     return scalar
 

@@ -34,12 +34,16 @@ class Data(Base):
         # 'set' or 'saved' for symbols, otherwise '0' for arrays of floats
         self.__cls__ = str(head)
         self.header = self.__cls__
-        if '0' == self.header:
+        if self.__isnum__(self.header):
           self.data = [float(d) for d in data]
         elif 'saved' == self.header:
           self.data = [str(d) for d in data]
         elif 'set' == self.header:
           self.data = splitByEscapedChar(data, char=';')
+          # check for name in first element (scalar define)
+          if not self.__isnum__(self.data[0].split()[0]):
+            self.data = self.data[0].split()
+            setattr(self, 'name', self.data.pop(0))
         else:
           log(1,f"Unknown data type {head} for:\n{self.__json__()}")
       else:
@@ -62,7 +66,7 @@ class Data(Base):
       self.__cls__ = str(self.header)
       data = xml.findall('datum')
       if len(data):
-        if '0' == self.header:
+        if self.__isnum__(self.header):
           self.data = [self.__num__(d.text) for d in data]
         elif self.header in ('set', 'saved'):
           self.data = [str(d.text) for d in data]
@@ -191,7 +195,7 @@ class Data(Base):
     if hasattr(self, 'data'):
 
       if hasattr(self, 'header'):
-        if self.header == '0':
+        if self.__isnum__(self.header):
           return ' '.join(list(map(lambda x:f"{self.__num__(x)}", self.data)))
         
         if self.header == 'set' or self.header == 'saved':

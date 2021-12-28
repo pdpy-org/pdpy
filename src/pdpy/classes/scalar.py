@@ -12,11 +12,6 @@ from .data import Data
 
 __all__ = [ 'Scalar' ]
 
-# TODO: so, what if we just fill the Struct with the scalar data
-# instead of this Scalar class? maybe forget this class and use only Struct?
-# Not really, though. Let's just use one Struct to define many scalars, 
-# like pd does.
-
 class Scalar(Base):
   def __init__(self, 
                struct=None,
@@ -27,25 +22,27 @@ class Scalar(Base):
     super().__init__(cls='scalar')
     self.className = self.__cls__
     
-    if pd_lines is not None:
-      self.parsePd(struct, pd_lines)
-    elif json is not None:
+    if json is not None:
       super().__populate__(self, json)
+    
     elif xml is not None:
       self.name = xml.findtext('name')
       if xml.find('data'):
         self.data = Data(xml=xml.find('data'))
-
-  def parsePd(self, struct, argv):
-    self.name = argv[0]
-    for s in struct:
-      if self.name == s.name:
-        setattr(self, 'data', Data(data = argv[1:], template = s))
     
+    elif pd_lines is not None:
+      log(1, 'Loading Scalar from Pd Lines:', pd_lines)
+      self.name = pd_lines[0]
+      for s in struct:
+        if self.name == s.name:
+          setattr(self, 'data', Data(data = pd_lines[1:], template = s))
+
   def __pd__(self):
     """ Returns the data of this scalar as a pd string """
     if hasattr(self, 'data'):
-      _, template = super().__getroot__(self).getTemplate(self.name)
+      root = super().__getroot__(self)
+      # if hasattr(root, 'structs'):
+      _, template = root.getTemplate(self.name)
       s = ''
       if hasattr(self.data, '__pd__'):
         s = self.data.__pd__(template)
@@ -56,12 +53,23 @@ class Scalar(Base):
           s += ' ' + self.data.__pd__()
         s += self.__semi__
       return super().__pd__(self.name + ' ' + s)
+      # else:
+        # log(1, "Scalar Define")
+        # s = "#X obj scalar define"
+        # if hasattr(self, 'data'):
+        #   s += ' -k'
+        # if hasattr(self, 'name'):
+        #   s += f" {self.name}"
+        # s += self.__end__
+        # if hasattr(self, 'data'):
+        #   s += self.data.__pd__()
+        # return s 
     else:
       return super().__pd__(self.name if hasattr(self, 'name') else '')
 
   def __xml__(self):
     """ Returns the XML Element for this objcet """
-    x = super().__element__(self)
+    x = super().__element__(self, attrib={'pdpy':self.__pdpy__})
     super().__subelement__(x, 'name', text=self.name)
     if hasattr(self, 'data'):
       _, template = super().__getroot__(self).getTemplate(self.name)

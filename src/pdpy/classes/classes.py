@@ -19,8 +19,13 @@ __all__ = [
 class Point(Base):
   def __init__(self, x=None, y=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
-    super().__init__(json=json, xml=xml)
-    if json is None and xml is None:
+    super().__init__()
+    if json is not None:
+      super().__populate__(self, json)
+    elif xml is not None:
+      self.x = self.__num__(xml.findtext('x'))
+      self.y = self.__num__(xml.findtext('y'))
+    elif json is None and xml is None:
       self.x = self.__num__(x) if x is not None else None
       self.y = self.__num__(y) if y is not None else None
     
@@ -34,8 +39,13 @@ class Point(Base):
 class Size(Base):
   def __init__(self, w=None, h=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
-    super().__init__(json=json, xml=xml)
-    if json is None and xml is None:
+    super().__init__()
+    if json is not None:
+      super().__populate__(self, json)
+    elif xml is not None:
+      self.w = self.__num__(xml.findtext('w'))
+      self.h = self.__num__(xml.findtext('h'))
+    elif json is None and xml is None:
       self.width  = self.__num__(w) if w is not None else None
       self.height = self.__num__(h) if h is not None else None
     
@@ -62,8 +72,13 @@ class Bounds(Base):
                xml=None
                ):
     self.__pdpy__ = self.__class__.__name__
-    super().__init__(json=json, xml=xml)
-    if json is None and xml is None:
+    super().__init__()
+    if json is not None:
+      super().__populate__(self, json)
+    elif xml is not None:
+      self.lower = dtype(xml.findtext('lower'))
+      self.upper = dtype(xml.findtext('upper'))
+    elif json is None and xml is None:
       self.lower = dtype(lower) if lower is not None else dtype(0)
       self.upper = dtype(upper) if upper is not None else dtype(0)
 
@@ -92,8 +107,13 @@ class Area(Base):
   """
   def __init__(self, coords=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
-    super().__init__(json=json, xml=xml)
-    if json is None and xml is None:
+    super().__init__()
+    if json is not None:
+      super().__populate__(self, json)
+    elif xml is not None:
+      self.a = Point(xml=xml.find('a'))
+      self.b = Point(xml=xml.find('b'))
+    elif json is None and xml is None:
       self.a = Point(x=coords[0],y=coords[2]) if coords is not None else Point()
       self.b = Point(x=coords[1],y=coords[3]) if coords is not None else Point()
     
@@ -126,7 +146,16 @@ class Coords(Base):
     
     self.__pdpy__ = self.__class__.__name__
     super().__init__(cls='coords', json=json, xml=xml)
-    if json is None and xml is None:
+    super().__init__()
+    if json is not None:
+      super().__populate__(self, json)
+    elif xml is not None:
+      self.range = Area(xml=xml.find('range'))
+      self.dimension = Size(xml=xml.find('dimension'))
+      self.gop = self.__num__(xml.findtext('gop', 0))
+      if xml.find('margin'):
+        self.addmargin(xml=xml.find('margin'))
+    elif json is None and xml is None:
       # NON-GOP
       self.range = Area(coords=coords[:4]) if coords is not None else Area()
       self.dimension = Size(w=coords[4], h=coords[5]) if coords is not None else Size()
@@ -134,18 +163,6 @@ class Coords(Base):
       # GOP
       if 9 == len(coords):
         self.addmargin(x=coords[7], y=coords[8])
-    
-    # elif xml is not None:
-    #   self.range = Area(xml=xml.find('range'))
-    #   self.dimension = Size(xml=xml.find('dimension'))
-    #   self.gop = self.__num__(xml.findtext("gop", 0))
-    #   if xml.find('margin'):
-    #     self.addmargin(xml=xml.find('margin'))
-    # else:
-    #   self.range = Area()
-    #   self.dimension = Size()
-    #   self.gop = 0
-    #   self.margin = Size()
 
   def addmargin(self, **kwargs):
     self.margin = Point(**kwargs)

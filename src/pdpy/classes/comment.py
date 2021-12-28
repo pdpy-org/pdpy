@@ -8,7 +8,7 @@
 
 from .base import Base
 from .classes import Point
-from ..util.utils import splitSemi
+from ..util.utils import log, splitSemi
 
 __all__ = [ 'Comment' ]
 
@@ -21,7 +21,9 @@ class Comment(Base):
       super().__populate__(self, json)
     elif xml is not None:
       self.position = Point(xml=xml.find('position'))
-      self.text = xml.text
+      self.border = xml.findtext('border', None)
+      if xml.find('text'):
+        self.text = [x.text for x in xml.find('text').findall('txt')]
     elif pd_lines is not None:
       self.position = Point(x=pd_lines[0], y=pd_lines[1])
       # can have "\\,"
@@ -61,5 +63,6 @@ class Comment(Base):
         super().__subelement__(text, 'txt', text=t)
       super().__subelement__(x, text)
     return x
+    
 
   
