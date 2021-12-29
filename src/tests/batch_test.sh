@@ -4,6 +4,8 @@
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
 
+SHOW_DIFF=1
+
 if [[ $1 == 'help' ]] || [[ $1 == '-h' ]] || [[ $1 == '--help' ]]
 then
   echo "Usage: ./batch_test.sh pathfile [offset, once]"
@@ -80,6 +82,7 @@ function translate_all
   $py $file -int $INT -f 'xml'  -t 'pd' -i $xml_out  -o $xml_ref >> $err 2>&1
   if [[ ! -f $xml_ref ]]; then return; fi
   $py $file -int $INT -f 'xml' -t 'json'   -i $xml_out -o $xml_jref  >> $err 2>&1
+  if [[ $SHOW_DIFF ]]; then diff $json_ref $xml_ref; fi
 }
 
 while read line; do
