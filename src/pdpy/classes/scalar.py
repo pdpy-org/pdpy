@@ -31,7 +31,7 @@ class Scalar(Base):
         self.data = Data(xml=xml.find('data'))
     
     elif pd_lines is not None:
-      log(1, 'Loading Scalar from Pd Lines:', pd_lines)
+      # log(1, 'Loading Scalar from Pd Lines:', pd_lines)
       self.name = pd_lines[0]
       for s in struct:
         if self.name == s.name:
