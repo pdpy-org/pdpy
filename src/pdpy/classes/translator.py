@@ -18,7 +18,7 @@ from pdpy.classes.exceptions import ArgumentException
 from pdpy.classes.pdpy import PdPy
 from pdpy.classes.pdpyparser import PdPyParser
 from pdpy.classes.default import getFormat
-from pdpy.util.utils import log, parsePdBinBuf, parsePdFileLines
+from pdpy.util.utils import log, parsePdBinBuf, parsePdFileLines, loadPdFile
 from pdpy.classes.pdpyencoder import PdPyEncoder
 
 __all__ = [ 'Translator' ] 
@@ -86,7 +86,7 @@ class Translator(Base):
     
     if self.source == "pd":
       pd_file_path = self.input_file.as_posix()
-      pd_file = self.load_pd(pd_file_path)
+      pd_file = loadPdFile(pd_file_path, self.encoding)
       pd_lines = parsePdFileLines(pd_file)
       self.pdpy = PdPy(
           name = self.input_file.name,
@@ -219,24 +219,3 @@ class Translator(Base):
       #      self.xml_ref = JsonToXml(self.pdpy)
 
   # end def __call__
-
-  def load_pd_data(self, encoding, filename):
-    # log(1,"Trying", encoding)
-    with open(filename, "r", encoding=encoding) as fp:
-      lines = [line for line in fp.readlines()]
-    return lines, encoding
-
-  def load_pd(self, filename):
-    try:
-      self.pd_data, self.encoding = self.load_pd_data(self.encoding, filename)
-    except UnicodeDecodeError:
-      try:
-        self.pd_data, self.encoding = self.load_pd_data("ascii", filename)
-      except UnicodeDecodeError:
-        try:
-          self.pd_data, self.encoding = self.load_pd_data("latin-1", filename)
-        except Exception as e:
-          self.pd_data = None
-          raise ValueError("Could not load input file", e)
-    finally:
-      return self.pd_data

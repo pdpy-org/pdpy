@@ -17,7 +17,9 @@ __all__ = [
   "parsePdFileLines",
   "printer",
   "checknum",
-  "quit_help"
+  "quit_help",
+  "loadPdData",
+  "loadPdFile",
 ]
 
 def checknum(num):
@@ -249,3 +251,24 @@ def quit_help(msg=None, parser=None):
   else:
     log(2,"Unknown error...")
   sys.exit(1)
+
+def loadPdData(encoding, filename):
+  # log(1,"Trying", encoding)
+  with open(filename, "r", encoding=encoding) as fp:
+    lines = [line for line in fp.readlines()]
+  return lines, encoding
+
+def loadPdFile(filename, encoding='utf-8'):
+  try:
+    pd_data, encoding = loadPdData(encoding, filename)
+  except UnicodeDecodeError:
+    try:
+      pd_data, encoding = loadPdData("ascii", filename)
+    except UnicodeDecodeError:
+      try:
+        pd_data, encoding = loadPdData("latin-1", filename)
+      except Exception as e:
+        pd_data = None
+        raise ValueError("Could not load input file", e)
+  finally:
+    return pd_data

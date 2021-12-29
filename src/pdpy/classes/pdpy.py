@@ -58,6 +58,9 @@ class PdPy(Base):
     
     if root:
       self.root = Canvas(json={'name':self.patchname,'isroot':True})
+    
+    # update the parent of all childs
+    self.__jsontree__()
   
   def getTemplate(self, template_name):
     for idx, s in enumerate(getattr(self, 'structs')):

@@ -7,7 +7,7 @@
 """ Base Class """
 
 from json import dumps as json_dumps
-from xml.etree.ElementTree import ElementTree, Element, XMLParser, indent, parse as xparse, XMLParser, ParseError
+from xml.etree.ElementTree import ElementTree, Element, indent, parse as xparse
 
 from pdpy.classes.exceptions import ArgumentException
 from ..util.utils import log

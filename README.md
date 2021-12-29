@@ -1,6 +1,6 @@
 # PdPy
 
-A python package to interact with Pure Data (Pd) from Python.
+A Pure Data (Pd) scripting language written in Python.
 
 Translate Pure Data files from the `.pd` format to other formats such as [JSON](https://www.json.org/json-en.html) and [Pickle](https://docs.python.org/3/library/pickle.html#module-pickle), or [XML](https://www.w3.org/standards/xml).
 
