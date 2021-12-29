@@ -23,7 +23,7 @@ class Data(Base):
                xml=None):
 
     self.__pdpy__ = self.__class__.__name__
-    super().__init__(pdtype='A', cls=head)
+    super().__init__(pdtype='A', cls=head or '0')
     
     if json is not None:
       super().__populate__(self, json)
@@ -196,7 +196,8 @@ class Data(Base):
 
       if hasattr(self, 'header'):
         if self.__isnum__(self.header):
-          return ' '.join(list(map(lambda x:f"{self.__num__(x)}", self.data)))
+          s = ' '.join(list(map(lambda x:f"{self.__num__(x)}", self.data)))
+          return super().__pd__('0 '+s)
         
         if self.header == 'set' or self.header == 'saved':
           self.__cls__ = self.header
