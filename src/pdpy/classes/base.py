@@ -396,7 +396,7 @@ class Base(object):
   def __elem_to_obj__(self, elem):
       """Convert an Element into an object """
 
-      elem_tag = elem.tag
+      elem_tag = self.__tag_strip__(elem.tag)
       pdpy_tag = elem.attrib['pdpy'] if 'pdpy' in elem.attrib else None
 
       
@@ -414,7 +414,6 @@ class Base(object):
     
       # print('>'*80)
       # log(1, f"Starting __elem_to_obj__ for {elem_tag}")
-      elem_tag = self.__tag_strip__(elem.tag)
       
 
       # the class
