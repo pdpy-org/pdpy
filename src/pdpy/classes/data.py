@@ -40,10 +40,11 @@ class Data(Base):
           self.data = [str(d) for d in data]
         elif 'set' == self.header:
           self.data = splitByEscapedChar(data, char=';')
-          # check for name in first element (scalar define)
-          if not self.__isnum__(self.data[0].split()[0]):
-            self.data = self.data[0].split()
-            setattr(self, 'name', self.data.pop(0))
+          if self.data: # check if the data exists
+            # check for name in first element (scalar define)
+            if not self.__isnum__(self.data[0].split()[0]):
+              self.data = self.data[0].split()
+              setattr(self, 'name', self.data.pop(0))
         else:
           log(1,f"Unknown data type {head} for:\n{self.__json__()}")
       else:
