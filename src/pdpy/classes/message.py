@@ -78,7 +78,7 @@ class Msg(Base):
 
   def __xml__(self):
     """ Returns the XML Element for this object """
-    x = super().__element__(self)
+    x = super().__element__(scope=self)
     super().__subelement__(x, 'address', text=self.address)
     if hasattr(self, 'messages'):
       msg = super().__element__(tag='messages')

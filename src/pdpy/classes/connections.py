@@ -133,7 +133,7 @@ class Edge(Base):
 
   def __xml__(self, o=None):
     """ Returns an xml element for this edge """
-    x = super().__element__(self)
+    x = super().__element__(scope=self)
     super().__subelement__(x, self.source.__xml__(o, tag='source'))
     super().__subelement__(x, self.sink.__xml__(o, tag='sink'))
     return x

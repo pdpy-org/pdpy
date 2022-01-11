@@ -69,7 +69,7 @@ class Scalar(Base):
 
   def __xml__(self):
     """ Returns the XML Element for this objcet """
-    x = super().__element__(self, attrib={'pdpy':self.__pdpy__})
+    x = super().__element__(scope=self, attrib={'pdpy':self.__pdpy__})
     super().__subelement__(x, 'name', text=self.name)
     if hasattr(self, 'data'):
       _, template = super().__getroot__(self).getTemplate(self.name)

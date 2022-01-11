@@ -59,7 +59,7 @@ class Graph(Base):
     x = super().__xml__(scope=self, attrib=('name','area','range'))
 
     for a in getattr(self, 'array', []):
-      arr = super().__element__(a)
+      arr = super().__element__(scope=a)
       for y in ('name', 'length', 'type'):
         super().__subelement__(arr, y, text=a[y])
       super().__subelement__(x, arr)

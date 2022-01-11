@@ -59,7 +59,7 @@ class Dependencies(Base):
 
   def __xml__(self):
     """ Returns an XML Element for this object """
-    x = super().__element__(self)
+    x = super().__element__(scope=self)
     for path in getattr(self, 'paths', []):
       super().__subelement__(x, 'path', text=path)
     for lib in getattr(self, 'libs', []):

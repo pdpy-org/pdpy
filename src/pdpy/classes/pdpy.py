@@ -397,7 +397,7 @@ class PdPy(Base):
     """ Return the XML Element for this object """
     
     # root tag to which struct, 'root', and dependencies will be added
-    x = super().__element__(self, attrib={
+    x = super().__element__(scope=self, attrib={
       "encoding": self.encoding
       })
     

@@ -34,7 +34,7 @@ class Float(Base):
     return f"{self.value}"
 
   def __xml__(self):
-    x = super().__element__(self)
+    x = super().__element__(scope=self)
     super().__subelement__(x, 'name', text=self.name)
     super().__subelement__(x, 'value', text=self.value)
     return x
@@ -137,7 +137,7 @@ class List(Base):
 
   def __xml__(self, template):
     """ Return the XML Element for this object """
-    x = super().__element__(self)
+    x = super().__element__(scope=self)
     
     if hasattr(self, 'float') and hasattr(template, 'float'):
       keys = getattr(template, 'float')
