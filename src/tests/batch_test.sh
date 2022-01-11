@@ -6,19 +6,15 @@
 
 SHOW_DIFF=1
 
-if [[ $1 == 'help' ]] || [[ $1 == '-h' ]] || [[ $1 == '--help' ]]
+if [[ ! $1 ]] || [[ $1 == 'help' ]] || [[ $1 == '-h' ]] || [[ $1 == '--help' ]]
 then
-  echo "Usage: ./batch_test.sh pathfile [offset, once]"
-  echo """Options:
-Argument 1: pathfile
- -  A file containing the list of pure data file paths to be translated
-Argument 2 (optional): offset
- - the offset into the file to start the translation from
-Argument 3 (optional): once
- - If present, do only the current file and stop
- - If not present, do all the files in the list and stop on Error
-"""
-  echo "./batch_test.sh help (shows this help message and exits)"
+  echo "Usage: ./batch_test.sh [help | PATH] [FROM, ONCE]"
+  printf "\t%s\t%s\n" "PATH" "A path to a text file containing the list of pure data file paths to be translated, eg: find . -name '*.pd' > myfile.txt"
+  printf "\t%s\t%s\n" "help" "Print this help"
+  echo "Argument 2 (optional):"
+  printf "\t%s\t%s\n" "FROM" "the file line number from which to start the translation"
+  echo "Argument 3 (optional):"
+  printf "\t%s\t%s\n" "ONCE" "Translate only one file and stop, otherwise stop on ERROR"
   exit
 fi
 
