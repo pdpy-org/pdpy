@@ -133,7 +133,7 @@ class XmlTagConvert(object):
             break
         # print('to_xml_tag(): key not in table:', key)
         tag = key
-    print(f"to_xml_tag(): {key} --> {tag}")
+    # print(f"to_xml_tag(): {key} --> {tag}")
     # argh, we need to check again for internal characters, eg: <mul_*_tilde>
     for i,e in enumerate(tag):
       for k in self.table.keys():
