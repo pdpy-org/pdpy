@@ -7,7 +7,8 @@
 """ IEMGUI Number box Class Definitions """
 
 from .object import Object
-from .classes import Size, Bounds
+from .size import Size
+from .bounds import Bounds
 from .connections import Comm
 from .iemgui import IEMLabel
 

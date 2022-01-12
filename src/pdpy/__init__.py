@@ -31,7 +31,11 @@ from .classes.radio import *
 from .classes.nbx import *
 from .classes.bng import *
 from .classes.vu import *
-from .classes.classes import *
+from .classes.point import *
+from .classes.size import *
+from .classes.area import *
+from .classes.bounds import *
+from .classes.coords import *
 from .classes.translator import *
 from .classes.pdpy import *
 from .classes.data import *

@@ -15,7 +15,7 @@ from ..classes.canvas import Canvas
 from ..classes.message import Message
 from ..classes.comment import Comment
 from ..classes.connections import Edge
-from ..classes.classes import Point
+from ..classes.point import Point
 from ..classes.object import Object
 from .array import Array
 from ..util.utils import log, printer, tokenize

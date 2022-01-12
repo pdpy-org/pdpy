@@ -8,7 +8,8 @@
 
 from .base import Base
 from .canvasbase import CanvasBase
-from .classes import Point, Size
+from .point import Point
+from .size import Size
 
 __all__ = [ 'Canvas' ]
 class Canvas(CanvasBase, Base):

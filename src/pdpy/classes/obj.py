@@ -7,7 +7,7 @@
 """ Obj Class Definitions """
 
 from .base import Base
-from .classes import Point
+from .point import Point
 
 __all__ = [ 'Obj' ]
 

@@ -8,7 +8,7 @@
 
 from .connections import Comm
 from .obj import Obj
-from .classes import Bounds
+from .bounds import Bounds
 
 __all__ = [ 'Gui' ]
 

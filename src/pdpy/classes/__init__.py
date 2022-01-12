@@ -30,7 +30,11 @@ from .radio import *
 from .nbx import *
 from .bng import *
 from .vu import *
-from .classes import *
+from .point import *
+from .size import *
+from .area import *
+from .bounds import *
+from .coords import *
 from .translator import *
 from .pdpy import *
 from .data import *

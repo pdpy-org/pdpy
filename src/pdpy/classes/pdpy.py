@@ -8,7 +8,9 @@
 
 from .base import Base
 from .canvasbase import CanvasBase
-from .classes import *
+from .point import Point
+from .size import Size
+from .coords import Coords
 from .canvas import Canvas
 from .struct import Struct
 from .scalar import Scalar

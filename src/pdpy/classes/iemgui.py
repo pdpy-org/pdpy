@@ -7,7 +7,7 @@
 """ IEMGUI Class Definitions """
 
 from .base import Base
-from .classes import Point
+from .point import Point
 from .default import PdFonts
 
 __all__ = [ 

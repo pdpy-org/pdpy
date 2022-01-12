@@ -7,7 +7,7 @@
 """ Pure Data Text Comment Definitions """
 
 from .base import Base
-from .classes import Point
+from .point import Point
 from ..util.utils import log, splitSemi
 
 __all__ = [ 'Comment' ]

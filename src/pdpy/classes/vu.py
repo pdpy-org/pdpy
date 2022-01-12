@@ -6,7 +6,7 @@
 # **************************************************************************** #
 """ IEMGUI Vu Meter Class Definitions """
 
-from .classes import Size
+from .size import Size
 from .connections import Comm
 from .object import Object
 from .iemgui import IEMLabel

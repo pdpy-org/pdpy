@@ -7,7 +7,7 @@
 """ Class Definitions for the Old Graph Object """
 
 from .base import Base
-from .classes import Area # for the Graph class
+from .area import Area # for the Graph class
 
 __all__ = [ 'Graph' ]
 

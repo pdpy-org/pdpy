@@ -7,7 +7,7 @@
 """ IEMGUI Radio Class Definitions """
 
 from .object import Object
-from .classes import Size
+from .size import Size
 from .connections import Comm
 from .iemgui import IEMLabel
 
