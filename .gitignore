@@ -27,3 +27,4 @@ node_modules/
 structure.txt
 private/
 src/tests/hello-world.json
+src/tests/definitions.txt
