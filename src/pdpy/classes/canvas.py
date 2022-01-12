@@ -6,11 +6,12 @@
 # **************************************************************************** #
 """ Canvas Class Definition """
 
+from .base import Base
 from .canvasbase import CanvasBase
 from .classes import Point, Size
 
 __all__ = [ 'Canvas' ]
-class Canvas(CanvasBase):
+class Canvas(CanvasBase, Base):
   """ A Pure Data 'canvas' or 'subpatch' represented as a `pdpy` object
 
   Description:
@@ -50,7 +51,8 @@ class Canvas(CanvasBase):
   """
   def __init__(self, json=None):
 
-    super().__init__(obj_idx=-1, pdtype='N', cls='canvas')
+    CanvasBase.__init__(self, obj_idx=-1)
+    Base.__init__(self, pdtype='N', cls='canvas')
     self.__pdpy__ = self.__class__.__name__
     
     if json is not None:
@@ -62,7 +64,8 @@ class Canvas(CanvasBase):
       self.vis = 0
       self.name = None
     
-    self.isroot = self.__pdbool__(self.isroot)
+    if hasattr(self, 'isroot'):
+      self.isroot = self.__pdbool__(self.isroot)
     
     if hasattr(self, 'font'):
       self.font = self.__num__(self.font)
@@ -188,7 +191,7 @@ class Canvas(CanvasBase):
     s = super().__pd__()
     s += f" {self.screen.__pd__()} {self.dimension.__pd__()}"
     
-    if self.isroot:
+    if hasattr(self, 'isroot') and self.isroot:
       # root canvas only reports font
       s += f" {self.font}"
     else:
@@ -210,7 +213,7 @@ class Canvas(CanvasBase):
     
     # connections and coords
     # this order is swapped for the root canvas
-    if self.isroot:
+    if hasattr(self, 'isroot') and self.isroot:
       if hasattr(self, 'coords'):
         s += self.coords.__pd__()
       for x in getattr(self, 'edges', []):
@@ -229,7 +232,7 @@ class Canvas(CanvasBase):
       s += self.__end__
     
     # the border, only if not root
-    if not self.isroot and hasattr(self, 'border'):
+    if (not hasattr(self, 'isroot')) and hasattr(self, 'border'):
       s += f"#X f {self.border} {self.__end__}"
 
     return s

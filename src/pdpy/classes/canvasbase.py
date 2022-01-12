@@ -6,20 +6,16 @@
 # **************************************************************************** #
 """ Canvas Base Class Definition """
 
-from .base import Base
-
 __all__ = [ 'CanvasBase' ]
 
-class CanvasBase(Base):
+class CanvasBase(object):
   """ Base class for a canvas -- used by pdpy.pdpy and pdpy.canvas """
 
-  def __init__(self, obj_idx=0, isroot=False, **kwargs):
+  def __init__(self, obj_idx=0, isroot=False):
     """ Initialize the canvas base class """
     
-    # Initialize the base class
-    super().__init__(**kwargs)
-    
-    self.isroot = isroot
+    if isroot:
+      self.isroot = isroot
     
     self.__obj_idx__ = obj_idx
     

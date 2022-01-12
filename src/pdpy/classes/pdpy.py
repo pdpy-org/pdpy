@@ -6,13 +6,14 @@
 # **************************************************************************** #
 """ PdPy class definition """
 
+from .base import Base
+from .canvasbase import CanvasBase
 from .classes import *
-from .struct import *
-from .scalar import *
+from .canvas import Canvas
+from .struct import Struct
+from .scalar import Scalar
 from .default import *
 from .iemgui import *
-from .canvasbase import CanvasBase
-from .canvas import Canvas
 from .graph import Graph
 from .goparray import PdGOPArray
 from .data import Data
@@ -27,7 +28,7 @@ from ..util.utils import log
 
 __all__ = [ 'PdPy' ]
 
-class PdPy(CanvasBase):
+class PdPy(CanvasBase, Base):
   
   def __init__(self, 
                name=None,
@@ -44,8 +45,8 @@ class PdPy(CanvasBase):
     self.__canvas_idx__ = []
     self.__depth__ = 0
 
-
-    super().__init__(obj_idx=0, json=json, xml=xml)
+    CanvasBase.__init__(self, obj_idx=0)
+    Base.__init__(self, json=json, xml=xml)
     
     if json is None and xml is None and pd_lines is not None:
       # parse the pd lines and populate the pdpy instance
