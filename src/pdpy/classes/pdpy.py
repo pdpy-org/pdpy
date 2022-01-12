@@ -13,7 +13,6 @@ from .canvas import Canvas
 from .struct import Struct
 from .scalar import Scalar
 from .default import *
-from .iemgui import *
 from .cnv import *
 from .toggle import *
 from .slider import *
