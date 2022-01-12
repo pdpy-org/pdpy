@@ -14,6 +14,13 @@ from .struct import Struct
 from .scalar import Scalar
 from .default import *
 from .iemgui import *
+from .cnv import *
+from .toggle import *
+from .slider import *
+from .radio import *
+from .nbx import *
+from .bng import *
+from .vu import *
 from .graph import Graph
 from .goparray import PdGOPArray
 from .data import Data

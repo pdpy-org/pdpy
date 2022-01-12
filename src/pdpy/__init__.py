@@ -24,6 +24,13 @@ from .classes.exceptions import *
 from .classes.goparray import *
 from .classes.graph import *
 from .classes.iemgui import *
+from .classes.cnv import *
+from .classes.toggle import *
+from .classes.slider import *
+from .classes.radio import *
+from .classes.nbx import *
+from .classes.bng import *
+from .classes.vu import *
 from .classes.classes import *
 from .classes.translator import *
 from .classes.pdpy import *

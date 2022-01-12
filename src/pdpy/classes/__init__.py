@@ -23,6 +23,13 @@ from .exceptions import *
 from .goparray import *
 from .graph import *
 from .iemgui import *
+from .cnv import *
+from .toggle import *
+from .slider import *
+from .radio import *
+from .nbx import *
+from .bng import *
+from .vu import *
 from .classes import *
 from .translator import *
 from .pdpy import *
