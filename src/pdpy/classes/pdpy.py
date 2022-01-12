@@ -6,12 +6,12 @@
 # **************************************************************************** #
 """ PdPy class definition """
 
-from .base import Base
 from .classes import *
 from .struct import *
 from .scalar import *
 from .default import *
 from .iemgui import *
+from .canvasbase import CanvasBase
 from .canvas import Canvas
 from .graph import Graph
 from .goparray import PdGOPArray
@@ -27,7 +27,7 @@ from ..util.utils import log
 
 __all__ = [ 'PdPy' ]
 
-class PdPy(Base):
+class PdPy(CanvasBase):
   
   def __init__(self, 
                name=None,
@@ -43,13 +43,9 @@ class PdPy(Base):
     self.__pdpy__ = self.__class__.__name__
     self.__canvas_idx__ = []
     self.__depth__ = 0
-    self.__obj_idx__ = 0
-    # This is a dictionary with 
-    # - the node indices as keys, and 
-    # - the last self.__depth_list__ index as values
-    self.__obj_map__ = {}
 
-    super().__init__(json=json, xml=xml)
+
+    super().__init__(obj_idx=0, json=json, xml=xml)
     
     if json is None and xml is None and pd_lines is not None:
       # parse the pd lines and populate the pdpy instance
@@ -321,36 +317,6 @@ class PdPy(Base):
           if "graph" == body[-1]: last = self.restore(body)
           else:                   last = self.restore(body)
         else: log(1,"What is this?", argv, self.patchname)
-
-  # def __parse_xml__(self, x):
-  #   """ Parse the xml file into this instance's scope
-
-  #   Description:
-  #   ------------
-  #   This method populates the current class with appropriate calls to 
-  #   individual classes refered to by parsing the xml file `x`.
-
-  #   """
-  #   pass
-
-  def __update_obj_map__(self, x):
-    """ Update the object map with the current object
-
-    Description:
-    ------------
-    This method updates the object map with the current object. This is meant
-    to keep track of the objects in the current canvas, so we can connect
-    them later with their respective edges.
-    """
-    # If the node has an ID, get it and use it to update the object map
-    if hasattr(x, "id"):
-      # increment the index by one
-      self.__obj_idx__ += 1
-      # add the node to the map so that 
-      # key is the id and value is the index
-      self.__obj_map__.update({
-        int(getattr(x,'id')) : self.__obj_idx__
-      })
 
   def __pd__(self):
     """ Unparse this instance's scope into a list of pure data argument vectors

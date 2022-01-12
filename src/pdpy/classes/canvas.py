@@ -6,11 +6,11 @@
 # **************************************************************************** #
 """ Canvas Class Definition """
 
-from .base import Base
+from .canvasbase import CanvasBase
 from .classes import Point, Size
 
 __all__ = [ 'Canvas' ]
-class Canvas(Base):
+class Canvas(CanvasBase):
   """ A Pure Data 'canvas' or 'subpatch' represented as a `pdpy` object
 
   Description:
@@ -50,14 +50,8 @@ class Canvas(Base):
   """
   def __init__(self, json=None):
 
-    super().__init__(pdtype='N', cls='canvas')
+    super().__init__(obj_idx=-1, pdtype='N', cls='canvas')
     self.__pdpy__ = self.__class__.__name__
-    self.isroot = False
-    self.__obj_idx__ = -1
-    # This is a dictionary with 
-    # - the node indices as keys, and 
-    # - the last self.__depth_list__ index as values
-    self.__obj_map__ = {}
     
     if json is not None:
       super().__populate__(self, json)
@@ -77,25 +71,6 @@ class Canvas(Base):
       self.__cursor__ = Point(x=self.font, y=self.font)
       self.__box__ = Size(w=self.font * 1.25, h=self.font * 2)
       self.__margin__ = Size()
-
-  def __update_obj_map__(self, x):
-    """ Update the object map with the current object
-
-    Description:
-    ------------
-    This method updates the object map with the current object. This is meant
-    to keep track of the objects in the current canvas, so we can connect
-    them later with their respective edges.
-    """
-    # If the node has an ID, get it and use it to update the object map
-    if hasattr(x, "id"):
-      # increment the index by one
-      self.__obj_idx__ += 1
-      # add the node to the map so that 
-      # key is the id and value is the index
-      self.__obj_map__.update({
-        int(getattr(x,'id')) : self.__obj_idx__
-      })
 
   def grow(self):
     """ Increments the canvas object index by 1

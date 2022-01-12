@@ -29,6 +29,7 @@ from .pdpy import *
 from .data import *
 from .gui import *
 from .base import *
+from .canvasbase import *
 from .canvas import *
 from .dependencies import *
 from .pdpyparser import *

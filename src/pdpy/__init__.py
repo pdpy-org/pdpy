@@ -30,6 +30,7 @@ from .classes.pdpy import *
 from .classes.data import *
 from .classes.gui import *
 from .classes.base import *
+from .classes.canvasbase import *
 from .classes.canvas import *
 from .classes.dependencies import *
 from .classes.pdpyparser import *
