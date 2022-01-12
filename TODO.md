@@ -10,6 +10,7 @@
 
 ## Improvements
 
+- [ ] general purpose make file
 - [ ] include author and description attributes from META.pd stuff or externals parsing ?
 - [ ] unescape args when encoding to json
 - [ ] handle expr arguments differently
