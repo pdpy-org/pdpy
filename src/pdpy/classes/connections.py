@@ -38,6 +38,8 @@ class Comm(Base):
     """ Returns a pd string for this send/receive pair"""
     if order==1:
       return f"{self.receive} {self.send}"
+    elif order==-1:
+      return f"{self.send} {self.receive}"
     else:
       if hasattr(self, 'send') and self.send is not False:
         return f"{self.send} {self.receive}"

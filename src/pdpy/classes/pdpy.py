@@ -176,6 +176,10 @@ class PdPy(CanvasBase, Base):
       elif "scalar" == argv[2]:
         obj = Array(pd_lines = [self.__obj_idx__] + argv)
         self.__last_canvas__().add(obj)
+      # file-define object
+      elif "file" == argv[2]:
+        obj = Array(pd_lines = [self.__obj_idx__] + argv)
+        self.__last_canvas__().add(obj)
       # IEMGUI-group object
       elif argv[2] in IEMGuiNames:
         # log(1, "NODES:", argv)

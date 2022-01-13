@@ -51,6 +51,8 @@ class Gui(Object):
         if 7 < len(pd_lines):
           self.label = self.__d__.label if pd_lines[7] is None else pd_lines[7]
           self.comm = Comm(send=pd_lines[8], receive=pd_lines[9], default=self.__d__.receive)
+        if 10 < len(pd_lines):
+          self.font_size = self.__num__(pd_lines[10])
     
     if self.__cls__ == 'obj':
       self.__cls__ = self.className
@@ -68,10 +70,12 @@ class Gui(Object):
     s += f" {getattr(self,'label',self.__d__.label)}"
 
     comm = getattr(self, 'comm', Comm(default=self.__d__.receive))
-    s += f" {comm.__pd__(order=1)}"
+    s += f" {comm.__pd__(order=-1)}"
+    if hasattr(self, 'font_size'):
+      s += f" {self.font_size}"
     
     return super().__pd__(s)
   
   def __xml__(self):
     """ Returns an XML Element for this object """
-    return super().__xml__(scope=self, tag=self.className, attrib=('className','digit_width', 'limits', 'flag', 'label', 'comm'))
+    return super().__xml__(scope=self, tag=self.className, attrib=('className','digit_width', 'limits', 'flag', 'label', 'comm', 'font_size'))
