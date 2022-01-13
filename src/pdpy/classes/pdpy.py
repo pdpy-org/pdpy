@@ -6,6 +6,7 @@
 # **************************************************************************** #
 """ PdPy class definition """
 
+from pdpy.classes.xmlbuilder import XmlBuilder
 from .base import Base
 from .canvasbase import CanvasBase
 from .default import *
@@ -369,28 +370,14 @@ class PdPy(CanvasBase, Base):
     # add the 'root' tag to the xml root
     super().__subelement__(x, root)
     
-    if hasattr(self, 'nodes'):
-      nodes = super().__element__(tag='nodes')
-      for e in getattr(self, 'nodes', []):
-        self.__update_obj_map__(e)
-        super().__subelement__(nodes, e.__xml__())
-      super().__subelement__(root, nodes)
-
-    if hasattr(self, 'comments'):
-      comments = super().__element__(tag='comments')
-      for e in getattr(self, 'comments', []):
-        super().__subelement__(comments, e.__xml__())
-      super().__subelement__(root, comments)
+    super().__xml_nodes__(root)
+    super().__xml_comments__(root)
 
     if hasattr(self, 'coords'):
       super().__subelement__(root, self.coords.__xml__())
     
-    if hasattr(self, 'edges'):
-      edges = super().__element__(tag='edges')
-      for e in getattr(self, 'edges', []):
-        super().__subelement__(edges, e.__xml__(self.__obj_map__))
-      super().__subelement__(root, edges)
-    
+    super().__xml_edges__(root)
+
     if hasattr(self, 'position'):
       super().__subelement__(root, self.position.__xml__())
     

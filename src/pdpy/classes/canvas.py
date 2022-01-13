@@ -227,23 +227,8 @@ class Canvas(CanvasBase, Base):
       if hasattr(self, e):
         super().__subelement__(x, getattr(self,e).__xml__(e))
     
-    if hasattr(self, 'nodes'):
-      nodes = super().__element__(tag='nodes')
-      for e in getattr(self, 'nodes', []):
-        self.__update_obj_map__(e)
-        super().__subelement__(nodes, e.__xml__())
-      super().__subelement__(x, nodes)
+    super().__xml_nodes__(x)
+    super().__xml_comments__(x)
+    super().__xml_edges__(x)
 
-    if hasattr(self, 'comments'):
-      comments = super().__element__(tag='comments')
-      for e in getattr(self, 'comments', []):
-        super().__subelement__(comments, e.__xml__())
-      super().__subelement__(x, comments)
-
-    if hasattr(self, 'edges'):
-      edges = super().__element__(tag='edges')
-      for e in getattr(self, 'edges', []):
-        super().__subelement__(edges, e.__xml__(self.__obj_map__))
-      super().__subelement__(x, edges)
-          
     return x

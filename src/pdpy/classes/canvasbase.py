@@ -6,13 +6,16 @@
 # **************************************************************************** #
 """ Canvas Base Class Definition """
 
+from .xmlbuilder import XmlBuilder
+
 __all__ = [ 'CanvasBase' ]
 
-class CanvasBase(object):
+class CanvasBase(XmlBuilder):
   """ Base class for a canvas -- used by pdpy.pdpy and pdpy.canvas """
 
   def __init__(self, obj_idx=0, isroot=False):
     """ Initialize the canvas base class """
+    super().__init__()
     
     if isroot:
       self.isroot = isroot
@@ -84,3 +87,25 @@ class CanvasBase(object):
       s = self.__coords__(s)
     s = self.__restore__(s)
     return s
+  
+  def __xml_nodes__(self, parent):
+    if hasattr(self, 'nodes'):
+      nodes = super().__element__(tag='nodes')
+      for e in getattr(self, 'nodes', []):
+        self.__update_obj_map__(e)
+        super().__subelement__(nodes, e.__xml__())
+      super().__subelement__(parent, nodes)
+
+  def __xml_comments__(self, parent):
+    if hasattr(self, 'comments'):
+      comments = super().__element__(tag='comments')
+      for e in getattr(self, 'comments', []):
+        super().__subelement__(comments, e.__xml__())
+      super().__subelement__(parent, comments)
+
+  def __xml_edges__(self, parent):
+    if hasattr(self, 'edges'):
+      edges = super().__element__(tag='edges')
+      for e in getattr(self, 'edges', []):
+        super().__subelement__(edges, e.__xml__(self.__obj_map__))
+      super().__subelement__(parent, edges)
