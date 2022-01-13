@@ -37,7 +37,26 @@ class Object(Base):
       self.args = []
     if not isinstance(argv, list):
       argv = [argv]
-    self.args += argv
+    # self.args += argv
+    self.args += self.__unescape__(argv)
+  
+  def __unescape__(self, argv):
+    """ Unescapes the arguments """
+    args = []
+    for x in argv:
+      # unescape the arguments
+      x = str(x).replace('\\','')
+      # and convert them to numbers
+      if self.__isnum__(x):
+        x = self.__num__(x)
+      args.append(x)
+    return args
+
+  def __escape__(self, arg):
+    """ Escapes the arguments """
+    arg = str(arg).replace('\\', '\\\\')
+    arg = arg.replace('$', '\\$')
+    return arg
 
   def __pd__(self, args=None):
     """ Parses the pd object into a string """
@@ -49,7 +68,7 @@ class Object(Base):
       s += f" {args}"
     # check if we have extra arguments stored in the object and append them
     for x in getattr(self, 'args', []):
-      s += f" {x}"
+      s += f" {self.__escape__(x)}"
     # wrap and close the pd line
     s = super().__pd__(s)
     
