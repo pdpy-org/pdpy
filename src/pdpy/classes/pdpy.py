@@ -248,7 +248,7 @@ class PdPy(CanvasBase, Base):
     self.__last_canvas__().add(scalar)
     return scalar
 
-  def addConnection(self, pd_lines):
+  def addEdge(self, pd_lines):
     self.__last_canvas__().edge(Edge(pd_lines=pd_lines))
 
   def addCoords(self, coords):
@@ -306,7 +306,7 @@ class PdPy(CanvasBase, Base):
       else: #X -----------------> anything else is an "#X"
         if   "declare"    == head[1]: self.addDependencies(pd_lines=body)
         elif "coords"     == head[1]: self.addCoords(body)
-        elif "connect"    == head[1]: self.addConnection(body) # edges
+        elif "connect"    == head[1]: self.addEdge(body) # edges
         elif "floatatom"  == head[1]: last = self.addNativeGui(head[1], body)
         elif "symbolatom" == head[1]: last = self.addNativeGui(head[1], body)
         elif "listbox"    == head[1]: last = self.addNativeGui(head[1], body)
