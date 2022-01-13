@@ -395,5 +395,6 @@ You are of course welcome to help in any way. Please file an issue or make a PR!
 ## Credits
 
 Fede Camara Halac (fdch)
+
 Pure Data by Miller Puckette.
 

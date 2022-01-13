@@ -1,5 +1,601 @@
 [
     {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test2-1.app/Contents/Resources/doc/6.externs/obj2.c",
+        "classes": [
+            {
+                "className": "post(\"obj2",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj2_new",
+                    "arguments": "obj2",
+                    "methods": [
+                        "rats",
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test2-1.app/Contents/Resources/doc/6.externs/obj1.c",
+        "classes": [
+            {
+                "className": "post(\"obj1",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj1_new",
+                    "arguments": "obj1",
+                    "methods": [
+                        "rats",
+                        "float"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test2-1.app/Contents/Resources/doc/6.externs/obj5.c",
+        "classes": [
+            {
+                "className": "obj5",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj5_new",
+                    "arguments": {
+                        "name": "obj5",
+                        "args": [
+                            "A_GIMME"
+                        ]
+                    },
+                    "methods": {
+                        "name": "rats",
+                        "args": [
+                            "A_GIMME"
+                        ]
+                    },
+                    "iolets": {
+                        "inlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test2-1.app/Contents/Resources/doc/6.externs/obj4.c",
+        "classes": [
+            {
+                "className": "obj4",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj4_new",
+                    "arguments": {
+                        "name": "obj4",
+                        "args": [
+                            "A_DEFFLOAT"
+                        ]
+                    },
+                    "methods": [
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ],
+                    "iolets": {
+                        "inlets": 2,
+                        "outlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test2-1.app/Contents/Resources/doc/6.externs/obj3.c",
+        "classes": [
+            {
+                "className": "obj3",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj3_new",
+                    "arguments": "obj3",
+                    "methods": [
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ],
+                    "iolets": {
+                        "inlets": 2,
+                        "outlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test2-1.app/Contents/Resources/doc/6.externs/dspobj~.c",
+        "classes": [
+            {
+                "className": "dspobj_tilde",
+                "attributes": {
+                    "signal": true,
+                    "patchable": true,
+                    "newmethod": "dspobj_new",
+                    "arguments": {
+                        "name": "dspobj~",
+                        "args": [
+                            "A_DEFFLOAT"
+                        ]
+                    },
+                    "methods": {
+                        "name": "dsp",
+                        "args": [
+                            "gensym(\"dsp\")"
+                        ]
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-1.app/Contents/Resources/doc/6.externs/obj2.c",
+        "classes": [
+            {
+                "className": "post(\"obj2",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj2_new",
+                    "arguments": "obj2",
+                    "methods": [
+                        "rats",
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-1.app/Contents/Resources/doc/6.externs/obj1.c",
+        "classes": [
+            {
+                "className": "post(\"obj1",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj1_new",
+                    "arguments": "obj1",
+                    "methods": [
+                        "rats",
+                        "float"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-1.app/Contents/Resources/doc/6.externs/obj5.c",
+        "classes": [
+            {
+                "className": "obj5",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj5_new",
+                    "arguments": {
+                        "name": "obj5",
+                        "args": [
+                            "A_GIMME"
+                        ]
+                    },
+                    "methods": {
+                        "name": "rats",
+                        "args": [
+                            "A_GIMME"
+                        ]
+                    },
+                    "iolets": {
+                        "inlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-1.app/Contents/Resources/doc/6.externs/obj4.c",
+        "classes": [
+            {
+                "className": "obj4",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj4_new",
+                    "arguments": {
+                        "name": "obj4",
+                        "args": [
+                            "A_DEFFLOAT"
+                        ]
+                    },
+                    "methods": [
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ],
+                    "iolets": {
+                        "inlets": 2,
+                        "outlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-1.app/Contents/Resources/doc/6.externs/obj3.c",
+        "classes": [
+            {
+                "className": "obj3",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj3_new",
+                    "arguments": "obj3",
+                    "methods": [
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ],
+                    "iolets": {
+                        "inlets": 2,
+                        "outlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-1.app/Contents/Resources/doc/6.externs/dspobj~.c",
+        "classes": [
+            {
+                "className": "dspobj_tilde",
+                "attributes": {
+                    "signal": true,
+                    "patchable": true,
+                    "newmethod": "dspobj_new",
+                    "arguments": {
+                        "name": "dspobj~",
+                        "args": [
+                            "A_DEFFLOAT"
+                        ]
+                    },
+                    "methods": {
+                        "name": "dsp",
+                        "args": [
+                            "gensym(\"dsp\")"
+                        ]
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test2.app/Contents/Resources/doc/6.externs/obj2.c",
+        "classes": [
+            {
+                "className": "post(\"obj2",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj2_new",
+                    "arguments": "obj2",
+                    "methods": [
+                        "rats",
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test2.app/Contents/Resources/doc/6.externs/obj1.c",
+        "classes": [
+            {
+                "className": "post(\"obj1",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj1_new",
+                    "arguments": "obj1",
+                    "methods": [
+                        "rats",
+                        "float"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test2.app/Contents/Resources/doc/6.externs/obj5.c",
+        "classes": [
+            {
+                "className": "obj5",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj5_new",
+                    "arguments": {
+                        "name": "obj5",
+                        "args": [
+                            "A_GIMME"
+                        ]
+                    },
+                    "methods": {
+                        "name": "rats",
+                        "args": [
+                            "A_GIMME"
+                        ]
+                    },
+                    "iolets": {
+                        "inlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test2.app/Contents/Resources/doc/6.externs/obj4.c",
+        "classes": [
+            {
+                "className": "obj4",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj4_new",
+                    "arguments": {
+                        "name": "obj4",
+                        "args": [
+                            "A_DEFFLOAT"
+                        ]
+                    },
+                    "methods": [
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ],
+                    "iolets": {
+                        "inlets": 2,
+                        "outlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test2.app/Contents/Resources/doc/6.externs/obj3.c",
+        "classes": [
+            {
+                "className": "obj3",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj3_new",
+                    "arguments": "obj3",
+                    "methods": [
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ],
+                    "iolets": {
+                        "inlets": 2,
+                        "outlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test2.app/Contents/Resources/doc/6.externs/dspobj~.c",
+        "classes": [
+            {
+                "className": "dspobj_tilde",
+                "attributes": {
+                    "signal": true,
+                    "patchable": true,
+                    "newmethod": "dspobj_new",
+                    "arguments": {
+                        "name": "dspobj~",
+                        "args": [
+                            "A_DEFFLOAT"
+                        ]
+                    },
+                    "methods": {
+                        "name": "dsp",
+                        "args": [
+                            "gensym(\"dsp\")"
+                        ]
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test1.app/Contents/Resources/doc/6.externs/obj2.c",
+        "classes": [
+            {
+                "className": "post(\"obj2",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj2_new",
+                    "arguments": "obj2",
+                    "methods": [
+                        "rats",
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test1.app/Contents/Resources/doc/6.externs/obj1.c",
+        "classes": [
+            {
+                "className": "post(\"obj1",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj1_new",
+                    "arguments": "obj1",
+                    "methods": [
+                        "rats",
+                        "float"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test1.app/Contents/Resources/doc/6.externs/obj5.c",
+        "classes": [
+            {
+                "className": "obj5",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj5_new",
+                    "arguments": {
+                        "name": "obj5",
+                        "args": [
+                            "A_GIMME"
+                        ]
+                    },
+                    "methods": {
+                        "name": "rats",
+                        "args": [
+                            "A_GIMME"
+                        ]
+                    },
+                    "iolets": {
+                        "inlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test1.app/Contents/Resources/doc/6.externs/obj4.c",
+        "classes": [
+            {
+                "className": "obj4",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj4_new",
+                    "arguments": {
+                        "name": "obj4",
+                        "args": [
+                            "A_DEFFLOAT"
+                        ]
+                    },
+                    "methods": [
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ],
+                    "iolets": {
+                        "inlets": 2,
+                        "outlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test1.app/Contents/Resources/doc/6.externs/obj3.c",
+        "classes": [
+            {
+                "className": "obj3",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj3_new",
+                    "arguments": "obj3",
+                    "methods": [
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ],
+                    "iolets": {
+                        "inlets": 2,
+                        "outlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52-0-test1.app/Contents/Resources/doc/6.externs/dspobj~.c",
+        "classes": [
+            {
+                "className": "dspobj_tilde",
+                "attributes": {
+                    "signal": true,
+                    "patchable": true,
+                    "newmethod": "dspobj_new",
+                    "arguments": {
+                        "name": "dspobj~",
+                        "args": [
+                            "A_DEFFLOAT"
+                        ]
+                    },
+                    "methods": {
+                        "name": "dsp",
+                        "args": [
+                            "gensym(\"dsp\")"
+                        ]
+                    }
+                }
+            }
+        ]
+    },
+    {
         "file": "/Users/fd/Development/pure-data/extra/pique/pique.c",
         "classes": [
             {
@@ -533,6 +1129,155 @@
                     "iolets": {
                         "inlets": 2,
                         "outlets": 2
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52.0.app/Contents/Resources/doc/6.externs/obj2.c",
+        "classes": [
+            {
+                "className": "post(\"obj2",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj2_new",
+                    "arguments": "obj2",
+                    "methods": [
+                        "rats",
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52.0.app/Contents/Resources/doc/6.externs/obj1.c",
+        "classes": [
+            {
+                "className": "post(\"obj1",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj1_new",
+                    "arguments": "obj1",
+                    "methods": [
+                        "rats",
+                        "float"
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52.0.app/Contents/Resources/doc/6.externs/obj5.c",
+        "classes": [
+            {
+                "className": "obj5",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj5_new",
+                    "arguments": {
+                        "name": "obj5",
+                        "args": [
+                            "A_GIMME"
+                        ]
+                    },
+                    "methods": {
+                        "name": "rats",
+                        "args": [
+                            "A_GIMME"
+                        ]
+                    },
+                    "iolets": {
+                        "inlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52.0.app/Contents/Resources/doc/6.externs/obj4.c",
+        "classes": [
+            {
+                "className": "obj4",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj4_new",
+                    "arguments": {
+                        "name": "obj4",
+                        "args": [
+                            "A_DEFFLOAT"
+                        ]
+                    },
+                    "methods": [
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ],
+                    "iolets": {
+                        "inlets": 2,
+                        "outlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52.0.app/Contents/Resources/doc/6.externs/obj3.c",
+        "classes": [
+            {
+                "className": "obj3",
+                "attributes": {
+                    "patchable": true,
+                    "newmethod": "obj3_new",
+                    "arguments": "obj3",
+                    "methods": [
+                        {
+                            "name": "float",
+                            "args": [
+                                "A_FLOAT"
+                            ]
+                        },
+                        "float"
+                    ],
+                    "iolets": {
+                        "inlets": 2,
+                        "outlets": 1
+                    }
+                }
+            }
+        ]
+    },
+    {
+        "file": "/Users/fd/Development/pure-data/Pd-0.52.0.app/Contents/Resources/doc/6.externs/dspobj~.c",
+        "classes": [
+            {
+                "className": "dspobj_tilde",
+                "attributes": {
+                    "signal": true,
+                    "patchable": true,
+                    "newmethod": "dspobj_new",
+                    "arguments": {
+                        "name": "dspobj~",
+                        "args": [
+                            "A_DEFFLOAT"
+                        ]
+                    },
+                    "methods": {
+                        "name": "dsp",
+                        "args": [
+                            "gensym(\"dsp\")"
+                        ]
                     }
                 }
             }
@@ -5236,6 +5981,7 @@
                 "attributes": {
                     "signal": true,
                     "patchable": true,
+                    "help": "delay-tilde-objects",
                     "newmethod": "sigdelwrite_new",
                     "arguments": {
                         "name": "delwrite~",
@@ -5266,6 +6012,7 @@
                 "className": "sigdelread",
                 "attributes": {
                     "patchable": true,
+                    "help": "delay-tilde-objects",
                     "newmethod": "sigdelread_new",
                     "arguments": {
                         "name": "delread~",
@@ -5299,6 +6046,7 @@
                     "signal": true,
                     "patchable": true,
                     "alias": "vd~",
+                    "help": "delay-tilde-objects",
                     "newmethod": "sigvd_new",
                     "arguments": {
                         "name": "delread4~",
@@ -5537,6 +6285,7 @@
                         "filledpolygon",
                         "filledcurve"
                     ],
+                    "help": "draw-shapes",
                     "newmethod": "curve_new",
                     "arguments": {
                         "name": "drawpolygon",
@@ -5804,6 +6553,7 @@
                 "attributes": {
                     "signal": true,
                     "patchable": true,
+                    "help": "tabsend-receive~",
                     "newmethod": "tabsend_new",
                     "arguments": {
                         "name": "tabsend~",
@@ -5838,7 +6588,7 @@
                 "className": "tabreceive",
                 "attributes": {
                     "patchable": true,
-                    "help": "tabsend~",
+                    "help": "tabsend-receive~",
                     "newmethod": "tabreceive_new",
                     "arguments": {
                         "name": "tabreceive~",
@@ -7613,6 +8363,7 @@
                 "attributes": {
                     "patchable": true,
                     "alias": "s",
+                    "help": "send-receive",
                     "newmethod": "send_new",
                     "arguments": {
                         "name": "send",
@@ -7641,6 +8392,7 @@
                 "className": "receive",
                 "attributes": {
                     "alias": "r",
+                    "help": "send-receive",
                     "newmethod": "receive_new",
                     "arguments": {
                         "name": "receive",
