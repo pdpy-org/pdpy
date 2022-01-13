@@ -9,12 +9,12 @@
 
 - [ ] general purpose make file
 - [ ] include author and description attributes from META.pd stuff or externals parsing ?
-- [ ] unescape args when encoding to json
 - [ ] handle expr arguments differently
 - [ ] option to turn class aliases into original names
 
 ## Done
 
+- [X] unescape args when encoding to json
 - [X] move xml io from Base to another class
 - [X] pd method in arrays returns obj instead of array as cls
 - [X] pd method in empty messages returns obj instead of msg as cls
