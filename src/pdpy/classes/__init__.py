@@ -39,6 +39,8 @@ from .translator import *
 from .pdpy import *
 from .data import *
 from .gui import *
+from .xmltagconvert import *
+from .xmlbuilder import *
 from .base import *
 from .canvasbase import *
 from .canvas import *

@@ -2,6 +2,7 @@
 
 ## Fixes
 
+- [ ] move xml io from Base to another class
 - [ ] xml: normalize object tags with attribute as real name, ie: `<obj ="*~">`
 - [ ] rounding error in scientific notation of stored data
 - [ ] add new file object classes

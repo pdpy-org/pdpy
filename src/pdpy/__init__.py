@@ -18,6 +18,8 @@ from .classes.obj import *
 from .classes.message import *
 from .classes.pdpyencoder import *
 from .classes.default import *
+from .classes.xmlbuilder import *
+from .classes.xmltagconvert import *
 from .classes.array import *
 from .classes.struct import *
 from .classes.exceptions import *
