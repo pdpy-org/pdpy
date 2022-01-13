@@ -42,3 +42,45 @@ class CanvasBase(object):
       self.__obj_map__.update({
         int(getattr(x,'id')) : self.__obj_idx__
       })
+  
+  def __edges__(self, s):
+    for x in getattr(self, 'edges', []):
+      s += f"{x.__pd__(self.__obj_map__)}"
+    return s
+
+  def __nodes__(self, s):
+    for x in getattr(self, 'nodes', []):
+      self.__update_obj_map__(x)
+      s += f"{x.__pd__()}"
+    return s
+
+  def __comments__(self, s):
+    for x in getattr(self, 'comments', []):
+      s += f"{x.__pd__()}"
+    return s
+
+  def __coords__(self, s):
+    if hasattr(self, 'coords'):
+      s += f"{self.coords.__pd__()}"
+    return s
+
+  def __restore__(self, s):
+    if hasattr(self, 'position'):
+      s += f"#X restore {self.position.__pd__()}"
+      if hasattr(self, 'title'):
+        s += f" {self.title}"
+      s += self.__end__
+    return s
+  
+  def __render__(self, s, isroot=False):
+    s = self.__nodes__(s)
+    s = self.__comments__(s)
+    if isroot:
+      # argh, this order is swapped for the root canvas
+      s = self.__coords__(s)
+      s = self.__edges__(s)
+    else:
+      s = self.__edges__(s)
+      s = self.__coords__(s)
+    s = self.__restore__(s)
+    return s

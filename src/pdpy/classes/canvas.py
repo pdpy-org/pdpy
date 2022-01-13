@@ -192,7 +192,9 @@ class Canvas(CanvasBase, Base):
     s = super().__pd__()
     s += f" {self.screen.__pd__()} {self.dimension.__pd__()}"
     
-    if hasattr(self, 'isroot') and self.isroot:
+    isroot = getattr(self, 'isroot', False)
+
+    if isroot:
       # root canvas only reports font
       s += f" {self.font}"
     else:
@@ -202,39 +204,12 @@ class Canvas(CanvasBase, Base):
     # end the line so we can continue appending to `s`
     s += self.__end__
     
-    # recurse through the nodes
-    for x in getattr(self,'nodes',[]):
-      # print(1,"Canvas", f"Node: {x.__json__()}")
-      self.__update_obj_map__(x)
-      s += f"{x.__pd__()}"
-
-    # recurse through the comments
-    for x in getattr(self,'comments', []):
-      s += f"{x.__pd__()}"
-    
-    # connections and coords
-    # this order is swapped for the root canvas
-    if hasattr(self, 'isroot') and self.isroot:
-      if hasattr(self, 'coords'):
-        s += self.coords.__pd__()
-      for x in getattr(self, 'edges', []):
-        s += f"{x.__pd__(self.__obj_map__)}"
-    else:
-      for x in getattr(self, 'edges', []):
-        s += f"{x.__pd__(self.__obj_map__)}"
-      if hasattr(self, 'coords'):
-        s += self.coords.__pd__()
-    
-    # the restore line
-    if hasattr(self, 'position'):
-      s += f"#X restore {self.position.__pd__()}"
-      if hasattr(self, 'title'):
-        s += f" {self.title}"
-      s += self.__end__
+    s = super().__render__(s, isroot=isroot)
     
     # the border, only if not root
-    if (not hasattr(self, 'isroot')) and hasattr(self, 'border'):
-      s += f"#X f {self.border} {self.__end__}"
+    if hasattr(self, 'border') and (not isroot):
+      s += f"#X f {self.border}"
+      s += self.__end__
 
     return s
 

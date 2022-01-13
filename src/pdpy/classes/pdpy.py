@@ -345,28 +345,7 @@ class PdPy(CanvasBase, Base):
     if hasattr(self, 'dependencies'):
       s += f"{self.dependencies.__pd__()}"
     
-    for x in getattr(self, 'nodes', []):
-      self.__update_obj_map__(x)
-      s += f"{x.__pd__()}"
-
-    for x in getattr(self, 'comments', []):
-      s += f"{x.__pd__()}"
-
-    if hasattr(self, 'coords'):
-      s += f"{self.coords.__pd__()}"
-    
-    for x in getattr(self, 'edges', []):
-      s += f"{x.__pd__(self.__obj_map__)}"
-    
-    # TODO: PdPy should really be an extended Base class 
-    # with Canvas handling stuff, like obj_map, obj_idx, restore stuff, etc
-    if hasattr(self, 'position'):
-      s += f"#X restore {self.position.__pd__()}"
-      if hasattr(self, 'title'):
-        s += f" {self.title}"
-      s += self.__end__
-    
-    return s
+    return super().__render__(s)
 
   def __xml__(self):
     """ Return the XML Element for this object """
