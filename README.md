@@ -62,7 +62,7 @@ The result is something like this in JSON:
                 "className": "loadbang"
             },
             {
-                "__pdpy__": "Message",
+                "__pdpy__": "Msg",
                 "id": 1,
                 "position": {
                     "__pdpy__": "Point",
@@ -72,7 +72,7 @@ The result is something like this in JSON:
                 "className": "msg",
                 "targets": [
                     {
-                        "__pdpy__": "Msg",
+                        "__pdpy__": "Message",
                         "address": "outlet",
                         "message": [
                             "hello world"
