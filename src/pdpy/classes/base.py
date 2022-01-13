@@ -50,10 +50,10 @@ class Base(XmlBuilder, XmlTagConvert):
     self.__n__ = Namespace() # pdpy module namespace
     self.__end__ = ';\r\n' # The pd line end character sequence
     self.__semi__ = ' \\;' # The pd end symbol for data structures
-    XmlTagConvert.__init__(self)
+    XmlTagConvert.__init__(self) # for xml tag conversion (output)
     if json: self.__populate__(self, json) # fill the object with the json data
     if xml:
-      XmlBuilder.__init__(self) # initialize the xml base class
+      XmlBuilder.__init__(self) # initialize the xml base builder class
       tree = XmlBuilder.__xmlparse__(self, xml) # fill the object with xml
       self.__xml_load__(tree)
 
