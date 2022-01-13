@@ -43,7 +43,7 @@ class PdGOPArray(Base):
       super().__populate__(self, json)
     if hasattr(self, 'className') and self.className == 'goparray':
       self.__cls__ = 'array'
-    # print("Pdtype", self.__type__, self.__cls__)
+    print("Pdtype", self.__type__, self.__cls__)
 
   def addflag(self, flag):
     # log(1, "Adding flag: {}".format(flag))
@@ -73,7 +73,7 @@ class PdGOPArray(Base):
   
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__xml__(scope=self, attrib=('name', 'template', 'length', 'type', 'flag'))
+    x = super().__xml__(scope=self, attrib=('name', 'template', 'length', 'type', 'flag', 'className'))
     if hasattr(self, 'data'):
       data = super().__element__(tag='data')
       for d in self.data:

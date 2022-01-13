@@ -2,11 +2,9 @@
 
 ## Fixes
 
-- [ ] move xml io from Base to another class
 - [ ] xml: normalize object tags with attribute as real name, ie: `<obj ="*~">`
 - [ ] rounding error in scientific notation of stored data
 - [ ] add new file object classes
-- [ ] pd method in arrays returns obj instead of array as cls
 - [ ] pd method in empty messages returns obj instead of msg as cls
 
 ## Improvements
@@ -19,6 +17,8 @@
 
 ## Done
 
+- [X] move xml io from Base to another class
+- [X] pd method in arrays returns obj instead of array as cls
 - [X] pd method in scalar is not returning the data
 - [X] empty object boxes are ommitted
 - [X] pd method in struct is not returning the array struct definition
