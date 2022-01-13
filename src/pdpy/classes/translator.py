@@ -24,7 +24,7 @@ from pdpy.classes.pdpyencoder import PdPyEncoder
 __all__ = [ 'Translator' ] 
 
 class Translator(Base):
-  """ This class maintains and translates a `pdpy` Object in memory. 
+  """ This class maintains and translates a `pdpy` Obj in memory. 
 
   Description:
   -------------

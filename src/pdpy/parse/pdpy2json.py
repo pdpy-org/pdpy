@@ -9,7 +9,7 @@
 import re
 
 from ..util.utils import log, printer
-from ..classes.object import Object
+from ..classes.obj import Obj
 
 __all__ = [ 'PdPyLoad' ]
 
@@ -84,7 +84,7 @@ def PdPyLoad(fp, patch, pddb):
       if bool(piped):
         if 'outlet' not in canvases[-1].nodes:
           prev = patch.__last_canvas__().__obj_idx__
-          last = patch.objectCreator(Object, ('outlet'))
+          last = patch.objectCreator(Obj, ('outlet'))
         patch.objectConnector(prev,last.id)
       # restore the canvas
       patch.pdpyRestore()

@@ -4,7 +4,7 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" Class Definitions for the Old Graph Object """
+""" Class Definitions for the Old Graph Obj """
 
 from .base import Base
 from .area import Area # for the Graph class

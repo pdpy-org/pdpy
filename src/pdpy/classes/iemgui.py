@@ -36,7 +36,7 @@ class IEMFont(Base):
 
 class IEMLabel(Base):
   """ 
-  The IEM IEMLabel Object
+  The IEM IEMLabel Obj
   ====================
 
   Description

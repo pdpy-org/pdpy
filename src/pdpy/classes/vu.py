@@ -8,12 +8,12 @@
 
 from .size import Size
 from .connections import Comm
-from .object import Object
+from .obj import Obj
 from .iemgui import IEMLabel
 
 __all__ = [ 'Vu' ]
 
-class Vu(Object):
+class Vu(Obj):
   """ 
   The IEM Vu Object
   ==================
@@ -57,4 +57,4 @@ class Vu(Object):
   
   def __xml__(self):
     """ Returns an XML Element for this object """
-    return super().__xml__(scope=self, attrib=('area', 'comm', 'label', 'bgcolor', 'scale', 'flag'))
+    return super().__xml__(scope=self, tag=self.__cls__, attrib=('area', 'comm', 'label', 'bgcolor', 'scale', 'flag'))

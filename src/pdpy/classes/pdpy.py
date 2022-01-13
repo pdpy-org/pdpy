@@ -8,27 +8,27 @@
 
 from .base import Base
 from .canvasbase import CanvasBase
+from .default import *
 from .point import Point
 from .size import Size
 from .coords import Coords
+from .cnv import Cnv
+from .toggle import Toggle
+from .slider import Slider
+from .radio import Radio
+from .nbx import Nbx
+from .bng import Bng
+from .vu import Vu
 from .canvas import Canvas
 from .struct import Struct
 from .scalar import Scalar
-from .default import *
-from .cnv import *
-from .toggle import *
-from .slider import *
-from .radio import *
-from .nbx import *
-from .bng import *
-from .vu import *
 from .graph import Graph
 from .goparray import PdGOPArray
 from .data import Data
-from .object import Object
+from .obj import Obj
 from .array import Array
 from .gui import Gui
-from .message import Message
+from .message import Msg
 from .dependencies import Dependencies
 from .comment import Comment
 from .connections import Edge
@@ -157,7 +157,7 @@ class PdPy(CanvasBase, Base):
     self.__obj_idx__ = self.__last_canvas__().grow()
     if 2 == len(argv):
       # an empty object
-      obj = Object(pd_lines = [self.__obj_idx__] + argv)
+      obj = Obj(pd_lines = [self.__obj_idx__] + argv)
       self.__last_canvas__().add(obj)
     else:
       # protect against argv not being a list
@@ -199,14 +199,14 @@ class PdPy(CanvasBase, Base):
       # TODO: make special cases for data structures
       # - drawing instructions
       else:
-        obj = Object(pd_lines = [self.__obj_idx__] + argv)
+        obj = Obj(pd_lines = [self.__obj_idx__] + argv)
         self.__last_canvas__().add(obj)
     return obj
   
   def addMsg(self, argv):
     # log(1,"msg", nodes)
     self.__obj_idx__ = self.__last_canvas__().grow()
-    msg = Message(pd_lines=[self.__obj_idx__]+argv)
+    msg = Msg(pd_lines=[self.__obj_idx__]+argv)
     self.__last_canvas__().add(msg)
     return msg
   

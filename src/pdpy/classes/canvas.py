@@ -32,7 +32,7 @@ class Canvas(CanvasBase, Base):
   - `name`     (`str`) The canvas name on parent ('(subpatch)')
   - `vis`      (`bool`) Flag to tell if canvas should be visible or not (False)
   - `gop`      (`bool`) Flag to tell if canvas should Graph on Parent (False)
-  - `coords`   (`Coords`) Object holding coordinates necessary for GOP (None)  
+  - `coords`   (`Coords`) Obj holding coordinates necessary for GOP (None)  
   - `position` (`Point`) X-Y pair defining where the pd box is graphed (None)  
   - `title`    (`str`) Name to display on the canvas window title bar (None)
   - `border`   (`int`) Position of the object's box right border  (None)

@@ -4,101 +4,74 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" Obj Class Definitions """
+""" Obj Class Definition """
 
-from .base import Base
-from .point import Point
+from .object import Object
 
 __all__ = [ 'Obj' ]
 
-class Obj(Base):
-  """ A Obj base class 
+class Obj(Object):
+  """ A Pure Data Obj object
   
   Description
   -----------
-  A Obj holds the id, and the x and y coordinates of the pd object,
-  as well as the arguments array.
+  This class represents a Pure Data object.
 
-  Methods
-  -------
-  - `addargs(argv)`: Adds arguments to the pd object.
+  Initialization Arguments
+  ----------
+  The first three arguments correspond to the `Object` class.
+  1. `id`: The id of the pd object.
+  2. `x`: The x-coordinate of the pd object.
+  3. `y`: The y-coordinate of the pd object.
+  4. `className`: The class name of the pd object.
+  5. `args`: The argument `list` of the pd object.
+
   """
-  def __init__(self, id=None, x=None, y=None, **kwargs):
+  def __init__(self, pd_lines=None, json=None, **kwargs):
 
     self.__pdpy__ = self.__class__.__name__
-    if id is not None:
-      self.id = int(id)
-    if x is not None and y is not None:
-      self.position = Point(x=x, y=y)
-    super().__init__(**kwargs)
+    super().__init__(json=json, **kwargs)
+
+    if json is None and pd_lines is not None:
+      super().__init__(*pd_lines[:3])
+      try:
+        self.className = pd_lines[3] if 3 < len(pd_lines) else ''
+        if super().__isnum__(self.className):
+          if 4 < len(pd_lines):
+            self.className = 'list'
+            self.addargs(pd_lines[3:])
+          else:
+            self.className = 'float'
+            self.addargs(pd_lines[3])
+        else:
+          if 4 < len(pd_lines):
+            self.addargs(pd_lines[4:])
+      except:
+        raise ValueError("Invalid arguments for Obj")
+    
+    if not hasattr(self, 'className'):
+      self.className = self.__cls__
   
-  def addargs(self, argv):
-    if not hasattr(self,'args') or self.args is None: 
-      self.args = []
-    if not isinstance(argv, list):
-      argv = [argv]
-    self.args += argv
-
   def __pd__(self, args=None):
-    """ Parses the pd object into a string """
+    """ Return the pd code of the object. """
+    if args is None:
+      args = self.className
+    else:
+      args = self.className + ' ' + args
+    # log(1, "Obj args:", args)
+    return super().__pd__(args)
 
-    # add the position
-    s = self.position.__pd__()
-    # check if called with argumnts (array, text, etc) and append them
-    if args:
-      s += f" {args}"
-    # check if we have extra arguments stored in the object and append them
-    for x in getattr(self, 'args', []):
-      s += f" {x}"
-    # wrap and close the pd line
-    s = super().__pd__(s)
-    
-    # check if we have data and append it (this calls the Data.__pd__ method)
-    for x in getattr(self, 'data', []):
-      s += x.__pd__()
+  def __xml__(self, args=None, **kwargs):
+    """ Return the XML Element for this object. """
 
-    # return the pd line
-    return s
+    attrib = kwargs.pop('attrib') if 'attrib' in kwargs else {}
+    
+    if 'scope' not in kwargs:
+      kwargs.update({'scope':self})
+    
+    if 'tag' not in kwargs:
+      kwargs.update({'tag':self.__cls__})
+    
+    kwargs.update({'attrib':attrib})
 
-
-  def __xml__(self, classname=None, args=None, **kwargs):
-    """ Returns an XML Element for this object """
-    # print("obj",classname, args, kwargs)
-    x = super().__xml__(**kwargs)
-
-    super().__update_element__(x, self, ('id', 'position'))
-    
-    if hasattr(self, 'args'):
-      a = super().__element__(tag='args')
-      for _arg in getattr(self, 'args', []):
-        super().__subelement__(a, 'arg', text=_arg)
-      super().__subelement__(x, a)
-    
-    if hasattr(self, 'data'):
-      data = super().__element__(tag='data')
-      for d in getattr(self, 'data', []):
-        super().__subelement__(data, d.__xml__())
-      super().__subelement__(x, data)
-    
-    # if hasattr(self, 'data'):
-      # for d in getattr(self, 'data', []):
-        # data = super().__element__(tag='data')
-        # data.set('header', getattr(d, 'header'))
-        # for datum in getattr(d, 'data', []):
-        #   if not isinstance(datum, list) and not isinstance(datum, tuple):
-        #     super().__subelement__(data, 'datum', text=datum)
-        #   else:
-        #     data_mult = super().__element__('data')
-        #     for dd in datum:
-        #       super().__subelement__(data_mult, 'datum', text=dd)
-        #     super().__subelement__(data, data_mult)
-        # super().__subelement__(x, data)
-    
-    if classname is not None:
-      super().__subelement__(x, 'className', text=classname)
-    elif 'tag' in kwargs:
-      super().__subelement__(x, 'className', text=kwargs.pop('tag'))
-    if args is not None:
-      super().__subelement__(x, 'arguments', text=args)
-    
-    return x
+    return super().__xml__(classname=self.className, args=args, **kwargs)

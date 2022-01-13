@@ -6,7 +6,7 @@
 # **************************************************************************** #
 """ IEMGUI Slider Class Definitions """
 
-from .object import Object
+from .obj import Obj
 from .size import Size
 from .bounds import Bounds
 from .connections import Comm
@@ -14,9 +14,9 @@ from .iemgui import IEMLabel
 
 __all__ = [ 'Slider' ]
 
-class Slider(Object):
+class Slider(Obj):
   """
-  The IEM Slider Object
+  The IEM Slider Obj
   =====================
   
   The IEM gui object is a IEM horizontal or vertical slider.
@@ -69,4 +69,4 @@ class Slider(Object):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    return super().__xml__(scope=self, attrib=('area', 'limits', 'log_flag', 'init', 'comm', 'label', 'bgcolor', 'fgcolor', 'value', 'steady'))
+    return super().__xml__(scope=self, tag=self.__cls__, attrib=('area', 'limits', 'log_flag', 'init', 'comm', 'label', 'bgcolor', 'fgcolor', 'value', 'steady'))

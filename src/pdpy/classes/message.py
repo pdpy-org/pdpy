@@ -8,15 +8,15 @@
 
 from pdpy.util.utils import log
 from .base import Base
-from .obj import Obj
+from .object import Object
 
 __all__ = [
-  'Message',
-  'Msg'
+  'Msg',
+  'Message'
 ]
 
-class Msg(Base):
-  """ Representation of a Pd Message
+class Message(Base):
+  """ Representation of a Pd Msg
   
   Description
   -----------
@@ -78,7 +78,7 @@ class Msg(Base):
 
   def __xml__(self):
     """ Returns the XML Element for this object """
-    x = super().__element__(scope=self)
+    x = super().__element__(scope=self, tag='message')
     super().__subelement__(x, 'address', text=self.address)
     if hasattr(self, 'messages'):
       msg = super().__element__(tag='messages')
@@ -87,13 +87,13 @@ class Msg(Base):
       super().__subelement__(x, msg)
     return x
 
-class Message(Obj):
-  """ Representation of a Pd Message box
+class Msg(Object):
+  """ Representation of a Pd Msg box
 
   Description
   -----------
   This class represents a Pd message box with a list of targets
-  each target being a ::class::`Msg` instance
+  each target being a ::class::`Message` instance
   
   """
   def __init__(self, pd_lines=None, json=None):
@@ -111,7 +111,7 @@ class Message(Obj):
   def addTarget(self, address=None):
     if not hasattr(self, "targets"):
       self.targets = []
-    target = Msg(address=address)
+    target = Message(address=address)
     self.targets.append(target)
     return target
 
@@ -200,10 +200,12 @@ class Message(Obj):
   
   def __xml__(self):
     """ Return the XML Element for this object """
-    x = super().__xml__(scope=self, attrib=('border', 'className'))
+    x = super().__xml__(scope=self, tag=self.__cls__, attrib='border')
+    
     if hasattr(self, 'targets'):
       targets = super().__element__(tag='targets')
       for target in getattr(self, "targets", []):
         super().__subelement__(targets, target.__xml__())
       super().__subelement__(x, targets)
+
     return x

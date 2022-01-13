@@ -95,11 +95,11 @@
   "__file__" : "iemgui",
  "__subclass__" : "Label"
 },
-  "Msg" : {
+  "Message" : {
   "__file__" : "message",
  "__subclass__" : "Base"
 },
-  "Message" : {
+  "Msg" : {
   "__file__" : "message",
  "__subclass__" : "Base"
 },

@@ -6,7 +6,7 @@
 # **************************************************************************** #
 """ IEMGUI Number box Class Definitions """
 
-from .object import Object
+from .obj import Obj
 from .size import Size
 from .bounds import Bounds
 from .connections import Comm
@@ -14,9 +14,9 @@ from .iemgui import IEMLabel
 
 __all__ = [ 'Nbx' ]
 
-class Nbx(Object):
+class Nbx(Obj):
   """
-  The IEM Number Box Object
+  The IEM Number Box Obj
   ==========================
   
   The IEM gui object is a IEM Number box (Number2).
@@ -70,5 +70,5 @@ class Nbx(Object):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    return super().__xml__(scope=self, attrib=('digit_width', 'size', 'limits', 'log_flag', 'init', 'comm', 'label', 'bgcolor', 'fgcolor', 'value', 'log_height'))
+    return super().__xml__(scope=self, tag=self.__cls__, attrib=('digit_width', 'size', 'limits', 'log_flag', 'init', 'comm', 'label', 'bgcolor', 'fgcolor', 'value', 'log_height'))
 

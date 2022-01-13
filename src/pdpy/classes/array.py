@@ -6,11 +6,11 @@
 # **************************************************************************** #
 """ Array Class Definition """
 
-from .object import Object
+from .obj import Obj
 
 __all__ = [ 'Array' ]
 
-class Array(Object):
+class Array(Obj):
   """ A Pure Data array object
   
   Description
@@ -19,8 +19,8 @@ class Array(Object):
 
   Initialization Arguments
   ----------
-  The first four arguments correspond to the `Object` arguments. 
-  See the `Object` class.
+  The first four arguments correspond to the `Obj` arguments. 
+  See the `Obj` class.
   1. `id`: The id of the pd object.
   2. `x`: The x-coordinate of the pd object.
   3. `y`: The y-coordinate of the pd object.
@@ -144,7 +144,7 @@ class Array(Object):
   def __xml__(self):
     """ Return the XML Element for this object """
 
-    x = super().__xml__(scope=self, attrib=('subclass', 'name', 'wait', 'length'))
+    x = super().__xml__(scope=self, tag=self.__cls__, attrib=('subclass', 'name', 'wait', 'length'))
 
     for e in ('keep', 'global'):
       if hasattr(self, e):

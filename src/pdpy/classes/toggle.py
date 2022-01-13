@@ -8,14 +8,14 @@
 
 from .size import Size
 from .connections import Comm
-from .object import Object
+from .obj import Obj
 from .iemgui import IEMLabel
 
 __all__ = [ 'Toggle' ]
 
-class Toggle(Object):
+class Toggle(Obj):
   """
-  The IEM Toggle Object
+  The IEM Toggle Obj
   ======================
 
   The case of `tgl`
@@ -63,5 +63,5 @@ class Toggle(Object):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    return super().__xml__(scope=self, attrib=('size', 'init', 'comm', 'label', 'bgcolor', 'fgcolor', 'flag', 'nonzero'))
+    return super().__xml__(scope=self, tag=self.__cls__, attrib=('size', 'init', 'comm', 'label', 'bgcolor', 'fgcolor', 'flag', 'nonzero'))
 

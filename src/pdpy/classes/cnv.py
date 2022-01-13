@@ -8,14 +8,14 @@
 
 from .size import Size
 from .connections import Comm
-from .object import Object
+from .obj import Obj
 from .iemgui import IEMLabel
 
 __all__ = [ 'Cnv' ]
 
-class Cnv(Object):
+class Cnv(Obj):
   """
-  The IEM Canvas Object
+  The IEM Canvas Obj
   ======================
       The case of `cnv` or `my_canvas`
     --------------------
@@ -62,5 +62,5 @@ class Cnv(Object):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    return super().__xml__(scope=self, attrib=('size', 'area', 'comm', 'label', 'bgcolor', 'flag'))
+    return super().__xml__(scope=self, tag=self.__cls__, attrib=('size', 'area', 'comm', 'label', 'bgcolor', 'flag'))
 

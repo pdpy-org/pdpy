@@ -7,18 +7,18 @@
 """ Class Definitions """
 
 from .connections import Comm
-from .obj import Obj
+from .object import Object
 from .bounds import Bounds
 
 __all__ = [ 'Gui' ]
 
-class Gui(Obj):
+class Gui(Object):
   """ A Pd Native Gui object 
   
   Description
   -----------
   A Pd Native Gui object is a graphical user interface that is implemented in
-  pure data. It is a sublcass of the `Obj`
+  pure data. It is a sublcass of the `Object`
 
   Initialization Arguments
   -----------------------
@@ -74,4 +74,4 @@ class Gui(Obj):
   
   def __xml__(self):
     """ Returns an XML Element for this object """
-    return super().__xml__(scope=self, tag=self.className, attrib=('digit_width', 'limits', 'flag', 'label', 'comm'))
+    return super().__xml__(scope=self, tag=self.className, attrib=('className','digit_width', 'limits', 'flag', 'label', 'comm'))

@@ -9,11 +9,11 @@
 # on Wed Dec 22 20:51:48 -03 2021
 from .types import *
 from .comment import *
-from .object import *
+from .obj import *
 from .scalar import *
 from .PdPyXMLParser import *
 from .connections import *
-from .obj import *
+from .object import *
 from .message import *
 from .pdpyencoder import *
 from .default import *

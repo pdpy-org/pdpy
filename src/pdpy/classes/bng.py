@@ -6,16 +6,16 @@
 # **************************************************************************** #
 """ IEMGUI Bang Class Definitions """
 
-from .object import Object
+from .obj import Obj
 from .size import Size
 from .connections import Comm
 from .iemgui import IEMLabel
 
 __all__ = [ 'Bng' ]
 
-class Bng(Object):
+class Bng(Obj):
   """
-  The IEM Button Object
+  The IEM Button Obj
   =====================
   
   The IEM gui object is a IEM Bang button.
@@ -61,5 +61,5 @@ class Bng(Object):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    return super().__xml__(scope=self, attrib=('size', 'hold', 'intrrpt', 'init', 'comm', 'label', 'bgcolor', 'fgcolor'))
+    return super().__xml__(scope=self, tag=self.__cls__, attrib=('size', 'hold', 'intrrpt', 'init', 'comm', 'label', 'bgcolor', 'fgcolor'))
 

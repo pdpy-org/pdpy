@@ -6,16 +6,16 @@
 # **************************************************************************** #
 """ IEMGUI Radio Class Definitions """
 
-from .object import Object
+from .obj import Obj
 from .size import Size
 from .connections import Comm
 from .iemgui import IEMLabel
 
 __all__ = [ 'Radio' ]
 
-class Radio(Object):
+class Radio(Obj):
   """
-  The IEM Radio Object
+  The IEM Radio Obj
   =====================
   The case of `hradio` or `vradio`
   --------------------
@@ -65,5 +65,5 @@ class Radio(Object):
 
   def __xml__(self):
     """ Return the XML Element for this object """
-    return super().__xml__(scope=self, attrib=('size', 'flag', 'init', 'number', 'comm', 'label', 'bgcolor', 'fgcolor', 'value'))
+    return super().__xml__(scope=self, tag=self.__cls__, attrib=('size', 'flag', 'init', 'number', 'comm', 'label', 'bgcolor', 'fgcolor', 'value'))
     
