@@ -10,16 +10,16 @@ from .base import Base
 from .default import GOPArrayFlags
 from ..util.utils import  log
 
-__all__ = [ 'PdGOPArray' ]
+__all__ = [ 'GOPArray' ]
 
-class PdGOPArray(Base):
+class GOPArray(Base):
   """ A Pd Type
   
   Description
   -----------
-  A PdGOPArray instance extends the Base class with an `addflag` method
+  A GOPArray instance extends the Base class with an `addflag` method
   to account for GOPArrayFlags. And, a `__pd__` method to return a
-  string representation of the PdGOPArray.
+  string representation of the GOPArray.
 
   Parameters
   ----------
@@ -55,7 +55,7 @@ class PdGOPArray(Base):
       self.flag = None
 
   def __pd__(self):
-    """ Return a string representation of the PdGOPArray """
+    """ Return a string representation of the GOPArray """
     
     if hasattr(self, 'template'):
       return f"array {self.name} {self.template}"
@@ -67,7 +67,7 @@ class PdGOPArray(Base):
       return s
     
     else:
-      log(1, "Unknown PdGOPArray format: {}".format(self.__cls__))
+      log(1, "Unknown GOPArray format: {}".format(self.__cls__))
       self.__dumps__()
       return 
   

@@ -23,7 +23,7 @@ from .canvas import Canvas
 from .struct import Struct
 from .scalar import Scalar
 from .graph import Graph
-from .goparray import PdGOPArray
+from .goparray import GOPArray
 from .data import Data
 from .obj import Obj
 from .array import Array
@@ -233,7 +233,7 @@ class PdPy(CanvasBase, Base):
 
   def addGOPArray(self, argv):
     # log(1,"addGOPArray", argv)
-    arr = PdGOPArray(json={
+    arr = GOPArray(json={
       'name' : argv[0],
       'length' : argv[1],
       'type' : argv[2],

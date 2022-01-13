@@ -7,7 +7,7 @@
 """ Class Definitions for Pure Data's Data Structures """
 
 from .base import Base
-from .goparray import PdGOPArray
+from .goparray import GOPArray
 from .exceptions import ArgumentException
 from ..util.utils import  log
 
@@ -88,7 +88,7 @@ class Struct(Base):
     if not hasattr(self, 'array'):
       self.array = []
       self.order.append('array')
-    self.array.append(PdGOPArray(json={
+    self.array.append(GOPArray(json={
       'name' : pd_name,
       'template' : array_name
     }))
