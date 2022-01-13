@@ -3,6 +3,15 @@
 CODEPATH=../pdpy
 CODEBASE=$(find $CODEPATH -name "*.py")
 
+function line_count {
+  local num=$1
+  if [[ $1 -le 0 ]]; then num=1000; fi
+  for i in $CODEBASE
+  do
+    wc -l $i
+  done | sort | tail -n $num
+}
+
 function classes_and_methods {
   local file="$1"
   date > $file
@@ -21,4 +30,5 @@ function classes_and_methods {
 }
 
 # get all the classes and method definitions into the given file
-classes_and_methods "definitions.txt"
+# classes_and_methods "definitions.txt"
+line_count $1
