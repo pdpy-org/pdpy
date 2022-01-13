@@ -37,7 +37,7 @@ class Struct(Base):
         elif k=='texts':
           for s in x.findall(e): self.addText(s.text)
         elif k=='arrays':
-          for s in x.findall('pdgoparray'): 
+          for s in x.findall('goparray'): 
             self.addArray(s.findtext('name'),s.findtext('template'))
         else:
           raise ArgumentException("Unknown attribute: {}".format(k))
