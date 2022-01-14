@@ -239,13 +239,6 @@ class Base(XmlBuilder, XmlTagConvert):
     # s = '\n'.join(s[i:i+79] for i in range(0, len(s), 79))
     return s
 
-  def __jsontree__(self):
-    # log(0, f"{self.__class__.__name__}.__jsontree__()")
-    setattr(self.root, '__p__', self)
-    for x in getattr(self, 'structs', []):
-      setattr(x, '__p__', self)
-    self.__addparents__(self.root)
-
   def __xml_load__(self, xml_tree):
     """ Parse an XML tree into a PdPy object 
     
@@ -307,4 +300,4 @@ class Base(XmlBuilder, XmlTagConvert):
     self.addRoot(json=root_dict) # belongs to PdPy class
 
     # spawn the __parent__ json tree
-    self.__jsontree__()
+    self.__jsontree__() # belongs to PdPy class
