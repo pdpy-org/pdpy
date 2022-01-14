@@ -1,0 +1,14 @@
+/* 
+ * This file is part of the 'pdpy' Pure Data / Python help files
+ *
+*/
+
+(# A Counter Abstraction
+
+  # once a second, 
+  # this patch prints to console 
+  # every value in the table 
+  -> metro 1000 
+  f += 1 # increment
+  % $1
+)

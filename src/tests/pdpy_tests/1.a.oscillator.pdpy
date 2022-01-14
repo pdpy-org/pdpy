@@ -1,0 +1,12 @@
+/* 
+ * This file is part of the 'pdpy' Pure Data / Python help files
+ *
+*/
+
+(# Connect an oscillator to the dac
+
+  # this is an in-patch comment
+  # i.e., a comment that gets stored inside the pd patch window
+  
+  osc~ 440 *~ 0.1 dac~
+)

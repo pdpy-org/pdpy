@@ -1,0 +1,10 @@
+/*
+ * This file is part of the 'pdpy' Pure Data / Python help files
+ *
+*/
+
+(# Hello World 
+  
+  # this example prints 'hello world' to console
+  -> 'hello world' > print
+)

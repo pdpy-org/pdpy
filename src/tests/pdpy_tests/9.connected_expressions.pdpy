@@ -1,0 +1,12 @@
+/* 
+ * This file is part of the 'pdpy' Pure Data / Python help files
+ *
+*/
+
+(# Connected expressions
+
+  osc~ 440
+  *~ 0.1
+  <2 dac~
+
+)

@@ -1,0 +1,15 @@
+/* 
+ * This file is part of the 'pdpy' Pure Data / Python help files
+ *
+*/
+
+(# Subpatches
+
+  # this is a comment on the root canvas
+  (# My Subcanvas
+    #this is a comment inside a subpatch
+    -> 'hello from subcanvas'
+    # canvases pipe the last output to their outlet
+  ) print
+
+)

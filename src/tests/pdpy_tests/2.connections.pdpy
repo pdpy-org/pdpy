@@ -1,0 +1,19 @@
+/* 
+ * This file is part of the 'pdpy' Pure Data / Python help files
+ *
+*/
+
+(# Connections
+   
+  # the example below prints the number 1234 to console
+  -> 1234 > print
+  # the following output also works
+  # because connections work in reverse
+  print < 'this works too' < loadbang
+
+  #so, this is allowed
+  -> 'bang' > print < 1 2 3 4 5 \foo \bar
+
+  # NOTE: the '->' symbol is a synonym for 'loadbang >'
+
+)

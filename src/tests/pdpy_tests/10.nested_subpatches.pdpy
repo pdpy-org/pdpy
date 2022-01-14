@@ -1,0 +1,30 @@
+/* 
+ * This file is part of the 'pdpy' Pure Data / Python help files
+ *
+*/
+
+(# Main
+
+  # this is a comment on the root canvas
+  (# subcanvas1
+    #this is a comment inside subcanvas1
+    -> 'hello from subcanvas1'
+  ) print
+
+  (# subcanvas2
+    (# subsub1
+      #this is a comment inside subcanvas2 and subsub1
+      -> 'hello from subsub1'
+
+      (# subsubsub1
+        #this is a comment inside subcanvas2-subsub1-subsubsub1
+        -> 'hello from subsubsub1'
+      ) 
+    ) 
+    #this is another comment inside subcanvas2
+    -> 'hello from subcanvas2'
+    # canvases pipe the last output to their outlet
+  ) print
+
+)
+// some more stuff

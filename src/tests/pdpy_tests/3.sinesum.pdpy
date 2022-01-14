@@ -1,0 +1,12 @@
+/* 
+ * This file is part of the 'pdpy' Pure Data / Python help files
+ *
+*/
+
+(# Load a table with the sinesum message
+
+  # names that start with '\' are symbols, 
+  # in this case, \mytab is a table:
+  -> sinesum 2048 1 > \mytab 2051
+
+)

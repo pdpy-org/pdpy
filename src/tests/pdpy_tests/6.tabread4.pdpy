@@ -1,0 +1,25 @@
+/* 
+ * This file is part of the 'pdpy' Pure Data / Python help files
+ *
+*/
+
+(# Reading from a table
+
+  -> sinesum 2048 1 > \mytab 2051
+  (
+    (
+      # nesting stuff:
+      # the output of this (canvas) is fed into the +~ symbol
+      phasor~ 333
+      *~ 2051
+    ) +~ 1
+    # canvases pipe the last output forward
+  ) tabread4~ \mytab *~ 0.03 > dac~
+
+/*
+ * The phasor up there is reading a table \mytab
+ * filled with a sinesum message above
+ * then, it is multiplied by 0.03 and send to dac
+*/
+
+)

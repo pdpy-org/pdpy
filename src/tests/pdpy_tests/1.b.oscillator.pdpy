@@ -1,0 +1,12 @@
+/* 
+ * This file is part of the 'pdpy' Pure Data / Python help files
+ *
+*/
+
+(# Connect an oscillator to the dac
+
+  # another way to connect objects is by making a new line
+  osc~ 440 
+  *~ 0.1
+  dac~ 1 2
+)
