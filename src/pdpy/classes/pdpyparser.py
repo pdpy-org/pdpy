@@ -129,6 +129,7 @@ class PdPyParser(PdPy):
     
     if not self.__is_obj_map__[i]: 
       log(0,"Is not an object",t)
+      # self.objectConnector(self.__prev__, self.__last__.id)
       return
 
     if not hasattr(self.__iolet_map__[i], 'inlets'):
@@ -219,7 +220,7 @@ class PdPyParser(PdPy):
     """ Objects
     """
     if self.__is_obj_map__[i]: 
-      # print("CREATING AN OBJECT", t)
+      # log(1,"CREATING AN OBJECT", t)
       return self.objectCreator(Obj, (t))
 
 
@@ -238,7 +239,7 @@ class PdPyParser(PdPy):
 
     # if no connection token is presnt, then connect the entire lot
     self.__connect_all__ = ( ">" not in self.__tokens__ and "<" not in self.__tokens__ and "->" not in self.__tokens__ and "<-" not in self.__tokens__ ) and autoconnect
-    # if self.__connect_all__: print("self.__connect_all__")
+    # if self.__connect_all__: log(1,"self.__connect_all__")
 
     # ignore comments
     if self.__tokens__[0].startswith("//") or self.__tokens__[0].startswith("/*") or self.__tokens__[0].startswith(" *") or self.__tokens__[0].startswith("*/"): 
@@ -261,7 +262,7 @@ class PdPyParser(PdPy):
 
     if not multiobj:
       # single object
-      print("is single object", self.__tokens__)
+      log(1,"is single object", self.__tokens__)
       self.__last__ = self.parse_any(0, self.__tokens__[0])
       if hasattr(self,"__last__") and self.__last__ is not None:
         self.__last__.args = self.__tokens__[1:]
@@ -271,17 +272,17 @@ class PdPyParser(PdPy):
       # if self.__connect_all__:
     elif noobj:
       # no object
-      print("no objects", self.__tokens__)
+      log(1,"no objects", self.__tokens__)
       return
 
-    print("is multi obj", multiobj, self.__tokens__)
+    log(1,"is multi obj", multiobj, self.__tokens__)
     
     # i = 0
-    # print(arg_map)
+    # log(1,arg_map)
     # while i < len(self.__tokens__):
 
     #   self.__last__ = self.parse_any(i, self.__tokens__[i].strip())
-    #   print(self.__last__, self.__tokens__[i])
+    #   log(1,self.__last__, self.__tokens__[i])
     #   if arg_map[i] and self.__last__ is not None:
     #     arg = arg_map[i]
     #     if hasattr(self.__last__,'addargs'):
@@ -304,7 +305,7 @@ class PdPyParser(PdPy):
       self.make_connections(i, t)
       # log(0,"self.__last__",self.__last__.id,"self.__prev__",self.__prev__)
       # log(0,t, f"{'Is an' if self.__is_obj_map__[i] else 'Is not an'} Obj")
-      # print(f"object {t} has {argc} argument{'s' if argc>1 else ''}")
+      # log(1,f"object {t} has {argc} argument{'s' if argc>1 else ''}")
     # that's it
 
   def pdpyComment(self, string, border=None):
@@ -487,16 +488,16 @@ class PdPyParser(PdPy):
     if re.search(r"^\s+[\*\w\d\\\-%\+\/].+$", s): 
       objects = re.findall(r"^\s+([\*\w\d\\\-%\+\/].+)$", s) 
       if bool(objects):
-        print("obj",objects)
+        log(1,"obj",objects)
         self.pdpyCreate(" ".join(objects).strip())
       return True
 
   def parsePdPyLine(self, s):
     """ PdPy line parsing dispatcher
     """
-    # print("-"*30)
-    # print(repr(s))
-    # print("-"*30)
+    # log(1,"-"*30)
+    # log(1,repr(s))
+    # log(1,"-"*30)
     if self.is_ignored(s): return
     if self.is_root(s): return
     if self.is_root_end(s): return
@@ -546,18 +547,18 @@ class PdPyParser(PdPy):
         # signal / nonsignal objects
         # elif "~" in t:
         
-          # if   t in internals.signal.math:           print("s math obj",obj)
-          # elif t in internals.signal.fourier:        print("s fourier obj",obj)
-          # elif t in internals.signal.filters:        print("s filter obj",obj)
-          # elif t in internals.signal.flow:           print("s flow obj",obj)
-          # elif t in internals.signal.delays:         print("s delays obj",obj)
-          # elif t in internals.signal.route:          print("s route obj",obj)
-          # elif t in internals.signal.generators:     print("s gen obj",obj)
-          # elif t in internals.signal.system:         print("s sys obj",obj)
-          # elif t in internals.signal.control_to_sig: print("s c2s obj",obj)
-          # elif t in internals.signal.array:          print("s tab obj",obj)
-          # elif t in internals.signal.block:          print("s block obj",obj)
-          # elif t in internals.signal.analysis:       print("s analysis obj",obj)
+          # if   t in internals.signal.math:           log(1,"s math obj",obj)
+          # elif t in internals.signal.fourier:        log(1,"s fourier obj",obj)
+          # elif t in internals.signal.filters:        log(1,"s filter obj",obj)
+          # elif t in internals.signal.flow:           log(1,"s flow obj",obj)
+          # elif t in internals.signal.delays:         log(1,"s delays obj",obj)
+          # elif t in internals.signal.route:          log(1,"s route obj",obj)
+          # elif t in internals.signal.generators:     log(1,"s gen obj",obj)
+          # elif t in internals.signal.system:         log(1,"s sys obj",obj)
+          # elif t in internals.signal.control_to_sig: log(1,"s c2s obj",obj)
+          # elif t in internals.signal.array:          log(1,"s tab obj",obj)
+          # elif t in internals.signal.block:          log(1,"s block obj",obj)
+          # elif t in internals.signal.analysis:       log(1,"s analysis obj",obj)
           # else:
           #   log(1, "Unknown signal object", obj)
           
@@ -567,77 +568,77 @@ class PdPyParser(PdPy):
         # else:
 
           # if   t in internals.interface.midi:     
-          #   print("i midi obj", obj)
+          #   log(1,"i midi obj", obj)
           # self.__last__ = self.objectCreator(Obj, (t))
           # elif t in internals.interface.keyboard: 
-          #   print("i key obj", obj)
+          #   log(1,"i key obj", obj)
           #   self.objectCreator(Obj, (t))
           # elif t in internals.interface.system:   
-          #   print("i sys obj", obj)
+          #   log(1,"i sys obj", obj)
           #   self.objectCreator(Obj, (t))
           # elif t in internals.interface.gui:      
-          #   print("i gui obj", obj)
+          #   log(1,"i gui obj", obj)
             # self.objectCreator(PdIEMGui, (t))
 
           # elif t in internals.operators.math:       
-          #   print("o math obj", obj)
+          #   log(1,"o math obj", obj)
           #   self.objectCreator(Obj, (t))
           # elif t in internals.operators.binary:     
-          #   print("o bin obj", obj)
+          #   log(1,"o bin obj", obj)
           #   self.objectCreator(Obj, (t))
           # elif t in internals.operators.comparison: 
-          #   print("o comp obj", obj)
+          #   log(1,"o comp obj", obj)
           #   self.objectCreator(Obj, (t))
 
           # elif t in internals.data.array: 
-          #   print("d array obj", obj)
+          #   log(1,"d array obj", obj)
           #   self.objectCreator(Array, (t))
           # elif t in internals.data.struct: 
-          #   print("d struct obj", obj)
+          #   log(1,"d struct obj", obj)
           # elif t in internals.data.text: 
-          #   print("d text obj", obj)
+          #   log(1,"d text obj", obj)
           #   self.objectCreator(Array, (t))
           # elif t in internals.data.other: 
-          #   print("d other obj", obj)
+          #   log(1,"d other obj", obj)
           #   self.objectCreator(Obj, (t))
     
           # elif t in internals.parsing.list: 
-          #   print("p list obj", obj)
+          #   log(1,"p list obj", obj)
           #   self.objectCreator(Obj, (t))
           # elif t in internals.parsing.stream: 
-          #   print("p stream obj", obj)
+          #   log(1,"p stream obj", obj)
           #   self.objectCreator(Obj, (t))
           # elif t in internals.parsing.format: 
-          #   print("p format obj", obj)
+          #   log(1,"p format obj", obj)
           #   self.objectCreator(Obj, (t))
     
           # elif t in internals.control.flow: 
-          #   print("c flow obj", obj)
+          #   log(1,"c flow obj", obj)
           #   self.objectCreator(Obj, (t))
           # elif t in internals.control.network: 
-          #   print("c net obj", obj)
+          #   log(1,"c net obj", obj)
           #   self.objectCreator(Obj, (t))
           # elif t in internals.control.math: 
-          #   print("c math obj", obj)
+          #   log(1,"c math obj", obj)
           #   self.objectCreator(Obj, (t))
           # elif t in internals.control.time: 
-          #   print("c time obj", obj)
+          #   log(1,"c time obj", obj)
           #   self.objectCreator(Obj, (t))
           # elif t in internals.control.generators: 
-          #   print("c gen obj", obj)
+          #   log(1,"c gen obj", obj)
           #   self.objectCreator(Obj, (t))
 
           # elif t in internals.nonobj: 
-          #   print("nonobj", obj)
+          #   log(1,"nonobj", obj)
           # elif t in internals.obsolete: 
-          #   print("obsolete", obj)
+          #   log(1,"obsolete", obj)
           # elif t in internals.extra: 
-          #   print("extra", obj)
+          #   log(1,"extra", obj)
           
           # else:
 
           # if checknum(t): 
-            # print("number", self.__num__(t))
+            # log(1,"number", self.__num__(t))
             # self.objectCreator(Msg, (self.__num__(t)))
           
           # else:
