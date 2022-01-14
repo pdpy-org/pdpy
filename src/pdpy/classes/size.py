@@ -19,10 +19,13 @@ class Size(Base):
     elif xml is not None:
       self.w = self.__num__(xml.findtext('w'))
       self.h = self.__num__(xml.findtext('h'))
-    elif json is None and xml is None:
+    elif (json is None and xml is None) and (w is not None and h is not None):
       self.width  = self.__num__(w) if w is not None else None
       self.height = self.__num__(h) if h is not None else None
-    
+    else:
+      self.width = self.__d__.dimen['width']
+      self.height = self.__d__.dimen['height']
+
   def __pd__(self):
     s = ''
     if hasattr(self, 'width'):
@@ -36,4 +39,3 @@ class Size(Base):
   def __xml__(self, tag=None):
     """ Return an XML Element """
     return super().__xml__(scope=self, tag=tag, attrib=('width', 'height'))
-

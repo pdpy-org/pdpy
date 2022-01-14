@@ -22,6 +22,9 @@ class Point(Base):
     elif json is None and xml is None:
       self.x = self.__num__(x) if x is not None else None
       self.y = self.__num__(y) if y is not None else None
+    else:
+      self.x = self.__d__.screen['x']
+      self.y = self.__d__.screen['y']
     
   def __pd__(self):
     return f"{self.x} {self.y}"
