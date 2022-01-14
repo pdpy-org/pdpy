@@ -369,7 +369,10 @@ class PdPyParser(PdPy):
       __canvas__.__cursor__.y += __canvas__.__box__.height
     
     if objClass is Comment:
-      obj = Comment([x, y] + argv)
+      obj = Comment()
+      obj.position.set_x(x)
+      obj.position.set_y(y)
+      obj.text = argv
       __canvas__.comment(obj)
     else:
       self.__obj_idx__ = __canvas__.grow() 

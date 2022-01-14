@@ -36,6 +36,9 @@ class Comment(Base):
           argv = argv[:-2]
           argv[-1] = argv[-1].replace(",","")
         self.text = splitSemi(argv)
+    else:
+      self.position = Point()
+      self.text = []
 
   def __pd__(self):
     """ Return a pd representation string """
