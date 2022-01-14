@@ -29,3 +29,12 @@ class Point(Base):
   def __xml__(self, tag=None):
     """ Return an XML Element """
     return super().__xml__(scope=self, tag=tag, attrib=('x', 'y'))
+
+  def set_x(self, x):
+    self.x = self.__num__(x)
+    return self.x
+  
+  def set_y(self, y):
+    self.y = self.__num__(y)
+    return self.y
+
