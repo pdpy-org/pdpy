@@ -28,8 +28,7 @@ class Object(Base):
     self.__pdpy__ = self.__class__.__name__
     if id is not None:
       self.id = int(id)
-    if x is not None and y is not None:
-      self.position = Point(x=x, y=y)
+    self.position = Point(x=x, y=y)
     super().__init__(**kwargs)
   
   def addargs(self, argv):
@@ -79,7 +78,6 @@ class Object(Base):
     # return the pd line
     return s
 
-
   def __xml__(self, classname=None, args=None, **kwargs):
     """ Returns an XML Element for this object """
     # print("obj",classname, args, kwargs)
@@ -105,3 +103,10 @@ class Object(Base):
       super().__subelement__(x, 'arguments', text=args)
     
     return x
+  
+  def move(self, x=None, y=None):
+    """ Move the object to a new position. """
+    if x is not None:
+      self.position.set_x(x)
+    if y is not None:
+      self.position.set_y(y)

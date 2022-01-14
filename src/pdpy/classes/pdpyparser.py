@@ -37,6 +37,7 @@ class PdPyParser(PdPy):
     """
   def __init__(self, fp, pddb, **kwargs):
     super().__init__(**kwargs)
+    self.__pdpy__ = 'PdPy'
     
     self.__pddb__ = pddb
     self.__lines__ = fp.readlines()
@@ -370,9 +371,8 @@ class PdPyParser(PdPy):
     
     if objClass is Comment:
       obj = Comment()
-      obj.position.set_x(x)
-      obj.position.set_y(y)
-      obj.text = argv
+      obj.move(x, y)
+      obj.addtext(argv)
       __canvas__.comment(obj)
     else:
       self.__obj_idx__ = __canvas__.grow() 

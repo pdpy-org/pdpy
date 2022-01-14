@@ -6,13 +6,13 @@
 # **************************************************************************** #
 """ Pure Data Text Comment Definitions """
 
-from .base import Base
+from .object import Object
 from .point import Point
 from ..util.utils import log, splitSemi
 
 __all__ = [ 'Comment' ]
 
-class Comment(Base):
+class Comment(Object):
   def __init__(self, pd_lines=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
     super().__init__(cls='text')
@@ -38,12 +38,11 @@ class Comment(Base):
         self.text = splitSemi(argv)
     else:
       self.position = Point()
-      self.text = []
 
   def __pd__(self):
     """ Return a pd representation string """
 
-    s = self.position.__pd__()
+    s = ''
 
     if hasattr(self, 'text') and len(self.text):
       if len(self.text) == 1:
@@ -59,13 +58,19 @@ class Comment(Base):
 
   def __xml__(self):
     """ Return an xml representation object """
-    x = super().__xml__(scope=self, attrib=('position','border'))
+    x = super().__xml__(scope=self, attrib='border')
+        
     if hasattr(self, 'text'):
       text = super().__element__(tag='text')
       for t in getattr(self, 'text', []):
         super().__subelement__(text, 'txt', text=t)
       super().__subelement__(x, text)
+
     return x
     
-
+  def addtext(self, text):
+    """ Add a text row to the comment be semicolon-terminated. """
+    if not hasattr(self, 'text'):
+      self.text = []
+    self.text.append(text)
   
