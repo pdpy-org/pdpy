@@ -10,12 +10,12 @@ import re
 
 # from pdpy.parse.pdpy2json import is_ignored
 
-from ..classes.pdpy import PdPy
-from ..classes.canvas import Canvas
-from ..classes.message import Msg
-from ..classes.comment import Comment
-from ..classes.connections import Edge
-from ..classes.point import Point
+from .pdpy import PdPy
+from .canvas import Canvas
+from .message import Msg
+from .comment import Comment
+from .connections import Edge
+from .point import Point
 from .obj import Obj
 from .array import Array
 from ..util.utils import log, printer, tokenize
