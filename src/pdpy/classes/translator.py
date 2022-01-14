@@ -107,14 +107,12 @@ class Translator(Base):
     
     elif self.source == "pdpy":
       with open(self.input_file, "r", encoding=self.encoding) as fp:
-        pdpy_file_pointer = fp
-      
-      self.pdpy = PdPyParser(
-        pdpy_file_pointer,
-        self.internals,
-        name = self.input_file.name,
-        encoding = self.encoding
-      )
+        self.pdpy = PdPyParser(
+          fp, # pdpy_file_pointer
+          self.internals,
+          name = self.input_file.name,
+          encoding = self.encoding
+        )
     
     elif self.source == "xml":
       with open(self.input_file, "r", encoding=self.encoding) as fp:
