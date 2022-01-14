@@ -39,3 +39,11 @@ class Size(Base):
   def __xml__(self, tag=None):
     """ Return an XML Element """
     return super().__xml__(scope=self, tag=tag, attrib=('width', 'height'))
+
+  def set_width(self, width):
+    self.width = self.__num__(width)
+    return self.width
+  
+  def set_height(self, height):
+    self.height = self.__num__(height)
+    return self.height
