@@ -4,6 +4,7 @@
 
 - [ ] rebase Array, (Text, and Scalar) on common new Base
 - [ ] rounding error in scientific notation of stored data
+- [ ] fix pdpy lang compiler
 
 ## Improvements
 
