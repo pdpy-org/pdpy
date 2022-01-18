@@ -6,7 +6,6 @@
 # **************************************************************************** #
 """ PdPy class definition """
 
-from pdpy.classes.xmlbuilder import XmlBuilder
 from .base import Base
 from .canvasbase import CanvasBase
 from .default import *

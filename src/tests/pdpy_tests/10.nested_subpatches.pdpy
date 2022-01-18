@@ -9,7 +9,7 @@
   (# subcanvas1
     #this is a comment inside subcanvas1
     -> 'hello from subcanvas1'
-  ) print
+  ) print a
 
   (# subcanvas2
     (# subsub1
@@ -24,7 +24,7 @@
     #this is another comment inside subcanvas2
     -> 'hello from subcanvas2'
     # canvases pipe the last output to their outlet
-  ) print
+  ) print b
 
 )
 // some more stuff

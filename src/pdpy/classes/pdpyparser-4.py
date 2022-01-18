@@ -22,17 +22,6 @@ from ..util.utils import log, printer, tokenize
 
 __all__ = [ 'PdPyParser' ]
 
-@printer
-def is_ignored(line): 
-  """ Ignore out-of-patch comments
-  """
-  return bool(re.search(r"^/\*.*$", line)    or 
-              re.search(r"^\line\*.*$", line) or 
-              re.search(r"^\*/$", line)    or 
-              re.search(r"^[\line]*//", line) or 
-              re.search(r"^\n", line))
-
-
 class PdPyParser(PdPy):
   """ Reads the lines from a .pdpy file pointer `fp` and populates a `PdPy` obj
     
@@ -65,19 +54,11 @@ class PdPyParser(PdPy):
     self.__canvases__ = []
     self.__last__ = None #  the las object     
     
-    for i, line in enumerate(self.__lines__):
+    for i, s in enumerate(self.__lines__):
       self.__line_num__ = i
-      # log(1,"-"*30)
-      # log(1,repr(line))
-      # log(1,"-"*30)
-      if is_ignored(line): continue
-      if self.is_root(line): continue
-      if self.is_root_end(line): continue
-      if self.is_subpatch(line): continue
-      if self.is_subpatch_end(line): continue
-      if self.is_pdtext(line): continue    
-      if self.is_pdobj(line): continue
-      # log(1,"parsePdPyLine: Unparsed Lines:", repr(line))
+      self.parsePdPyLine(s)
+    # self.__dumps__()
+
 
   def arg_count(self, q):
     """ Query the database for object number of creation self.__arguments__
@@ -419,7 +400,16 @@ class PdPyParser(PdPy):
     
     # edge.__dumps__()
 
-  
+  @printer
+  def is_ignored(self, s): 
+    """ Ignore out-of-patch comments
+    """
+    return bool(re.search(r"^/\*.*$", s)    or 
+                re.search(r"^\s\*.*$", s) or 
+                re.search(r"^\*/$", s)    or 
+                re.search(r"^[\s]*//", s) or 
+                re.search(r"^\n", s))
+
   @printer
   def is_root(self, s):
     """ Root canvas opening parens
@@ -502,7 +492,20 @@ class PdPyParser(PdPy):
         self.pdpyCreate(" ".join(objects).strip())
       return True
 
-
+  def parsePdPyLine(self, s):
+    """ PdPy line parsing dispatcher
+    """
+    # log(1,"-"*30)
+    # log(1,repr(s))
+    # log(1,"-"*30)
+    if self.is_ignored(s): return
+    if self.is_root(s): return
+    if self.is_root_end(s): return
+    if self.is_subpatch(s): return
+    if self.is_subpatch_end(s): return
+    if self.is_pdtext(s): return    
+    if self.is_pdobj(s): return
+    # log(1,"parsePdPyLine: Unparsed Lines:", repr(s))
   
   
 
