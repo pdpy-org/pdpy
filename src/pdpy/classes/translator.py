@@ -7,12 +7,12 @@
 """ Translator class """
 
 from pathlib import Path
-from types import SimpleNamespace
 from json import load as json_load
 from json import loads as json_loads
 from pickle import dump as pickle_dump
 from pickle import load as pickle_load
 from pickle import HIGHEST_PROTOCOL as PICKLE_HIGHEST_PROTOCOL
+from types import SimpleNamespace
 from pdpy.classes.base import Base
 from pdpy.classes.exceptions import ArgumentException
 from pdpy.classes.pdpy import PdPy
@@ -20,6 +20,7 @@ from pdpy.classes.pdpyparser import PdPyParser
 from pdpy.classes.default import getFormat
 from pdpy.util.utils import log, parsePdBinBuf, parsePdFileLines, loadPdFile
 from pdpy.classes.pdpyencoder import PdPyEncoder
+
 
 __all__ = [ 'Translator' ] 
 
@@ -78,9 +79,26 @@ class Translator(Base):
     
     # store an object containing a pd object database
     if self.internals is not None:
-      with open(self.internals, "r", encoding=self.encoding) as fp:
-        self.internals=json_load(fp,object_hook=lambda o:SimpleNamespace(**o))
-      # print(self.internals)
+      """  Attempt to load PDDB manager: https://github.com/fdch/pddb
+      Fall back to json if the package is not there
+      """
+      import sys
+      pddb_path = Path(self.internals)
+      if pddb_path.exists():
+        try:
+          sys.path.append((pddb_path.parent / 'src').as_posix())
+          from pddb import PDDB
+          self.pddb = PDDB(dbname=pddb_path.resolve(), listen=False)
+        except ImportError:
+          print("Could not import pddb. Loading json instead.")
+          try:
+            with open(self.internals, "r", encoding=self.encoding) as fp:
+              self.pddb=json_load(fp,object_hook=lambda o:SimpleNamespace(**o))
+          except Exception as e:
+            print("Could not load pddb.json. See error below.")
+            print(e)
+      else:
+        raise ArgumentException(f"PDDB: {pddb_path.as_posix()} is missing.")
 
     # Load the source file
     
@@ -109,7 +127,7 @@ class Translator(Base):
       with open(self.input_file, "r", encoding=self.encoding) as fp:
         self.pdpy = PdPyParser(
           fp, # pdpy_file_pointer
-          self.internals,
+          self.pddb,
           name = self.input_file.name,
           encoding = self.encoding
         )

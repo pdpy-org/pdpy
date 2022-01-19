@@ -6,10 +6,6 @@
 # **************************************************************************** #
 """ PdPy file to Json-format file """
 
-import re
-
-# from pdpy.parse.pdpy2json import is_ignored
-
 from .pdpy import PdPy
 from .canvas import Canvas
 from .message import Msg
@@ -18,7 +14,7 @@ from .connections import Edge
 from .point import Point
 from .obj import Obj
 from .array import Array
-from ..util.utils import log, printer, tokenize
+from ..util.utils import log, tokenize
 from ..util.regex import *
 
 __all__ = [ 'PdPyParser' ]
@@ -41,7 +37,7 @@ class PdPyParser(PdPy):
     super().__init__(**kwargs)
     self.__pdpy__ = 'PdPy'
     
-    self.__pddb__ = pddb
+    self.__db__ = pddb
     self.__lines__ = fp.readlines()
     # self.__lines__ = fp.read()
 
@@ -140,6 +136,19 @@ class PdPyParser(PdPy):
       continue
       # log(1,"parsePdPyLine: Unparsed Lines:", repr(line))
 
+  def objectConnector(self, source=None,sink=None, canvas=None):
+    
+    __canvas__ = self.__last_canvas__() if canvas is None else canvas
+    #  canvas obj_index advances before this
+    if source is None: source = __canvas__.__obj_idx__
+    if sink is None: sink = __canvas__.__obj_idx__ + 1
+    source_port = sink_port = 0
+    log(0,"objectConnector", source, sink)
+    pd_edge = (source, source_port, sink, sink_port)
+    edge = Edge(pd=pd_edge)
+    __canvas__.edge(edge)
+    
+    # edge.__dumps__()
 
   def objectCreator(self, objClass, argv, root=False, canvas=None):
     
@@ -172,42 +181,6 @@ class PdPyParser(PdPy):
 
     return obj
 
-  def arg_count(self, q):
-    """ Query the database for object number of creation self.__arguments__
-    """
-    for x in self.__pddb__:
-      if len(x.classes):
-        for c in x.classes:
-          if hasattr(c,'attributes') and hasattr(c.attributes,'arguments') and hasattr(c.attributes.arguments,'name') and q == c.attributes.arguments.name:
-            return len(c.attributes.arguments.args)
-
-  def is_obj(self, q):
-    """ Query the database to check if it is a pd object or not
-    """
-    if '->' in q or '<-' in q: return True
-    if not (">" in q or "<" in q or q.startswith("\\") or "'" in q):
-      for x in self.__pddb__:
-        if len(x.classes):
-          for c in x.classes:
-            if hasattr(c,'attributes') and hasattr(c.attributes,'arguments'):
-              if (hasattr(c.attributes.arguments,'name') and q == c.attributes.arguments.name) or q == c.attributes.arguments: 
-                return True
-    return False
-
-  def has_iolets(self, q):
-    """ Query the database to check if the pd object has iolets, return obj
-    """
-    if '->' in q or '<-' in q: 
-      return self.has_iolets('loadbang')
-    if not (">" in q or "<" in q or q.startswith("\\") or "'" in q):
-      for x in self.__pddb__:
-        if len(x.classes):
-          for c in x.classes:
-            if hasattr(c,'attributes') and hasattr(c.attributes,'iolets'):
-              if (hasattr(c.attributes.arguments,'name') and q == c.attributes.arguments.name): 
-                return c.attributes.iolets
-    return False
-
   def pdpyCreate(self, string, autoconnect=True):
     """ create pd stuff from pdpy lang 
     """
@@ -218,8 +191,6 @@ class PdPyParser(PdPy):
 
     self.__tokens__ = tokenize(string.strip())
     log(0,"Tokens are",self.__tokens__)
-    
-    
 
     # if no connection token is presnt, then connect the entire lot
     self.__connect_all__ = ( ">" not in self.__tokens__ and "<" not in self.__tokens__ and "->" not in self.__tokens__ and "<-" not in self.__tokens__ ) and autoconnect
@@ -232,8 +203,8 @@ class PdPyParser(PdPy):
     self.__prev__ = self.__last_canvas__().__obj_idx__
     
     
-    self.__is_obj_map__=list(map(lambda x:int(self.is_obj(x)), self.__tokens__))
-    self.__iolet_map__=list(map(lambda x, y:self.has_iolets(x) if y else 0, self.__tokens__, self.__is_obj_map__))
+    self.__is_obj_map__=list(map(lambda x:int(self.__db__.is_obj(x)), self.__tokens__))
+    self.__iolet_map__=list(map(lambda x, y:self.__db__.has_iolets(x) if y else 0, self.__tokens__, self.__is_obj_map__))
     log(0,"object map:", self.__is_obj_map__)
     log(0, "iolet map:", self.__iolet_map__)
 
@@ -281,20 +252,18 @@ class PdPyParser(PdPy):
       # parse_any(i, t)
 
 
-    def get_args(i, t):
+    
+    for i,t in enumerate(self.__tokens__):
+      t = str(t).strip()
       """ Get argument count from pd databasw 
       """
-      argc = self.arg_count(t)
+      argc = self.__db__.arg_count(t)
       self.__store_args__ = argc is not None and self.__is_obj_map__[i]
       
       if self.__store_args__: 
         self.__arg_number__ = argc
-      
       log(0,t,"has",self.__arg_number__, "creation arguments.")
-    
-    for i,t in enumerate(self.__tokens__):
-      t = str(t).strip()
-      get_args(i, t)
+      
       
       """ Pd Argument Parser
       """
@@ -400,19 +369,3 @@ class PdPyParser(PdPy):
           self.objectConnector(self.__obj_idx__-1,self.__obj_idx__)
 
   
-  def objectConnector(self, source=None,sink=None, canvas=None):
-    
-    __canvas__ = self.__last_canvas__() if canvas is None else canvas
-    #  canvas obj_index advances before this
-    if source is None: source = __canvas__.__obj_idx__
-    if sink is None: sink = __canvas__.__obj_idx__ + 1
-    source_port = sink_port = 0
-    log(0,"objectConnector", source, sink)
-    pd_edge = (source, source_port, sink, sink_port)
-    edge = Edge(pd=pd_edge)
-    __canvas__.edge(edge)
-    
-    # edge.__dumps__()
-
-
- 

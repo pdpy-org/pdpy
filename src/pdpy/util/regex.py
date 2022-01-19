@@ -6,7 +6,7 @@
 # **************************************************************************** #
 """ PdPy file to Json-format file """
 import re
-from utils import printer
+from .utils import printer
 
 @printer
 def is_ignored(line): 
