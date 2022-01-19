@@ -7,7 +7,6 @@
 """ PdPy file to Json-format file """
 
 from .pdpy import PdPy
-from .canvas import Canvas
 from .message import Msg
 from .comment import Comment
 from .connections import Edge
@@ -18,7 +17,7 @@ from ..util.utils import log, tokenize
 from ..util.regex import *
 
 __all__ = [ 'PdPyParser' ]
-
+LOG = 1
 
 class PdPyParser(PdPy):
   """ Reads the lines from a .pdpy file pointer `fp` and populates a `PdPy` obj
@@ -33,14 +32,11 @@ class PdPyParser(PdPy):
     2. `pddb` is a json file holding a pure data object database
 
     """
-  def __init__(self, fp, pddb, **kwargs):
+  def __init__(self, lines, pddb, **kwargs):
     super().__init__(**kwargs)
-    self.__pdpy__ = 'PdPy'
     
+    self.__pdpy__ = 'PdPy'
     self.__db__ = pddb
-    self.__lines__ = fp.readlines()
-    # self.__lines__ = fp.read()
-
     self.__msg__ = [] # to store a message
     self.__cmd__ = [] # to store a command ('sinesum', etc)
     self.__store_msg__ = False
@@ -52,11 +48,11 @@ class PdPyParser(PdPy):
     self.__canvases__ = []
     self.__last__ = None #  the las object     
     
-    for i, line in enumerate(self.__lines__):
+    for i, line in enumerate(lines):
       self.__line_num__ = i
-      # log(1,"-"*30)
-      # log(1,repr(line))
-      # log(1,"-"*30)
+      log(LOG,"-"*30)
+      log(LOG,repr(line))
+      log(LOG,"-"*30)
       
       # Check for comments -----------------------------------------------------
       if is_ignored(line):
@@ -65,8 +61,8 @@ class PdPyParser(PdPy):
       # Check for root canvas -------------------------------------------------
       root, name = is_root(line)
       if root:
-        self.root = Canvas()
-        self.root.name =  name if bool(name) else self.patchname
+        self.root = self.addRoot()
+        self.root.name = name if bool(name) else self.patchname
         if self.root.__cursor__.y > self.root.__margin__.height:
           self.root.__margin__.height = self.root.__cursor__.y
         self.__canvases__.append(self.root)
@@ -81,7 +77,7 @@ class PdPyParser(PdPy):
       subpatch, name = is_subpatch(line)
       if subpatch:
         __canvas__ = self.__get_canvas__()
-        cnv = Canvas()
+        cnv = self.addCanvas()
         cnv.id = self.__obj_idx__
         self.__canvas_idx__.append(__canvas__.add(cnv))
         
@@ -110,7 +106,7 @@ class PdPyParser(PdPy):
           self.__canvas_idx__.pop()
         __canvas__.grow_margins(len(__canvas__.name))
         __canvas__.__cursor__.y += __canvas__.__box__.height
-        log(0,"restored", __canvas__.name)
+        log(LOG,"restored", __canvas__.name)
         # check again and pass arguments to pipe through
         if bool(piped):
           string = " ".join(piped).strip()
@@ -120,7 +116,6 @@ class PdPyParser(PdPy):
           # patch.objectConnector()
         # clear the canvas out of the stack
         self.__canvases__.pop()
-
         continue
       
       # Check for pd-comments -------------------------------------------------
@@ -133,8 +128,10 @@ class PdPyParser(PdPy):
       objects = is_pdobj(line)
       if bool(objects) and isinstance(objects, list):
         self.pdpyCreate(" ".join(objects).strip())
-      continue
-      # log(1,"parsePdPyLine: Unparsed Lines:", repr(line))
+        continue
+      
+      log(LOG,"parsePdPyLine: Unparsed Lines:", repr(line))
+
 
   def objectConnector(self, source=None,sink=None, canvas=None):
     
@@ -143,19 +140,18 @@ class PdPyParser(PdPy):
     if source is None: source = __canvas__.__obj_idx__
     if sink is None: sink = __canvas__.__obj_idx__ + 1
     source_port = sink_port = 0
-    log(0,"objectConnector", source, sink)
+    log(LOG,"objectConnector", source, sink)
     pd_edge = (source, source_port, sink, sink_port)
-    edge = Edge(pd=pd_edge)
-    __canvas__.edge(edge)
-    
-    # edge.__dumps__()
+    edge = Edge(pd_lines=pd_edge)
+    __canvas__.edge(edge)    
+    edge.__dumps__()
 
   def objectCreator(self, objClass, argv, root=False, canvas=None):
     
     __canvas__ = self.__last_canvas__() if canvas is None else canvas
 
     obj = None
-    log(0,"objCreator",argv)
+    log(LOG,"objCreator",argv)
 
     word_length = len(argv) if isinstance(argv,str) else len(" ".join(argv))
     if not root:
@@ -187,14 +183,14 @@ class PdPyParser(PdPy):
     
     string = string.replace("->", "loadbang >")
     # string = string.replace("<-", "< loadbang")
-    log(0,"pdpyCreate",repr(string))
+    log(LOG,"pdpyCreate",repr(string))
 
     self.__tokens__ = tokenize(string.strip())
-    log(0,"Tokens are",self.__tokens__)
+    log(LOG,"Tokens are",self.__tokens__)
 
     # if no connection token is presnt, then connect the entire lot
     self.__connect_all__ = ( ">" not in self.__tokens__ and "<" not in self.__tokens__ and "->" not in self.__tokens__ and "<-" not in self.__tokens__ ) and autoconnect
-    # if self.__connect_all__: log(1,"self.__connect_all__")
+    # if self.__connect_all__: log(LOG,"self.__connect_all__")
 
     # ignore comments
     if self.__tokens__[0].startswith("//") or self.__tokens__[0].startswith("/*") or self.__tokens__[0].startswith(" *") or self.__tokens__[0].startswith("*/"): 
@@ -205,19 +201,17 @@ class PdPyParser(PdPy):
     
     self.__is_obj_map__=list(map(lambda x:int(self.__db__.is_obj(x)), self.__tokens__))
     self.__iolet_map__=list(map(lambda x, y:self.__db__.has_iolets(x) if y else 0, self.__tokens__, self.__is_obj_map__))
-    log(0,"object map:", self.__is_obj_map__)
-    log(0, "iolet map:", self.__iolet_map__)
-
+    log(LOG,"object map:", self.__is_obj_map__)
+    log(LOG, "iolet map:", self.__iolet_map__)
     
     obj_count = sum(self.__is_obj_map__)
     multiobj = obj_count > 1
     noobj = obj_count == 0    
     # arg_map = list(map(lambda x,y:self.arg_count(x) if y else None, self.__tokens__, self.__is_obj_map__))
 
-
     if not multiobj:
       # single object
-      log(1,"is single object", self.__tokens__)
+      log(LOG,"is single object", self.__tokens__)
       self.__last__ = self.parse_any(0, self.__tokens__[0])
       if hasattr(self,"__last__") and self.__last__ is not None:
         self.__last__.args = self.__tokens__[1:]
@@ -227,32 +221,10 @@ class PdPyParser(PdPy):
       # if self.__connect_all__:
     elif noobj:
       # no object
-      log(1,"no objects", self.__tokens__)
+      log(LOG,"no objects", self.__tokens__)
       return
 
-    log(1,"is multi obj", multiobj, self.__tokens__)
-    
-    # i = 0
-    # log(1,arg_map)
-    # while i < len(self.__tokens__):
-
-    #   self.__last__ = self.parse_any(i, self.__tokens__[i].strip())
-    #   log(1,self.__last__, self.__tokens__[i])
-    #   if arg_map[i] and self.__last__ is not None:
-    #     arg = arg_map[i]
-    #     if hasattr(self.__last__,'addargs'):
-    #       self.__last__.addargs(self.__tokens__[i:i+arg])
-    #     while arg:
-    #       i += 1
-    #       arg -= 1
-    #   self.make_connections(self.__tokens__[i].strip())
-    #   i += 1
-      # get_args(i, t)
-      # parse_self.__arguments__(t)
-      # parse_any(i, t)
-
-
-    
+    log(LOG,"is multi obj", multiobj, self.__tokens__)
     for i,t in enumerate(self.__tokens__):
       t = str(t).strip()
       """ Get argument count from pd databasw 
@@ -262,14 +234,14 @@ class PdPyParser(PdPy):
       
       if self.__store_args__: 
         self.__arg_number__ = argc
-      log(0,t,"has",self.__arg_number__, "creation arguments.")
+      log(LOG,t,"has",self.__arg_number__, "creation arguments.")
       
       
       """ Pd Argument Parser
       """
-      # log(0,"parse_arguments", i, t)
-      # log(0,"prev_obj_arg_num", self.__arg_number__)
-      # log(0, "is this an obj", self.__is_obj_map__[i])
+      log(LOG,"parse_arguments", i, t)
+      log(LOG,"prev_obj_arg_num", self.__arg_number__)
+      log(LOG, "is this an obj", self.__is_obj_map__[i])
       if self.__arg_number__ and not self.__is_obj_map__[i]:
         if hasattr(self,'__last__') and hasattr(self.__last__,'addargs'): 
           self.__last__.addargs([t])
@@ -306,50 +278,49 @@ class PdPyParser(PdPy):
         """
       elif t.startswith('\\'):
         t = t.replace('\\','') 
-        log(0,'symbol', t)
+        log(LOG,'symbol', t)
         self.__last__ = self.objectCreator(Array, ('array', 'define', '-k', t))
       
         """ Objects
         """
       elif self.__is_obj_map__[i]: 
-        # log(1,"CREATING AN OBJECT", t)
+        log(LOG,"CREATING AN OBJECT", t)
         self.__last__ = self.objectCreator(Obj, (t))
       else:
-        log(0,"UNKNOWN", t)
+        log(LOG,"UNKNOWN", t)
       
       """ Connections
       """
       obj = repr(t)
       
       if i >= len(self.__tokens__):
-        log(0,"Is last object",t)
+        log(LOG,"Is last object",t)
       
       elif not self.__is_obj_map__[i]: 
-        log(0,"Is not an object",t)
+        log(LOG,"Is not an object",t)
         # self.objectConnector(self.__prev__, self.__last__.id)
 
       elif not hasattr(self.__iolet_map__[i], 'inlets'):
-        log(0,"IOLETS",self.__iolet_map__, t)
-        # log(1,t, self.__iolet_map__[i])
+        log(LOG,"IOLETS",self.__iolet_map__, t)
 
       if self.__connect_all__: # and  i < len(self.__tokens__)-1:
-        log(0,"Connect All!", obj) 
+        log(LOG,"Connect All!", obj) 
         if self.__prev__ != -1:
           self.objectConnector(self.__prev__, self.__last__.id)
         elif self.__last___obj:
-          log(0,"__last___obj", obj, self.__last___obj) 
+          log(LOG,"__last___obj", obj, self.__last___obj) 
         else:
           self.objectConnector()
       else:
 
-        # if "->" == t: 
-        #   log(0,"loadbang forward",obj)
+        if "->" == t: 
+          log(LOG,"loadbang forward",obj)
         #   self.__last__ = self.objectCreator(Obj, ("loadbang"))
         #   self.objectConnector()
         #   return
 
-        if ">"  == t: 
-          log(0,"forward",obj)
+        elif ">"  == t: 
+          log(LOG,"forward",obj)
           if self.__store_cmd__:
             self.__store_cmd__ = False
             self.__last__ = self.objectCreator(Msg,(" ".join(self.__cmd__)))
@@ -358,14 +329,13 @@ class PdPyParser(PdPy):
           else:
             self.objectConnector()
         
-        # if "<-" == t: 
-        #   log(0,"loadbang backwards",obj)
+        elif "<-" == t: 
+          log(LOG,"loadbang backwards",obj)
         #   self.__last__ = self.objectCreator(Obj, ("loadbang"))
         #   self.objectConnector(self.__last__.id,self.__prev__)
         #   return
 
         elif "<"  == t: 
-          log(0,"backwards",obj)
+          log(LOG,"backwards",obj)
           self.objectConnector(self.__obj_idx__-1,self.__obj_idx__)
 
-  

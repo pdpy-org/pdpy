@@ -126,7 +126,7 @@ class Translator(Base):
     elif self.source == "pdpy":
       with open(self.input_file, "r", encoding=self.encoding) as fp:
         self.pdpy = PdPyParser(
-          fp, # pdpy_file_pointer
+          fp.readlines(), # pdpy_file_pointer
           self.pddb,
           name = self.input_file.name,
           encoding = self.encoding

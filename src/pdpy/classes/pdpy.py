@@ -87,20 +87,33 @@ class PdPy(CanvasBase, Base):
     struct.__parent__(self)
     self.structs.append(struct)  
   
-  def addRoot(self, argv=None, json=None):
-    if argv is not None:
+  def addRoot(self, pd_lines=None, json=None):
+    """ Add a root canvas object from pure data, json, or an empty canvas 
+    
+    Description:
+    ------------
+    Called by the parse() method as well as the PdPyParser class
+
+    Returns:
+    --------
+    The root canvas object
+
+    """
+    if pd_lines is not None:
       self.root = Canvas(json={
               'name' : self.patchname,
               'vis' : 1,
               'id' : None, 
-              'screen' : Point(x=argv[0], y=argv[1]),
-              'dimension' : Size(w=argv[2], h=argv[3]), 
-              'font' : int(argv[4]),
+              'screen' : Point(x=pd_lines[0], y=pd_lines[1]),
+              'dimension' : Size(w=pd_lines[2], h=pd_lines[3]), 
+              'font' : int(pd_lines[4]),
               'isroot' : True,
               '__p__' : self
       })
     elif json is not None:
       self.root = Canvas(json=json)
+    else:
+      self.root = Canvas()
 
     return self.root
   
@@ -139,7 +152,7 @@ class PdPy(CanvasBase, Base):
     self.__depth__ += 1
     return __canvas__
 
-  def addCanvas(self, argv):
+  def addCanvas(self, pd_lines=None, json=None):
     """ Add a Canvas object from pure data syntax tokens
     
     Description:
@@ -147,13 +160,18 @@ class PdPy(CanvasBase, Base):
     This 
     """
     __canvas__ = self.__get_canvas__()
-    canvas = Canvas(json={
-            'name'   : argv[4],
-            'vis'    : self.__num__(argv[5]),
-            'id'     : self.__obj_idx__,
-            'screen' : Point(x=argv[0], y=argv[1]), 
-            'dimension' : Size(w=argv[2], h=argv[3]),
-    })
+    if pd_lines is not None:
+      canvas = Canvas(json={
+              'name'   : pd_lines[4],
+              'vis'    : self.__num__(pd_lines[5]),
+              'id'     : self.__obj_idx__,
+              'screen' : Point(x=pd_lines[0], y=pd_lines[1]), 
+              'dimension' : Size(w=pd_lines[2], h=pd_lines[3]),
+      })
+    elif json is not None:
+      canvas = Canvas(json=json)
+    else:
+      canvas = Canvas()
     self.__canvas_idx__.append(__canvas__.add(canvas))
 
     return canvas
@@ -311,8 +329,8 @@ class PdPy(CanvasBase, Base):
       if "#N"   == head[0]: #N -> either structs or canvases
         if "struct" == head[1]: self.addStruct(body) # struct element
         else: # check if we are root or canvas node
-          if    7 == len(argv): last = self.addRoot(body)
-          elif  8 == len(argv): last = self.addCanvas(body)
+          if    7 == len(argv): last = self.addRoot(pd_lines=body)
+          elif  8 == len(argv): last = self.addCanvas(pd_lines=body)
       elif "#A" == head[0]: #A -> text, savestate, or array  data
         super().__setdata__(last, Data(data=body, head=head[1]))
       else: #X -----------------> anything else is an "#X"

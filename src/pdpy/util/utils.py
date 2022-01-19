@@ -78,6 +78,8 @@ def log(l, *argv):
     print("WARNING:",*argv)
   elif 2==l:
     print("ERROR:",*list(map(lambda x:x.__repr__(),argv)))
+  elif l<0:
+    pass
   else:
     print(*argv)
 

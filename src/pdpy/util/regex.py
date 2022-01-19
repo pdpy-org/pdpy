@@ -20,19 +20,15 @@ def is_ignored(line):
 
 @printer
 def is_root(line):
-  """ Check for Root canvas opening parens
+  """ Check for Root canvas opening parens and name
   """
-  if re.search(r"^\(.*$",line):
-    name = re.findall(r"^\(#(.*)$", line)
-    return True, name
+  return re.search(r"^\(.*$",line), re.findall(r"^\(#(.*)$", line)
 
 @printer
 def is_subpatch(line):
-  """ Check for Pd Sub Canvases (regex differs from is_root)
+  """ Check for Pd Sub Canvases and name (regex differs from is_root)
   """
-  if re.search(r"^\s+\(.*$",line):
-    name = re.findall(r"^\s+\(#(.*)$",line)
-    return True, name
+  return re.search(r"^\s+\(.*$",line), re.findall(r"^\s+\(#(.*)$",line)
 
 @printer
 def is_root_end(line):
