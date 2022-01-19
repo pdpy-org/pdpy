@@ -31,7 +31,7 @@ outdir=$(pwd)/json_files
 err=$(pwd)/error.log
 
 # Place the pddb.json file in the INT variable
-INT=$(pwd)/../internals/pddb.json
+INT=$(pwd)/../../pddb/pddb.json
 
 # If there is a second argument, it is the offset to start from
 if [[ $2 ]]

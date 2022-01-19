@@ -2,13 +2,6 @@
 **/extra
 **/build
 
-# from the internals subdir
-**/internals/*.txt
-**/internals/get_description.py
-**/internals/internals.pd
-**/internals/list_internals.py
-*.csv
-
 # from the src dir
 error.log
 unused/

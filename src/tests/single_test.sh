@@ -25,7 +25,7 @@ py=/usr/local/bin/python3
 err=$(pwd)/error.log
 
 # Place the pddb.json file in the INT variable
-INT=$(pwd)/../internals/pddb.json
+INT=$(pwd)/../../pddb/pddb.json
 
 # clear the error log
 echo Logfile created by single_test.sh on $(date) > $err
