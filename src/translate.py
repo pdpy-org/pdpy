@@ -21,7 +21,7 @@ def main():
   parser.add_argument("-r", "--reflect", action='store_true')
   parser.add_argument("-e", "--encoding", default='utf-8')
   parser.add_argument("-o", "--output", default=None)
-  parser.add_argument("-int", "--internals", default="internals/pddb.json")
+  parser.add_argument("-int", "--internals", default="../pddb/pddb.json")
   # parser.add_argument("-v", "--verbose", action="store_true")
 
   # get the arguments as a dictionary
