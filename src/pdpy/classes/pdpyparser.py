@@ -46,7 +46,8 @@ class PdPyParser(PdPy):
     self.__arguments__ = []
     self.__last___obj = False
     self.__canvases__ = []
-    self.__last__ = None #  the las object     
+    self.__last__ = None #  the las object
+    self.__auto_patch__ = True
     
     for i, line in enumerate(lines):
       self.__line_num__ = i
@@ -178,37 +179,48 @@ class PdPyParser(PdPy):
 
     return obj
 
-  def pdpyCreate(self, string, autoconnect=True):
+  def pdpyCreate(self, string):
     """ create pd stuff from pdpy lang 
     """
-    
-    string = string.replace("->", "loadbang >")
-    # string = string.replace("<-", "< loadbang")
     log(LOG,"pdpyCreate",repr(string))
+    
+    # replace -> with loadbang ------------------------------------------------
+    string = str(string).replace("->", "loadbang >")
+    # string = string.replace("<-", "< loadbang")
 
+    # tokenize ---------------------------------------------------------------
     self.__tokens__ = tokenize(string.strip())
     log(LOG,"Tokens are",self.__tokens__)
-
-    # if no connection token is presnt, then connect the entire lot
-    self.__connect_all__ = ( ">" not in self.__tokens__ and "<" not in self.__tokens__ and "->" not in self.__tokens__ and "<-" not in self.__tokens__ ) and autoconnect
-    # if self.__connect_all__: log(LOG,"self.__connect_all__")
-
-    # ignore comments
-    if self.__tokens__[0].startswith("//") or self.__tokens__[0].startswith("/*") or self.__tokens__[0].startswith(" *") or self.__tokens__[0].startswith("*/"): 
+    
+    # ignore comments ---------------------------------------------------------
+    c = ('//', '*', '/*', '*/') # comments
+    sc = lambda c: str(self.__tokens__[0]).startswith(c) # check on first token
+    if sum(filter(bool,map(sc, c))): # exit if matches
       return
+    
+    # check for connect all ---------------------------------------------------
+    # if no connection token is presnt, then connect the entire lot
+    k = ("<",">","->","<-") # konnections
+    no = lambda token: token not in self.__tokens__
+    self.__k__ = sum(filter(bool,map(no,k)))==len(k) and self.__auto_patch__
+    log(LOG,"Connect All set to", self.__k__)
 
+    # get the previous object index -------------------------------------------
     self.__prev__ = self.__last_canvas__().__obj_idx__
     
+    # get the object map
+    iso = lambda x : int(self.__db__.is_obj(x))
+    self.__isomap__ = list(map(iso, self.__tokens__))
+    log(LOG, "object map:", self.__isomap__)
+    # get the iolets map
+    hio = lambda x, y:self.__db__.has_iolets(x) if y else 0
+    self.__hiomap__ = list(map(hio, self.__tokens__, self.__isomap__))
+    log(LOG, "iolet  map:", self.__hiomap__)
     
-    self.__is_obj_map__=list(map(lambda x:int(self.__db__.is_obj(x)), self.__tokens__))
-    self.__iolet_map__=list(map(lambda x, y:self.__db__.has_iolets(x) if y else 0, self.__tokens__, self.__is_obj_map__))
-    log(LOG,"object map:", self.__is_obj_map__)
-    log(LOG, "iolet map:", self.__iolet_map__)
-    
-    obj_count = sum(self.__is_obj_map__)
+    obj_count = sum(self.__isomap__)
     multiobj = obj_count > 1
     noobj = obj_count == 0    
-    # arg_map = list(map(lambda x,y:self.arg_count(x) if y else None, self.__tokens__, self.__is_obj_map__))
+    # arg_map = list(map(lambda x,y:self.arg_count(x) if y else None, self.__tokens__, self.__isomap__))
 
     if not multiobj:
       # single object
@@ -216,10 +228,10 @@ class PdPyParser(PdPy):
       self.__last__ = self.parse_any(0, self.__tokens__[0])
       if hasattr(self,"__last__") and self.__last__ is not None:
         self.__last__.args = self.__tokens__[1:]
-      if not self.__last___obj and hasattr(self.__iolet_map__[0], 'outlets'):
+      if not self.__last___obj and hasattr(self.__hiomap__[0], 'outlets'):
         self.objectConnector()
       return
-      # if self.__connect_all__:
+      # if self.__k__:
     elif noobj:
       # no object
       log(LOG,"no objects", self.__tokens__)
@@ -231,7 +243,7 @@ class PdPyParser(PdPy):
       """ Get argument count from pd databasw 
       """
       argc = self.__db__.arg_count(t)
-      self.__store_args__ = argc is not None and self.__is_obj_map__[i]
+      self.__store_args__ = argc is not None and self.__isomap__[i]
       
       if self.__store_args__: 
         self.__arg_number__ = argc
@@ -242,15 +254,15 @@ class PdPyParser(PdPy):
       """
       log(LOG,"parse_arguments", i, t)
       log(LOG,"prev_obj_arg_num", self.__arg_number__)
-      log(LOG, "is this an obj", self.__is_obj_map__[i])
-      if self.__arg_number__ and not self.__is_obj_map__[i]:
+      log(LOG, "is this an obj", self.__isomap__[i])
+      if self.__arg_number__ and not self.__isomap__[i]:
         if hasattr(self,'__last__') and hasattr(self.__last__,'addargs'): 
           self.__last__.addargs([t])
           self.__arg_number__ -= 1
       
       """ Single-word messages
       """
-      if '->' in t or '<-' in t or not self.__is_obj_map__[i]:
+      if '->' in t or '<-' in t or not self.__isomap__[i]:
         pass
       
       elif ((t.startswith("'") or t.startswith("\"")) and t.endswith("'") or t.endswith("\"")) or t.isnumeric():
@@ -284,7 +296,7 @@ class PdPyParser(PdPy):
       
         """ Objects
         """
-      elif self.__is_obj_map__[i]: 
+      elif self.__isomap__[i]: 
         log(LOG,"CREATING AN OBJECT", t)
         self.__last__ = self.objectCreator(Obj, (t))
       else:
@@ -297,14 +309,14 @@ class PdPyParser(PdPy):
       if i >= len(self.__tokens__):
         log(LOG,"Is last object",t)
       
-      elif not self.__is_obj_map__[i]: 
+      elif not self.__isomap__[i]: 
         log(LOG,"Is not an object",t)
         # self.objectConnector(self.__prev__, self.__last__.id)
 
-      elif not hasattr(self.__iolet_map__[i], 'inlets'):
-        log(LOG,"IOLETS",self.__iolet_map__, t)
+      elif not hasattr(self.__hiomap__[i], 'inlets'):
+        log(LOG,"IOLETS",self.__hiomap__, t)
 
-      if self.__connect_all__: # and  i < len(self.__tokens__)-1:
+      if self.__k__: # and  i < len(self.__tokens__)-1:
         log(LOG,"Connect All!", obj) 
         if self.__prev__ != -1:
           self.objectConnector(self.__prev__, self.__last__.id)
