@@ -87,7 +87,7 @@ class PdPy(CanvasBase, Base):
     struct.__parent__(self)
     self.structs.append(struct)  
   
-  def addRoot(self, pd_lines=None, json=None):
+  def addRoot(self, pd_lines=None, json=None, name=None):
     """ Add a root canvas object from pure data, json, or an empty canvas 
     
     Description:
@@ -100,20 +100,25 @@ class PdPy(CanvasBase, Base):
 
     """
     if pd_lines is not None:
-      self.root = Canvas(json={
-              'name' : self.patchname,
-              'vis' : 1,
-              'id' : None, 
-              'screen' : Point(x=pd_lines[0], y=pd_lines[1]),
-              'dimension' : Size(w=pd_lines[2], h=pd_lines[3]), 
-              'font' : int(pd_lines[4]),
-              'isroot' : True,
-              '__p__' : self
-      })
+      self.root = Canvas()
+      for x in [ ('screen', Point(x=pd_lines[0], y=pd_lines[1])),
+                 ('dimension', Size(w=pd_lines[2], h=pd_lines[3])),
+                 ('font', int(pd_lines[4])) ]: 
+        setattr(self.root, x[0], x[1])
+    
     elif json is not None:
       self.root = Canvas(json=json)
+    
     else:
       self.root = Canvas()
+    
+    # Force these things to happen
+    for x in [ ('__p__', self), 
+               ('id', None), 
+               ('isroot', True), 
+               ('vis', 1), 
+               ('name', name or self.patchname) ]:
+      setattr(self.root, x[0], x[1])
 
     return self.root
   

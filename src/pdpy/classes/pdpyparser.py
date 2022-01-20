@@ -62,7 +62,8 @@ class PdPyParser(PdPy):
       root, name = is_root(line)
       if root:
         self.root = self.addRoot()
-        self.root.name = name if bool(name) else self.patchname
+        self.root.name = ' '.join(name) if bool(name) else self.patchname
+        log(LOG,"Canvas Name:",self.root.name)
         if self.root.__cursor__.y > self.root.__margin__.height:
           self.root.__margin__.height = self.root.__cursor__.y
         self.__canvases__.append(self.root)
