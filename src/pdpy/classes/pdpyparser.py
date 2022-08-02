@@ -195,7 +195,8 @@ class PdPyParser(PdPy):
     # ignore comments ---------------------------------------------------------
     c = ('//', '*', '/*', '*/') # comments
     sc = lambda c: str(self.__tokens__[0]).startswith(c) # check on first token
-    if sum(filter(bool,map(sc, c))): # exit if matches
+    if sum(filter(bool,map(sc, c))):
+      # exit if the line is a comment
       return
     
     # check for connect all ---------------------------------------------------
@@ -230,125 +231,125 @@ class PdPyParser(PdPy):
         self.__last__.args = self.__tokens__[1:]
       if not self.__last___obj and hasattr(self.__hiomap__[0], 'outlets'):
         self.objectConnector()
-      return
       # if self.__k__:
+
     elif noobj:
       # no object
       log(LOG,"no objects", self.__tokens__)
-      return
 
-    log(LOG,"is multi obj", multiobj, self.__tokens__)
-    for i,t in enumerate(self.__tokens__):
-      t = str(t).strip()
-      """ Get argument count from pd databasw 
-      """
-      argc = self.__db__.arg_count(t)
-      self.__store_args__ = argc is not None and self.__isomap__[i]
-      
-      if self.__store_args__: 
-        self.__arg_number__ = argc
-      log(LOG,t,"has",self.__arg_number__, "creation arguments.")
-      
-      
-      """ Pd Argument Parser
-      """
-      log(LOG,"parse_arguments", i, t)
-      log(LOG,"prev_obj_arg_num", self.__arg_number__)
-      log(LOG, "is this an obj", self.__isomap__[i])
-      if self.__arg_number__ and not self.__isomap__[i]:
-        if hasattr(self,'__last__') and hasattr(self.__last__,'addargs'): 
-          self.__last__.addargs([t])
-          self.__arg_number__ -= 1
-      
-      """ Single-word messages
-      """
-      if '->' in t or '<-' in t or not self.__isomap__[i]:
-        pass
-      
-      elif ((t.startswith("'") or t.startswith("\"")) and t.endswith("'") or t.endswith("\"")) or t.isnumeric():
-        self.__last__ = self.objectCreator(Msg, t.replace("'",""))
-
-        """ Messages
+    else:
+      log(LOG,"is multi obj", multiobj, self.__tokens__)
+      for i,t in enumerate(self.__tokens__):
+        t = str(t).strip()
+        """ Get argument count from pd databasw 
         """
-      elif t.startswith("'") or t.startswith("\""):
-        self.__msg__.append(t.replace("'",""))
-        self.__store_msg__ = True
-      
-        """ Commands
+        argc = self.__db__.arg_count(t)
+        self.__store_args__ = argc is not None and self.__isomap__[i]
+        
+        if self.__store_args__: 
+          self.__arg_number__ = argc
+        log(LOG,t,"has",self.__arg_number__, "creation arguments.")
+        
+        
+        """ Pd Argument Parser
         """
-      elif 'sinesum' in t:
-        self.__cmd__.append(t)
-        self.__store_cmd__ = True
-
-      elif self.__store_msg__:
-        self.__msg__.append(t.replace("'",""))
-        if t.endswith("'") or t.endswith("\""):
-          self.__store_msg__ = False
-          self.__last__ = self.objectCreator(Msg, (" ".join(self.__msg__)))
-          self.__msg__ = []
-      
-        """ Symbols prepended with '\' become arrays, like sclang
+        log(LOG,"parse_arguments", i, t)
+        log(LOG,"prev_obj_arg_num", self.__arg_number__)
+        log(LOG, "is this an obj", self.__isomap__[i])
+        if self.__arg_number__ and not self.__isomap__[i]:
+          if hasattr(self,'__last__') and hasattr(self.__last__,'addargs'): 
+            self.__last__.addargs([t])
+            self.__arg_number__ -= 1
+        
+        """ Single-word messages
         """
-      elif t.startswith('\\'):
-        t = t.replace('\\','') 
-        log(LOG,'symbol', t)
-        self.__last__ = self.objectCreator(Array, ('array', 'define', '-k', t))
-      
-        """ Objects
-        """
-      elif self.__isomap__[i]: 
-        log(LOG,"CREATING AN OBJECT", t)
-        self.__last__ = self.objectCreator(Obj, (t))
-      else:
-        log(LOG,"UNKNOWN", t)
-      
-      """ Connections
-      """
-      obj = repr(t)
-      
-      if i >= len(self.__tokens__):
-        log(LOG,"Is last object",t)
-      
-      elif not self.__isomap__[i]: 
-        log(LOG,"Is not an object",t)
-        # self.objectConnector(self.__prev__, self.__last__.id)
+        if '->' in t or '<-' in t or not self.__isomap__[i]:
+          pass
+        
+        elif ((t.startswith("'") or t.startswith("\"")) and t.endswith("'") or t.endswith("\"")) or t.isnumeric():
+          self.__last__ = self.objectCreator(Msg, t.replace("'",""))
 
-      elif not hasattr(self.__hiomap__[i], 'inlets'):
-        log(LOG,"IOLETS",self.__hiomap__, t)
+          """ Messages
+          """
+        elif t.startswith("'") or t.startswith("\""):
+          self.__msg__.append(t.replace("'",""))
+          self.__store_msg__ = True
+        
+          """ Commands
+          """
+        elif 'sinesum' in t:
+          self.__cmd__.append(t)
+          self.__store_cmd__ = True
 
-      if self.__k__: # and  i < len(self.__tokens__)-1:
-        log(LOG,"Connect All!", obj) 
-        if self.__prev__ != -1:
-          self.objectConnector(self.__prev__, self.__last__.id)
-        elif self.__last___obj:
-          log(LOG,"__last___obj", obj, self.__last___obj) 
+        elif self.__store_msg__:
+          self.__msg__.append(t.replace("'",""))
+          if t.endswith("'") or t.endswith("\""):
+            self.__store_msg__ = False
+            self.__last__ = self.objectCreator(Msg, (" ".join(self.__msg__)))
+            self.__msg__ = []
+        
+          """ Symbols prepended with '\' become arrays, like sclang
+          """
+        elif t.startswith('\\'):
+          t = t.replace('\\','') 
+          log(LOG,'symbol', t)
+          self.__last__ = self.objectCreator(Array, ('array', 'define', '-k', t))
+        
+          """ Objects
+          """
+        elif self.__isomap__[i]: 
+          log(LOG,"CREATING AN OBJECT", t)
+          self.__last__ = self.objectCreator(Obj, (t))
         else:
-          self.objectConnector()
-      else:
+          log(LOG,"UNKNOWN", t)
+        
+        """ Connections
+        """
+        obj = repr(t)
+        
+        if i >= len(self.__tokens__):
+          log(LOG,"Is last object",t)
+        
+        elif not self.__isomap__[i]: 
+          log(LOG,"Is not an object",t)
+          # self.objectConnector(self.__prev__, self.__last__.id)
 
-        if "->" == t: 
-          log(LOG,"loadbang forward",obj)
-        #   self.__last__ = self.objectCreator(Obj, ("loadbang"))
-        #   self.objectConnector()
-        #   return
+        elif not hasattr(self.__hiomap__[i], 'inlets'):
+          log(LOG,"IOLETS",self.__hiomap__, t)
 
-        elif ">"  == t: 
-          log(LOG,"forward",obj)
-          if self.__store_cmd__:
-            self.__store_cmd__ = False
-            self.__last__ = self.objectCreator(Msg,(" ".join(self.__cmd__)))
+        if self.__k__: # and  i < len(self.__tokens__)-1:
+          log(LOG,"Connect All!", obj) 
+          if self.__prev__ != -1:
             self.objectConnector(self.__prev__, self.__last__.id)
-            self.__cmd__ = []
+          elif self.__last___obj:
+            log(LOG,"__last___obj", obj, self.__last___obj) 
           else:
             self.objectConnector()
-        
-        elif "<-" == t: 
-          log(LOG,"loadbang backwards",obj)
-        #   self.__last__ = self.objectCreator(Obj, ("loadbang"))
-        #   self.objectConnector(self.__last__.id,self.__prev__)
-        #   return
+        else:
 
-        elif "<"  == t: 
-          log(LOG,"backwards",obj)
-          self.objectConnector(self.__obj_idx__-1,self.__obj_idx__)
+          if "->" == t: 
+            log(LOG,"loadbang forward",obj)
+          #   self.__last__ = self.objectCreator(Obj, ("loadbang"))
+          #   self.objectConnector()
+          #   return
+
+          elif ">"  == t: 
+            log(LOG,"forward",obj)
+            if self.__store_cmd__:
+              self.__store_cmd__ = False
+              self.__last__ = self.objectCreator(Msg,(" ".join(self.__cmd__)))
+              self.objectConnector(self.__prev__, self.__last__.id)
+              self.__cmd__ = []
+            else:
+              self.objectConnector()
+          
+          elif "<-" == t: 
+            log(LOG,"loadbang backwards",obj)
+          #   self.__last__ = self.objectCreator(Obj, ("loadbang"))
+          #   self.objectConnector(self.__last__.id,self.__prev__)
+          #   return
+
+          elif "<"  == t: 
+            log(LOG,"backwards",obj)
+            self.objectConnector(self.__obj_idx__-1,self.__obj_idx__)
 
