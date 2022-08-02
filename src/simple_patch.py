@@ -15,4 +15,4 @@ msg1 = Msg('Hola Mundo!')
 mypatch.create(obj1).create(msg1).create(obj2)
 mypatch.connect(obj1, msg1, obj2)
 # write out the patch
-mypatch.write('simple_patch.pd')
+mypatch.write()
