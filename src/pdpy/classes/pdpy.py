@@ -62,7 +62,9 @@ class PdPy(CanvasBase, Base):
       self.parse(pd_lines)
     
     if root:
-      self.root = Canvas(json={'name':self.patchname,'isroot':True})
+      self.root = Canvas()
+      self.root.isroot = True
+      self.root.patchname = self.patchname
     
     if hasattr(self, 'root'):
       # update the parent of all childs
@@ -304,6 +306,40 @@ class PdPy(CanvasBase, Base):
     if len(self.__canvas_idx__):
       self.__canvas_idx__.pop()
     return last
+
+  def create(self, anything):
+    """ Create an object, message, comment, or any other pd object """
+    self.__obj_idx__ = self.__last_canvas__().grow()
+    __last_canvas__ = self.__last_canvas__()
+    __obj_id__ = __last_canvas__.add(anything)
+    if not hasattr(anything.position, 'x'):
+      __last_canvas__.grow_margins()
+      x, y = __last_canvas__.get_position()
+      anything.addpos(x,y)
+      anything.id = __obj_id__
+    return self
+
+  def write(self, filename):
+    """ Write out the pd file to disk """
+    with open(filename, 'w') as patchfile:
+      if '.pd' in filename:
+        patchfile.write(self.__pd__())
+      elif '.json' in filename:
+        patchfile.write(self.__json__())
+  
+  def connect(self, *argv):
+    """ Attempt to autoconnect the objects together """
+    length = len(argv)
+    if length % 2 == 0:
+      for i in range(0,length, 2):
+        if not isinstance(argv[i], dict) and not isinstance(argv[i], dict):
+          e = Edge(pd_lines=[argv[i].id, 0, argv[i+1].id, 0])
+          self.__last_canvas__().edge(e)
+    else:
+      for i in range(0,length-1):
+        if not isinstance(argv[i], dict) and not isinstance(argv[i], dict):
+          e = Edge(pd_lines=[argv[i].id, 0, argv[i+1].id, 0])
+          self.__last_canvas__().edge(e)
 
   def parse(self, argvecs):
     """ Parse a list of Pd argument vectors (1) into this instance's scope
