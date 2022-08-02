@@ -307,39 +307,72 @@ class PdPy(CanvasBase, Base):
       self.__canvas_idx__.pop()
     return last
 
-  def create(self, anything):
+  def create(self, *anything):
     """ Create an object, message, comment, or any other pd object """
-    self.__obj_idx__ = self.__last_canvas__().grow()
-    __last_canvas__ = self.__last_canvas__()
-    __obj_id__ = __last_canvas__.add(anything)
-    if not hasattr(anything.position, 'x'):
-      __last_canvas__.grow_margins()
-      x, y = __last_canvas__.get_position()
-      anything.addpos(x,y)
-      anything.id = __obj_id__
+    for a in anything:
+      self.__obj_idx__ = self.__last_canvas__().grow()
+      __last_canvas__ = self.__last_canvas__()
+      __obj_id__ = __last_canvas__.add(a)
+      if not hasattr(a.position, 'x'):
+        __last_canvas__.grow_margins()
+        x, y = __last_canvas__.get_position()
+        a.addpos(x,y)
+        a.id = __obj_id__
     return self
 
-  def write(self, filename):
+  def write(self, filename=None):
     """ Write out the pd file to disk """
+    if filename is None:
+      filename = self.patchname + '.pd'
+
     with open(filename, 'w') as patchfile:
       if '.pd' in filename:
         patchfile.write(self.__pd__())
       elif '.json' in filename:
         patchfile.write(self.__json__())
+      
   
   def connect(self, *argv):
     """ Attempt to autoconnect the objects together """
     length = len(argv)
+    
     if length % 2 == 0:
-      for i in range(0,length, 2):
-        if not isinstance(argv[i], dict) and not isinstance(argv[i], dict):
-          e = Edge(pd_lines=[argv[i].id, 0, argv[i+1].id, 0])
-          self.__last_canvas__().edge(e)
+      maxlen = length
+      stepsize = 2
     else:
-      for i in range(0,length-1):
-        if not isinstance(argv[i], dict) and not isinstance(argv[i], dict):
-          e = Edge(pd_lines=[argv[i].id, 0, argv[i+1].id, 0])
-          self.__last_canvas__().edge(e)
+      maxlen = length - 1
+      stepsize = 1
+    
+    # utility routine 
+    def _connect(*argv):
+      e = Edge(pd_lines=argv)
+      self.__last_canvas__().edge(e)
+
+    for i in range(0, maxlen, stepsize):
+      src = argv[i] # the source
+      snk = argv[i+1] # the sink
+      # check if we are lists
+      srclist = isinstance(src, list)
+      snklist = isinstance(snk, list)
+      # neither is a list
+      if not srclist and not snklist:
+        _connect(src.id, 0, snk.id, 0)
+      # only sink is a list (connect sequentially to multiple inlets)
+      elif not srclist and snklist:
+        for i in range(1,len(snk)):
+          _connect(src.id, 0, snk[0].id, snk[i])
+      # only source is a list (connect sequentially from multiple outlets)
+      elif srclist and not snklist:
+        for i in range(1,len(src)):
+          _connect(src[0].id, src[i], snk.id, 0)  
+      # both are lists (limit to minimum iolets between source and sink), so
+      # connect([source, 0, 1, 2], [sink, 1, 2]) gives
+      # #X connect source.id 0 sink.id 1
+      # #X connect source.id 1 sink.id 2 
+      elif srclist and snklist:
+        for i in range(1,min(len(src),len(snk))):
+          _connect(src[0].id, src[i], snk[0].id, snk[i])
+        
 
   def parse(self, argvecs):
     """ Parse a list of Pd argument vectors (1) into this instance's scope
