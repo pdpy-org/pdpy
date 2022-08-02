@@ -96,7 +96,7 @@ class Msg(Object):
   each target being a ::class::`Message` instance
   
   """
-  def __init__(self, pd_lines=None, json=None):
+  def __init__(self, message=None, pd_lines=None, json=None):
 
     self.__pdpy__ = self.__class__.__name__
     super().__init__(cls='msg',json=json)
@@ -107,6 +107,9 @@ class Msg(Object):
       argv = pd_lines[3:]
       if len(pd_lines[3:]):
         self.addMessages(argv)
+    
+    if message is not None:
+      self.addMessages([message] if not isinstance(message, list) else message)
       
   def addTarget(self, address=None):
     if not hasattr(self, "targets"):
@@ -186,6 +189,8 @@ class Msg(Object):
       # end loop section while i < len(argv)
       # add the message if we still have 1 in the buffer
       msgbuf = _addmsg(msgbuf)
+
+      return self
 
   def __pd__(self):
     """ Return a pd message in pd lang """

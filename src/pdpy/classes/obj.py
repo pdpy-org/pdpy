@@ -27,7 +27,7 @@ class Obj(Object):
   5. `args`: The argument `list` of the pd object.
 
   """
-  def __init__(self, pd_lines=None, json=None, **kwargs):
+  def __init__(self, className=None, pd_lines=None, json=None, **kwargs):
 
     self.__pdpy__ = self.__class__.__name__
     super().__init__(json=json, **kwargs)
@@ -48,6 +48,9 @@ class Obj(Object):
             self.addargs(pd_lines[4:])
       except:
         raise ValueError("Invalid arguments for Obj")
+    
+    if className is not None:
+      self.className = className
     
     if not hasattr(self, 'className'):
       self.className = self.__cls__
