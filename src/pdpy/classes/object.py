@@ -38,7 +38,11 @@ class Object(Base):
       argv = [argv]
     # self.args += argv
     self.args += self.__unescape__(argv)
+    return self
   
+  def addpos(self, x, y):
+    setattr(self, 'position', Point(x=x, y=y))
+
   def __unescape__(self, argv):
     """ Unescapes the arguments """
     args = []
