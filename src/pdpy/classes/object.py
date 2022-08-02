@@ -31,12 +31,9 @@ class Object(Base):
     self.position = Point(x=x, y=y)
     super().__init__(**kwargs)
   
-  def addargs(self, argv):
+  def addargs(self, *argv):
     if not hasattr(self,'args') or self.args is None: 
       self.args = []
-    if not isinstance(argv, list):
-      argv = [argv]
-    # self.args += argv
     self.args += self.__unescape__(argv)
     return self
   
