@@ -330,18 +330,13 @@ class PdPy(CanvasBase, Base):
         patchfile.write(self.__pd__())
       elif '.json' in filename:
         patchfile.write(self.__json__())
-      
   
   def connect(self, *argv):
     """ Attempt to autoconnect the objects together """
     length = len(argv)
     
-    if length % 2 == 0:
-      maxlen = length
-      stepsize = 2
-    else:
-      maxlen = length - 1
-      stepsize = 1
+    stepsize = 1
+    maxlen = length - 1
     
     # utility routine 
     def _connect(*argv):
