@@ -1,0 +1,11 @@
+#N canvas 0 22 450 300 12;
+#X obj 12 132 osc~ 440;
+#X obj 12 156 *~ 0.1;
+#X obj 12 180 dac~;
+#X text 12 12 **********************************************************;
+#X text 12 36 * Connect an oscillator to the dac *;
+#X text 12 60 **********************************************************;
+#X text 12 84 this is an in-patch comment;
+#X text 12 108 i.e. \, a comment that gets stored inside the pd patch window;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;

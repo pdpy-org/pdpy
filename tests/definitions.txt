@@ -1,0 +1,407 @@
+Thu Jan 13 17:11:43 -03 2022
+../pdpy/util/__init__.py <---------[ 11 lines ]
+===
+../pdpy/util/utils.py <---------[ 274 lines ]
+25:def checknum(num):
+37:# def printer2(argument):
+38:#   def decorator(function):
+39:#     def wrapper(*args, **kwargs):
+47:def printer(func):
+48:  def wrapper(*arg):
+57:# def log_decorator(func):
+58:#   def wrapper(*arg):
+68:def log(l, *argv):
+84:def findIndices(data, cond_func):
+106:def splitByNone(data):
+124:def splitByEscapedChar(data, char=";"):
+157:def splitSemi(argv):
+174:def splitAtChar(line, char=",", escaped=True, double=False):
+190:def tokenize(line):
+206:def parsePdFileLines(file_lines):
+230:def parsePdBinBuf(binbuf):
+245:def quit_help(msg=None, parser=None):
+255:def loadPdData(encoding, filename):
+261:def loadPdFile(filename, encoding='utf-8'):
+===
+../pdpy/classes/toggle.py <---------[ 67 lines ]
+16:class Toggle(Obj):
+35:  def __init__(self, pd_lines=None, json=None):
+51:  def __pd__(self):
+64:  def __xml__(self):
+===
+../pdpy/classes/canvasbase.py <---------[ 85 lines ]
+11:class CanvasBase(object):
+14:  def __init__(self, obj_idx=0, isroot=False):
+27:  def __update_obj_map__(self, x):
+46:  def __edges__(self, s):
+51:  def __nodes__(self, s):
+57:  def __comments__(self, s):
+62:  def __coords__(self, s):
+67:  def __restore__(self, s):
+75:  def __render__(self, s, isroot=False):
+===
+../pdpy/classes/comment.py <---------[ 67 lines ]
+15:class Comment(Base):
+16:  def __init__(self, pd_lines=None, json=None, xml=None):
+40:  def __pd__(self):
+57:  def __xml__(self):
+===
+../pdpy/classes/coords.py <---------[ 64 lines ]
+16:class Coords(Base):
+31:  def __init__(self, coords=None, json=None, xml=None):
+53:  def addmargin(self, **kwargs):
+56:  def __pd__(self):
+62:  def __xml__(self, tag=None):
+===
+../pdpy/classes/object.py <---------[ 107 lines ]
+14:class Object(Base):
+26:  def __init__(self, id=None, x=None, y=None, **kwargs):
+35:  def addargs(self, argv):
+43:  def __unescape__(self, argv):
+55:  def __escape__(self, arg):
+61:  def __pd__(self, args=None):
+83:  def __xml__(self, classname=None, args=None, **kwargs):
+===
+../pdpy/classes/vu.py <---------[ 60 lines ]
+16:class Vu(Obj):
+31:  def __init__(self, pd_lines=None, json=None):
+45:  def __pd__(self):
+58:  def __xml__(self):
+===
+../pdpy/classes/scalar.py <---------[ 83 lines ]
+15:class Scalar(Base):
+16:  def __init__(self, 
+40:  def __pd__(self):
+70:  def __xml__(self):
+===
+../pdpy/classes/graph.py <---------[ 67 lines ]
+14:class Graph(Base):
+16:  def __init__(self, pd_lines=None, json=None, xml=None):
+33:  def addArray(self, *args):
+44:  def __pd__(self):
+56:  def __xml__(self):
+===
+../pdpy/classes/PdPyXMLParser.py <---------[ 72 lines ]
+16:class PdPyXMLParser:
+18:  def __init__(self, parent, xml):
+33:  def __check__(self, tag, attrib):
+39:  def start(self, tag, attrib):
+50:  def data(self, data):
+57:  def end(self, tag):
+69:  def close(self):
+===
+../pdpy/classes/connections.py <---------[ 139 lines ]
+18:class Comm(Base):
+57:class Source(Base):
+99:class Edge(Base):
+22:  def __init__(self, 
+37:  def __pd__(self, order=0):
+47:  def __xml__(self, order=0):
+58:  def __init__(self, id=None, port=None, json=None, xml=None):
+68:  def locate(self, parent):
+76:  def __remap__(self, obj_map):
+85:  def __pd__(self, obj_map=None):
+92:  def __xml__(self, obj_map=None, tag=None):
+112:  def __init__(self, pd_lines=None, json=None, xml=None):
+119:  def connect(self):
+130:  def __pd__(self, o=None):
+134:  def __xml__(self, o=None):
+===
+../pdpy/classes/__init__.py <---------[ 49 lines ]
+===
+../pdpy/classes/message.py <---------[ 211 lines ]
+18:class Message(Base):
+90:class Msg(Object):
+49:  def __init__(self, address=None, json=None, xml=None):
+60:  def add(self, msg):
+67:  def __pd__(self):
+79:  def __xml__(self):
+99:  def __init__(self, pd_lines=None, json=None):
+111:  def addTarget(self, address=None):
+119:  def addMessages(self, argv):
+143:      def _addmsg(msgbuf=msgbuf, target=last_target):
+190:  def __pd__(self):
+201:  def __xml__(self):
+===
+../pdpy/classes/goparray.py <---------[ 82 lines ]
+15:class GOPArray(Base):
+39:  def __init__(self, json=None, **kwargs):
+48:  def addflag(self, flag):
+57:  def __pd__(self):
+74:  def __xml__(self):
+===
+../pdpy/classes/types.py <---------[ 166 lines ]
+20:class Float(Base):
+42:class Symbol(Float):
+56:class List(Base):
+22:  def __init__(self, value=None, name=None, json=None, xml=None):
+33:  def __pd__(self):
+36:  def __xml__(self):
+44:  def __init__(self, value=None, name=None, json=None, xml=None):
+58:  def __init__(self, name=None, json=None, xml=None):
+72:  def addelement(self, e_type, e_key, e_value):
+85:  def __interleave__(self, s, attr, keys):
+117:  def __pd__(self, template):
+138:  def __xml__(self, template):
+===
+../pdpy/classes/cnv.py <---------[ 66 lines ]
+16:class Cnv(Obj):
+33:  def __init__(self, pd_lines=None, json=None):
+52:  def __pd__(self):
+63:  def __xml__(self):
+===
+../pdpy/classes/xmltagconvert.py <---------[ 105 lines ]
+10:class XmlTagConvert(object):
+11:  def __init__(self):    
+35:  def find(self, element, string):
+40:  def to_tilde(self, tag):
+49:  def from_tilde(self, tag):
+57:  def to_xml_tag(self, key):
+88:  def to_pd_obj(self, pd_key):
+96:  def isvalid(self, tag):
+===
+../pdpy/classes/size.py <---------[ 39 lines ]
+13:class Size(Base):
+14:  def __init__(self, w=None, h=None, json=None, xml=None):
+26:  def __pd__(self):
+36:  def __xml__(self, tag=None):
+===
+../pdpy/classes/point.py <---------[ 31 lines ]
+13:class Point(Base):
+14:  def __init__(self, x=None, y=None, json=None, xml=None):
+26:  def __pd__(self):
+29:  def __xml__(self, tag=None):
+===
+../pdpy/classes/obj.py <---------[ 77 lines ]
+13:class Obj(Object):
+30:  def __init__(self, pd_lines=None, json=None, **kwargs):
+55:  def __pd__(self, args=None):
+64:  def __xml__(self, args=None, **kwargs):
+===
+../pdpy/classes/slider.py <---------[ 72 lines ]
+17:class Slider(Obj):
+37:  def __init__(self, pd_lines=None, json=None):
+55:  def __pd__(self):
+70:  def __xml__(self):
+===
+../pdpy/classes/pdpyencoder.py <---------[ 35 lines ]
+13:class PdPyEncoder(JSONEncoder):
+15:  def __init__(self):
+21:  def __call__(self, __obj__):
+===
+../pdpy/classes/default.py <---------[ 219 lines ]
+20:class Namespace:
+67:class Default(object):
+22:  def __init__(self):
+27:  def __get__(self, name=None, tag=None):
+42:  def __check__(self, tag, attrib, attr_key='pdpy'):
+57:def getFormat(fmt):
+68:  def __init__(self):
+===
+../pdpy/classes/xmlbuilder.py <---------[ 365 lines ]
+15:class XmlBuilder(XmlTagConvert):
+17:  def __init__(self):
+20:  def __tree__(self, root, autoindent=True):
+27:  def __element__(self, scope=None, tag=None, text=None, attrib=None):
+98:  def __subelement__(self, parent, child, **kwargs):
+107:  def __update_element__(self, parent, scope, attrib):
+127:    def _parseattrib(a):
+158:  def __update_attrib__(self, element, key, value):
+161:  def __xml__(self, scope=None, tag=None, attrib=None):
+168:  def __tag_strip__(self, tag):
+177:  def __elem_to_obj__(self, elem):
+231:      def _prnt(*argv):   
+362:  def __xmlparse__(self, xml):
+===
+../pdpy/classes/exceptions.py <---------[ 11 lines ]
+11:class ArgumentException(Exception):
+===
+../pdpy/classes/radio.py <---------[ 69 lines ]
+16:class Radio(Obj):
+35:  def __init__(self, pd_lines=None, json=None):
+52:  def __pd__(self):
+66:  def __xml__(self):
+===
+../pdpy/classes/iemgui.py <---------[ 79 lines ]
+18:class IEMFont(Base):
+37:class IEMLabel(Base):
+19:  def __init__(self, face=None, points=None, json=None, xml=None):
+29:  def __pd__(self):
+33:  def __xml__(self, tag=None):
+55:  def __init__(self,
+73:  def __pd__(self):
+77:  def __xml__(self, tag=None):
+===
+../pdpy/classes/translator.py <---------[ 221 lines ]
+26:class Translator(Base):
+48:  def __init__(self, json):
+130:  def __call__(self, target=None, out=None):
+221:  # end def __call__
+===
+../pdpy/classes/pdpy.py <---------[ 400 lines ]
+39:class PdPy(CanvasBase, Base):
+41:  def __init__(self, 
+70:  def getTemplate(self, template_name):
+75:  def addStruct(self, pd_lines=None, json=None, xml=None):
+82:  def addRoot(self, argv=None, json=None):
+99:  def addDependencies(self, **kwargs):
+107:  def __last_canvas__(self):
+125:  def __get_canvas__(self):
+134:  def addCanvas(self, argv):
+153:  def addObj(self, argv):
+206:  def addMsg(self, argv):
+213:  def addComment(self, argv):
+220:  def addNativeGui(self, className, argv):
+226:  def addGraph(self, argv):
+234:  def addGOPArray(self, argv):
+246:  def addScalar(self, pd_lines):
+251:  def addEdge(self, pd_lines):
+254:  def addCoords(self, coords):
+259:  def restore(self, argv=None):
+273:  def parse(self, argvecs):
+330:  def __pd__(self):
+350:  def __xml__(self):
+===
+../pdpy/classes/array.py <---------[ 167 lines ]
+13:class Array(Obj):
+37:  def __init__(self, pd_lines = None, json = None):
+113:  def __pd__(self):
+144:  def __xml__(self):
+===
+../pdpy/classes/area.py <---------[ 50 lines ]
+14:class Area(Base):
+30:  def __init__(self, coords=None, json=None, xml=None):
+42:  def __pd__(self, order=0):
+48:  def __xml__(self, tag=None):
+===
+../pdpy/classes/bounds.py <---------[ 38 lines ]
+13:class Bounds(Base):
+14:  def __init__(self,
+32:  def __pd__(self):
+35:  def __xml__(self, tag=None):
+===
+../pdpy/classes/gui.py <---------[ 76 lines ]
+15:class Gui(Object):
+38:  def __init__(self, pd_lines=None, json=None):
+58:  def __pd__(self):
+75:  def __xml__(self):
+===
+../pdpy/classes/base.py <---------[ 310 lines ]
+18:class Base(XmlBuilder, XmlTagConvert):
+38:  def __init__(self,
+60:  def __parent__(self, parent=None, scope=None):
+77:  def __addparents__(self, parent, children=('nodes','edges','comments')):
+89:  def __getroot__(self, child):
+98:  def __getstruct__(self):
+101:  def __setdata__(self, scope, data, attrib='data'):
+110:  def __setattr__(self, name, value):
+115:  def __json__(self, indent=4):
+121:    def __filter__(o):
+135:  def __dumps__(self):
+138:  def __num__(self, n):
+157:  def __pdbool__(self, n):
+169:  def __isnum__(self, n):
+176:  def __populate__(self, child, json):
+199:  def __pd__(self, args=None):
+242:  def __jsontree__(self):
+249:  def __xml_load__(self, xml_tree):
+===
+../pdpy/classes/bng.py <---------[ 65 lines ]
+16:class Bng(Obj):
+32:  def __init__(self, pd_lines=None, json=None):
+49:  def __pd__(self):
+62:  def __xml__(self):
+===
+../pdpy/classes/nbx.py <---------[ 74 lines ]
+17:class Nbx(Obj):
+36:  def __init__(self, pd_lines=None, json=None):
+55:  def __pd__(self):
+71:  def __xml__(self):
+===
+../pdpy/classes/data.py <---------[ 297 lines ]
+15:class Data(Base):
+18:  def __init__(self,
+57:  def add(self, attr, value):
+63:  def parseXml(self, xml):
+82:  def fill(self, template, data):
+90:    def fill_element(target, template, data, attrib='float', cls=Float):
+98:    def fill_array(target, template, data):
+193:  def __pd__(self, template=None):
+251:  def __xml__(self, template=None):
+===
+../pdpy/classes/canvas.py <---------[ 249 lines ]
+15:class Canvas(CanvasBase, Base):
+53:  def __init__(self, json=None):
+79:  def grow(self):
+85:  def add(self, node):
+103:  def edge(self, edge):
+121:  def comment(self, comment):
+136:  def get_position(self):
+172:  def grow_margins(self, word_length=0):
+182:  def get_char_dim(self):
+185:  def addpos(self, x, y):
+188:  def __pd__(self):
+217:  def __xml__(self, tag=None):
+===
+../pdpy/classes/dependencies.py <---------[ 67 lines ]
+13:class Dependencies(Base):
+14:  def __init__(self, pd_lines=None, json=None, xml=None):
+31:  def updatePath(self, path):
+36:  def updateLib(self, lib):
+41:  def update(self, deps):
+51:  def __pd__(self):
+60:  def __xml__(self):
+===
+../pdpy/classes/struct.py <---------[ 194 lines ]
+16:class Struct(Base):
+19:  def __init__(self, pd_lines=None, json=None, xml=None):
+68:  def addFloat(self, pd_name):
+74:  def addSymbol(self, pd_name):
+80:  def addText(self, pd_name):
+86:  def addArray(self, pd_name, array_name):
+96:  def parse(self, data):
+161:  def __pd__(self):
+178:  def __xml__(self):
+===
+../pdpy/classes/pdpyparser.py <---------[ 645 lines ]
+25:class PdPyParser(PdPy):
+38:  def __init__(self, fp, pddb, **kwargs):
+62:  def arg_count(self, q):
+71:  def is_obj(self, q):
+84:  def has_iolets(self, q):
+98:  def get_args(self, i, t):
+109:  def parse_arguments(self, i, t):
+120:  def make_connections(self, i, t):
+179:  def parse_any(self, i, t):
+225:  def pdpyCreate(self, string, autoconnect=True):
+309:  def pdpyComment(self, string, border=None):
+316:  def pdpyRoot(self, name=None):
+331:  def pdpyCanvas(self, **kwargs):
+340:  def pdpyRestore(self):
+355:  def objectCreator(self, objClass, argv, root=False, canvas=None):
+384:  def objectConnector(self, source=None,sink=None, canvas=None):
+399:  def is_ignored(self, s): 
+409:  def is_root(self, s):
+423:  def is_root_end(self, s):
+431:  def is_subpatch(self, s):
+444:  def is_subpatch_end(self, s):
+470:  def is_pdtext(self, s):
+480:  def is_pdobj(self, s):
+490:  def parsePdPyLine(self, s):
+512:  # def create(self, obj):
+===
+../pdpy/parse/__init__.py <---------[ 11 lines ]
+===
+../pdpy/parse/pdpy2json.py <---------[ 144 lines ]
+17:def is_ignored(s): 
+26:def PdPyLoad(fp, patch, pddb):
+43:  def is_root(s):
+57:  def is_root_end(s):
+65:  def is_subpatch(s):
+78:  def is_subpatch_end(s):
+104:  def is_pdtext(s):
+114:  def is_pdobj(s):
+124:  def parsePdPyLine(s):
+===
+../pdpy/__init__.py <---------[ 51 lines ]
+===

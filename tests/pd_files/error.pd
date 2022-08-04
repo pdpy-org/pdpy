@@ -1,0 +1,6 @@
+#N canvas 527 38 450 300 12;
+#X obj 153 44 array define foo;
+#X obj 153 74 array define foo;
+#X msg 95 119 \; foo rename bar;
+#X obj 42 85 loadbang;
+#X connect 3 0 2 0;

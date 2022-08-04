@@ -1,0 +1,9 @@
+/Users/fd/Development/pd-fileutils/test/patches/arrays.pd
+/Users/fd/Development/pd-fileutils/test/patches/tall-and-wide-patch.pd
+/Users/fd/Development/pd-fileutils/test/patches/object-size-pd-vanilla.pd
+/Users/fd/Development/pd-fileutils/test/patches/special-chars.pd
+/Users/fd/Development/pd-fileutils/test/patches/subpatches.pd
+/Users/fd/Development/pd-fileutils/test/patches/node-elems.pd
+/Users/fd/Development/pd-fileutils/test/patches/tables.pd
+/Users/fd/Development/pd-fileutils/test/patches/simple.pd
+/Users/fd/Development/pd-fileutils/test/patches/graphs.pd

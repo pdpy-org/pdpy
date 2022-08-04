@@ -1,0 +1,32 @@
+#N canvas 845 141 724 405 12;
+#X obj 35 254 *~ 0.125;
+#X obj 35 279 rzero~ -1;
+#X obj 35 304 rzero~ -1;
+#X obj 35 329 rzero~ -1;
+#X obj 35 61 phasor~;
+#X obj 228 47 block~ 1024 1 16;
+#X obj 35 26 inlet;
+#X obj 35 363 outlet~;
+#X obj 35 134 rpole~ 0.87467;
+#X obj 35 108 *~ 0.12532;
+#X obj 35 160 *~ 0.01668;
+#X obj 35 187 cpole~ 0.9293 0.10812;
+#X obj 35 223 cpole~ 0.9293 -0.10812;
+#X text 163 93 These objects make a 3-pole \, 3-zero Butterworth low-pass
+filter with cutoff at 15kHz (assuming 16x44100 sample rate). The filter
+was designed using the "buttercoef3" abstraction introduced in patch
+H13.butterworth.pd in this series.;
+#X obj 90 26 inlet;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X connect 3 0 7 0;
+#X connect 4 0 9 0;
+#X connect 6 0 4 0;
+#X connect 8 0 10 0;
+#X connect 9 0 8 0;
+#X connect 10 0 11 0;
+#X connect 11 0 12 0;
+#X connect 11 1 12 1;
+#X connect 12 0 0 0;
+#X connect 14 0 4 1;

@@ -1,0 +1,3 @@
+/Users/fd/Development/spat-tools/binaural~/b.sub~.pd
+/Users/fd/Development/spat-tools/binaural~/binaural~.pd
+/Users/fd/Development/spat-tools/binaural~/binaural~-help.pd

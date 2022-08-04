@@ -1,0 +1,10 @@
+#N canvas 0 22 450 300 12;
+#X obj 12 108 osc~ 440;
+#X obj 12 132 *~ 0.1;
+#X obj 12 156 dac~ 1 2;
+#X text 12 12 **********************************************************;
+#X text 12 36 * Connect an oscillator to the dac *;
+#X text 12 60 **********************************************************;
+#X text 12 84 another way to connect objects is by making a new line;
+#X connect 0 0 1 0;
+#X connect 1 0 2 0;

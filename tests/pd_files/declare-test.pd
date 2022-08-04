@@ -1,0 +1,6 @@
+#N canvas 0 22 450 300 12;
+#X declare -path .lib;
+#X obj 63 44 declare -path .lib;
+#X msg 224 97 hello;
+#X obj 224 121 print;
+#X connect 1 0 2 0;

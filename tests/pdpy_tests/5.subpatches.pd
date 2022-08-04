@@ -1,0 +1,14 @@
+#N canvas 0 22 450 300 12;
+#N canvas 0 22 450 300 My\ Subcanvas 0;
+#X obj 12 36 -> 'hello from subcanvas';
+#X obj 12 84 outlet;
+#X text 12 12 this is a comment inside a subpatch;
+#X text 12 60 canvases pipe the last output to their outlet;
+#X connect 0 0 1 0;
+#X connect 0 0 1 0;
+#X restore 12 108 pd My\ Subcanvas;
+#X obj 12 108 print ;
+#X text 12 12 **********************************************************;
+#X text 12 36 * Subpatches *;
+#X text 12 60 **********************************************************;
+#X text 12 84 this is a comment on the root canvas;

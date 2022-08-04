@@ -1,0 +1,9 @@
+#N canvas 0 22 450 300 12;
+#X text 12 12 **********************************************************;
+#X text 12 36 * Connections *;
+#X text 12 60 **********************************************************;
+#X text 12 84 the example below prints the number 1234 to console;
+#X text 12 108 the following output also works;
+#X text 12 132 because connections work in reverse;
+#X text 12 156 so \, this is allowed;
+#X text 12 180 NOTE: the '->' symbol is a synonym for 'loadbang >';

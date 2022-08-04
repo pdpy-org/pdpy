@@ -1,0 +1,16 @@
+#N canvas 0 22 450 300 12;
+#X obj 118 68;
+#X msg 197 65;
+#X floatatom 236 165 5 -1 1 0 label receive send;
+#X symbolatom 138 177 10 0 0 0 - - -;
+#X text 259 243 comment;
+#N canvas 0 22 450 300 (subpatch) 0;
+#X restore 336 84 pd;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X coords 0 1 100 -1 200 140 1;
+#X restore 100 20 graph;
+#X obj 321 173 nbx 5 14 -1e+37 1e+37 0 0 empty empty empty 0 -8 0 10
+-262144 -1 -1 0 256;
+#X obj 321 192 hsl 128 15 0 127 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X connect 7 0 8 0;

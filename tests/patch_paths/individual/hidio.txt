@@ -1,0 +1,7 @@
+/Users/fd/Development/hidio/hidio-help.pd
+/Users/fd/Development/hidio/test/test_instance.pd
+/Users/fd/Development/hidio/test/test_instance_GUI.pd
+/Users/fd/Development/hidio/test/latency_test.pd
+/Users/fd/Development/hidio/examples/spiral-joystick.pd
+/Users/fd/Development/hidio/examples/polar-joystick.pd
+/Users/fd/Development/hidio/examples/gametrak.pd

@@ -1,0 +1,6 @@
+#N canvas 0 22 450 300 12;
+#X obj 12 108 -> sinesum 2048 1 > \mytab 2051;
+#X text 12 12 **********************************************************;
+#X text 12 36 * Load a table with the sinesum message *;
+#X text 12 60 **********************************************************;
+#X text 12 84 the '->' symbol is a synonym for 'loadbang >';

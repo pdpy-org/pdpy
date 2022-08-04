@@ -1,0 +1,12 @@
+#N canvas 0 22 450 300 12;
+#X obj 12 156 ->;
+#X obj 12 180 loadbang ;
+#X obj 12 204 metro ;
+#X msg 12 228 1000;
+#X text 12 12 **********************************************************;
+#X text 12 36 * A Counter Abstraction *;
+#X text 12 60 **********************************************************;
+#X text 12 84 once a second \,;
+#X text 12 108 this patch prints to console;
+#X text 12 132 every value in the table;
+#X connect 1 0 2 0;

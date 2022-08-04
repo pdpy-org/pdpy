@@ -1,0 +1,282 @@
+#N struct template11 float x float y array a template11a array b template11b;
+#N struct template11a float x float amp float w1 float w2;
+#N struct template11b float x float amp float w1 float w2;
+#N canvas 145 66 923 595 12;
+#X declare -path ./lib;
+#X declare -lib iemgui -lib timbreID -lib Gem -path mypath -path ./myotherpath
+;
+#X obj 313 181 bng 18 250 50 0 empty empty empty -8 -12 0 12 #fcfcfc
+#000000 #0400fc;
+#X obj 313 214 tgl 18 1.04858e+06 empty empty empty -6 -11 0 12 #fcfcfc
+#000000 #0400fc 0 1;
+#X obj 166 111 vsl 18 128 0 127 0 1.04858e+06 empty empty empty -7
+-13 0 12 #fcfcfc #000000 #0400fc 0 1;
+#X obj 306 144 hsl 128 18 0 127 0 0 empty empty empty 2 -12 0 12 #fcfcfc
+#000000 #0400fc 0 1;
+#X obj 302 95 hradio 18 1 0 8 empty empty empty 4 -12 0 12 #fcfcfc
+#000000 #0400fc 0;
+#X obj 75 100 vu 15 160 \$6 empty -4 -16 0 12 #202020 #000000 1 0;
+#X obj 55 299 cnv 60 100 60 empty empty empty 2 -12 0 12 #dcdcdc #0400fc
+1.04858e+06;
+#X obj 235 109 vradio 18 1 0 8 empty empty empty -17 -11 0 12 #fcfcfc
+#000000 #0400fc 0;
+#X obj 198 307 nbx 5 18 -1e+37 1e+37 0 0 empty empty empty 1 -13 0
+12 #fcfcfc #000000 #0400fc 0 256;
+#X text 337 180 Bang Button;
+#X text 338 213 Toggle Button;
+#X text 314 289 (c) musil@iem.kug.ac.at;
+#X text 350 305 IEM KUG \, Graz \, Austria \, 2002, f 14;
+#X text 196 281 Number Box;
+#X text 57 278 Canvas;
+#X symbolatom 89 507 10 0 0 0 - - - 0;
+#X floatatom 38 507 5 0 0 0 - - - 0;
+#X text 63 73 VU Meter;
+#X text 149 71 Vertical;
+#X text 155 86 Slider;
+#X text 219 69 Vertical;
+#X text 225 84 Radio;
+#X text 300 71 Horizontal Radio;
+#X text 301 123 Horizontal Slider;
+#X text 168 507 (atom boxes);
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array array 100 float 3;
+#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0;
+#X coords 0 1 100 -1 200 140 1 0 0;
+#X restore 290 414 graph;
+#X text 20 407 See also:;
+#X text 10 370 ----------------------------------------------------------------------
+, f 70;
+#X text 93 19 All IEM GUIs (objects from the "iemguis" library \, natively
+included in Pd version 0.34):, f 49;
+#X text 23 434 The atom boxes and the array were the only GUI objects
+in Pd until the incorporation of "IEM GUIs"., f 35;
+#N canvas 47 51 532 300 some 1;
+#X text 255 206 updated for Pd version 0.39;
+#N canvas 108 337 468 441 template11 1;
+#X obj 94 292 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#X obj 94 314 t b b;
+#X obj 237 340 pointer;
+#X msg 237 307 traverse pd-data11 \, bang;
+#X obj 93 369 append template11 x y;
+#X msg 94 344 50 50;
+#X obj 36 256 filledpolygon 0 0 0 0 0 3 0 3 30 0 30 0 0;
+#X obj 36 136 plot -w w1 a 0 2 5 0;
+#X obj 38 192 plot -w w2 a 0 2 5 15;
+#X obj 45 85 plot -y amp(0:100)(0:100) a 500 2 5 30;
+#X text 46 63 Graph (x \, amp) pairs (using "amp" as the "y" field):
+;
+#X text 38 110 Graph "w1" as width ("y" is zero);
+#X text 35 170 also "w2" \, at (5 \, 15) to disambiguate the one at
+(5 \, 0);
+#X text 33 233 Mark the scalar itself;
+#X obj 28 21 struct template11 float x float y array a template11a
+array b template11b;
+#X obj 214 134 plot -w w1 b 55 0 24 60;
+#X connect 0 0 1 0;
+#X connect 1 0 5 0;
+#X connect 1 1 3 0;
+#X connect 2 0 4 2;
+#X connect 3 0 2 0;
+#X connect 5 0 4 0;
+#X restore 60 175 pd template11;
+#N canvas 770 83 379 259 data11 1;
+#X scalar template11 25 62 \; 3 0 0 12 \; 29 3 4 5 \; 176 15 2 8 \;
+244 25 9 0 \; \; -10 0 4 12 \; 3 0 0 12 \; 41 3 9 5 \; 176 15 2 8 \;
+244 25 9 0 \; \;;
+#X scalar template11 24 174 \; 3 0 0 12 \; 50 39 9 0 \; 121 17 2 12
+\; 187 13 0 0 \; \; -17 0 0 0 \; \;;
+#X coords 0 259 1 258 0 0 0;
+#X restore 60 232 pd data11;
+#N canvas 335 497 481 86 template11a 0;
+#X obj 39 30 struct template11a float x float amp float w1 float w2
+;
+#X restore 60 204 pd template11a;
+#X text 27 15 You can control which variable is used as "x" \, "y"
+\, and "width" when plotting an array. In this example a single array
+"a" is plotted three times \, to show the values of the "amp" \, "w1"
+and "w2" fields. This is convenient when you want to have several variables
+in each point of the array and need several traces of the same array
+to visualize it all., f 63;
+#X text 26 110 In this example the array points have no "y" field at
+all \, so if no variable is supplied to use instead of "y" \, the array
+is flat along its "x" axis., f 63;
+#X obj 236 169 declare -path ./lib;
+#N canvas 661 592 450 116 template11b 0;
+#X obj 34 40 struct template11b float x float amp float w1 float w2
+;
+#X obj 66 69 filledpolygon 0 0 0 0 0 1 0 12 14 0 14 0 0;
+#X restore 141 234 pd template11b;
+#X restore 523 31 pd some structures;
+#N canvas 0 22 830 736 signal 0;
+#X obj 368 236 loadbang;
+#X obj 94 337 hip~ 5;
+#X obj 481 112 adc~ 1;
+#X obj 368 291 soundfiler;
+#X text 500 667 updated for Pd version 0.37;
+#X obj 481 161 tabwrite~ E03-table;
+#X msg 368 263 read ../sound/voice.wav E03-table;
+#X obj 133 109 fiddle~ 2048;
+#X obj 136 140 unpack;
+#X obj 161 243 osc~;
+#X obj 136 164 moses 1;
+#X obj 93 244 *~;
+#X obj 161 192 mtof;
+#X obj 161 220 *;
+#X msg 210 168 0.5;
+#X floatatom 210 197 3 0 0 0 - - - 0;
+#X msg 248 168 15;
+#N canvas 403 128 429 212 (subpatch) 0;
+#X obj 273 42 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
+0 1;
+#X obj 170 24 inlet~;
+#X obj 170 87 *~;
+#X obj 170 159 outlet~;
+#X connect 0 0 2 1;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X coords 0 0 100 100 40 18 1 250 40;
+#X restore 48 293 pd;
+#X obj 94 267 *~ 2;
+#X obj 210 143 loadbang;
+#N canvas 414 195 543 299 looper 0;
+#N canvas 0 0 450 300 (subpatch) 0;
+#X array E03-table 44103 float 0;
+#X coords 0 1.02 44103 -1.02 200 130 1;
+#X restore 257 54 graph;
+#X text 265 193 ---- 44103 samples ----;
+#X obj 66 115 +~ 1;
+#X obj 66 63 phasor~ 1;
+#X obj 66 88 *~ 44100;
+#X obj 66 144 tabread4~ E03-table;
+#X obj 66 170 outlet~;
+#X text 112 235 one-second sample \, reader loop. You can replace this
+with an adc~ if you want to go live., f 46;
+#X connect 2 0 5 0;
+#X connect 3 0 4 0;
+#X connect 4 0 2 0;
+#X connect 5 0 6 0;
+#X restore 133 61 pd looper;
+#X text 452 242 re-read original sample;
+#X obj 492 138 bng 15 250 50 0 empty empty empty 0 -6 0 8 #fcfcfc #000000
+#000000;
+#N canvas 300 203 576 337 delay 0;
+#X obj 43 250 outlet~;
+#X obj 42 38 inlet~;
+#X obj 43 119 loadbang;
+#X obj 42 66 delwrite~ E03-del 40;
+#X obj 43 223 delread~ E03-del;
+#X obj 43 180 expr 1000*1024/$f1;
+#X obj 43 145 samplerate~;
+#X text 194 59 write to delay line which has enough memory to hold
+40 msec, f 30;
+#X text 153 145 get sample rate at load time;
+#X text 186 174 divide 1024 by sample rate to give time in seconds
+\; multiply by 1000 to convert to milliseconds.;
+#X text 196 225 read from the delay line at the calculated delay;
+#X text 272 274 1024-sample delay;
+#X connect 1 0 3 0;
+#X connect 2 0 6 0;
+#X connect 4 0 0 0;
+#X connect 5 0 4 0;
+#X connect 6 0 5 0;
+#X restore 47 136 pd delay;
+#X text 89 16 OCTAVE DIVIDING VIA RING MODULATION;
+#X text 173 276 on/off for original;
+#X text 189 346 This patch demonstrates using ring modulation to alias
+a sound down one octave. The ring modulation itself ("osc~" and multiplier)
+is easy. (We step it up by a factor of 2 to balance the original better.)
+, f 70;
+#X text 190 398 Harder is getting the fundamental frequency of the
+original sound. We do this with the complicated "fiddle~" object \,
+which puts out a stream of analysis data for an incoming signal. The
+"2048" argument specifies the analysis window size. The analysis is
+most closely aligned with what the sound was doing at the middle of
+the window \, i.e. \, 1024 samples ago. The "pd delay" window delays
+the signal itself 1024 samples so it will be as tightly synchronized
+with the analysis data as possible. (If you're doing this on a real-time
+input \, you might drop the delay and settle for less perfect synchronization.)
+, f 70;
+#X text 190 535 About fiddle~ \, suffice it to say that the third outlet
+contains (pitch \, amplitude) pairs. We unpack the pitch and strip
+out any zeros (when fiddle~ fails to find a pitch it outputs zero but
+we'd rather stick with the most recent good one). This is converted
+from MIDI to Hertz \, and multiplied by 1/2 to control the modulation
+oscillator. (You can also try large-ish integers which leave the pitch
+intact but introduce funny formants.), f 70;
+#X obj 51 61 adc~ 1;
+#X text 511 136 <= record a sample;
+#X text 144 292 <= and processed sounds;
+#X text 281 168 <= choose an effect;
+#N canvas 403 128 429 212 (subpatch) 0;
+#X obj 273 42 tgl 15 0 empty empty empty 0 -6 0 8 #fcfcfc #000000 #000000
+0 1;
+#X obj 170 24 inlet~;
+#X obj 170 87 *~;
+#X obj 170 159 outlet~;
+#X connect 0 0 2 1;
+#X connect 1 0 2 0;
+#X connect 2 0 3 0;
+#X coords 0 0 100 100 40 18 1 250 40;
+#X restore 94 293 pd;
+#X obj 72 381 dac~;
+#X connect 0 0 6 0;
+#X connect 1 0 34 0;
+#X connect 1 0 34 1;
+#X connect 2 0 5 0;
+#X connect 6 0 3 0;
+#X connect 7 2 8 0;
+#X connect 8 0 10 0;
+#X connect 9 0 11 1;
+#X connect 10 1 12 0;
+#X connect 11 0 18 0;
+#X connect 12 0 13 0;
+#X connect 13 0 9 0;
+#X connect 14 0 15 0;
+#X connect 15 0 13 1;
+#X connect 16 0 15 0;
+#X connect 17 0 1 0;
+#X connect 18 0 33 0;
+#X connect 19 0 14 0;
+#X connect 20 0 23 0;
+#X connect 20 0 7 0;
+#X connect 22 0 5 0;
+#X connect 23 0 17 0;
+#X connect 23 0 11 0;
+#X connect 33 0 1 0;
+#X restore 527 74 pd signal stuff;
+#X f 41;
+#X obj 530 144 array define mystes 1123;
+#X f 19;
+#X obj 564 198 loadbang;
+#X obj 564 246 s mystes;
+#X msg 564 222 sinesum 1232 1;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array array1 100 float 3;
+#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0;
+#X array array2 100 float 3;
+#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0;
+#X coords 0 1 100 -1 200 140 1;
+#X restore 635 373 graph;
+#X obj 686 51 text define mytext1;
+#X obj 693 111 text define -k keepit;
+#A set omg \, you kept me \; so cute \; 1 2 3 \; go \;;
+#X obj 738 175 textfile;
+#X obj 512 537 declare -lib iemgui -lib timbreID -lib Gem -path mypath
+-path ./myotherpath;
+#X obj 624 293 array define -k Mybaby 123;
+#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0;
+#X connect 33 0 35 0;
+#X connect 35 0 34 0;

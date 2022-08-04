@@ -1,0 +1,4 @@
+#N canvas 556 42 450 300 12;
+#X obj 10 20 osc~ 440;
+#X obj 47 42 array define -k myarray 5;
+#A 0 0 0 0 0 0;

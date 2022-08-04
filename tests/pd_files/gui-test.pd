@@ -1,0 +1,17 @@
+#N canvas 575 80 450 300 12;
+#X symbolatom 121 136 10 0 0 0 s s_receive s_send 0;
+#X obj 119 54 symbol bangit;
+#X listbox 265 135 20 0 0 0 l l_receive l_send 0;
+#X obj 271 59 list append oh my josh;
+#X floatatom 19 45 5 0 0 0 - - - 0;
+#X floatatom 17 136 5 0 0 0 n n_receive n_send 0;
+#X obj 19 68 s n_receive;
+#X obj 119 78 s s_receive;
+#X obj 271 83 s l_receive;
+#X msg 271 39 bang;
+#X msg 119 34 bang;
+#X connect 1 0 7 0;
+#X connect 3 0 8 0;
+#X connect 4 0 6 0;
+#X connect 9 0 3 0;
+#X connect 10 0 1 0;

@@ -1,0 +1,11 @@
+#N canvas 446 74 450 300 12;
+#X msg 52 20 this is a message;
+#X msg 44 68 a message with \\\; escaped semis;
+#X msg 43 108 multiple messages \, one \, by \, one;
+#X msg 45 162 \; receive-name1 message1 more \, sourcery \; receive-name2
+message2;
+#X msg 265 84 bang \, list 1 2 3 \; receive-name1 message1 \; receive-name2
+message2 \; recv3 list 4 5 6;
+#X msg 287 10 this is a very long messaage clipped, f 17;
+#X msg 103 240 this is multiple \, messages \, but clipped at border
+, f 25;

@@ -1,0 +1,224 @@
+{
+    "patchname": "5.subpatches.pdpy",
+    "encoding": "utf-8",
+    "root": {
+        "screen": {
+            "__pdpy__": "Point",
+            "x": 0,
+            "y": 22
+        },
+        "dimension": {
+            "__pdpy__": "Size",
+            "width": 450,
+            "height": 300
+        },
+        "font": 12,
+        "__pdpy__": "Canvas",
+        "name": "Subpatches",
+        "vis": false,
+        "gop": false,
+        "comments": [
+            {
+                "__pdpy__": "Comment",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 12,
+                    "y": 12
+                },
+                "text": [
+                    "**********************************************************"
+                ]
+            },
+            {
+                "__pdpy__": "Comment",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 12,
+                    "y": 36
+                },
+                "text": [
+                    "* Subpatches *"
+                ]
+            },
+            {
+                "__pdpy__": "Comment",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 12,
+                    "y": 60
+                },
+                "text": [
+                    "**********************************************************"
+                ]
+            },
+            {
+                "__pdpy__": "Comment",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 12,
+                    "y": 84
+                },
+                "text": [
+                    "this is a comment on the root canvas"
+                ]
+            }
+        ],
+        "nodes": [
+            {
+                "screen": {
+                    "__pdpy__": "Point",
+                    "x": 0,
+                    "y": 22
+                },
+                "dimension": {
+                    "__pdpy__": "Size",
+                    "width": 450,
+                    "height": 300
+                },
+                "font": 12,
+                "__pdpy__": "Canvas",
+                "name": "My\\ Subcanvas",
+                "vis": false,
+                "gop": false,
+                "id": 4,
+                "comments": [
+                    {
+                        "__pdpy__": "Comment",
+                        "position": {
+                            "__pdpy__": "Point",
+                            "x": 12,
+                            "y": 12
+                        },
+                        "text": [
+                            "this is a comment inside a subpatch"
+                        ]
+                    },
+                    {
+                        "__pdpy__": "Comment",
+                        "position": {
+                            "__pdpy__": "Point",
+                            "x": 12,
+                            "y": 84
+                        },
+                        "text": [
+                            "canvases pipe the last output to their outlet"
+                        ]
+                    }
+                ],
+                "nodes": [
+                    {
+                        "__pdpy__": "PdObject",
+                        "id": 1,
+                        "position": {
+                            "__pdpy__": "Point",
+                            "x": 12,
+                            "y": 60
+                        },
+                        "className": "loadbang"
+                    },
+                    {
+                        "__pdpy__": "PdMessage",
+                        "className": "msg",
+                        "position": {
+                            "__pdpy__": "Point",
+                            "x": 12,
+                            "y": 84
+                        },
+                        "id": 2,
+                        "targets": [
+                            {
+                                "__pdpy__": "PdMsg",
+                                "address": "outlet",
+                                "message": [
+                                    "hello from subcanvas"
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "__pdpy__": "PdObject",
+                        "id": 4,
+                        "position": {
+                            "__pdpy__": "Point",
+                            "x": 12,
+                            "y": 132
+                        },
+                        "className": "outlet"
+                    }
+                ],
+                "edges": [
+                    {
+                        "__pdpy__": "Edge",
+                        "source": {
+                            "__pdpy__": "Source",
+                            "id": 1,
+                            "port": 0
+                        },
+                        "sink": {
+                            "__pdpy__": "Source",
+                            "id": 2,
+                            "port": 0
+                        }
+                    },
+                    {
+                        "__pdpy__": "Edge",
+                        "source": {
+                            "__pdpy__": "Source",
+                            "id": 4,
+                            "port": 0
+                        },
+                        "sink": {
+                            "__pdpy__": "Source",
+                            "id": 5,
+                            "port": 0
+                        }
+                    }
+                ],
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 12,
+                    "y": 132
+                },
+                "title": "pd My\\ Subcanvas"
+            },
+            {
+                "__pdpy__": "PdObject",
+                "id": 5,
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 12,
+                    "y": 132
+                },
+                "className": "print"
+            }
+        ],
+        "edges": [
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 5,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 6,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 5,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 6,
+                    "port": 0
+                }
+            }
+        ]
+    }
+}

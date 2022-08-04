@@ -1,0 +1,7 @@
+#N canvas 446 74 450 300 12;
+#X text 56 36 This is a comment;
+#X text 44 96 Comments can have \, commas. Also \, other! kinds? of
+punkTu!@#$%^&*( ation;
+#X text 61 160 And \, you can resize them at will, f 7;
+#X text 156 168 WAAAAAAA \; using semicolons \; quite sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss
+cool;

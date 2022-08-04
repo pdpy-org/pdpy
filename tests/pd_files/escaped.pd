@@ -1,0 +1,33 @@
+#N canvas 256 133 556 468 12;
+#X obj 201 27 symbol \ ;
+#X obj 201 53 symbol \\\\;
+#X obj 307 86 list append \\\\ \\\\;
+#X obj 307 57 list append;
+#X obj 307 29 list append;
+#X obj 201 79 symbol \\\,;
+#X obj 201 105 symbol -;
+#X obj 201 131 symbol /;
+#X obj 201 157 symbol _;
+#X msg 67 226 symbol;
+#X msg 67 30 symbol \ ;
+#X msg 67 58 symbol \\\\;
+#X msg 67 86 symbol \\\,;
+#X msg 67 114 symbol -;
+#X msg 67 142 symbol /;
+#X msg 67 170 symbol _;
+#X msg 67 198 symbol empty;
+#X msg 67 254 symbol;
+#X symbolatom 362 205 10 0 0 0 my\ symbol\ with\ spaces - -;
+#X symbolatom 362 228 10 0 0 0 what\ is\ this\; \ sourcery -;
+#X floatatom 217 249 5 0 0 0 - - -;
+#X msg 330 263 \; \ sourcery symbol \$1;
+#X obj 217 272 list tosymbol;
+#X msg 286 148 symbol \\\\\\\\\\\\\\\;\\\;;
+#X msg 63 336 this is a very large message\\\, with escaped \\\; chars
+\, so that we can \  \\\\\\\\ \\\\\\\\ \; be spanning multiple pd lines\\\;
+oh heall yes we found a line end\\\, finally \\\; \\\; \\\\;
+#X text 67 403 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+;
+#X connect 19 0 21 0;
+#X connect 21 0 20 0;
+#X connect 22 0 20 0;
