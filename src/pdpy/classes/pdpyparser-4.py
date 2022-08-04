@@ -323,7 +323,7 @@ class PdPyParser(PdPy):
     len_name = self.root.get_char_dim()
     border = len_name if len_name > 60 else None
     self.pdpyComment("*" * len_name, border=border)
-    self.pdpyComment(f"* {name} *",  border=border)
+    self.pdpyComment("* " + name + " *",  border=border)
     self.pdpyComment("*" * len_name, border=border)
 
     if self.root.__cursor__.y > self.root.__margin__.height:

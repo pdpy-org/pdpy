@@ -44,10 +44,11 @@ class PdPy(CanvasBase, Base):
                root=False,
                pd_lines=None,
                json=None,
-               xml=None):
+               xml=None,
+               pdpath=None):
     """ Initialize a PdPy object """
 
-    self.patchname = name
+    self.patchname = Base.__sane_name__(self, name)
     self.encoding = encoding
     self.__pdpy__ = self.__class__.__name__
     self.__canvas_idx__ = []
@@ -69,7 +70,11 @@ class PdPy(CanvasBase, Base):
     if hasattr(self, 'root'):
       # update the parent of all childs
       self.__jsontree__()
-  
+
+    if pdpath is not None:
+      self.pdpath(pdpath)
+
+
   def __jsontree__(self):
     # log(0, f"{self.__class__.__name__}.__jsontree__()")
     setattr(self.root, '__p__', self)
@@ -313,15 +318,60 @@ class PdPy(CanvasBase, Base):
       self.__obj_idx__ = self.__last_canvas__().grow()
       __last_canvas__ = self.__last_canvas__()
       __obj_id__ = __last_canvas__.add(a)
-      if not hasattr(a.position, 'x'):
-        __last_canvas__.grow_margins()
-        x, y = __last_canvas__.get_position()
-        a.addpos(x,y)
-        a.id = __obj_id__
+      a.__parent__(parent=__last_canvas__)
+      a.id = __obj_id__
     return self
+
+  def __add_xy__(self, nodes, canvas):
+    if not isinstance(nodes, tuple):
+      nodes = [nodes]
+    
+    max_width = 0
+    max_height = 0
+
+    for node in nodes:
+      width, height = node.__get_obj_size__()
+      canvas.update_cursor(width=width, height=height)
+      # if width >= max_width:
+      #   max_width = width
+      # if height >= max_height:
+      #   max_height = height
+      # canvas.update_cursor(width=max_width, height=max_height)
+      node.addpos(canvas.__cursor__.x,canvas.__cursor__.y)
+
+
+  def arrange(self):
+
+    __last_canvas__ = self.__last_canvas__()
+    edges = set()
+    sources = []
+    sinks = []
+    for edge in __last_canvas__.edges:
+      src = __last_canvas__.get(edge.source.id)
+      snk = __last_canvas__.get(edge.sink.id)
+      edges.add((src,snk))
+      if src not in sources: 
+        sources.append(src)
+      if snk not in sinks: 
+        sinks.append(snk)
+
+    unconnected = []
+    for node in __last_canvas__.nodes:
+      if node.id not in sources and node.id not in sinks and node.id not in unconnected:
+        unconnected.append(__last_canvas__.get(node.id))
+
+    for edge in edges:
+      self.__add_xy__(edge, __last_canvas__)
+
+    for node in unconnected:
+      self.__add_xy__(node, __last_canvas__)
+      
 
   def write(self, filename=None):
     """ Write out the pd file to disk """
+    
+    self.arrange()
+
     if filename is None:
       filename = self.patchname + '.pd'
 
@@ -367,7 +417,8 @@ class PdPy(CanvasBase, Base):
       elif srclist and snklist:
         for i in range(1,min(len(src),len(snk))):
           _connect(src[0].id, src[i], snk[0].id, snk[i])
-        
+  
+    
 
   def parse(self, argvecs):
     """ Parse a list of Pd argument vectors (1) into this instance's scope
@@ -439,10 +490,10 @@ class PdPy(CanvasBase, Base):
     for x in getattr(self,'structs', []):
       s += x.__pd__()
     
-    s += f"{self.root.__pd__()}"
+    s += self.root.__pd__()
 
     if hasattr(self, 'dependencies'):
-      s += f"{self.dependencies.__pd__()}"
+      s += self.dependencies.__pd__()
     
     return super().__render__(s)
 
@@ -483,3 +534,27 @@ class PdPy(CanvasBase, Base):
       super().__subelement__(root, 'title', text=self.title)
     
     return super().__tree__(x)
+
+  def pdpath(self, path_to_pd):
+    from pathlib import Path
+    pdpath = Path(path_to_pd)
+    apps = [p for p in sorted(pdpath.glob("Pd*.app"))]
+    if len(apps) >= 1:
+      pdbinpath = Path(apps[0].as_posix()+"/Contents/Resources/bin/pd")
+      setattr(self, 'pdbin', pdbinpath)
+    else:
+      raise Exception("Could not find pd in " + path_to_pd)
+  
+  def run(self):
+    from subprocess import run as __run__
+    if not hasattr(self, 'patchname'):
+      raise Exception("No patchname found")
+    command = [
+      self.pdbin.as_posix(),
+      "-open",
+      self.patchname+".pd",
+    ]
+    __run__(" ".join(command), shell=True, check=True)
+
+
+  

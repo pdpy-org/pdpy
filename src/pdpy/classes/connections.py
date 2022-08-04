@@ -37,14 +37,14 @@ class Comm(Base):
   def __pd__(self, order=0):
     """ Returns a pd string for this send/receive pair"""
     if order==1:
-      return f"{self.receive} {self.send}"
+      return str(self.receive) + " " + str(self.send)
     elif order==-1:
-      return f"{self.send} {self.receive}"
+      return str(self.send) + " " + str(self.receive)
     else:
       if hasattr(self, 'send') and self.send is not False:
-        return f"{self.send} {self.receive}"
+        return str(self.send) + " " + str(self.receive)
       else:
-        return f"{self.receive}"
+        return str(self.receive)
 
   def __xml__(self, order=0):
     """ Returns a XML Element for this send/receive pair"""
@@ -79,17 +79,17 @@ class Source(Base):
     """ Get the value from the mapped indices """
     # query the map for the value at the id key
     if self.id in obj_map:
-      return f"{obj_map.get(self.id)}"
+      return str(obj_map.get(self.id))
     else:
-      log(1, f"__remap__()::Key Not Found: {self.id}")
+      log(1, "__remap__()::Key Not Found" + " " + str(self.id))
       return self.id
 
   def __pd__(self, obj_map=None):
     """ Returns a pd string for this source """
     if not hasattr(self, '__obj__'):
-      return f"{self.__remap__(obj_map) if obj_map else self.id} {self.port}"
+      return str(self.__remap__(obj_map) if obj_map else self.id)  + " " + str(self.port)
     else:
-      return f"{self.__obj__.id} {self.port}"
+      return str(self.__obj__.id) + " " + str(self.port)
   
   def __xml__(self, obj_map=None, tag=None):
     """ Returns an xml element for this source """
@@ -120,7 +120,7 @@ class Edge(Base):
 
   def connect(self):
     if not hasattr(self, '__p__'):
-      log(1, f"connect(): No parent Instance Attached")
+      log(1, "connect(): No parent Instance Attached")
     else:
       canvas = getattr(self,'__p__')
       # log(1, f"connect(): locating source")
@@ -131,7 +131,7 @@ class Edge(Base):
 
   def __pd__(self, o=None):
     # log(1,'EDGE to PD',self.__dict__)
-    return super().__pd__(f"{self.source.__pd__(o)} {self.sink.__pd__(o)}")
+    return super().__pd__(self.source.__pd__(o) + " " + self.sink.__pd__(o))
 
   def __xml__(self, o=None):
     """ Returns an xml element for this edge """

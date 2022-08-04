@@ -23,3 +23,4 @@ private/
 src/tests/hello-world.json
 src/tests/definitions.txt
 src/tests/definitions.py
+*.pyc

@@ -52,9 +52,9 @@ class Dependencies(Base):
     """ Parses the dependencies into paths and libs """
     s = ''
     for x in getattr(self, 'paths', []):
-      s += f" -path {x}"
+      s += " -path " + str(x)
     for x in getattr(self, 'libs', []):
-      s += f" -lib {x}"
+      s += " -lib " + str(x)
     return super().__pd__(s)
 
   def __xml__(self):

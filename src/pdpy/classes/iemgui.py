@@ -28,7 +28,7 @@ class IEMFont(Base):
   
   def __pd__(self):
     """ Return the pd lines for this object """
-    return f"{self.face} {self.points}"
+    return str(self.face) + " " + str(self.points)
 
   def __xml__(self, tag=None):
     """ Return the XML Element for this object """
@@ -72,7 +72,7 @@ class IEMLabel(Base):
 
   def __pd__(self):
     """ Return the pd string for this iem label """
-    return f"{self.label} {self.offset.__pd__()} {self.font.__pd__()}"
+    return str(self.label) + " " + self.offset.__pd__() + " " + self.font.__pd__()
 
   def __xml__(self, tag=None):
     """ Return the XML Element for this iem label """

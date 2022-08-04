@@ -30,7 +30,7 @@ class Bounds(Base):
       self.upper = dtype(upper) if upper is not None else dtype(0)
 
   def __pd__(self):
-    return f"{self.lower} {self.upper}"
+    return str(self.lower) + " " + str(self.upper)
 
   def __xml__(self, tag=None):
     """ Return an XML Element """

@@ -42,7 +42,7 @@ class Namespace:
   def __check__(self, tag, attrib, attr_key='pdpy'):
     __pdpy__ = self.__get__(name=getattr(attrib, attr_key, None), tag=tag)
     if __pdpy__ is None:
-      raise KeyError(f"No PdPy class found for element: {tag}")
+      raise KeyError("No PdPy class found for element: " + str(tag))
     return __pdpy__
 
     
@@ -81,7 +81,7 @@ class Default(object):
     self.iemgui = {
       'symbol'   : 'empty',
       'fontface' : 0,
-      'fgcolor'  : -1,
+      'fgcolor'  : '#000000',
       'vu': {
         'xoff':-1,
         'width':15,
@@ -89,7 +89,7 @@ class Default(object):
         'yoff':-8,
         'fsize':10,
         'bgcolor':-66577,
-        'lbcolor':-1,
+        'lbcolor':'#000000',
         'scale':True,
         'flag':1
       },
@@ -99,8 +99,8 @@ class Default(object):
         'xoff':17,
         'yoff':7,
         'fsize':10,
-        'bgcolor':-262144,
-        'lbcolor':-1,
+        'bgcolor':'#fcfcfc',
+        'lbcolor':'#000000',
         'flag':1,
         'nonzero':1
       },
@@ -123,8 +123,8 @@ class Default(object):
         'xoff':0,
         'yoff':-8,
         'fsize':10,
-        'bgcolor':-262144,
-        'lbcolor':-1,
+        'bgcolor':'#fcfcfc',
+        'lbcolor':'#000000',
         'value':0
       },
       'bng': {
@@ -135,8 +135,8 @@ class Default(object):
         'xoff':17,
         'yoff':7,
         'fsize':10,
-        'bgcolor':-262144,
-        'lbcolor':-1
+        'bgcolor':'#fcfcfc',
+        'lbcolor':'#000000'
       },
       'nbx': {
         'digits_width':5,
@@ -148,8 +148,8 @@ class Default(object):
         'xoff':0,
         'yoff':-8,
         'fsize':10,
-        'bgcolor':-262144,
-        'lbcolor':-1,
+        'bgcolor':'#fcfcfc',
+        'lbcolor':'#000000',
         'value':0,
         'log_height':256
       },
@@ -163,8 +163,8 @@ class Default(object):
         'xoff':-2,
         'yoff':-8,
         'fsize':10,
-        'bgcolor':-262144,
-        'lbcolor':-1,
+        'bgcolor':'#fcfcfc',
+        'lbcolor':'#000000',
         'log_height':256,
         'value':0,
         'steady':0
@@ -179,8 +179,8 @@ class Default(object):
         'xoff':-2,
         'yoff':-8,
         'fsize':10,
-        'bgcolor':-262144,
-        'lbcolor':-1,
+        'bgcolor':'#fcfcfc',
+        'lbcolor':'#000000',
         'log_height':256,
         'value':0,
         'steady':0

@@ -30,8 +30,9 @@ class Float(Base):
     elif json is None and xml is None:
       self.value = self.__num__(value) if value is not None else None
       self.name = name
+  
   def __pd__(self):
-    return f"{self.value}"
+    return getattr(self, 'value', '')
 
   def __xml__(self):
     x = super().__element__(scope=self)
@@ -106,7 +107,7 @@ class List(Base):
             if isinstance(v, list):
               s += ' '.join(val)
             else:
-              s += f"{val} "
+              s += str(val) + " "
           s += self.__semi__
         # otherwise, just append the value as a string
         else:

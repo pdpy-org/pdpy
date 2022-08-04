@@ -6,7 +6,9 @@
 # **************************************************************************** #
 """ XML Converter Class """
 
-from xml.etree.ElementTree import ElementTree, Element, indent, parse as xparse
+from xml.etree.ElementTree import ElementTree
+from xml.etree.ElementTree import Element
+from xml.etree.ElementTree import parse as __xparse__
 from .xmltagconvert import XmlTagConvert
 from ..util.utils import log
 
@@ -20,7 +22,8 @@ class XmlBuilder(XmlTagConvert):
   def __tree__(self, root, autoindent=True):
     tree = ElementTree(root)
     if autoindent:
-      indent(tree, space='    ', level=0)
+      from xml.etree.ElementTree import indent as __indent__
+      __indent__(tree, space='    ', level=0)
     # return tostring(self.__root__, encoding='unicode', method='xml')
     return tree
 
@@ -229,16 +232,9 @@ class XmlBuilder(XmlTagConvert):
         d.update({'header':h})
       
       def _prnt(*argv):   
-        print(*argv)
+        print(" ".join(argv))
         log(1, 
-          f"""elem_to_obj
-          ELEM: {elem}
-          LENGTH: {len(list(elem))}
-          TAG: {elem_tag}
-          HEAD: {h}
-          HEAD TYPE: {h_type}
-          CLS: {cls}
-          """)
+          "elem_to_obj\nELEM: "+elem+"\nLENGTH: "+str(len(list(elem)))+"\nTAG: "+str(elem_tag)+ "\nHEAD: "+ str(h)+ "\nHEAD TYPE: "+ str(h_type)+ "\nCLS: "+ str(cls))
       # _prnt('')
       # loop over subelements to merge them ----------------------------------
       for subelem in elem:
@@ -362,5 +358,5 @@ class XmlBuilder(XmlTagConvert):
   def __xmlparse__(self, xml):
     """ Parse an XML file into an ElementTree object. """
     # PdPyXMLParser(self, xml)
-    return xparse(xml)
+    return __xparse__(xml)
     

@@ -46,7 +46,7 @@ class Data(Base):
               self.data = self.data[0].split()
               setattr(self, 'name', self.data.pop(0))
         else:
-          log(1,f"Unknown data type {head} for:\n{self.__json__()}")
+          log(1,"Unknown data type" + str(head) + " for:\n" + self.__json__())
       else:
         if template is not None:
           self.template = template.name
@@ -106,7 +106,7 @@ class Data(Base):
         _, _template = template.__p__.getTemplate(e.template)
 
         if _template is None:
-          log(1,f"Did not find a template array candidate for {template}")
+          log(1,"Did not find a template array candidate for: " + template)
           continue
         
         # log(1, 'Filling array', d)
@@ -171,7 +171,7 @@ class Data(Base):
       sym = fs[:len(template.symbol):]
 
     else:
-      log(1, f"Template {template.name} has no float attribute")
+      log(1, "Template " + template.name + " has no float attribute")
       log(1, "Template", template.__json__())
       log(1,'FS',fs)
       
@@ -197,7 +197,7 @@ class Data(Base):
 
       if hasattr(self, 'header'):
         if self.__isnum__(self.header):
-          s = ' '.join(list(map(lambda x:f"{self.__num__(x)}", self.data)))
+          s = ' '.join(list(map(lambda x:str(self.__num__(x)), self.data)))
           return super().__pd__('0 '+s)
         
         if self.header == 'set' or self.header == 'saved':
@@ -219,7 +219,7 @@ class Data(Base):
         
       else:
         
-        raise ValueError(f"Unknown type {self.header} for:\n{self.__dumps__()}")
+        raise ValueError("Unknown type " + str(self.header) + " for:\n" + self.__dumps__())
     
     else:
       

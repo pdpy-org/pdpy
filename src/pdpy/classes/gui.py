@@ -60,19 +60,19 @@ class Gui(Object):
   def __pd__(self):
     """ Returns the pd-code representation of the object """
     
-    s = f"{int(getattr(self,'digit_width',self.__d__.digits_width))}"
+    s = str(int(getattr(self,'digit_width',self.__d__.digits_width)))
     
     if not hasattr(self, "limits"):
       self.limits = Bounds(lower=self.__d__.limits['lower'], upper=self.__d__.limits['upper'])
     
     s += ' ' + self.limits.__pd__()
-    s += f" {int(getattr(self,'flag', self.__d__.flag))}"
-    s += f" {getattr(self,'label',self.__d__.label)}"
+    s += " " + str(int(getattr(self,'flag', self.__d__.flag)))
+    s += " " + str(getattr(self,'label',self.__d__.label))
 
     comm = getattr(self, 'comm', Comm(default=self.__d__.receive))
-    s += f" {comm.__pd__(order=-1)}"
+    s += " " + comm.__pd__(order=-1)
     if hasattr(self, 'font_size'):
-      s += f" {self.font_size}"
+      s += " " + str(self.font_size)
     
     return super().__pd__(s)
   

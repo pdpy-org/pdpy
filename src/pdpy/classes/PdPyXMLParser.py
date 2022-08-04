@@ -33,7 +33,7 @@ class PdPyXMLParser:
   def __check__(self, tag, attrib):
     __pdpy__ = self.__n__.get(name=getattr(attrib, 'pdpy', None), tag=tag)
     if __pdpy__ is None:
-      raise KeyError(f"No PdPy class found for element: {tag}")
+      raise KeyError("No PdPy class found for element: " + tag)
     return __pdpy__
 
   def start(self, tag, attrib):

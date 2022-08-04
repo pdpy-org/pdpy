@@ -27,7 +27,7 @@ class Point(Base):
       self.y = self.__d__.screen['y']
     
   def __pd__(self):
-    return f"{self.x} {self.y}"
+    return str(self.x) + " " + str(self.y)
 
   def __xml__(self, tag=None):
     """ Return an XML Element """
@@ -41,3 +41,6 @@ class Point(Base):
     self.y = self.__num__(y)
     return self.y
 
+  def increment(self, x, y):
+    self.x += x
+    self.y += y

@@ -58,7 +58,7 @@ class Struct(Base):
           self.addArray(pd_name, array_name)
           i += 1
         else:
-          log(1, f"Unparsed Struct Field #{i}")
+          log(1, "Unparsed Struct Field #" + str(i))
           log(1, self.name, pd_lines)
           self.__dumps__()
         i += 2

@@ -59,7 +59,7 @@ class Scalar(Base):
         # if hasattr(self, 'data'):
         #   s += ' -k'
         # if hasattr(self, 'name'):
-        #   s += f" {self.name}"
+        #   s += " " + str(self.name)"
         # s += self.__end__
         # if hasattr(self, 'data'):
         #   s += self.data.__pd__()

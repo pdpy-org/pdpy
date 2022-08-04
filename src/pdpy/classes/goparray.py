@@ -58,10 +58,10 @@ class GOPArray(Base):
     """ Return a string representation of the GOPArray """
     
     if hasattr(self, 'template'):
-      return f"array {self.name} {self.template}"
+      return "array " + str(self.name) + " " + str(self.template)
     
     elif self.__cls__ in ('array','obj'):
-      s = super().__pd__(f"{self.name} {self.length} {self.type} {self.flag}")
+      s = super().__pd__(" ".join(map(lambda x:str(x),[self.name,self.length,self.type,self.flag])))
       for x in getattr(self, 'data', []):
         s += x.__pd__()
       return s

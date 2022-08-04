@@ -41,9 +41,9 @@ class Area(Base):
     
   def __pd__(self, order=0):
     if order == 1:
-      return f"{self.a.x} {self.b.x} {self.a.y} {self.b.y}"
+      return str(self.a.x) + " " + str(self.b.x) + " " + str(self.a.y) + " " + str(self.b.y)
     else:
-      return f"{self.a.__pd__()} {self.b.__pd__()}"
+      return self.a.__pd__() + " " + self.b.__pd__()
 
   def __xml__(self, tag=None):
     """ Return an XML Element """

@@ -48,7 +48,7 @@ class Graph(Base):
     s += ' ' + self.area.__pd__(order=1)
     s = super().__pd__(s)
     for x in getattr(self, 'array', []):
-      s += f"#X array {x['name']} {x['length']} {x['type']}"
+      s += "#X array" + " " + str(x['name'])  + " " + str(x['length'])  + " " + str(x['type'])
       s += self.__end__
     s += '#X pop' + self.__end__
     return s

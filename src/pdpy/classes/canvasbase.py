@@ -48,30 +48,30 @@ class CanvasBase(XmlBuilder):
   
   def __edges__(self, s):
     for x in getattr(self, 'edges', []):
-      s += f"{x.__pd__(self.__obj_map__)}"
+      s += x.__pd__(self.__obj_map__)
     return s
 
   def __nodes__(self, s):
     for x in getattr(self, 'nodes', []):
       self.__update_obj_map__(x)
-      s += f"{x.__pd__()}"
+      s += x.__pd__()
     return s
 
   def __comments__(self, s):
     for x in getattr(self, 'comments', []):
-      s += f"{x.__pd__()}"
+      s += x.__pd__()
     return s
 
   def __coords__(self, s):
     if hasattr(self, 'coords'):
-      s += f"{self.coords.__pd__()}"
+      s += self.coords.__pd__()
     return s
 
   def __restore__(self, s):
     if hasattr(self, 'position'):
-      s += f"#X restore {self.position.__pd__()}"
+      s += "#X restore " + self.position.__pd__()
       if hasattr(self, 'title'):
-        s += f" {self.title}"
+        s += " " + self.title
       s += self.__end__
     return s
   

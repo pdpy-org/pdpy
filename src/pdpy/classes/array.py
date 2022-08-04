@@ -114,29 +114,29 @@ class Array(Obj):
     """ Return the pd code of the object. """
     s = ''
     if hasattr(self, 'subclass'):  
-      s += f"{self.subclass}"
+      s += str(self.subclass)
 
     if hasattr(self, 'keep'):
       s += " -k"
     
     if hasattr(self, 's'):
       # the struct reference 's'
-      s += f" -s {self.s['name']} {self.s['template']}"
+      s += " -s " + self.s['name'] + " " + self.s['template']
       if 'f' in self.s:
         # the struct field reference 'f'
-        s += f" -f {self.s['f']['name']} {self.s['f']['template']}"
+        s += " -f " + self.s['f']['name'] + " " + self.s['f']['template']
 
     if hasattr(self, 'name'):
-      s += f" {self.name}"
+      s += " " + self.name
     
     if hasattr(self, 'global'):
       s += " -g"
     
     if hasattr(self, 'wait'):
-      s += f" -w {self.wait}"
+      s += " -w " + " " + str(self.wait)
     
     if hasattr(self, 'length'):
-      s += f" {self.length}"
+      s += " + " + str(self.length)
 
     return super().__pd__(s)
 

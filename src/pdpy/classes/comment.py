@@ -46,13 +46,13 @@ class Comment(Object):
 
     if hasattr(self, 'text') and len(self.text):
       if len(self.text) == 1:
-        s += f" {self.text[0]}"
+        s += " " + str(self.text[0])
       else:
-        s += ' ' + ' '.join(list(map(lambda x:f"{x} \\;",list(self.text[:-1]))))
-        s += f" {self.text[-1]}"
+        s += ' ' + ' '.join(list(map(lambda x:str(x)+ " \\;",list(self.text[:-1]))))
+        s += " " + str(self.text[-1])
 
     if hasattr(self, "border"):
-      s += f", f {self.border}"
+      s += ", f " + str(self.border)
 
     return super().__pd__(s)
 

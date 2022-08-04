@@ -16,24 +16,24 @@ class Size(Base):
     super().__init__()
     if json is not None:
       super().__populate__(self, json)
-    elif xml is not None:
-      self.w = self.__num__(xml.findtext('w'))
-      self.h = self.__num__(xml.findtext('h'))
-    elif (json is None and xml is None) and (w is not None and h is not None):
+    if xml is not None:
+      self.width = self.__num__(xml.findtext('w'))
+      self.height = self.__num__(xml.findtext('h'))
+    if w is not None:
       self.width  = self.__num__(w) if w is not None else None
+    if h is not None:
       self.height = self.__num__(h) if h is not None else None
-    else:
-      self.width = self.__d__.dimen['width']
-      self.height = self.__d__.dimen['height']
+  
+    
 
   def __pd__(self):
     s = ''
     if hasattr(self, 'width'):
-      s += f"{self.width}"
+      s += str(self.width)
     if hasattr(self, 'width') and hasattr(self, 'height'):
       s += ' '
     if hasattr(self, 'height'):
-      s += f"{self.height}"
+      s += str(self.height)
     return s
   
   def __xml__(self, tag=None):

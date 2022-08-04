@@ -35,7 +35,7 @@ def main():
     # create an instance of the Translator class
     print("-"*80)
     direction = args.fro + ' -> ' + args.to
-    print(f"BEGIN: {start_time} - {direction}")
+    print("BEGIN:" + " " + str(start_time) + " - " + str(direction))
     print("Creating translator instance...")
     translator = Translator(arguments)
     
@@ -45,8 +45,8 @@ def main():
     else:
       # print some nice messages
       print("Done.")
-      print(f"From: {translator.input_file}")
-      print(f"To: {translator.output_file}")
+      print("From: " + str(translator.input_file))
+      print("To: " + str(translator.output_file))
       # call the translator class (defaults to args)
       translator()
 
@@ -63,6 +63,6 @@ def main():
     # store time after translation
     end_time = time.process_time()
     # print the last message with the elapsed time
-    print(f"END: {end_time} - ELAPSED: {end_time - start_time}")
+    print("END:" + " " + str(end_time) + " - ELAPSED:" + " " + str(end_time - start_time))
 
 if "__main__" in __name__: main()

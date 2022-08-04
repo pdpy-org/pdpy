@@ -52,15 +52,15 @@ class Radio(Obj):
   def __pd__(self):
     """ Return the pd string for this object """
     s = self.size.__pd__()
-    s += f" {1 if self.flag else 0}"
-    s += f" {1 if self.init is False else 0}"
-    s += f" {self.number}"
-    s += f" {self.comm.__pd__()}"
-    s += f" {self.label.__pd__()}"
-    s += f" {self.bgcolor}"
-    s += f" {self.fgcolor}"
-    s += f" {self.label.lbcolor}"
-    s += f" {self.value}"
+    s += " " + str(1 if self.flag else 0)
+    s += " " + str(1 if self.init is False else 0)
+    s += " " + str(self.number)
+    s += " " + str(self.comm.__pd__())
+    s += " " + str(self.label.__pd__())
+    s += " " + str(self.bgcolor)
+    s += " " + str(self.fgcolor)
+    s += " " + str(self.label.lbcolor)
+    s += " " + str(self.value)
     return super().__pd__(s)
 
   def __xml__(self):

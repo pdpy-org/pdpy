@@ -29,7 +29,7 @@ class Bng(Obj):
   4. 11-16: `IEMLabel` Parameters
   """
 
-  def __init__(self, pd_lines=None, json=None):
+  def __init__(self, pd_lines=None, json=None, **kwargs):
     self.__pdpy__ = self.__class__.__name__
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
@@ -45,18 +45,38 @@ class Bng(Obj):
       self.fgcolor = self.__num__(pd_lines[12])
     elif json is not None:
       super().__init__(json=json)
-  
+    else:
+      super().__init__(className='bng')
+      if 'size' in kwargs:
+        self.size = Size(w=kwargs.pop('size'))
+      else:
+        self.size = Size(w=self.__d__.iemgui['bng']['size'])
+      self.hold = self.__d__.iemgui['bng']['hold']
+      self.intrrpt= self.__d__.iemgui['bng']['intrrpt']
+      self.init = self.__d__.iemgui['bng']['init']
+      self.comm = Comm(
+        send=self.__d__.iemgui['symbol'], 
+        receive=self.__d__.iemgui['symbol'])
+      self.label = IEMLabel(
+        xoff=self.__d__.iemgui['bng']['xoff'],
+        yoff=self.__d__.iemgui['bng']['yoff'],
+        fface=self.__d__.iemgui['fontface'],
+        fsize=self.__d__.iemgui['bng']['fsize'],
+        lbcolor=self.__d__.iemgui['bng']['lbcolor'], **kwargs)
+      self.bgcolor = self.__d__.iemgui['bng']['bgcolor']
+      self.fgcolor = self.__d__.iemgui['fgcolor']
+
   def __pd__(self):
     """ Return the pd string for this object """
     s = self.size.__pd__()
-    s += f" {self.hold}"
-    s += f" {self.intrrpt}"
-    s += f" {1 if self.init is False else 0}"
-    s += f" {self.comm.__pd__()}"
-    s += f" {self.label.__pd__()}"
-    s += f" {self.bgcolor}"
-    s += f" {self.fgcolor}"
-    s += f" {self.label.lbcolor}"
+    s += " " + str(self.hold)
+    s += " " + str(self.intrrpt)
+    s += " " + str(1 if self.init is False else 0)
+    s += " " + str(self.comm.__pd__())
+    s += " " + str(self.label.__pd__())
+    s += " " + str(self.bgcolor)
+    s += " " + str(self.fgcolor)
+    s += " " + str(self.label.lbcolor)
     return super().__pd__(s)
 
   def __xml__(self):

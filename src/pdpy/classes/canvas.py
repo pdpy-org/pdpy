@@ -73,8 +73,8 @@ class Canvas(CanvasBase, Base):
       self.__pad__ = Size(w=self.font, h=self.font)
       self.__cursor_init__ = Point(x=self.font, y=self.font)
       self.__cursor__ = Point(x=self.font, y=self.font)
-      self.__box__ = Size(w=self.font * 1.25, h=self.font * 2)
-      self.__margin__ = Size()
+      self.__box__ = Size(w=int(self.font * 1.25), h=int(self.font * 2))
+      self.__margin__ = Size(w=self.font, h=self.font)
 
   def grow(self):
     """ Increments the canvas object index by 1
@@ -133,51 +133,45 @@ class Canvas(CanvasBase, Base):
       self.comments = []
     self.comments.append(comment)
 
-  def get_position(self):
+  def update_cursor(self, width=0, height=0):
     """ Fill objects from top to bottom until we reach bottom
+    (used to be get_position)
     """
     
-    # log(1,"Get Position", f"PAD X:{self.__pad__.width}, pad Y:{self.__pad__.height}")
-    max_x = self.dimension.width - self.__pad__.width
-    max_y = self.dimension.height - self.__pad__.height
-    # log(1,"Get Position", f"MAX X:{max_x}, MAX Y:{max_y}")
-    if self.__cursor__.y >= max_y:
-      # log(1,"Get Position", "Reset Y")
-      # reset y and increment x position
-      self.__cursor__.y = self.__margin__.height + self.__box__.height
-      self.__cursor__.x += self.__margin__.width
-    
-    if self.__cursor__.x >= max_x:
-      # log(1,"Get Position", "Reset X")
-      # reset x and increment y position
-      self.__cursor__.x = self.__cursor_init__.x
-      self.__cursor__.y *= 2
-    
-    # however, if cursor is out of bounds, grow downwards...
+    mod_x = self.__cursor__.x // self.dimension.width
+    mod_y = self.__cursor__.y // self.dimension.height
+
+    # def _print():
+    #   print(self.__cursor__.x, self.__cursor__.y, mod_x, mod_y)
+
+    if mod_x > 1 and mod_y > 1:
+      print("out of bounds --------------------")
+    # if cursor is out of bounds, grow downwards...
       # reset x, 
       # resize the canvas to be twice as tall as before
       # and make y be the bottom most position
-    if self.__cursor__.y >= max_y and self.__cursor__.x >= max_x:
-      # log(1,"Get Position", "Out of Bounds")
-      self.__cursor__.x = self.__cursor_init__
-      self.dimension.height *= 2
-      self.__cursor__.y += self.dimension.height 
-      self.__cursor__.y += self.__pad__.height 
-      self.__cursor__.y += self.__box__.height
-    
-    # log(0,"Get Position", self.__cursor__.__json__())
+      self.__cursor__.x = self.__cursor_init__.x
+      self.__cursor__.y += self.dimension.height
+      self.__cursor__.y += self.__pad__.height
+      return
 
-    return self.__cursor__.x, self.__cursor__.y
+    if mod_x < 1 and mod_y > 1:
+      print("surpassed y", mod_y)
+      # reset y and increment x position
+      self.dimension.set_height(self.dimension.height * 2)
+      self.__cursor__.y = self.__cursor_init__.y + height
+      self.__cursor__.x += width
+      return
 
-  def grow_margins(self, word_length=0):
+    if mod_x > 1 and mod_y < 1:
+      print("surpassed x")
+      # reset x and increment y position
+      self.dimension.set_width(self.dimension.width * 2)
+      self.__cursor__.y += self.dimension.height * (1+mod_y)
+      self.__cursor__.x = self.__cursor_init__.x
+      return 
 
-    len_word = self.__cursor__.x + word_length * self.font
-
-    if len_word >= self.__margin__.width:
-      self.__margin__.width = len_word
-
-    self.__cursor__.y += self.__box__.height
-
+    self.__cursor__.y += height
 
   def get_char_dim(self):
     return int(self.dimension.width / self.font * 1.55)
@@ -185,21 +179,29 @@ class Canvas(CanvasBase, Base):
   def addpos(self, x, y):
     setattr(self, 'position', Point(x=x, y=y))
 
+  def get(self, id):
+    if hasattr(self, 'nodes'):
+      for node in self.nodes:
+        if node.id == id:
+          return node
+    else:
+      return None
+
   def __pd__(self):
     """ Pure Data representation of the canvas """
 
     # the canvas line
     s = super().__pd__()
-    s += f" {self.screen.__pd__()} {self.dimension.__pd__()}"
+    s += " " + self.screen.__pd__() + " " + self.dimension.__pd__()
     
     isroot = getattr(self, 'isroot', False)
 
     if isroot:
       # root canvas only reports font
-      s += f" {self.font}"
+      s += " " + str(self.font)
     else:
       # non-root canvases, report their name and their vis status
-      s += f" {self.name} {1 if self.vis else 0}"
+      s += " " + self.name + " " + str(1 if self.vis else 0)
     
     # end the line so we can continue appending to `s`
     s += self.__end__
@@ -208,7 +210,7 @@ class Canvas(CanvasBase, Base):
     
     # the border, only if not root
     if hasattr(self, 'border') and (not isroot):
-      s += f"#X f {self.border}"
+      s += "#X f " + str(self.border)
       s += self.__end__
 
     return s

@@ -64,24 +64,24 @@ def printer(func):
 #     return result
 #   return wrapper
 
-# @log_decorator
-def log(l, *argv):
+def log(level, *argv):
   """ log utility with level and variable arguments
 
   Description
   -----------
   This function printst to console with error `level` 
   """
-  if 0==l:
-    print("NORMAL:",*argv)
-  elif 1==l:
-    print("WARNING:",*argv)
-  elif 2==l:
-    print("ERROR:",*list(map(lambda x:x.__repr__(),argv)))
-  elif l<0:
+  
+  if 0 == level:
+    print("NORMAL", " ".join(argv))
+  elif 1 == level:
+    print("WARNING", " ".join(argv))
+  elif 2 == level:
+    print("ERROR", " ".join(list(map(lambda x:x.__repr__(), argv))))
+  elif level < 0:
     pass
   else:
-    print(*argv)
+    print(" ".join(argv))
 
 def findIndices(data, cond_func):
   """ Find the start and stop slice indices 

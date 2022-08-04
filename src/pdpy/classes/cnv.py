@@ -43,7 +43,7 @@ class Cnv(Obj):
       else:
         self.comm = Comm(send=False,receive=pd_lines[3])
         off = 1
-      self.label = IEMLabel(*pd_lines[5-off:10-off], pd_lines[11-off])
+      self.label = IEMLabel(*pd_lines[5-off:10-off], lbcolor=pd_lines[11-off])
       self.bgcolor = self.__num__(pd_lines[10-off])
       self.flag    = self.__num__(pd_lines[12-off])
     elif json is not None:
@@ -52,12 +52,12 @@ class Cnv(Obj):
   def __pd__(self):
     """ Return the pd string for this object """
     s = self.size.__pd__()
-    s += f" {self.area.__pd__()}"
-    s += f" {self.comm.__pd__()}"
-    s += f" {self.label.__pd__()}"
-    s += f" {self.bgcolor}"
-    s += f" {self.label.lbcolor}"
-    s += f" {1 if self.flag else 0}"
+    s += " " + self.area.__pd__()
+    s += " " + self.comm.__pd__()
+    s += " " + self.label.__pd__()
+    s += " " + str(self.bgcolor)
+    s += " " + str(self.label.lbcolor)
+    s += " " + str(1 if self.flag else 0)
     return super().__pd__(s)
 
   def __xml__(self):

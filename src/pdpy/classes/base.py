@@ -10,7 +10,7 @@ from json import dumps as json_dumps
 from ..util.utils import log
 from .xmltagconvert import XmlTagConvert
 from .xmlbuilder import XmlBuilder
-from .exceptions import ArgumentException
+from .exceptions import ArgumentException, MalformedName
 from .default import Default, Namespace
 
 __all__ = ['Base']
@@ -69,10 +69,10 @@ class Base(XmlBuilder, XmlTagConvert):
       setattr(scope, '__p__', parent)
       # print(f"adding parent {parent.__class__.__name__} to child {self.__class__.__name__}")
       return self
-    elif self.__p__ is not None:
+    elif hasattr(self, '__p__'):
       return self.__p__
     else:
-      raise ValueError("No parent set")
+      raise ValueError("No parent set in " + self.__class__.__name__)
 
   def __addparents__(self, parent, children=('nodes','edges','comments')):
     """ Sets the parents of all children """
@@ -173,13 +173,52 @@ class Base(XmlBuilder, XmlTagConvert):
     except:
       return False
 
+  def __get_obj_size__(self):
+    
+    font_size = self.__parent__().font
+
+    if hasattr(self, 'size'):
+      if hasattr(self.size, 'height'):
+        return self.size.width, self.size.height
+      else:
+        return self.size.width, self.size.width
+    
+    text_h = font_size * 2
+    text_w = 0
+    
+    if hasattr(self, 'className'):
+      text_w += len(self.className)
+      text_w += 1
+    
+    if hasattr(self, 'args'):
+      text_w += len(' '.join(map(lambda x:str(x),self.args)))
+      text_w += 1
+
+    if hasattr(self, 'targets'):
+      for target in self.targets:
+        if hasattr(target, 'messages'):
+          text_w += len(' '.join(target.messages))
+          text_w += 1
+        text_w += 1
+    
+    if hasattr(self, 'text'):
+      text_w += len(' '.join(self.text))
+      text_w += 1
+
+    mod_80 = (text_w-1) // 80
+
+    if mod_80 >= 1: text_h *= mod_80
+
+    return (text_w-1)*font_size, text_h
+
+
   def __populate__(self, child, json):
     """ Populates the derived/child class instance with a dictionary """
     # TODO: protect against overblowing child scope
     if not hasattr(json, 'items'):
       log(1, child.__class__.__name__, "json is not a dict")
       if not hasattr(json, '__dict__'):
-        raise ArgumentException(f"{child.__class__.__name__}: json is not a class. It is of type: {type(json)}:\n{json}")
+        raise ArgumentException(child.__class__.__name__ + ": json is not a class. It is of type: " + type(json) +"\n"+ json)
       json = json.__dict__
     
     # map(lambda k,v: setattr(child, k, v), json.items())
@@ -222,14 +261,14 @@ class Base(XmlBuilder, XmlTagConvert):
 
     """
     
-    s = f"#{self.__type__} {self.__cls__}"
+    s = str("#") + str(self.__type__) + " " + str(self.__cls__)
     # log(1, "Base.__pd__()", repr(s))
 
     if args is not None:
       if isinstance(args, list):
         s += ' ' + ' '.join(args)
       else:
-        s += f' {args}'
+        s += str(" ") + str(args)
         s += self.__end__
     
     s = s.replace('  ', ' ')
@@ -301,3 +340,10 @@ class Base(XmlBuilder, XmlTagConvert):
 
     # spawn the __parent__ json tree
     self.__jsontree__() # belongs to PdPy class
+
+  def __sane_name__(self, name):
+    for c in name:
+      if c in (";", "$", "&", "|", ",", "`", "%", "*"):
+        raise MalformedName("Special chars in name were detected.")
+    return name
+

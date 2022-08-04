@@ -30,6 +30,6 @@ class PdPyEncoder(JSONEncoder):
         # self.__objects__.append(__class_name__)
         return __instance__
       except Exception as e:
-        raise Exception(f"Error {e}. This happened while creating {__name__} with PdPyEncoder. Input object: {__obj__}")
+        raise Exception("Error+" +e+". This happened while creating " +__name__+" with PdPyEncoder. Input object: " +__obj__)
     else:
       return __obj__

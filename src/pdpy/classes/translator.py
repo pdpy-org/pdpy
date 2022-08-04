@@ -68,10 +68,10 @@ class Translator(Base):
         log(2, self.source, self.target, self.input_file)
         raise ArgumentException("Input file suffix does not match with -f argument")
       if not self.input_file.exists():
-        raise ArgumentException(f"File {self.input_file} does not exist.")
+        raise ArgumentException("File" + " " + self.input_file + " " + "does not exist.")
       if self.output is None:
         self.output_file = self.input_file.with_suffix("." + self.target)
-        log(1, f"Using {self.output_file.as_posix()} as output file")
+        log(1, "Using" + " " + self.output_file.as_posix() + " " + "as output file")
       else:
         self.output_file = Path(self.output)
         if self.output_file.suffix != "." + self.target:
@@ -98,7 +98,7 @@ class Translator(Base):
             print("Could not load pddb.json. See error below.")
             print(e)
       else:
-        raise ArgumentException(f"PDDB: {pddb_path.as_posix()} is missing.")
+        raise ArgumentException("PDDB:" + " " + pddb_path.as_posix() + " " + "is missing.")
 
     # Load the source file
     

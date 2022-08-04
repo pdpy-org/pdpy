@@ -65,10 +65,10 @@ class Object(Base):
     s = self.position.__pd__()
     # check if called with argumnts (array, text, etc) and append them
     if args:
-      s += f" {args}"
+      s += " " + str(args)
     # check if we have extra arguments stored in the object and append them
     for x in getattr(self, 'args', []):
-      s += f" {self.__escape__(x)}"
+      s += " " + str(self.__escape__(x))
     # wrap and close the pd line
     s = super().__pd__(s)
     
