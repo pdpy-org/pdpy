@@ -43,7 +43,7 @@ class Base(XmlBuilder, XmlTagConvert):
                 xml=None,
                 default=None):
     """ Initialize the object """
-    self.patchname = patchname # the name of the patch
+    self.patchname = self.__sane_name__(patchname) # the name of the patch
     self.__type__ = pdtype if pdtype is not None else 'X' # pd's type
     self.__cls__ = cls if cls is not None else 'obj' # pd's class
     self.__d__ = Default() if default is None else default # object defaults
@@ -342,8 +342,9 @@ class Base(XmlBuilder, XmlTagConvert):
     self.__jsontree__() # belongs to PdPy class
 
   def __sane_name__(self, name):
-    for c in name:
-      if c in (";", "$", "&", "|", ",", "`", "%", "*"):
-        raise MalformedName("Special chars in name were detected.")
+    if name is not None:
+      for c in name:
+        if c in (";", "$", "&", "|", ",", "`", "%", "*"):
+          raise MalformedName("Special chars in name were detected.")
     return name
 

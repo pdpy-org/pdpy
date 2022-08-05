@@ -317,7 +317,7 @@ class PdPyParser(PdPy):
 
   def pdpyRoot(self, name=None):
     log(0,"createRoot",name)
-    name = self.patchname if name is None else name
+    name = self.patchname if name is None else self.__sane_name__(name)
     self.root = Canvas()
     self.root.name = name
     len_name = self.root.get_char_dim()
