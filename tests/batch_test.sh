@@ -19,13 +19,13 @@ then
 fi
 
 # The python script that performs the translation
-file=$(pwd)/../translate.py
+file=$(pwd)/../scripts/translate.py
 
 # The python3 executable
 py=/usr/local/bin/python3
 
 # The output directory
-outdir=$(pwd)/json_files
+outdir=$(pwd)/output
 
 # The error log file
 err=$(pwd)/error.log
