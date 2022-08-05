@@ -1,26 +1,11 @@
-**/.DS_Store
-**/extra
-**/build
-
-# from the src dir
-error.log
-unused/
-json_files/
-__pycache__/
-src/tests/xml_files/
-src/tests/patch_paths/
-src/tests/pd_files/
-src/tests/pdpy_tests/*.pd
-src/tests/pdpy_tests/*.json
-src/tests/all_objects.json
-**/*.test.*.py
-
-# from vscode-pdpy
-node_modules/
-
-structure.txt
+.DS_Store
 private/
-src/tests/hello-world.json
-src/tests/definitions.txt
-src/tests/definitions.py
+json_files/
+
+.tox/
+__pycache__/
+**/build
+**/*.egg-info/
+test/
+**/*.test.*.py
 *.pyc

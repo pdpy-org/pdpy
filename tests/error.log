@@ -1,0 +1,128 @@
+Logfile created by single_test.sh on Wed Jan 19 21:40:20 -03 2022
+--------------------------------------------------------------------------------
+BEGIN: 0.082417 - pdpy -> pd
+Creating translator instance...
+WARNING: ------------------------------
+WARNING: '/*\n'
+WARNING: ------------------------------
+NORMAL: is_ignored ('/*\n',)
+WARNING: ------------------------------
+WARNING: " * This file is part of the 'pdpy' Pure Data / Python help files\n"
+WARNING: ------------------------------
+NORMAL: is_ignored (" * This file is part of the 'pdpy' Pure Data / Python help files\n",)
+WARNING: ------------------------------
+WARNING: ' *\n'
+WARNING: ------------------------------
+NORMAL: is_ignored (' *\n',)
+WARNING: ------------------------------
+WARNING: '*/\n'
+WARNING: ------------------------------
+NORMAL: is_ignored ('*/\n',)
+WARNING: ------------------------------
+WARNING: '\n'
+WARNING: ------------------------------
+NORMAL: is_ignored ('\n',)
+WARNING: ------------------------------
+WARNING: '(# Hello World \n'
+WARNING: ------------------------------
+NORMAL: is_root ('(# Hello World \n',)
+WARNING: Canvas Name:  Hello World 
+WARNING: ------------------------------
+WARNING: '  \n'
+WARNING: ------------------------------
+NORMAL: is_root ('  \n',)
+NORMAL: is_subpatch ('  \n',)
+WARNING: parsePdPyLine: Unparsed Lines: '  \n'
+WARNING: ------------------------------
+WARNING: "  # this example prints 'hello world' to console\n"
+WARNING: ------------------------------
+NORMAL: is_root ("  # this example prints 'hello world' to console\n",)
+NORMAL: is_subpatch ("  # this example prints 'hello world' to console\n",)
+NORMAL: is_pdtext ("  # this example prints 'hello world' to console\n",)
+WARNING: objCreator this example prints 'hello world' to console
+WARNING: ------------------------------
+WARNING: "  -> 'hello world' > print\n"
+WARNING: ------------------------------
+NORMAL: is_root ("  -> 'hello world' > print\n",)
+NORMAL: is_subpatch ("  -> 'hello world' > print\n",)
+NORMAL: is_pdobj ("  -> 'hello world' > print\n",)
+WARNING: pdpyCreate "-> 'hello world' > print"
+WARNING: Tokens are ['loadbang', '>', "'hello", "world'", '>', 'print']
+WARNING: Connect All set to False
+WARNING: object map: [1, 0, 0, 0, 0, 1]
+WARNING: iolet  map: [False, 0, 0, 0, 0, namespace(inlets=1)]
+WARNING: is multi obj True ['loadbang', '>', "'hello", "world'", '>', 'print']
+WARNING: loadbang has 0 creation arguments.
+WARNING: parse_arguments 0 loadbang
+WARNING: prev_obj_arg_num 0
+WARNING: is this an obj 1
+WARNING: CREATING AN OBJECT loadbang
+WARNING: objCreator loadbang
+WARNING: IOLETS [False, 0, 0, 0, 0, namespace(inlets=1)] loadbang
+WARNING: > has 0 creation arguments.
+WARNING: parse_arguments 1 >
+WARNING: prev_obj_arg_num 0
+WARNING: is this an obj 0
+WARNING: Is not an object >
+WARNING: forward '>'
+WARNING: objectConnector 0 1
+NORMAL: Edge ------------------------------------------------------------------------------- 
+ {
+ "__pdpy__": "Edge",
+ "source": {
+  "__pdpy__": "Source",
+  "id": 0,
+  "port": 0
+ },
+ "sink": {
+  "__pdpy__": "Source",
+  "id": 1,
+  "port": 0
+ }
+}
+WARNING: 'hello has 0 creation arguments.
+WARNING: parse_arguments 2 'hello
+WARNING: prev_obj_arg_num 0
+WARNING: is this an obj 0
+WARNING: Is not an object 'hello
+WARNING: world' has 0 creation arguments.
+WARNING: parse_arguments 3 world'
+WARNING: prev_obj_arg_num 0
+WARNING: is this an obj 0
+WARNING: Is not an object world'
+WARNING: > has 0 creation arguments.
+WARNING: parse_arguments 4 >
+WARNING: prev_obj_arg_num 0
+WARNING: is this an obj 0
+WARNING: Is not an object >
+WARNING: forward '>'
+WARNING: objectConnector 0 1
+NORMAL: Edge ------------------------------------------------------------------------------- 
+ {
+ "__pdpy__": "Edge",
+ "source": {
+  "__pdpy__": "Source",
+  "id": 0,
+  "port": 0
+ },
+ "sink": {
+  "__pdpy__": "Source",
+  "id": 1,
+  "port": 0
+ }
+}
+WARNING: print has 1 creation arguments.
+WARNING: parse_arguments 5 print
+WARNING: prev_obj_arg_num 1
+WARNING: is this an obj 1
+WARNING: CREATING AN OBJECT print
+WARNING: objCreator print
+WARNING: ------------------------------
+WARNING: ')'
+WARNING: ------------------------------
+NORMAL: is_root (')',)
+NORMAL: is_root_end (')',)
+Done.
+From: pdpy_tests/0.hello_world.pdpy
+To: pdpy_tests/0.hello_world.pd
+END: 0.098392 - ELAPSED: 0.01597499999999999
