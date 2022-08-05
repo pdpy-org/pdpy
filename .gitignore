@@ -1,11 +1,13 @@
+# mac stuff
 .DS_Store
-private/
-json_files/
 
+# do not want to share this
+private/
+
+# python tests and package stuff
+tests/
+build/
 .tox/
 __pycache__/
-**/build
-**/*.egg-info/
-test/
-**/*.test.*.py
+*.egg-info/
 *.pyc
