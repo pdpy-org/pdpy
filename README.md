@@ -6,7 +6,7 @@ Translate Pure Data files from the `.pd` format to other formats such as [JSON](
 
 ## Example
 
-Translate a Pure Data patch into a JSON-formatted file. See [translate.py](src/translate.py).
+Translate a Pure Data patch into a JSON-formatted file. See [translate.py](scripts/translate.py).
 
 The code to run is:
 
@@ -16,7 +16,7 @@ python3 translate.py -t json -f pd -i tests/hello-world.pd -o tests/hello-world.
 
 The original file looks like this:
 
-```c
+```pd
 #N canvas 47 51 450 300 12;
 #X obj 37 37 loadbang;
 #X msg 37 61 hello world;
@@ -24,8 +24,6 @@ The original file looks like this:
 #X connect 0 0 1 0;
 #X connect 1 0 2 0;
 ```
-
-![src/tests/hello-world.png](src/tests/hello-world.png)
 
 The result is something like this in JSON:
 
@@ -200,6 +198,8 @@ python3 translate.py -t json -f pd -i tests/hello-world.pd -o tests/hello-world.
 ```
 
 ## References
+
+This project is inspired and expands on many similar projects:
 
 Pure Data to XML:
 <https://lists.puredata.info/pipermail/pd-dev/2004-12/003316.html>

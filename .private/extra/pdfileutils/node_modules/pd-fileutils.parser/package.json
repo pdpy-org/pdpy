@@ -1,0 +1,27 @@
+{
+  "name": "pd-fileutils.parser",
+  "version": "0.3.4",
+  "global": true,
+  "description": "Pd file parser (see pd-fileutils)",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "underscore": "1.4.x"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sebpiq/pd-fileutils.parser.git"
+  },
+  "keywords": [
+    "pd",
+    "puredata"
+  ],
+  "author": {
+    "name": "Sébastien Piquemal",
+    "email": "sebpiq@gmail.com",
+    "url": "http://funktion.fm/"
+  },
+  "license": "BSD-2-Clause"
+}

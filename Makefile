@@ -1,21 +1,18 @@
 
 build:
-	python3 -m build
+	python -m build
 
 activate:
 	source ~/.pdpy/bin/activate
 
 deploy:
-	python3 -m twine upload --repository testpypi dist/*
+	python -m twine upload --repository testpypi dist/*
 
 local:
-	python3 -m pip install ./dist/$(shell ./scripts/get_version.sh ./pyproject.toml -).tar.gz
+	python -m pip install ./dist/*.tar.gz
 
 install:
-	python3 -m pip install -i https://test.pypi.org/simple/ $(shell ./scripts/get_version.sh ./pyproject.toml ==)
-
-play:
-	make activate && python3
+	python -m pip install -i https://test.pypi.org/simple/ $(shell ./scripts/get_version.sh ./pyproject.toml ==)
 
 clean:
 	rm -rf ./build
@@ -25,11 +22,24 @@ test:
 	tox
 
 version:
-	python3 ./scripts/version.py 
+	python ./scripts/version.py 
 
 all:
+	make clean
 	make version
 	make build
 	make deploy
+	echo "waiting 10 seconds for pypi to update"
+	sleep 10
 	make install
-	@echo Done with all
+	echo "Done with all"
+
+doc:
+	cd docs && make html && open build/html/index.html
+
+all-local:
+	make clean
+	make build
+	make local
+	make doc
+	echo "Done with all"
