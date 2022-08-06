@@ -43,19 +43,24 @@ class Object(Base):
   def __unescape__(self, argv):
     """ Unescapes the arguments """
     args = []
-    for x in argv:
+    for a in argv:
       # unescape the arguments
-      x = str(x).replace('\\','')
+      if isinstance(a, list):
+        a = ' '.join(map(lambda x:str(x).replace('\\','',1), a))
+      else:
+        a = str(a).replace('\\','',1)
+
       # and convert them to numbers
-      if self.__isnum__(x):
-        x = self.__num__(x)
-      args.append(x)
+      if self.__isnum__(a):
+        a = self.__num__(a)
+      args.append(a)
     return args
 
   def __escape__(self, arg):
     """ Escapes the arguments """
-    arg = str(arg).replace('\\', '\\\\')
-    arg = arg.replace('$', '\\$')
+    arg = str(arg).replace('\\', '\\\\',1)
+    arg = str(arg).replace(' ', '\\ ',1)
+    arg = arg.replace('$', '\\$',1)
     return arg
 
   def __pd__(self, args=None):
@@ -64,7 +69,7 @@ class Object(Base):
     # add the position
     s = self.position.__pd__()
     # check if called with argumnts (array, text, etc) and append them
-    if args:
+    if args is not None:
       s += " " + str(args)
     # check if we have extra arguments stored in the object and append them
     for x in getattr(self, 'args', []):
@@ -81,7 +86,7 @@ class Object(Base):
 
   def __xml__(self, classname=None, args=None, **kwargs):
     """ Returns an XML Element for this object """
-    # print("obj",classname, args, kwargs)
+    print("obj",classname, args, kwargs)
     x = super().__xml__(**kwargs)
 
     super().__update_element__(x, self, ('id', 'position'))

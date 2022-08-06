@@ -12,7 +12,7 @@
 DEV=/Users/fd/Development
 
 # All the patches root folders go here (stemming from $DEV)
-FILES=(pdpy/src/tests/pd_files  pure-data/doc Pd/externals Pd/patches spat-tools timbreID fd_lib thornblower phossillators pdmixer pd-tutorial pd-fileutils FilterUtility Camomile Berelay Apollo1 hidio quack-and-netty-0.92 pix_fft pdobs)
+FILES=(pdpy/tests/pd_files  pure-data/doc Pd/externals Pd/patches spat-tools timbreID fd_lib thornblower phossillators pdmixer pd-tutorial pd-fileutils FilterUtility Camomile Berelay Apollo1 hidio quack-and-netty-0.92 pix_fft pdobs)
 
 # The output path
 OUT=$DEV/pdpy/tests/patch_paths

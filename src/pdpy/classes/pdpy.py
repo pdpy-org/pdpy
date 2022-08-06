@@ -502,7 +502,8 @@ class PdPy(CanvasBase, Base):
     
     # root tag to which struct, 'root', and dependencies will be added
     x = super().__element__(scope=self, attrib={
-      "encoding": self.encoding
+      "encoding": self.encoding, 
+      "xml:space": "preserve"
       })
     
     if hasattr(self, 'structs'):

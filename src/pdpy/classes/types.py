@@ -6,7 +6,6 @@
 # **************************************************************************** #
 """ Pd Types Class Definitions """
 
-from pdpy.util.utils import log
 from .base import Base
 from collections import defaultdict
 from itertools import zip_longest
@@ -32,7 +31,7 @@ class Float(Base):
       self.name = name
   
   def __pd__(self):
-    return getattr(self, 'value', '')
+    return str(getattr(self, 'value', ''))
 
   def __xml__(self):
     x = super().__element__(scope=self)

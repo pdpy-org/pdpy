@@ -8,8 +8,11 @@ activate:
 deploy:
 	python3 -m twine upload --repository testpypi dist/*
 
+local:
+	python3 -m pip install ./dist/$(shell ./scripts/get_version.sh ./pyproject.toml -).tar.gz
+
 install:
-	make activate && python3 -m pip install --index-url https://test.pypi.org/simple/ --no-deps pdpy-0.0.2
+	python3 -m pip install -i https://test.pypi.org/simple/ $(shell ./scripts/get_version.sh ./pyproject.toml ==)
 
 play:
 	make activate && python3

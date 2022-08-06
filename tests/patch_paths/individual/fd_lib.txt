@@ -94,6 +94,7 @@
 /Users/fd/Development/fd_lib/abstractions/fd_gain~.pd
 /Users/fd/Development/fd_lib/abstractions/fd_send.pd
 /Users/fd/Development/fd_lib/abstractions/fd_any2list.pd
+/Users/fd/Development/fd_lib/abstractions/comp2~.pd
 /Users/fd/Development/fd_lib/abstractions/!msg.pd
 /Users/fd/Development/fd_lib/abstractions/fd_dataMorphArray.pd
 /Users/fd/Development/fd_lib/abstractions/fd_title.pd
@@ -108,6 +109,7 @@
 /Users/fd/Development/fd_lib/abstractions/fd_bangem.pd
 /Users/fd/Development/fd_lib/abstractions/fd_map2.pd
 /Users/fd/Development/fd_lib/abstractions/fd_swap.pd
+/Users/fd/Development/fd_lib/abstractions/fd_coprimos.pd
 /Users/fd/Development/fd_lib/abstractions/fd_tracktopol.pd
 /Users/fd/Development/fd_lib/abstractions/fd_dataRead3.pd
 /Users/fd/Development/fd_lib/abstractions/fd_updown.pd
@@ -365,6 +367,7 @@
 /Users/fd/Development/fd_lib/help/fd_guiFont-help.pd
 /Users/fd/Development/fd_lib/help/fd_z12-help.pd
 /Users/fd/Development/fd_lib/help/fd_camara-help.pd
+/Users/fd/Development/fd_lib/help/comp2~-help.pd
 /Users/fd/Development/fd_lib/help/fd_dspon-help.pd
 /Users/fd/Development/fd_lib/help/fd_sinh-help.pd
 /Users/fd/Development/fd_lib/help/irlog-help.pd
