@@ -294,12 +294,15 @@ class XmlBuilder(XmlTagConvert):
 
       # end subelement loop -----------------------------------------------
 
-      text = elem.text
+      text = elem.text if elem.text is not None else ''
       # tail = elem.tail
-      
-      # ignore leading and trailing whitespace
-      if text:
+      # print('text:',repr(text))
+      if '\n' in text:
+      # ignore trailing whitespace
         text = text.strip()
+
+      # if text != ' ' and not all([t==' ' for t in text]):
+        # text = text.strip()
       # if tail:
         # tail = tail.strip()
 

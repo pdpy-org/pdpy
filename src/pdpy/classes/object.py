@@ -40,29 +40,6 @@ class Object(Base):
   def addpos(self, x, y):
     setattr(self, 'position', Point(x=x, y=y))
 
-  def __unescape__(self, argv):
-    """ Unescapes the arguments """
-    args = []
-    for a in argv:
-      # unescape the arguments
-      if isinstance(a, list):
-        a = ' '.join(map(lambda x:str(x).replace('\\','',1), a))
-      else:
-        a = str(a).replace('\\','',1)
-
-      # and convert them to numbers
-      if self.__isnum__(a):
-        a = self.__num__(a)
-      args.append(a)
-    return args
-
-  def __escape__(self, arg):
-    """ Escapes the arguments """
-    arg = str(arg).replace('\\', '\\\\',1)
-    arg = str(arg).replace(' ', '\\ ',1)
-    arg = arg.replace('$', '\\$',1)
-    return arg
-
   def __pd__(self, args=None):
     """ Parses the pd object into a string """
 
@@ -72,10 +49,24 @@ class Object(Base):
     if args is not None:
       s += " " + str(args)
     # check if we have extra arguments stored in the object and append them
-    for x in getattr(self, 'args', []):
-      s += " " + str(self.__escape__(x))
+    for arg in getattr(self, 'args', []):
+      # print('arg:',repr(arg))
+      
+      if arg is None: 
+        continue
+      
+      if type(arg) in (float, int):
+        argument = str(arg)
+      elif arg == ' ' or all([a==' ' for a in arg]):
+        argument = self.__escape__(arg)
+      else:
+        arg = arg.split(' ')
+        argument = ' '.join(map(lambda x: ' ' + self.__escape__(x),arg))
+      # print('argument:',repr(arg))
+      s += " " + argument
     # wrap and close the pd line
     s = super().__pd__(s)
+    # print("pd_line:", s)
     
     # check if we have data and append it (this calls the Data.__pd__ method)
     for x in getattr(self, 'data', []):
@@ -86,7 +77,7 @@ class Object(Base):
 
   def __xml__(self, classname=None, args=None, **kwargs):
     """ Returns an XML Element for this object """
-    print("obj",classname, args, kwargs)
+    # print("obj",classname, args, kwargs)
     x = super().__xml__(**kwargs)
 
     super().__update_element__(x, self, ('id', 'position'))

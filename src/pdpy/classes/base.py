@@ -235,6 +235,30 @@ class Base(XmlBuilder, XmlTagConvert):
     if hasattr(child, 'className') and self.__cls__ is None:
       self.__cls__ = child.className 
 
+  def __unescape__(self, argv):
+    """ Unescapes the arguments """
+    args = []
+    for a in argv:
+      # unescape the arguments
+      if isinstance(a, list):
+        a = ' '.join(map(lambda x:str(x).replace('\\','',1), a))
+      else:
+        a = str(a).replace('\\','',1)
+
+      # and convert them to numbers
+      if self.__isnum__(a):
+        a = self.__num__(a)
+      args.append(a)
+    return args
+
+  def __escape__(self, arg):
+    """ Escapes the arguments """
+    # print("escape:", repr(arg))
+    arg = str(arg).replace('\\', '\\\\',1)
+    arg = arg.replace(' ', '\\ ',1)
+    arg = arg.replace('$', '\\$',1)
+    return arg
+
   def __pd__(self, args=None):
     """ Returns a the pd line for this object
     

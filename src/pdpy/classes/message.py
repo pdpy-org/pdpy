@@ -63,6 +63,7 @@ class Message(Base):
     msg = " ".join(msg) if isinstance(msg, list) else msg
     # log(0, f'{self.address} -> adding messages: {msg}')
     self.messages.append(msg)
+    # self.messages.append(' '.join(map(lambda x:str(x),self.__unescape__([msg]))))
 
   def __pd__(self):
     """ 
@@ -72,7 +73,8 @@ class Message(Base):
     """
     s = f' \; {self.address} ' if self.address != 'outlet' else ''
     if hasattr(self, 'messages'):
-      s += ' \, '.join(list(map(lambda x:str(x), self.messages))) 
+      s += ' \, '.join(map(lambda x:str(x),self.messages))
+      # s += ' \, '.join(list(map(lambda x:self.__escape__(x), self.messages))) 
 
     return s
 
