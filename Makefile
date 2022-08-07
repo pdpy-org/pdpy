@@ -1,4 +1,10 @@
 
+local:
+	make clean
+	make build
+	make install-local
+	echo "Done with all"
+
 build:
 	python -m build
 
@@ -8,7 +14,7 @@ activate:
 deploy:
 	python -m twine upload --repository testpypi dist/*
 
-local:
+install-local:
 	python -m pip install ./dist/*.tar.gz
 
 install:
@@ -35,11 +41,5 @@ all:
 	echo "Done with all"
 
 doc:
-	cd docs && make html && open build/html/index.html
+	cd docs && make html && open ../docs/index.html
 
-all-local:
-	make clean
-	make build
-	make local
-	make doc
-	echo "Done with all"

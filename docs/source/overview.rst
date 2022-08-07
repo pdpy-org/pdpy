@@ -1,21 +1,24 @@
 Overview
 ========
 
-base
--------
+Base
+----
+
 .. autosummary::
     pdpy.classes.object
     pdpy.classes.canvasbase
     pdpy.classes.base
     pdpy.classes.pdpy
 
-classes
+Classes
 -------
+
 .. autosummary::
     pdpy
 
-data
--------
+Data
+----
+
 .. autosummary::
     pdpy.classes.types
     pdpy.classes.data
@@ -25,8 +28,9 @@ data
     pdpy.classes.goparray
     pdpy.classes.graph
 
-encoders
--------
+Encoding/Decoding
+-----------------
+
 .. autosummary::
     pdpy.classes.PdPyXMLParser
     pdpy.classes.pdpyencoder
@@ -35,8 +39,10 @@ encoders
     pdpy.classes.pdpyparser
     pdpy.parse.pdpy2json
 
-iemgui
--------
+
+IEMgui
+------
+
 .. autosummary::
     pdpy.classes.toggle
     pdpy.classes.bng
@@ -47,27 +53,26 @@ iemgui
     pdpy.classes.cnv
     pdpy.classes.iemgui
 
-index
+Objects
 -------
-.. autosummary::
 
-objects
--------
 .. autosummary::
     pdpy.classes.obj
     pdpy.classes.message
     pdpy.classes.gui
     pdpy.classes.comment
 
-patching
--------
+Patching
+--------
+
 .. autosummary::
     pdpy.classes.canvas
     pdpy.classes.connections
     pdpy.classes.dependencies
 
-primitives
--------
+Primitives
+----------
+
 .. autosummary::
     pdpy.classes.point
     pdpy.classes.size
@@ -75,15 +80,13 @@ primitives
     pdpy.classes.bounds
     pdpy.classes.coords
 
-usage
--------
-.. autosummary::
+Utilities
+---------
 
-utilities
--------
 .. autosummary::
     pdpy.classes.translator
     pdpy.util.utils
     pdpy.classes.default
     pdpy.classes.exceptions
+
 

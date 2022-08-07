@@ -1,15 +1,18 @@
 Usage
 =====
 
-Installation
-------------
+Once installed (see :doc:`installation`), you can now import pdpy:
 
-To use **pdpy**, first install it using pip:
-
-.. code-block:: console
+.. code-block:: python
   
-  (.venv) $ pip install pdpy
+  import pdpy
 
-.. note::
-  
-  It is recommended to use pdpy within a virtual environment, which is why it reads ``(.venv)`` in the above code block.
+
+Things you can do with **pdpy**:
+
+- Make Pure Data patches from Python code (See: :doc:`examples/holamundo`)
+- Use **pdpy-lang** to generate Pure Data patches
+- Translate Pure Data files from the `.pd` format to other formats:
+    - `json <https://www.json.org/json-en.html>`_
+    - `xml <https://www.w3.org/standards/xml>`_
+    - `pickle <https://docs.python.org/3/library/pickle.html#module-pickle>`_
