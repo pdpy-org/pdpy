@@ -1,9 +1,14 @@
 
+# used in github actions - do not edit
 local:
 	make clean
 	make build
 	make install-local
 	echo "Done with all"
+
+# used in github actions - do not edit
+doc:
+	cd docs && make html
 
 build:
 	python -m build
@@ -39,7 +44,4 @@ all:
 	sleep 10
 	make install
 	echo "Done with all"
-
-doc:
-	cd docs && make html && open ../docs/index.html
 
