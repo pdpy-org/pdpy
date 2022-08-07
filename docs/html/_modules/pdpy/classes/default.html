@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pdpy.classes.default &mdash; pdpy  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> pdpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pdpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pdpy.classes.default</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pdpy.classes.default</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># **************************************************************************** #</span>
+<span class="c1"># This file is part of the pdpy project</span>
+<span class="c1"># Copyright (C) 2021 Fede Camara Halac</span>
+<span class="c1"># **************************************************************************** #</span>
+<span class="sd">&quot;&quot;&quot; Pure Data Default Definitions &quot;&quot;&quot;</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="s1">&#39;Namespace&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;Default&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;GOPArrayFlags&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;IEMGuiNames&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;PdNativeGuiNames&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;PdFonts&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;Formats&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;getFormat&#39;</span>
+<span class="p">]</span>
+
+<div class="viewcode-block" id="Namespace"><a class="viewcode-back" href="../../../utilities.html#pdpy.classes.default.Namespace">[docs]</a><span class="k">class</span> <span class="nc">Namespace</span><span class="p">:</span>
+  <span class="sd">&quot;&quot;&quot; PdPy Namespace &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">pdpy</span>
+    <span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span> <span class="o">=</span> <span class="n">pdpy</span>
+    <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="p">{</span> <span class="n">e</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;__&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">):</span><span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span><span class="p">)</span> <span class="p">}</span>
+
+  <span class="k">def</span> <span class="fm">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Get a PdPy Namespace Element &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+      <span class="k">elif</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">name</span>
+      <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    
+    <span class="k">elif</span> <span class="n">tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="c1"># recurse with the tag</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">__check__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="n">attr_key</span><span class="o">=</span><span class="s1">&#39;pdpy&#39;</span><span class="p">):</span>
+    <span class="n">__pdpy__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">attrib</span><span class="p">,</span> <span class="n">attr_key</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">__pdpy__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;No PdPy class found for element: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">__pdpy__</span></div>
+
+    
+<span class="n">Formats</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="s2">&quot;pkl&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;pickle&quot;</span><span class="p">,</span> <span class="s2">&quot;pkl&quot;</span><span class="p">],</span>
+  <span class="s2">&quot;json&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;json&quot;</span> <span class="p">],</span>
+  <span class="s2">&quot;pdpy&quot;</span> <span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;pdpy&quot;</span> <span class="p">],</span>
+  <span class="s2">&quot;pd&quot;</span>  <span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;pd&quot;</span><span class="p">,</span> <span class="s2">&quot;puredata&quot;</span><span class="p">],</span>
+  <span class="s2">&quot;xml&quot;</span>  <span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;xml&quot;</span> <span class="p">],</span>
+<span class="p">}</span>
+
+<div class="viewcode-block" id="getFormat"><a class="viewcode-back" href="../../../utilities.html#pdpy.classes.default.getFormat">[docs]</a><span class="k">def</span> <span class="nf">getFormat</span><span class="p">(</span><span class="n">fmt</span><span class="p">):</span>
+  <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">Formats</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">k</span>
+  <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+
+<div class="viewcode-block" id="Default"><a class="viewcode-back" href="../../../utilities.html#pdpy.classes.default.Default">[docs]</a><span class="k">class</span> <span class="nc">Default</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">screen</span>       <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;x&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">:</span> <span class="mi">22</span> <span class="p">}</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">dimen</span>        <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;width&#39;</span><span class="p">:</span> <span class="mi">450</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">:</span> <span class="mi">300</span> <span class="p">}</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">font</span>         <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="s1">&#39;face&#39;</span><span class="p">:</span> <span class="mi">0</span> <span class="p">}</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">array</span>        <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;size&#39;</span><span class="p">:</span> <span class="mi">100</span> <span class="p">}</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">vis</span>          <span class="o">=</span> <span class="mi">0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">digits_width</span> <span class="o">=</span> <span class="mi">0</span> 
+    <span class="bp">self</span><span class="o">.</span><span class="n">limits</span>       <span class="o">=</span> <span class="p">{</span> <span class="s1">&#39;lower&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;upper&#39;</span><span class="p">:</span><span class="mi">0</span> <span class="p">}</span> 
+    <span class="bp">self</span><span class="o">.</span><span class="n">flag</span>         <span class="o">=</span> <span class="mi">0</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">label</span>        <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">receive</span>      <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">send</span>         <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">name</span>         <span class="o">=</span> <span class="s1">&#39;(subpatch)&#39;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">iemgui</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s1">&#39;symbol&#39;</span>   <span class="p">:</span> <span class="s1">&#39;empty&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;fontface&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="s1">&#39;fgcolor&#39;</span>  <span class="p">:</span> <span class="s1">&#39;#000000&#39;</span><span class="p">,</span>
+      <span class="s1">&#39;vu&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;xoff&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;width&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span>
+        <span class="s1">&#39;height&#39;</span><span class="p">:</span><span class="mi">120</span><span class="p">,</span>
+        <span class="s1">&#39;yoff&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span>
+        <span class="s1">&#39;fsize&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;bgcolor&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">66577</span><span class="p">,</span>
+        <span class="s1">&#39;lbcolor&#39;</span><span class="p">:</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;scale&#39;</span><span class="p">:</span><span class="kc">True</span><span class="p">,</span>
+        <span class="s1">&#39;flag&#39;</span><span class="p">:</span><span class="mi">1</span>
+      <span class="p">},</span>
+      <span class="s1">&#39;tgl&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span>
+        <span class="s1">&#39;init&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;xoff&#39;</span><span class="p">:</span><span class="mi">17</span><span class="p">,</span>
+        <span class="s1">&#39;yoff&#39;</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span>
+        <span class="s1">&#39;fsize&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;bgcolor&#39;</span><span class="p">:</span><span class="s1">&#39;#fcfcfc&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;lbcolor&#39;</span><span class="p">:</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;flag&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;nonzero&#39;</span><span class="p">:</span><span class="mi">1</span>
+      <span class="p">},</span>
+      <span class="s1">&#39;cnv&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span>
+        <span class="s1">&#39;width&#39;</span><span class="p">:</span><span class="mi">100</span><span class="p">,</span>
+        <span class="s1">&#39;height&#39;</span><span class="p">:</span><span class="mi">60</span><span class="p">,</span>
+        <span class="s1">&#39;xoff&#39;</span><span class="p">:</span><span class="mi">20</span><span class="p">,</span>
+        <span class="s1">&#39;yoff&#39;</span><span class="p">:</span><span class="mi">12</span><span class="p">,</span>
+        <span class="s1">&#39;fsize&#39;</span><span class="p">:</span><span class="mi">14</span><span class="p">,</span>
+        <span class="s1">&#39;bgcolor&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">233017</span><span class="p">,</span>
+        <span class="s1">&#39;lbcolor&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">66577</span><span class="p">,</span>
+        <span class="s1">&#39;flag&#39;</span><span class="p">:</span><span class="mi">1</span>
+      <span class="p">},</span>
+      <span class="s1">&#39;radio&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span>
+        <span class="s1">&#39;flag&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span>
+        <span class="s1">&#39;init&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;number&#39;</span><span class="p">:</span><span class="mi">8</span><span class="p">,</span>
+        <span class="s1">&#39;xoff&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;yoff&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span>
+        <span class="s1">&#39;fsize&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;bgcolor&#39;</span><span class="p">:</span><span class="s1">&#39;#fcfcfc&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;lbcolor&#39;</span><span class="p">:</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s1">&#39;bng&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;size&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span>
+        <span class="s1">&#39;hold&#39;</span><span class="p">:</span><span class="mi">250</span><span class="p">,</span>
+        <span class="s1">&#39;intrrpt&#39;</span><span class="p">:</span><span class="mi">50</span><span class="p">,</span>
+        <span class="s1">&#39;init&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;xoff&#39;</span><span class="p">:</span><span class="mi">17</span><span class="p">,</span>
+        <span class="s1">&#39;yoff&#39;</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span>
+        <span class="s1">&#39;fsize&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;bgcolor&#39;</span><span class="p">:</span><span class="s1">&#39;#fcfcfc&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;lbcolor&#39;</span><span class="p">:</span><span class="s1">&#39;#000000&#39;</span>
+      <span class="p">},</span>
+      <span class="s1">&#39;nbx&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;digits_width&#39;</span><span class="p">:</span><span class="mi">5</span><span class="p">,</span>
+        <span class="s1">&#39;height&#39;</span><span class="p">:</span><span class="mi">14</span><span class="p">,</span>
+        <span class="s1">&#39;lower&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;upper&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;log_flag&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;init&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;xoff&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;yoff&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span>
+        <span class="s1">&#39;fsize&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;bgcolor&#39;</span><span class="p">:</span><span class="s1">&#39;#fcfcfc&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;lbcolor&#39;</span><span class="p">:</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;log_height&#39;</span><span class="p">:</span><span class="mi">256</span>
+      <span class="p">},</span>
+      <span class="s1">&#39;hsl&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;width&#39;</span><span class="p">:</span><span class="mi">128</span><span class="p">,</span>
+        <span class="s1">&#39;height&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span>
+        <span class="s1">&#39;lower&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;upper&#39;</span><span class="p">:</span><span class="mi">127</span><span class="p">,</span>
+        <span class="s1">&#39;log_flag&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;init&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;xoff&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;yoff&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span>
+        <span class="s1">&#39;fsize&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;bgcolor&#39;</span><span class="p">:</span><span class="s1">&#39;#fcfcfc&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;lbcolor&#39;</span><span class="p">:</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;log_height&#39;</span><span class="p">:</span><span class="mi">256</span><span class="p">,</span>
+        <span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;steady&#39;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">},</span>
+      <span class="s1">&#39;vsl&#39;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s1">&#39;width&#39;</span><span class="p">:</span><span class="mi">15</span><span class="p">,</span>
+        <span class="s1">&#39;height&#39;</span><span class="p">:</span><span class="mi">128</span><span class="p">,</span>
+        <span class="s1">&#39;lower&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;upper&#39;</span><span class="p">:</span><span class="mi">127</span><span class="p">,</span>
+        <span class="s1">&#39;log_flag&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;init&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;xoff&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span>
+        <span class="s1">&#39;yoff&#39;</span><span class="p">:</span><span class="o">-</span><span class="mi">8</span><span class="p">,</span>
+        <span class="s1">&#39;fsize&#39;</span><span class="p">:</span><span class="mi">10</span><span class="p">,</span>
+        <span class="s1">&#39;bgcolor&#39;</span><span class="p">:</span><span class="s1">&#39;#fcfcfc&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;lbcolor&#39;</span><span class="p">:</span><span class="s1">&#39;#000000&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;log_height&#39;</span><span class="p">:</span><span class="mi">256</span><span class="p">,</span>
+        <span class="s1">&#39;value&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span>
+        <span class="s1">&#39;steady&#39;</span><span class="p">:</span><span class="mi">0</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">xml</span> <span class="o">=</span> <span class="p">{</span>
+      <span class="s1">&#39;data_as_text&#39;</span><span class="p">:</span> <span class="kc">False</span>
+    <span class="p">}</span></div>
+
+
+<span class="n">GOPArrayFlags</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="s2">&quot;polygon&quot;</span><span class="p">,</span> <span class="s2">&quot;polygon-saved&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;points&quot;</span><span class="p">,</span> <span class="s2">&quot;points-saved&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;bezier&quot;</span><span class="p">,</span> <span class="s2">&quot;bezier-saved&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">IEMGuiNames</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="s2">&quot;hsl&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;vsl&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;cnv&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;nbx&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;hradio&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;vradio&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;vu&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;tgl&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;bng&quot;</span>
+<span class="p">]</span>
+<span class="n">PdFonts</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="s2">&quot;Menlo&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;Times&quot;</span>
+<span class="p">]</span>
+
+<span class="n">PdNativeGuiNames</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="s1">&#39;floatatom&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;symbolatom&#39;</span><span class="p">,</span>
+  <span class="s1">&#39;listbox&#39;</span>
+<span class="p">]</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fede Camara Halac.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pdpy.classes.object &mdash; pdpy  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> pdpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pdpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pdpy.classes.object</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pdpy.classes.object</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># **************************************************************************** #</span>
+<span class="c1"># This file is part of the pdpy project</span>
+<span class="c1"># Copyright (C) 2021 Fede Camara Halac</span>
+<span class="c1"># **************************************************************************** #</span>
+<span class="sd">&quot;&quot;&quot; Object Class Definitions &quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">Base</span>
+<span class="kn">from</span> <span class="nn">.point</span> <span class="kn">import</span> <span class="n">Point</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;Object&#39;</span> <span class="p">]</span>
+
+<div class="viewcode-block" id="Object"><a class="viewcode-back" href="../../../base.html#pdpy.classes.object.Object">[docs]</a><span class="k">class</span> <span class="nc">Object</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; A Object base class </span>
+<span class="sd">  </span>
+<span class="sd">  Description</span>
+<span class="sd">  -----------</span>
+<span class="sd">  A Object holds the id, and the x and y coordinates of the pd object,</span>
+<span class="sd">  as well as the arguments array.</span>
+
+<span class="sd">  Methods</span>
+<span class="sd">  -------</span>
+<span class="sd">  - `addargs(argv)`: Adds arguments to the pd object.</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">__pdpy__</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="k">if</span> <span class="nb">id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">Point</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">)</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+  
+<div class="viewcode-block" id="Object.addargs"><a class="viewcode-back" href="../../../base.html#pdpy.classes.object.Object.addargs">[docs]</a>  <span class="k">def</span> <span class="nf">addargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">argv</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s1">&#39;args&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+      <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__unescape__</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+    <span class="k">return</span> <span class="bp">self</span></div>
+  
+<div class="viewcode-block" id="Object.addpos"><a class="viewcode-back" href="../../../base.html#pdpy.classes.object.Object.addpos">[docs]</a>  <span class="k">def</span> <span class="nf">addpos</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">,</span> <span class="n">Point</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">))</span></div>
+
+  <span class="k">def</span> <span class="nf">__pd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Parses the pd object into a string &quot;&quot;&quot;</span>
+
+    <span class="c1"># add the position</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">__pd__</span><span class="p">()</span>
+    <span class="c1"># check if called with argumnts (array, text, etc) and append them</span>
+    <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="c1"># check if we have extra arguments stored in the object and append them</span>
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+      <span class="c1"># print(&#39;arg:&#39;,repr(arg))</span>
+      
+      <span class="k">if</span> <span class="n">arg</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> 
+        <span class="k">continue</span>
+      
+      <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+        <span class="n">argument</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+      <span class="k">elif</span> <span class="n">arg</span> <span class="o">==</span> <span class="s1">&#39; &#39;</span> <span class="ow">or</span> <span class="nb">all</span><span class="p">([</span><span class="n">a</span><span class="o">==</span><span class="s1">&#39; &#39;</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">arg</span><span class="p">]):</span>
+        <span class="n">argument</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__escape__</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+        <span class="n">argument</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__escape__</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">arg</span><span class="p">))</span>
+      <span class="c1"># print(&#39;argument:&#39;,repr(arg))</span>
+      <span class="n">s</span> <span class="o">+=</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">argument</span>
+    <span class="c1"># wrap and close the pd line</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__pd__</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="c1"># print(&quot;pd_line:&quot;, s)</span>
+    
+    <span class="c1"># check if we have data and append it (this calls the Data.__pd__ method)</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+      <span class="n">s</span> <span class="o">+=</span> <span class="n">x</span><span class="o">.</span><span class="n">__pd__</span><span class="p">()</span>
+
+    <span class="c1"># return the pd line</span>
+    <span class="k">return</span> <span class="n">s</span>
+
+  <span class="k">def</span> <span class="nf">__xml__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">classname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns an XML Element for this object &quot;&quot;&quot;</span>
+    <span class="c1"># print(&quot;obj&quot;,classname, args, kwargs)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__xml__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__update_element__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">))</span>
+    
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">):</span>
+      <span class="n">a</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__element__</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="s1">&#39;args&#39;</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">_arg</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__subelement__</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;arg&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">_arg</span><span class="p">)</span>
+      <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__subelement__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">):</span>
+      <span class="n">data</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__element__</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">)</span>
+      <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="p">[]):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__subelement__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">d</span><span class="o">.</span><span class="n">__xml__</span><span class="p">())</span>
+      <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__subelement__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">classname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__subelement__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;className&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">classname</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__subelement__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;arguments&#39;</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">x</span>
+  
+<div class="viewcode-block" id="Object.move"><a class="viewcode-back" href="../../../base.html#pdpy.classes.object.Object.move">[docs]</a>  <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Move the object to a new position. &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">set_x</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">set_y</span><span class="p">(</span><span class="n">y</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fede Camara Halac.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

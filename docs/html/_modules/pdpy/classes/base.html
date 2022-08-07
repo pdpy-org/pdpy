@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pdpy.classes.base &mdash; pdpy  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> pdpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pdpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pdpy.classes.base</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pdpy.classes.base</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># **************************************************************************** #</span>
+<span class="c1"># This file is part of the pdpy project</span>
+<span class="c1"># Copyright (C) 2021 Fede Camara Halac</span>
+<span class="c1"># **************************************************************************** #</span>
+<span class="sd">&quot;&quot;&quot; Base Class &quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">json</span> <span class="kn">import</span> <span class="n">dumps</span> <span class="k">as</span> <span class="n">json_dumps</span>
+<span class="kn">from</span> <span class="nn">..util.utils</span> <span class="kn">import</span> <span class="n">log</span>
+<span class="kn">from</span> <span class="nn">.xmltagconvert</span> <span class="kn">import</span> <span class="n">XmlTagConvert</span>
+<span class="kn">from</span> <span class="nn">.xmlbuilder</span> <span class="kn">import</span> <span class="n">XmlBuilder</span>
+<span class="kn">from</span> <span class="nn">.exceptions</span> <span class="kn">import</span> <span class="n">ArgumentException</span><span class="p">,</span> <span class="n">MalformedName</span>
+<span class="kn">from</span> <span class="nn">.default</span> <span class="kn">import</span> <span class="n">Default</span><span class="p">,</span> <span class="n">Namespace</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Base&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Base"><a class="viewcode-back" href="../../../base.html#pdpy.classes.base.Base">[docs]</a><span class="k">class</span> <span class="nc">Base</span><span class="p">(</span><span class="n">XmlBuilder</span><span class="p">,</span> <span class="n">XmlTagConvert</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; Pd Base class</span>
+<span class="sd">  </span>
+<span class="sd">  Description</span>
+<span class="sd">  -----------</span>
+<span class="sd">  The base class for all pd objects in pdpy.</span>
+
+<span class="sd">  Paramaeters</span>
+<span class="sd">  -----------</span>
+<span class="sd">  patchname : `str` (optional)</span>
+<span class="sd">    Name of the Pd patch file (default: `None`)</span>
+<span class="sd">  pdtype : `str` (optional)</span>
+<span class="sd">    Type of the Pd object (one of X, N, or A). Defaults to &#39;X&#39;: `#X ...`</span>
+<span class="sd">  cls : `str` (optional) </span>
+<span class="sd">    Class of the Pd object (eg. msg, text, etc.) Defaults to `obj`. `#X obj ...`</span>
+<span class="sd">  json : `dict` (optional)</span>
+<span class="sd">    A dictionary of key/value pairs to populate the object. </span>
+
+<span class="sd">  &quot;&quot;&quot;</span>
+  
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                <span class="n">patchname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">pdtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">json</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">xml</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Initialize the object &quot;&quot;&quot;</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">patchname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__sane_name__</span><span class="p">(</span><span class="n">patchname</span><span class="p">)</span> <span class="c1"># the name of the patch</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__type__</span> <span class="o">=</span> <span class="n">pdtype</span> <span class="k">if</span> <span class="n">pdtype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;X&#39;</span> <span class="c1"># pd&#39;s type</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__cls__</span> <span class="o">=</span> <span class="bp">cls</span> <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;obj&#39;</span> <span class="c1"># pd&#39;s class</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__d__</span> <span class="o">=</span> <span class="n">Default</span><span class="p">()</span> <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">default</span> <span class="c1"># object defaults</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__n__</span> <span class="o">=</span> <span class="n">Namespace</span><span class="p">()</span> <span class="c1"># pdpy module namespace</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__end__</span> <span class="o">=</span> <span class="s1">&#39;;</span><span class="se">\r\n</span><span class="s1">&#39;</span> <span class="c1"># The pd line end character sequence</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__semi__</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="se">\\</span><span class="s1">;&#39;</span> <span class="c1"># The pd end symbol for data structures</span>
+    <span class="n">XmlTagConvert</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1"># for xml tag conversion (output)</span>
+    <span class="k">if</span> <span class="n">json</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">__populate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json</span><span class="p">)</span> <span class="c1"># fill the object with the json data</span>
+    <span class="k">if</span> <span class="n">xml</span><span class="p">:</span>
+      <span class="n">XmlBuilder</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="c1"># initialize the xml base builder class</span>
+      <span class="n">tree</span> <span class="o">=</span> <span class="n">XmlBuilder</span><span class="o">.</span><span class="n">__xmlparse__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml</span><span class="p">)</span> <span class="c1"># fill the object with xml</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">__xml_load__</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">__parent__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; </span>
+<span class="sd">    Sets the parent of this object if `parent` is present, </span>
+<span class="sd">    otherwise returns the parent of this object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">scope</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">scope</span> <span class="o">=</span> <span class="bp">self</span>
+    
+    <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="nb">setattr</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="s1">&#39;__p__&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+      <span class="c1"># print(f&quot;adding parent {parent.__class__.__name__} to child {self.__class__.__name__}&quot;)</span>
+      <span class="k">return</span> <span class="bp">self</span>
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;__p__&#39;</span><span class="p">):</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__p__</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No parent set in &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">__addparents__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">children</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;nodes&#39;</span><span class="p">,</span><span class="s1">&#39;edges&#39;</span><span class="p">,</span><span class="s1">&#39;comments&#39;</span><span class="p">)):</span>
+    <span class="sd">&quot;&quot;&quot; Sets the parents of all children &quot;&quot;&quot;</span>
+    <span class="c1"># log(1,&#39;addparents: parent &lt;--&#39;,parent.__pdpy__)#,repr(dir(child)))</span>
+    <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">children</span><span class="p">:</span>
+      <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="p">[]):</span>
+        <span class="c1"># log(1,f&quot;addparents: child {c} --&gt; &quot;,child.__pdpy__)#,repr(dir(child)))</span>
+        <span class="c1"># self.__parent__(parent=parent, scope=child)</span>
+        <span class="nb">setattr</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="s1">&#39;__p__&#39;</span><span class="p">,</span> <span class="n">parent</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">c</span><span class="p">):</span>
+          <span class="c1"># log(1, &#39;addparents: child has children&#39;)</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">__addparents__</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">__getroot__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Recursively, return the parent root of this object &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="s1">&#39;__p__&#39;</span><span class="p">):</span>
+      <span class="c1"># log(1, child.__class__.__name__, &quot;parented&quot;)</span>
+      <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__getroot__</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">__p__</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="c1"># log(1, child.__class__.__name__, &quot;has no parent&quot;)</span>
+      <span class="k">return</span> <span class="n">child</span>
+
+  <span class="k">def</span> <span class="nf">__getstruct__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__getroot__</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="s1">&#39;structs&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">__setdata__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">attrib</span><span class="o">=</span><span class="s1">&#39;data&#39;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Sets the data of the object &quot;&quot;&quot;</span>
+    <span class="c1"># log(1, &quot;scope:&quot;,scope.__class__.__name__, &quot;data:&quot;, data)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">attrib</span><span class="p">):</span>
+      <span class="nb">setattr</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">attrib</span><span class="p">,</span> <span class="p">[])</span>
+    <span class="n">attribute</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">attrib</span><span class="p">)</span>
+    <span class="n">attribute</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">attribute</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+  <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Hijack setattr to return ourselves as a dictionary &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+  <span class="k">def</span> <span class="nf">__json__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Return a JSON representation of the instance&#39;s scope as a string &quot;&quot;&quot;</span>
+
+    <span class="c1"># inner function to filter out variables that are</span>
+    <span class="c1"># prefixed with two underscores (&#39;_&#39;) </span>
+    <span class="c1"># with the exception of &#39;__pdpy__&#39;</span>
+    <span class="k">def</span> <span class="nf">__filter__</span><span class="p">(</span><span class="n">o</span><span class="p">):</span>
+      <span class="k">return</span> <span class="p">{</span> 
+        <span class="n">k</span> <span class="p">:</span> <span class="n">v</span> 
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">o</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> 
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;__&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">k</span><span class="o">==</span><span class="s2">&quot;__pdpy__&quot;</span>
+      <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">json_dumps</span><span class="p">(</span>
+      <span class="bp">self</span><span class="p">,</span>
+      <span class="n">default</span>   <span class="o">=</span> <span class="n">__filter__</span><span class="p">,</span>
+      <span class="n">sort_keys</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+      <span class="n">indent</span>    <span class="o">=</span> <span class="n">indent</span>
+    <span class="p">)</span>
+  
+  <span class="k">def</span> <span class="nf">__dumps__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="n">log</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">79</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__json__</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+  <span class="k">def</span> <span class="nf">__num__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns a number (or list of number) object from a Pd file string &quot;&quot;&quot;</span>
+    <span class="n">pdnm</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+      <span class="k">if</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">n</span><span class="p">:</span> <span class="n">pdnm</span> <span class="o">=</span> <span class="n">n</span> <span class="c1"># skip css-style colors preceded by &#39;#&#39;</span>
+      <span class="k">elif</span> <span class="p">(</span><span class="s2">&quot;e&quot;</span> <span class="ow">in</span> <span class="n">n</span> <span class="ow">or</span> <span class="s2">&quot;E&quot;</span> <span class="ow">in</span> <span class="n">n</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;-&quot;</span> <span class="ow">in</span> <span class="n">n</span> <span class="ow">or</span> <span class="s2">&quot;+&quot;</span> <span class="ow">in</span> <span class="n">n</span><span class="p">):</span>
+        <span class="n">pdnm</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:e}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">n</span><span class="p">)))</span>
+      <span class="k">elif</span> <span class="s2">&quot;.&quot;</span> <span class="ow">in</span> <span class="n">n</span><span class="p">:</span> <span class="n">pdnm</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">pdnm</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+      <span class="c1"># print(&quot;__num__(): input was a list of str numbers&quot;, n)</span>
+      <span class="n">pdnm</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">__num__</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="n">n</span><span class="p">))</span>
+    <span class="k">elif</span> <span class="mf">0.0</span> <span class="o">==</span> <span class="n">n</span><span class="p">:</span>
+      <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">pdnm</span> <span class="o">=</span> <span class="n">n</span>
+    <span class="k">return</span> <span class="n">pdnm</span>
+
+  <span class="k">def</span> <span class="nf">__pdbool__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns a boolean object from a Pd file string &quot;&quot;&quot;</span>
+    <span class="n">b</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;True&quot;</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;true&quot;</span><span class="p">:</span>
+      <span class="n">b</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;False&quot;</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;false&quot;</span><span class="p">:</span>
+      <span class="n">b</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">b</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">n</span><span class="p">)))</span>
+    <span class="c1"># log(1, &quot;__pdbool__():&quot;, n, &#39;-&gt;&#39;, b)</span>
+    <span class="k">return</span> <span class="n">b</span>
+
+  <span class="k">def</span> <span class="nf">__isnum__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__num__</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+      <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span><span class="p">:</span>
+      <span class="k">return</span> <span class="kc">False</span>
+
+  <span class="k">def</span> <span class="nf">__get_obj_size__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    
+    <span class="n">font_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parent__</span><span class="p">()</span><span class="o">.</span><span class="n">font</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;size&#39;</span><span class="p">):</span>
+      <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="s1">&#39;height&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">height</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">width</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="o">.</span><span class="n">width</span>
+    
+    <span class="n">text_h</span> <span class="o">=</span> <span class="n">font_size</span> <span class="o">*</span> <span class="mi">2</span>
+    <span class="n">text_w</span> <span class="o">=</span> <span class="mi">0</span>
+    
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;className&#39;</span><span class="p">):</span>
+      <span class="n">text_w</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">className</span><span class="p">)</span>
+      <span class="n">text_w</span> <span class="o">+=</span> <span class="mi">1</span>
+    
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;args&#39;</span><span class="p">):</span>
+      <span class="n">text_w</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">)))</span>
+      <span class="n">text_w</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;targets&#39;</span><span class="p">):</span>
+      <span class="k">for</span> <span class="n">target</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">targets</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="s1">&#39;messages&#39;</span><span class="p">):</span>
+          <span class="n">text_w</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">target</span><span class="o">.</span><span class="n">messages</span><span class="p">))</span>
+          <span class="n">text_w</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">text_w</span> <span class="o">+=</span> <span class="mi">1</span>
+    
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;text&#39;</span><span class="p">):</span>
+      <span class="n">text_w</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">))</span>
+      <span class="n">text_w</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">mod_80</span> <span class="o">=</span> <span class="p">(</span><span class="n">text_w</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">80</span>
+
+    <span class="k">if</span> <span class="n">mod_80</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">:</span> <span class="n">text_h</span> <span class="o">*=</span> <span class="n">mod_80</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">text_w</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">font_size</span><span class="p">,</span> <span class="n">text_h</span>
+
+
+  <span class="k">def</span> <span class="nf">__populate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="n">json</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Populates the derived/child class instance with a dictionary &quot;&quot;&quot;</span>
+    <span class="c1"># TODO: protect against overblowing child scope</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="s1">&#39;items&#39;</span><span class="p">):</span>
+      <span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">child</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;json is not a dict&quot;</span><span class="p">)</span>
+      <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ArgumentException</span><span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;: json is not a class. It is of type: &quot;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">(</span><span class="n">json</span><span class="p">)</span> <span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">+</span> <span class="n">json</span><span class="p">)</span>
+      <span class="n">json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="vm">__dict__</span>
+    
+    <span class="c1"># map(lambda k,v: setattr(child, k, v), json.items())</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__num__</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+      <span class="k">except</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+          <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pdbool__</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+          <span class="k">pass</span>
+      <span class="nb">setattr</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="s1">&#39;className&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cls__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">__cls__</span> <span class="o">=</span> <span class="n">child</span><span class="o">.</span><span class="n">className</span> 
+
+  <span class="k">def</span> <span class="nf">__unescape__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">argv</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Unescapes the arguments &quot;&quot;&quot;</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">argv</span><span class="p">:</span>
+      <span class="c1"># unescape the arguments</span>
+      <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">a</span><span class="p">))</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span><span class="s1">&#39;&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+
+      <span class="c1"># and convert them to numbers</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__isnum__</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+        <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__num__</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+      <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">args</span>
+
+  <span class="k">def</span> <span class="nf">__escape__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Escapes the arguments &quot;&quot;&quot;</span>
+    <span class="c1"># print(&quot;escape:&quot;, repr(arg))</span>
+    <span class="n">arg</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\\\</span><span class="s1">&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1"> &#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">arg</span> <span class="o">=</span> <span class="n">arg</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">$&#39;</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">arg</span>
+
+  <span class="k">def</span> <span class="nf">__pd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns a the pd line for this object</span>
+<span class="sd">    </span>
+<span class="sd">    Description</span>
+<span class="sd">    -----------</span>
+<span class="sd">    Called by all derived classes to return a Pd line for this object.</span>
+<span class="sd">    </span>
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    args : `list` of `str` or `str` or `None`</span>
+<span class="sd">      The arguments to the pd line.</span>
+<span class="sd">    </span>
+<span class="sd">    If args is present, the pd line will end with `;\r\n` with the arguments:</span>
+<span class="sd">      If args is a list of strings, each element is appended to the pd line.</span>
+<span class="sd">        `#N canvas 0 22 340 520 12;`</span>
+<span class="sd">      If args is a string, it is appended to the pd line: </span>
+<span class="sd">        `#X obj 10 30 print;`</span>
+<span class="sd">    If args is None, the pd line is returned without arguments: </span>
+<span class="sd">      `#X connect`</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -----------</span>
+<span class="sd">    `str` : the pd line for this object built with `__type__` and `__cls__`</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    
+    <span class="n">s</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__type__</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__cls__</span><span class="p">)</span>
+    <span class="c1"># log(1, &quot;Base.__pd__()&quot;, repr(s))</span>
+
+    <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">s</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__end__</span>
+    
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;  &#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+    <span class="c1"># split line at 80 chars: </span>
+    <span class="c1"># insert \r\n on the last space char</span>
+    <span class="c1"># s = &#39;\n&#39;.join(s[i:i+79] for i in range(0, len(s), 79))</span>
+    <span class="k">return</span> <span class="n">s</span>
+
+  <span class="k">def</span> <span class="nf">__xml_load__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml_tree</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Parse an XML tree into a PdPy object </span>
+<span class="sd">    </span>
+<span class="sd">    Description</span>
+<span class="sd">    -----------</span>
+<span class="sd">    Called if loading a PdPy object from an XML file.</span>
+<span class="sd">    </span>
+<span class="sd">    NOTE: This method assumes it belongs to a PdPy class, because:</span>
+<span class="sd">    `class PdPy(CanvasBase, Base):` &lt;-- PdPy is derived from Base</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># get the xml root element</span>
+    <span class="n">xml_root</span> <span class="o">=</span> <span class="n">xml_tree</span><span class="o">.</span><span class="n">getroot</span><span class="p">()</span>
+
+    <span class="c1"># get the encoding</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span> <span class="o">=</span> <span class="n">xml_root</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;encoding&#39;</span><span class="p">,</span> <span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+
+    <span class="c1"># root element to which we add stuff</span>
+    <span class="n">root_dict</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;__p__&#39;</span> <span class="p">:</span> <span class="bp">self</span><span class="p">}</span>
+
+    <span class="c1"># find the structs tag</span>
+    <span class="n">structs</span> <span class="o">=</span> <span class="n">xml_root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;structs&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">structs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">structs</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;struct&#39;</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addStruct</span><span class="p">(</span><span class="n">xml</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="c1"># belongs to PdPy class</span>
+    
+    <span class="c1"># find the dependencies tag</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">xml_root</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;dependencies&#39;</span><span class="p">):</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">addDependencies</span><span class="p">(</span><span class="n">xml</span><span class="o">=</span><span class="n">n</span><span class="p">)</span> <span class="c1"># belongs to PdPy class</span>
+
+    <span class="c1"># go through every element in &#39;root&#39; and add it to the root_dict</span>
+    <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">xml_root</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;root&#39;</span><span class="p">):</span>
+      <span class="c1"># print(&#39;tag&#39;, n.tag)</span>
+      <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;pdpy&#39;</span> <span class="ow">or</span> <span class="n">n</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;root&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;pdpy&#39;</span> <span class="ow">in</span> <span class="n">n</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+          <span class="n">root_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;__pdpy__&#39;</span><span class="p">:</span> <span class="n">n</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;pdpy&#39;</span><span class="p">]})</span>
+      <span class="k">elif</span> <span class="n">n</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;nodes&#39;</span><span class="p">:</span>
+        <span class="n">root_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+          <span class="s1">&#39;nodes&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">XmlBuilder</span><span class="o">.</span><span class="n">__elem_to_obj__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">n</span><span class="p">]</span>
+        <span class="p">})</span>
+      <span class="k">elif</span> <span class="n">n</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;comments&#39;</span><span class="p">:</span>
+        <span class="n">root_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+          <span class="s1">&#39;comments&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">XmlBuilder</span><span class="o">.</span><span class="n">__elem_to_obj__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">n</span><span class="p">]</span>
+        <span class="p">})</span>
+      <span class="k">elif</span> <span class="n">n</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;edges&#39;</span><span class="p">:</span>
+        <span class="n">root_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+          <span class="s1">&#39;edges&#39;</span><span class="p">:</span> <span class="p">[</span><span class="n">XmlBuilder</span><span class="o">.</span><span class="n">__elem_to_obj__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">n</span><span class="p">]</span>
+        <span class="p">})</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># an element belonging to canvas&#39; attributes</span>
+        <span class="n">o</span> <span class="o">=</span> <span class="n">XmlBuilder</span><span class="o">.</span><span class="n">__elem_to_obj__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="s1">&#39;items&#39;</span><span class="p">):</span>
+          <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">o</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">root_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">k</span><span class="p">:</span><span class="n">v</span><span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="n">root_dict</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">n</span><span class="o">.</span><span class="n">tag</span><span class="p">:</span><span class="n">o</span><span class="p">})</span>
+    
+    <span class="c1"># add the root_dict to the PdPy object</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">addRoot</span><span class="p">(</span><span class="n">json</span><span class="o">=</span><span class="n">root_dict</span><span class="p">)</span> <span class="c1"># belongs to PdPy class</span>
+
+    <span class="c1"># spawn the __parent__ json tree</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__jsontree__</span><span class="p">()</span> <span class="c1"># belongs to PdPy class</span>
+
+  <span class="k">def</span> <span class="nf">__sane_name__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">name</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">c</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;;&quot;</span><span class="p">,</span> <span class="s2">&quot;$&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;&quot;</span><span class="p">,</span> <span class="s2">&quot;|&quot;</span><span class="p">,</span> <span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;`&quot;</span><span class="p">,</span> <span class="s2">&quot;%&quot;</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">):</span>
+          <span class="k">raise</span> <span class="n">MalformedName</span><span class="p">(</span><span class="s2">&quot;Special chars in name were detected.&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">name</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fede Camara Halac.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

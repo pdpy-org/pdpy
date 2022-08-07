@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pdpy.classes.xmlbuilder &mdash; pdpy  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> pdpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pdpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pdpy.classes.xmlbuilder</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pdpy.classes.xmlbuilder</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># **************************************************************************** #</span>
+<span class="c1"># This file is part of the pdpy project</span>
+<span class="c1"># Copyright (C) 2022 Fede Camara Halac</span>
+<span class="c1"># **************************************************************************** #</span>
+<span class="sd">&quot;&quot;&quot; XML Converter Class &quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">xml.etree.ElementTree</span> <span class="kn">import</span> <span class="n">ElementTree</span>
+<span class="kn">from</span> <span class="nn">xml.etree.ElementTree</span> <span class="kn">import</span> <span class="n">Element</span>
+<span class="kn">from</span> <span class="nn">xml.etree.ElementTree</span> <span class="kn">import</span> <span class="n">parse</span> <span class="k">as</span> <span class="n">__xparse__</span>
+<span class="kn">from</span> <span class="nn">.xmltagconvert</span> <span class="kn">import</span> <span class="n">XmlTagConvert</span>
+<span class="kn">from</span> <span class="nn">..util.utils</span> <span class="kn">import</span> <span class="n">log</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;XmlBuilder&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="XmlBuilder"><a class="viewcode-back" href="../../../encoders.html#pdpy.classes.xmlbuilder.XmlBuilder">[docs]</a><span class="k">class</span> <span class="nc">XmlBuilder</span><span class="p">(</span><span class="n">XmlTagConvert</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; XML Converter Class &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+  <span class="k">def</span> <span class="nf">__tree__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">autoindent</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">autoindent</span><span class="p">:</span>
+      <span class="kn">from</span> <span class="nn">xml.etree.ElementTree</span> <span class="kn">import</span> <span class="n">indent</span> <span class="k">as</span> <span class="n">__indent__</span>
+      <span class="n">__indent__</span><span class="p">(</span><span class="n">tree</span><span class="p">,</span> <span class="n">space</span><span class="o">=</span><span class="s1">&#39;    &#39;</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># return tostring(self.__root__, encoding=&#39;unicode&#39;, method=&#39;xml&#39;)</span>
+    <span class="k">return</span> <span class="n">tree</span>
+
+  <span class="k">def</span> <span class="nf">__element__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrib</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns an XML element for this object &quot;&quot;&quot;</span>
+    <span class="n">__pdpy__</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">__tag__</span> <span class="o">=</span> <span class="kc">None</span>
+    
+    <span class="c1"># protect against empty string on the tag for &#39;empty&#39; objects</span>
+    <span class="k">if</span> <span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="n">tag</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">if</span> <span class="n">tag</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+      <span class="c1"># we have a tag, so the element will have a </span>
+      <span class="c1"># different name than the PdPy class name</span>
+      <span class="c1"># we will need to put the PdPy class name</span>
+      <span class="c1"># in the &#39;__pdpy__&#39; attribute</span>
+
+      <span class="c1"># convert the tag to xml-friendly format</span>
+      <span class="n">__tag__</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">to_xml_tag</span><span class="p">(</span><span class="n">tag</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">scope</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="s1">&#39;__pdpy__&#39;</span><span class="p">):</span>
+      <span class="c1"># we have a scope, so we know the PdPy class name</span>
+      <span class="c1"># we can create the element with the PdPy class name</span>
+      <span class="c1"># and omit the &#39;__pdpy__&#39; attribute</span>
+      
+      <span class="c1"># get the pdpy name for the scope</span>
+      <span class="n">__pdpy__</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="s1">&#39;__pdpy__&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">__tag__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">__pdpy__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="c1"># we have both a tag and a scope</span>
+      
+      <span class="c1"># store the class name in the attributes</span>
+      <span class="c1"># update the attrib dict if it&#39;s there</span>
+      <span class="k">if</span> <span class="n">attrib</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">attrib</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;pdpy&#39;</span><span class="p">:</span><span class="n">__pdpy__</span><span class="p">})</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">attrib</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;pdpy&#39;</span><span class="p">:</span><span class="n">__pdpy__</span><span class="p">}</span>
+    
+    <span class="k">elif</span> <span class="n">__tag__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">__pdpy__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="c1"># we have a tag, but no scope</span>
+      <span class="c1"># we don&#39;t update the attrib dict</span>
+      <span class="k">pass</span>
+
+    <span class="k">elif</span> <span class="n">__pdpy__</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">__tag__</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="c1"># we have a scope, but no tag</span>
+      <span class="c1"># we don&#39;t update the attrib dict</span>
+      <span class="c1"># but we need to set the tag to the PdPy class name</span>
+      <span class="n">__tag__</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">__pdpy__</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+    <span class="k">else</span><span class="p">:</span>
+      <span class="c1"># we have neither a tag nor a scope</span>
+      <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Either tag or scope must be present&quot;</span><span class="p">)</span>
+
+    <span class="c1"># log(1, f&quot;&quot;&quot;element</span>
+    <span class="c1">#   tag: {__tag__}</span>
+    <span class="c1">#   text: {text}</span>
+    <span class="c1">#   attrib: {attrib}</span>
+    <span class="c1">#   &quot;&quot;&quot;)</span>
+
+    <span class="c1"># create the element</span>
+    <span class="k">if</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">isvalid</span><span class="p">(</span><span class="n">__tag__</span><span class="p">):</span>
+      <span class="n">element</span> <span class="o">=</span> <span class="n">Element</span><span class="p">(</span><span class="n">__tag__</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">element</span> <span class="o">=</span> <span class="n">Element</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">__pdpy__</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+   
+    <span class="k">if</span> <span class="n">attrib</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">attrib</span><span class="p">)</span>
+
+    <span class="c1"># store the text of the element as a string</span>
+    <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">element</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+    
+    <span class="k">return</span> <span class="n">element</span>
+
+  <span class="k">def</span> <span class="nf">__subelement__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">child</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Create a sub element (child) of a parent element (parent) &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="n">Element</span><span class="p">):</span>
+      <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">child</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">child</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__element__</span><span class="p">(</span><span class="n">tag</span><span class="o">=</span><span class="n">child</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">child</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__element__</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">child</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">parent</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+
+  <span class="k">def</span> <span class="nf">__update_element__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">attrib</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Updates an element&#39;s attributes </span>
+<span class="sd">    </span>
+<span class="sd">    Description</span>
+<span class="sd">    -----------</span>
+<span class="sd">    This method is used to update an element with pdpy attributes.</span>
+<span class="sd">    The element is updated with the attributes of the scope.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    -----------</span>
+<span class="sd">    parent : `Element`</span>
+<span class="sd">      The element to update</span>
+<span class="sd">    scope : `object`</span>
+<span class="sd">      The PdPy object handle (aka, `self`) to update the element with</span>
+<span class="sd">    attrib : `list` or `tuple` of `str` </span>
+<span class="sd">      The list of attributes to update the element with</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># print(parent, scope, attrib)</span>
+    
+    <span class="k">def</span> <span class="nf">_parseattrib</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
+      <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">a</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">e</span><span class="p">):</span>
+          <span class="n">attr</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+          <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="s1">&#39;__xml__&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__subelement__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">__xml__</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+          <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+              <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">attr</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="s1">&#39;__xml__&#39;</span><span class="p">):</span>
+                  <span class="bp">self</span><span class="o">.</span><span class="n">__subelement__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">a</span><span class="o">.</span><span class="n">__xml__</span><span class="p">(</span><span class="n">e</span><span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                  <span class="bp">self</span><span class="o">.</span><span class="n">__subelement__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">a</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">__subelement__</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="n">attr</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">attrib</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="c1"># log(0, &#39;Updating attrib:&#39;, attrib)</span>
+      <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">attrib</span><span class="p">)</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="n">_parseattrib</span><span class="p">(</span><span class="n">attrib</span><span class="p">)</span>
+      <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attrib</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="n">_parseattrib</span><span class="p">([</span><span class="n">attrib</span><span class="p">])</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># print(&quot;----- DICT ATTIRB: &quot;,attrib)</span>
+        <span class="c1"># for k,v in attrib.items():</span>
+          <span class="c1"># parent.attrib.update({k:v})</span>
+        <span class="k">pass</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="c1"># log(1, &quot;MISSING ATTRIBUTES:&quot;,parent, scope, attrib)</span>
+      <span class="k">pass</span>
+
+  <span class="k">def</span> <span class="nf">__update_attrib__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="n">element</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)})</span>
+
+  <span class="k">def</span> <span class="nf">__xml__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">attrib</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># print(&quot;base&quot;,scope, tag, attrib)</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__element__</span><span class="p">(</span><span class="n">scope</span><span class="o">=</span><span class="n">scope</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">__update_element__</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">attrib</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span>
+  
+
+  <span class="k">def</span> <span class="nf">__tag_strip__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+      <span class="n">strip_ns_tag</span> <span class="o">=</span> <span class="n">tag</span>
+      <span class="n">split_array</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;}&#39;</span><span class="p">)</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_array</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+          <span class="n">strip_ns_tag</span> <span class="o">=</span> <span class="n">split_array</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+          <span class="n">tag</span> <span class="o">=</span> <span class="n">strip_ns_tag</span>
+      <span class="k">return</span> <span class="n">tag</span>
+
+
+  <span class="k">def</span> <span class="nf">__elem_to_obj__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elem</span><span class="p">):</span>
+      <span class="sd">&quot;&quot;&quot;Convert an Element into an object &quot;&quot;&quot;</span>
+
+      <span class="n">elem_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__tag_strip__</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+      <span class="n">pdpy_tag</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;pdpy&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;pdpy&#39;</span> <span class="ow">in</span> <span class="n">elem</span><span class="o">.</span><span class="n">attrib</span> <span class="k">else</span> <span class="kc">None</span>
+
+      
+      <span class="k">if</span> <span class="n">elem_tag</span> <span class="o">==</span> <span class="s1">&#39;scalar&#39;</span> <span class="ow">and</span> <span class="n">pdpy_tag</span> <span class="o">!=</span> <span class="s1">&#39;Array&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__n__</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Scalar&#39;</span><span class="p">)(</span><span class="n">xml</span><span class="o">=</span><span class="n">elem</span><span class="p">)</span>
+
+      <span class="k">if</span> <span class="n">elem_tag</span> <span class="o">==</span> <span class="s1">&#39;data&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;data&#39;</span><span class="p">:[</span><span class="bp">self</span><span class="o">.</span><span class="n">__n__</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Data&#39;</span><span class="p">)(</span><span class="n">xml</span><span class="o">=</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">elem</span><span class="p">]}</span>
+
+      <span class="k">if</span> <span class="n">elem_tag</span> <span class="o">==</span> <span class="s1">&#39;comments&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">__n__</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Comment&#39;</span><span class="p">)(</span><span class="n">xml</span><span class="o">=</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">elem</span><span class="p">]</span>
+    
+      <span class="k">if</span> <span class="n">elem_tag</span> <span class="o">==</span> <span class="s1">&#39;comment&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__n__</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;Comment&#39;</span><span class="p">)(</span><span class="n">xml</span><span class="o">=</span><span class="n">elem</span><span class="p">)</span>
+    
+      <span class="c1"># print(&#39;&gt;&#39;*80)</span>
+      <span class="c1"># log(1, f&quot;Starting __elem_to_obj__ for {elem_tag}&quot;)</span>
+      
+
+      <span class="c1"># the class</span>
+      <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__n__</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="nb">getattr</span><span class="p">(</span><span class="n">elem</span><span class="o">.</span><span class="n">attrib</span><span class="p">,</span> <span class="s1">&#39;pdpy&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span> <span class="n">tag</span><span class="o">=</span><span class="n">elem_tag</span><span class="p">)</span>
+      <span class="c1"># print(cls)</span>
+      
+      <span class="n">is_list</span> <span class="o">=</span> <span class="kc">False</span>
+      <span class="c1"># Handle list-type tags, we need to create lists for these:</span>
+      <span class="k">if</span> <span class="n">elem_tag</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;nodes&#39;</span><span class="p">,</span>   <span class="c1"># any node</span>
+                      <span class="s1">&#39;edges&#39;</span><span class="p">,</span>   <span class="c1"># connections</span>
+                      <span class="s1">&#39;args&#39;</span><span class="p">,</span>    <span class="c1"># objects</span>
+                      <span class="s1">&#39;targets&#39;</span><span class="p">,</span> <span class="c1"># messages</span>
+                      <span class="s1">&#39;messages&#39;</span><span class="p">,</span> <span class="c1"># messages</span>
+                      <span class="c1"># &#39;data&#39;,    # data</span>
+                      <span class="c1"># &#39;symbols&#39;, # scalars</span>
+                      <span class="c1"># &#39;texts&#39;,   # scalars</span>
+                      <span class="c1"># &#39;arrays&#39;,   # scalars</span>
+                      <span class="p">):</span>
+        <span class="n">is_list</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">[]</span> <span class="c1"># a list of PdData objects</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># our usual dictionary</span>
+
+      <span class="c1"># handle header and data type loading</span>
+      <span class="n">h</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;header&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;header&#39;</span> <span class="ow">in</span> <span class="n">elem</span><span class="o">.</span><span class="n">attrib</span> <span class="k">else</span> <span class="kc">None</span>
+      <span class="n">h_type</span> <span class="o">=</span> <span class="nb">str</span> <span class="k">if</span> <span class="n">h</span> <span class="ow">and</span> <span class="n">h</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;set&#39;</span><span class="p">,</span><span class="s1">&#39;saved&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">__num__</span>
+      
+      <span class="c1"># d will be a PdData type if header was found</span>
+      <span class="k">if</span> <span class="n">h</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;__pdpy__&#39;</span><span class="p">:</span><span class="s1">&#39;PdData&#39;</span><span class="p">})</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;data&#39;</span><span class="p">:[]})</span>
+        <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;header&#39;</span><span class="p">:</span><span class="n">h</span><span class="p">})</span>
+      
+      <span class="k">def</span> <span class="nf">_prnt</span><span class="p">(</span><span class="o">*</span><span class="n">argv</span><span class="p">):</span>   
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">argv</span><span class="p">))</span>
+        <span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> 
+          <span class="s2">&quot;elem_to_obj</span><span class="se">\n</span><span class="s2">ELEM: &quot;</span><span class="o">+</span><span class="n">elem</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">LENGTH: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">elem</span><span class="p">)))</span><span class="o">+</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">TAG: &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">elem_tag</span><span class="p">)</span><span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">HEAD: &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">h</span><span class="p">)</span><span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">HEAD TYPE: &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">h_type</span><span class="p">)</span><span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">CLS: &quot;</span><span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="bp">cls</span><span class="p">))</span>
+      <span class="c1"># _prnt(&#39;&#39;)</span>
+      <span class="c1"># loop over subelements to merge them ----------------------------------</span>
+      <span class="k">for</span> <span class="n">subelem</span> <span class="ow">in</span> <span class="n">elem</span><span class="p">:</span>
+        
+        <span class="n">subelem_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__tag_strip__</span><span class="p">(</span><span class="n">subelem</span><span class="o">.</span><span class="n">tag</span><span class="p">)</span>
+
+        <span class="c1"># recurse into &#39;v&#39;</span>
+        <span class="c1"># print(&#39;-&gt;&#39;*40)</span>
+        <span class="c1"># log(1, f&quot;-- BEGIN recursion __elem_to_obj__ for {elem_tag}&quot;)</span>
+        <span class="c1"># log(1, f&quot;&quot;&quot;subelement loop</span>
+        <span class="c1"># SUBELEMENT: {subelem}</span>
+        <span class="c1"># TAG: {subelem_tag}</span>
+        <span class="c1"># &quot;&quot;&quot;)</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__elem_to_obj__</span><span class="p">(</span><span class="n">subelem</span><span class="p">)</span>
+        <span class="c1"># log(1, f&quot;-- END recursion __elem_to_obj__ for {elem_tag}&quot;)</span>
+        <span class="c1"># print(&#39;&lt;-&#39;*40)</span>
+        <span class="k">if</span> <span class="s1">&#39;pdpy&#39;</span> <span class="ow">in</span> <span class="n">subelem</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+          <span class="c1"># sub_cls = self.__n__.__get__(name=getattr(subelem.attrib, &#39;pdpy&#39;, None), subelem_tag=subelem_tag)</span>
+          <span class="c1"># print(&quot;Found subclass&quot;,sub_cls)</span>
+          <span class="k">if</span> <span class="n">is_list</span><span class="p">:</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+          <span class="k">else</span><span class="p">:</span>
+            <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">subelem_tag</span><span class="p">:</span> <span class="n">v</span><span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="c1"># print(d, subelem_tag, v)</span>
+          <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">and</span> <span class="n">is_list</span><span class="p">:</span>
+            <span class="c1"># _prnt(&quot;Found list&quot;, subelem_tag, &#39;--&gt;&#39;, v)</span>
+            <span class="c1"># drop the keys of the &lt;msg&gt; tag and keep values only</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+              <span class="n">d</span> <span class="o">+=</span> <span class="n">v</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+              <span class="c1"># these are proper xml Element objects, not dicts</span>
+              <span class="n">d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+          <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">bool</span><span class="p">):</span>
+              <span class="c1"># log(1, &#39;not a dict&#39;, subelem_tag, v)</span>
+              <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">subelem_tag</span><span class="p">:</span> <span class="n">v</span><span class="p">})</span>
+            <span class="k">else</span><span class="p">:</span>
+              <span class="k">if</span> <span class="s1">&#39;text&#39;</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                <span class="c1"># a pd comment is a string</span>
+                <span class="c1"># log(1, &#39;found comment&#39;, subelem_tag, v)</span>
+                <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s1">&#39;text&#39;</span><span class="p">:[</span><span class="n">t</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="p">[</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;text&#39;</span><span class="p">]]]})</span>
+              <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">h</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                  <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">subelem_tag</span><span class="p">:</span><span class="n">v</span><span class="p">})</span>
+                  <span class="c1"># log(1, &#39;found anything&#39;, subelem_tag, v, d)</span>
+                  <span class="c1">#   for e in v:</span>
+                  <span class="c1">#     d.update({subelem_tag:e})</span>
+                  <span class="k">else</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">kk</span><span class="p">,</span><span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                      <span class="n">d</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">kk</span><span class="p">:</span><span class="n">vv</span><span class="p">})</span>
+                <span class="k">else</span><span class="p">:</span>
+                  <span class="c1"># log(1, &#39;--------&gt; found header&#39;, subelem_tag, v)</span>
+                  <span class="k">for</span> <span class="n">_</span><span class="p">,</span><span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h_type</span><span class="p">(</span><span class="n">vv</span><span class="p">))</span>
+
+      <span class="c1"># end subelement loop -----------------------------------------------</span>
+
+      <span class="n">text</span> <span class="o">=</span> <span class="n">elem</span><span class="o">.</span><span class="n">text</span> <span class="k">if</span> <span class="n">elem</span><span class="o">.</span><span class="n">text</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+      <span class="c1"># tail = elem.tail</span>
+      <span class="c1"># print(&#39;text:&#39;,repr(text))</span>
+      <span class="k">if</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
+      <span class="c1"># ignore trailing whitespace</span>
+        <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+      <span class="c1"># if text != &#39; &#39; and not all([t==&#39; &#39; for t in text]):</span>
+        <span class="c1"># text = text.strip()</span>
+      <span class="c1"># if tail:</span>
+        <span class="c1"># tail = tail.strip()</span>
+
+      <span class="c1"># if tail:</span>
+        <span class="c1"># d[&#39;#tail&#39;] = tail</span>
+        <span class="c1"># print(&quot;FOUND TAIL&quot;, tail)</span>
+
+      <span class="k">if</span> <span class="n">d</span><span class="p">:</span>
+        <span class="c1"># use #text element if other attributes exist</span>
+        <span class="k">if</span> <span class="n">text</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="s2">&quot;#text&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">text</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># text is the value if no attributes</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">text</span> <span class="ow">or</span> <span class="kc">None</span>
+      
+      <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="s1">&#39;pdpy&#39;</span> <span class="ow">in</span> <span class="n">elem</span><span class="o">.</span><span class="n">attrib</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s1">&#39;arg&#39;</span> <span class="o">==</span> <span class="n">elem_tag</span><span class="p">:</span>
+          <span class="k">return</span> <span class="n">d</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="k">return</span> <span class="p">{</span><span class="n">elem_tag</span><span class="p">:</span> <span class="n">d</span><span class="p">}</span>
+      <span class="k">elif</span> <span class="n">d</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__n__</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">elem_tag</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+          <span class="c1"># print(&quot;FOUND CLASS&quot;, cls)</span>
+          <span class="c1"># log(1, f&quot;Ending __elem_to_obj__ for {elem_tag}&quot;)</span>
+          <span class="c1"># print(&#39;&lt;&#39;*80)</span>
+          <span class="k">return</span> <span class="bp">cls</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="n">_prnt</span><span class="p">(</span><span class="s2">&quot;DICT IS&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+          <span class="c1"># log(1,&#39;UPDATING:&#39;,d)</span>
+          <span class="k">if</span> <span class="s1">&#39;pdpy&#39;</span> <span class="ow">in</span> <span class="n">elem</span><span class="o">.</span><span class="n">attrib</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__n__</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">elem</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;pdpy&#39;</span><span class="p">])</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">json</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
+          <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">d</span>
+          <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># _prnt(f&quot;updating: {d}&quot;)</span>
+            <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__n__</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">d</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;__pdpy__&#39;</span><span class="p">,</span><span class="kc">None</span><span class="p">),</span> <span class="n">tag</span><span class="o">=</span><span class="n">elem_tag</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
+              <span class="n">c</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span><span class="n">json</span><span class="o">=</span><span class="n">d</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+              <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;Unknown JSON object:&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+          <span class="c1"># print(&#39;-&#39;*80)</span>
+          <span class="c1"># c.__dumps__()</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+          <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+          <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+          <span class="n">c</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">finally</span><span class="p">:</span>
+          <span class="c1"># log(1, f&quot;Ending __elem_to_obj__ for {elem_tag}&quot;)</span>
+          <span class="c1"># print(&#39;&lt;&#39;*80)</span>
+          <span class="k">return</span> <span class="n">c</span>
+
+  <span class="k">def</span> <span class="nf">__xmlparse__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xml</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Parse an XML file into an ElementTree object. &quot;&quot;&quot;</span>
+    <span class="c1"># PdPyXMLParser(self, xml)</span>
+    <span class="k">return</span> <span class="n">__xparse__</span><span class="p">(</span><span class="n">xml</span><span class="p">)</span></div>
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fede Camara Halac.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

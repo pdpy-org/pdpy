@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pdpy.util.utils &mdash; pdpy  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> pdpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pdpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pdpy.util.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pdpy.util.utils</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># **************************************************************************** #</span>
+<span class="c1"># This file is part of the pdpy project</span>
+<span class="c1"># Copyright (C) 2021 Fede Camara Halac</span>
+<span class="c1"># **************************************************************************** #</span>
+<span class="sd">&quot;&quot;&quot; Utilities &quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span>
+  <span class="s2">&quot;log&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;splitAtChar&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;splitByEscapedChar&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;parsePdBinBuf&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;parsePdFileLines&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;printer&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;checknum&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;quit_help&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;loadPdData&quot;</span><span class="p">,</span>
+  <span class="s2">&quot;loadPdFile&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<div class="viewcode-block" id="checknum"><a class="viewcode-back" href="../../../utilities.html#pdpy.util.utils.checknum">[docs]</a><span class="k">def</span> <span class="nf">checknum</span><span class="p">(</span><span class="n">num</span><span class="p">):</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="nb">int</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+  <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="nb">float</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+      <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span> 
+      <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="c1"># def printer2(argument):</span>
+<span class="c1">#   def decorator(function):</span>
+<span class="c1">#     def wrapper(*args, **kwargs):</span>
+<span class="c1">#       log(0, argument)</span>
+<span class="c1">#       result = function(*args, **kwargs)</span>
+<span class="c1">#       return result</span>
+<span class="c1">#     return wrapper</span>
+<span class="c1">#   return decorator</span>
+
+
+<div class="viewcode-block" id="printer"><a class="viewcode-back" href="../../../utilities.html#pdpy.util.utils.printer">[docs]</a><span class="k">def</span> <span class="nf">printer</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">arg</span><span class="p">):</span>
+    <span class="c1"># log(0, func.__name__)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">arg</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">result</span><span class="p">:</span>  
+      <span class="c1"># log(0, &quot;=&quot;*80)</span>
+      <span class="n">log</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">arg</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="mi">1</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span> <span class="k">else</span> <span class="n">arg</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">result</span>
+  <span class="k">return</span> <span class="n">wrapper</span></div>
+
+<span class="c1"># def log_decorator(func):</span>
+<span class="c1">#   def wrapper(*arg):</span>
+<span class="c1">#     # log(0, func.__name__)</span>
+<span class="c1">#     result = func(*arg)</span>
+<span class="c1">#     if result:  </span>
+<span class="c1">#       print(&quot;=&quot;*80)</span>
+<span class="c1">#       print(func.__file__, func.__name__, repr(*arg))</span>
+<span class="c1">#     return result</span>
+<span class="c1">#   return wrapper</span>
+
+<div class="viewcode-block" id="log"><a class="viewcode-back" href="../../../utilities.html#pdpy.util.utils.log">[docs]</a><span class="k">def</span> <span class="nf">log</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="o">*</span><span class="n">argv</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; log utility with level and variable arguments</span>
+
+<span class="sd">  Description</span>
+<span class="sd">  -----------</span>
+<span class="sd">  This function printst to console with error `level` </span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  
+  <span class="k">if</span> <span class="mi">0</span> <span class="o">==</span> <span class="n">level</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;NORMAL&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">argv</span><span class="p">))</span>
+  <span class="k">elif</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">level</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">argv</span><span class="p">))</span>
+  <span class="k">elif</span> <span class="mi">2</span> <span class="o">==</span> <span class="n">level</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(),</span> <span class="n">argv</span><span class="p">))))</span>
+  <span class="k">elif</span> <span class="n">level</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="k">pass</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">argv</span><span class="p">))</span></div>
+
+<span class="k">def</span> <span class="nf">findIndices</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">cond_func</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; Find the start and stop slice indices </span>
+<span class="sd">  of elements in a list that satisfy a condition function `cond_func`</span>
+
+<span class="sd">  Returns</span>
+<span class="sd">  -------</span>
+<span class="sd">  list of tuples (start, stop)</span>
+
+<span class="sd">  Example</span>
+<span class="sd">  -------</span>
+<span class="sd">  `indices = findIndices(data, lambda x: not len(x))`</span>
+
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">start_index</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="k">for</span> <span class="n">stop_index</span><span class="p">,</span> <span class="n">datum</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">cond_func</span><span class="p">(</span><span class="n">datum</span><span class="p">):</span>
+      <span class="n">indices</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">start_index</span><span class="p">,</span> <span class="n">stop_index</span><span class="p">))</span>
+      <span class="n">start_index</span> <span class="o">=</span> <span class="n">stop_index</span> <span class="o">+</span> <span class="mi">1</span>
+  <span class="k">return</span> <span class="n">indices</span>
+
+<span class="k">def</span> <span class="nf">splitByNone</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; Split a list by None elements</span>
+
+<span class="sd">  Description</span>
+<span class="sd">  -----------</span>
+<span class="sd">  This function splits a list by None elements</span>
+<span class="sd">  and returns a list of lists</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  
+  <span class="n">indices</span> <span class="o">=</span> <span class="n">findIndices</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+  <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">):</span> <span class="k">return</span> <span class="n">data</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="c1"># if there are indices, split the list</span>
+    <span class="c1"># iterate over the indices and split accordingly</span>
+    <span class="k">return</span> <span class="p">[</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">i</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span> <span class="p">]</span>
+
+
+<div class="viewcode-block" id="splitByEscapedChar"><a class="viewcode-back" href="../../../utilities.html#pdpy.util.utils.splitByEscapedChar">[docs]</a><span class="k">def</span> <span class="nf">splitByEscapedChar</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">char</span><span class="o">=</span><span class="s2">&quot;;&quot;</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; Split a string by escaped char</span>
+
+<span class="sd">  Description</span>
+<span class="sd">  -----------</span>
+<span class="sd">  This function splits a string by escaped char</span>
+<span class="sd">  and returns a list of lists or the original string</span>
+
+<span class="sd">  Parameters</span>
+<span class="sd">  ----------</span>
+<span class="sd">  data : list</span>
+<span class="sd">    list to be split</span>
+<span class="sd">  char : str</span>
+<span class="sd">    char to split by (default &quot;;&quot;)</span>
+
+<span class="sd">  &quot;&quot;&quot;</span>
+
+  <span class="n">regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(?&lt;=</span><span class="se">\\</span><span class="s2">)&quot;</span> <span class="o">+</span> <span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+  <span class="n">idx</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span><span class="n">d</span><span class="p">)</span> <span class="p">]</span>
+
+  <span class="k">if</span> <span class="ow">not</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">):</span> 
+    <span class="k">return</span> <span class="n">data</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="o">+</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span><span class="n">idx</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)]</span>
+    <span class="c1"># result = list(filter(None,result)) # do not filter out empty elements</span>
+    
+    <span class="c1"># account for the first index</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]):</span>
+      <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]])):</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">[:</span><span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]])]</span> <span class="o">+</span> <span class="n">result</span>
+
+    <span class="k">return</span> <span class="n">result</span></div>
+
+<span class="k">def</span> <span class="nf">splitSemi</span><span class="p">(</span><span class="n">argv</span><span class="p">):</span>
+  <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+  <span class="k">if</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">;&quot;</span> <span class="ow">in</span> <span class="n">argv</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">argv</span><span class="p">:</span>
+      <span class="k">if</span> <span class="n">arg</span> <span class="o">==</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">;&quot;</span><span class="p">:</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span> <span class="n">line</span> <span class="o">+=</span> <span class="n">arg</span>
+        <span class="k">else</span><span class="p">:</span> <span class="n">line</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">arg</span>
+    <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">argv</span><span class="p">)]</span>
+  <span class="n">lines</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">lines</span><span class="p">))</span>
+  <span class="k">return</span> <span class="n">lines</span>
+
+<div class="viewcode-block" id="splitAtChar"><a class="viewcode-back" href="../../../utilities.html#pdpy.util.utils.splitAtChar">[docs]</a><span class="k">def</span> <span class="nf">splitAtChar</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">char</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">escaped</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">double</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+  <span class="k">if</span> <span class="n">escaped</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">double</span><span class="p">:</span>
+      <span class="n">regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(?&lt;=</span><span class="se">\\\\</span><span class="s2">)&quot;</span> <span class="o">+</span> <span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+      <span class="c1"># offset = 4</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="n">regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(?&lt;=\s</span><span class="se">\\</span><span class="s2">)&quot;</span> <span class="o">+</span> <span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+      <span class="c1"># offset = 2</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">regex</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;(?&lt;!</span><span class="se">\\</span><span class="s2">)&quot;</span> <span class="o">+</span> <span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+    <span class="c1"># offset = 0</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span><span class="n">line</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">result</span></div>
+
+<span class="k">def</span> <span class="nf">tokenize</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+  <span class="c1"># account for comma chararcter delimiting obj border box</span>
+  <span class="n">line</span> <span class="o">=</span> <span class="n">splitAtChar</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">escaped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+  <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+      <span class="n">tokens</span> <span class="o">+=</span> <span class="n">splitAtChar</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">char</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">escaped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">tokens</span> <span class="o">=</span> <span class="n">splitAtChar</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">char</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">escaped</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+  <span class="c1"># filter out empty tokens</span>
+  <span class="n">tokens</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="n">tokens</span><span class="p">))</span>
+
+  <span class="k">return</span> <span class="n">tokens</span>
+
+<div class="viewcode-block" id="parsePdFileLines"><a class="viewcode-back" href="../../../utilities.html#pdpy.util.utils.parsePdFileLines">[docs]</a><span class="k">def</span> <span class="nf">parsePdFileLines</span><span class="p">(</span><span class="n">file_lines</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; Feed in file lines and return a list with pure data lines</span>
+
+<span class="sd">  Description</span>
+<span class="sd">  -----------</span>
+<span class="sd">  This function returns a nodes list containing</span>
+<span class="sd">  pure data lines split by the semicolon char,</span>
+<span class="sd">  accounting specially for lines that span multiple rows </span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">pd_start</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^#[XNA]&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">MULTILINE</span><span class="p">)</span>  
+
+  <span class="n">lines</span> <span class="o">=</span> <span class="p">[]</span>
+  <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">file_lines</span><span class="p">:</span>
+    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pd_start</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span> <span class="n">lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="c1"># line does not start in a pd-way</span>
+      <span class="c1"># append to the last stored line</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">):</span> <span class="n">lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="n">line</span>
+
+  <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span> <span class="p">]</span>
+
+  <span class="k">return</span>  <span class="n">nodes</span></div>
+
+<div class="viewcode-block" id="parsePdBinBuf"><a class="viewcode-back" href="../../../utilities.html#pdpy.util.utils.parsePdBinBuf">[docs]</a><span class="k">def</span> <span class="nf">parsePdBinBuf</span><span class="p">(</span><span class="n">binbuf</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; Feed in a pd file string and return a list with pure data lines</span>
+
+<span class="sd">  Description</span>
+<span class="sd">  -----------</span>
+<span class="sd">  This function returns a nodes list containing</span>
+<span class="sd">  pure data lines split by the semicolon char,</span>
+<span class="sd">  accounting specially for lines that span multiple rows </span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="n">pd_start</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;(#[XNA].*);(?=\r\n)&quot;</span><span class="p">)</span>
+  <span class="n">lines</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">pd_start</span><span class="p">,</span> <span class="n">binbuf</span><span class="p">)</span>
+  <span class="n">nodes</span> <span class="o">=</span> <span class="p">[</span> <span class="n">tokenize</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span><span class="n">lines</span><span class="p">))</span> <span class="p">]</span>
+
+  <span class="k">return</span>  <span class="n">nodes</span></div>
+
+<div class="viewcode-block" id="quit_help"><a class="viewcode-back" href="../../../utilities.html#pdpy.util.utils.quit_help">[docs]</a><span class="k">def</span> <span class="nf">quit_help</span><span class="p">(</span><span class="n">msg</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">parser</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+  <span class="k">if</span> <span class="n">parser</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">print_help</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">msg</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+    <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;REASON:&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+  <span class="k">else</span><span class="p">:</span>
+    <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="s2">&quot;Unknown error...&quot;</span><span class="p">)</span>
+  <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="loadPdData"><a class="viewcode-back" href="../../../utilities.html#pdpy.util.utils.loadPdData">[docs]</a><span class="k">def</span> <span class="nf">loadPdData</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+  <span class="c1"># log(1,&quot;Trying&quot;, encoding)</span>
+  <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">fp</span><span class="o">.</span><span class="n">readlines</span><span class="p">()]</span>
+  <span class="k">return</span> <span class="n">lines</span><span class="p">,</span> <span class="n">encoding</span></div>
+
+<div class="viewcode-block" id="loadPdFile"><a class="viewcode-back" href="../../../utilities.html#pdpy.util.utils.loadPdFile">[docs]</a><span class="k">def</span> <span class="nf">loadPdFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">):</span>
+  <span class="k">try</span><span class="p">:</span>
+    <span class="n">pd_data</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="n">loadPdData</span><span class="p">(</span><span class="n">encoding</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+  <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
+    <span class="k">try</span><span class="p">:</span>
+      <span class="n">pd_data</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="n">loadPdData</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">UnicodeDecodeError</span><span class="p">:</span>
+      <span class="k">try</span><span class="p">:</span>
+        <span class="n">pd_data</span><span class="p">,</span> <span class="n">encoding</span> <span class="o">=</span> <span class="n">loadPdData</span><span class="p">(</span><span class="s2">&quot;latin-1&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+      <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">pd_data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Could not load input file&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+  <span class="k">finally</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">pd_data</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fede Camara Halac.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patching &mdash; pdpy  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Primitives" href="primitives.html" />
+    <link rel="prev" title="Data" href="data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> pdpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="classes.html">Classes</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="objects.html">Pure Data Gui Object Definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iemgui.html">IEMGui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="data.html">Data</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Patching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="primitives.html">Primitives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="base.html">Base Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="encoders.html">Encoding/Decoding</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pdpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="classes.html">Classes</a> &raquo;</li>
+      <li>Patching</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/patching.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-pdpy.classes.canvas">
+<span id="patching"></span><h1>Patching<a class="headerlink" href="#module-pdpy.classes.canvas" title="Permalink to this heading"></a></h1>
+<p>Canvas Class Definition</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pdpy.classes.canvas.Canvas">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pdpy.classes.canvas.</span></span><span class="sig-name descname"><span class="pre">Canvas</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/canvas.html#Canvas"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.canvas.Canvas" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#pdpy.classes.canvasbase.CanvasBase" title="pdpy.classes.canvasbase.CanvasBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">CanvasBase</span></code></a>, <a class="reference internal" href="base.html#pdpy.classes.base.Base" title="pdpy.classes.base.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a></p>
+<p>A Pure Data ‘canvas’ or ‘subpatch’ represented as a <cite>pdpy</cite> object</p>
+<p>This class holds the pure data subpach/canvas properties
+as defined in the pure data text file.</p>
+<p><cite>Canvas</cite> has some base properties inherited from the super class
+<cite>Properties</cite>. Besides basic properties, the <cite>Canvas</cite> class takes
+<cite>#X connect</cite>, <cite>#X coords</cite>, and <cite>#X restore</cite> into its own namespace,
+as well as the pure data nodes that are created within the context
+of a subpatch/canvas window.</p>
+<ul class="simple">
+<li><p><cite>__pdpy__</cite> (<cite>str</cite>) PdPy className (<cite>self.__class__.__name__</cite>)</p></li>
+<li><p><cite>name</cite>     (<cite>str</cite>) The canvas name on parent (‘(subpatch)’)</p></li>
+<li><p><cite>vis</cite>      (<cite>bool</cite>) Flag to tell if canvas should be visible or not (False)</p></li>
+<li><p><cite>gop</cite>      (<cite>bool</cite>) Flag to tell if canvas should Graph on Parent (False)</p></li>
+<li><p><cite>coords</cite>   (<cite>Coords</cite>) Obj holding coordinates necessary for GOP (None)</p></li>
+<li><p><cite>position</cite> (<cite>Point</cite>) X-Y pair defining where the pd box is graphed (None)</p></li>
+<li><p><cite>title</cite>    (<cite>str</cite>) Name to display on the canvas window title bar (None)</p></li>
+<li><p><cite>border</cite>   (<cite>int</cite>) Position of the object’s box right border  (None)</p></li>
+<li><p><cite>id</cite>       (<cite>int</cite>) Identifier number for connections (None)</p></li>
+<li><p><cite>__obj_idx__</cite>  (<cite>int</cite>) Number of objects currently on this canvas (-1)</p></li>
+</ul>
+<p>The basic properties come
+from the pure data file representation: <cite>#N canvas 0 22 450 300 12;</cite></p>
+<p><cite>screen</cite> (<cite>Point</cite>) x-y pair of the top-left window corner on the screen (0,22)
+<cite>dimension</cite> (<cite>Size</cite>) window width and height dimensions (450, 300)
+<cite>font</cite> (<cite>int</cite>) window font size (12)
+<cite>__pdpy__</cite> (<cite>str</cite>) PdPy className (<cite>self.__class__.__name__</cite>)</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pdpy.classes.canvas.Canvas.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/canvas.html#Canvas.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.canvas.Canvas.add" title="Permalink to this definition"></a></dt>
+<dd><p>Add (append) a Node to this canvas <cite>nodes</cite></p>
+<p>This method creates and/or appends a ‘node’ to an internal array <cite>nodes</cite>.
+Each node is a Pure Data object that is neither a comment nor a connection</p>
+<p>The position (index) of the most recently added node</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pdpy.classes.canvas.Canvas.addpos">
+<span class="sig-name descname"><span class="pre">addpos</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/canvas.html#Canvas.addpos"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.canvas.Canvas.addpos" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pdpy.classes.canvas.Canvas.comment">
+<span class="sig-name descname"><span class="pre">comment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">comment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/canvas.html#Canvas.comment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.canvas.Canvas.comment" title="Permalink to this definition"></a></dt>
+<dd><p>Append a pure data comment</p>
+<p>This method creates and/or appends a pure data comment.</p>
+<p>None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pdpy.classes.canvas.Canvas.edge">
+<span class="sig-name descname"><span class="pre">edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">edge</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/canvas.html#Canvas.edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.canvas.Canvas.edge" title="Permalink to this definition"></a></dt>
+<dd><p>Append a pure data connection (edge)</p>
+<p>This method creates and/or appends a pure data connection as an <cite>Edge</cite>.
+See <cite>Edge</cite> to see how connections are handled.</p>
+<p>None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pdpy.classes.canvas.Canvas.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/canvas.html#Canvas.get"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.canvas.Canvas.get" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pdpy.classes.canvas.Canvas.get_char_dim">
+<span class="sig-name descname"><span class="pre">get_char_dim</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/canvas.html#Canvas.get_char_dim"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.canvas.Canvas.get_char_dim" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pdpy.classes.canvas.Canvas.grow">
+<span class="sig-name descname"><span class="pre">grow</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/canvas.html#Canvas.grow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.canvas.Canvas.grow" title="Permalink to this definition"></a></dt>
+<dd><p>Increments the canvas object index by 1</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pdpy.classes.canvas.Canvas.update_cursor">
+<span class="sig-name descname"><span class="pre">update_cursor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/canvas.html#Canvas.update_cursor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.canvas.Canvas.update_cursor" title="Permalink to this definition"></a></dt>
+<dd><p>Fill objects from top to bottom until we reach bottom
+(used to be get_position)</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-pdpy.classes.connections"></span><p>Class Definitions</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pdpy.classes.connections.Comm">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pdpy.classes.connections.</span></span><span class="sig-name descname"><span class="pre">Comm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">send</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xml</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/connections.html#Comm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.connections.Comm" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#pdpy.classes.base.Base" title="pdpy.classes.base.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a></p>
+<p>Communication Class holding send and receive pairs</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pdpy.classes.connections.Edge">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pdpy.classes.connections.</span></span><span class="sig-name descname"><span class="pre">Edge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pd_lines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xml</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/connections.html#Edge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.connections.Edge" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#pdpy.classes.base.Base" title="pdpy.classes.base.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a></p>
+<p>A Pd Connection
+Description
+———–
+A Pd Connection object is a connection between two objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>source</strong> (<em>1.</em>) – </p></li>
+<li><p><strong>port</strong> (<em>4.</em>) – </p></li>
+<li><p><strong>target</strong> (<em>3.</em>) – </p></li>
+<li><p><strong>port</strong> – </p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pdpy.classes.connections.Edge.connect">
+<span class="sig-name descname"><span class="pre">connect</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/connections.html#Edge.connect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.connections.Edge.connect" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pdpy.classes.connections.Source">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pdpy.classes.connections.</span></span><span class="sig-name descname"><span class="pre">Source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xml</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/connections.html#Source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.connections.Source" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#pdpy.classes.base.Base" title="pdpy.classes.base.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pdpy.classes.connections.Source.locate">
+<span class="sig-name descname"><span class="pre">locate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/connections.html#Source.locate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.connections.Source.locate" title="Permalink to this definition"></a></dt>
+<dd><p>Locates the node in the parent (Canvas) object</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-pdpy.classes.dependencies"></span><p>Dependencies Class Definition</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pdpy.classes.dependencies.Dependencies">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pdpy.classes.dependencies.</span></span><span class="sig-name descname"><span class="pre">Dependencies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pd_lines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">json</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xml</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/dependencies.html#Dependencies"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.dependencies.Dependencies" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="base.html#pdpy.classes.base.Base" title="pdpy.classes.base.Base"><code class="xref py py-class docutils literal notranslate"><span class="pre">Base</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pdpy.classes.dependencies.Dependencies.update">
+<span class="sig-name descname"><span class="pre">update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">deps</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/dependencies.html#Dependencies.update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.dependencies.Dependencies.update" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pdpy.classes.dependencies.Dependencies.updateLib">
+<span class="sig-name descname"><span class="pre">updateLib</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lib</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/dependencies.html#Dependencies.updateLib"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.dependencies.Dependencies.updateLib" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pdpy.classes.dependencies.Dependencies.updatePath">
+<span class="sig-name descname"><span class="pre">updatePath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pdpy/classes/dependencies.html#Dependencies.updatePath"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pdpy.classes.dependencies.Dependencies.updatePath" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="data.html" class="btn btn-neutral float-left" title="Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="primitives.html" class="btn btn-neutral float-right" title="Primitives" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fede Camara Halac.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

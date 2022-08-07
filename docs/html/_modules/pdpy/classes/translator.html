@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pdpy.classes.translator &mdash; pdpy  documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> pdpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../classes.html">Classes</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">pdpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>pdpy.classes.translator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for pdpy.classes.translator</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1"># **************************************************************************** #</span>
+<span class="c1"># This file is part of the pdpy project</span>
+<span class="c1"># Copyright (C) 2021 Fede Camara Halac</span>
+<span class="c1"># **************************************************************************** #</span>
+<span class="sd">&quot;&quot;&quot; Translator class &quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">json</span> <span class="kn">import</span> <span class="n">load</span> <span class="k">as</span> <span class="n">json_load</span>
+<span class="kn">from</span> <span class="nn">json</span> <span class="kn">import</span> <span class="n">loads</span> <span class="k">as</span> <span class="n">json_loads</span>
+<span class="kn">from</span> <span class="nn">pickle</span> <span class="kn">import</span> <span class="n">dump</span> <span class="k">as</span> <span class="n">pickle_dump</span>
+<span class="kn">from</span> <span class="nn">pickle</span> <span class="kn">import</span> <span class="n">load</span> <span class="k">as</span> <span class="n">pickle_load</span>
+<span class="kn">from</span> <span class="nn">pickle</span> <span class="kn">import</span> <span class="n">HIGHEST_PROTOCOL</span> <span class="k">as</span> <span class="n">PICKLE_HIGHEST_PROTOCOL</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">SimpleNamespace</span>
+<span class="kn">from</span> <span class="nn">pdpy.classes.base</span> <span class="kn">import</span> <span class="n">Base</span>
+<span class="kn">from</span> <span class="nn">pdpy.classes.exceptions</span> <span class="kn">import</span> <span class="n">ArgumentException</span>
+<span class="kn">from</span> <span class="nn">pdpy.classes.pdpy</span> <span class="kn">import</span> <span class="n">PdPy</span>
+<span class="kn">from</span> <span class="nn">pdpy.classes.pdpyparser</span> <span class="kn">import</span> <span class="n">PdPyParser</span>
+<span class="kn">from</span> <span class="nn">pdpy.classes.default</span> <span class="kn">import</span> <span class="n">getFormat</span>
+<span class="kn">from</span> <span class="nn">pdpy.util.utils</span> <span class="kn">import</span> <span class="n">log</span><span class="p">,</span> <span class="n">parsePdBinBuf</span><span class="p">,</span> <span class="n">parsePdFileLines</span><span class="p">,</span> <span class="n">loadPdFile</span>
+<span class="kn">from</span> <span class="nn">pdpy.classes.pdpyencoder</span> <span class="kn">import</span> <span class="n">PdPyEncoder</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span> <span class="s1">&#39;Translator&#39;</span> <span class="p">]</span> 
+
+<div class="viewcode-block" id="Translator"><a class="viewcode-back" href="../../../utilities.html#pdpy.classes.translator.Translator">[docs]</a><span class="k">class</span> <span class="nc">Translator</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+  <span class="sd">&quot;&quot;&quot; This class maintains and translates a `pdpy` Obj in memory. </span>
+
+<span class="sd">  Description:</span>
+<span class="sd">  -------------</span>
+<span class="sd">  This class loads a file in `.pd` or `.json` formats and keeps an</span>
+<span class="sd">  internal mirror (aka, translation) between the two. The direction</span>
+<span class="sd">  of the translation depends on the input file type. Use the `save_*`</span>
+<span class="sd">  functions to write translations to disk. Alternatively, you can load </span>
+<span class="sd">  a `.pkl` (aka, pickle) file  containing a `pdpy` object.</span>
+
+<span class="sd">  Inputs:</span>
+<span class="sd">  --------</span>
+<span class="sd">  A dictionary of arguments with the following keys:</span>
+<span class="sd">  `to`: the target format. Can be `json`, `xml`, `pd`, or `pkl`.</span>
+<span class="sd">  `fro`: the source format. Can be `json`, `xml`, `pd`, or `pkl`.</span>
+<span class="sd">  `input`: An input file Path, will be formated using `pathlib.Path`</span>
+<span class="sd">  `output`: An output file Path, will be formated using `pathlib.Path`</span>
+<span class="sd">  `encoding`  (`str`, default is &#39;utf-8&#39;): Encoding of the input file</span>
+<span class="sd">  `source`    (`str`, inferred from `input_file`): Source file type</span>
+<span class="sd">  `reflect`   (`bool`): If set to `True`, performs a reflected translation</span>
+<span class="sd">  &quot;&quot;&quot;</span>
+  <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json</span><span class="p">):</span>
+
+    <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">__populate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json</span><span class="p">)</span>
+    
+    <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="n">getFormat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fro</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fro</span> <span class="k">else</span> <span class="kc">None</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="n">getFormat</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">to</span> <span class="k">else</span> <span class="kc">None</span>
+    
+    <span class="c1"># grab the source extension from the input file</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">suffix</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="n">ArgumentException</span><span class="p">(</span><span class="s2">&quot;Source and target are the same, skipping translation&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="n">ArgumentException</span><span class="p">(</span><span class="s2">&quot;To or fro are missing or malformed&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">ArgumentException</span><span class="p">(</span><span class="s2">&quot;Input file suffix does not match with -f argument&quot;</span><span class="p">)</span>
+      <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">ArgumentException</span><span class="p">(</span><span class="s2">&quot;File&quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="s2">&quot;does not exist.&quot;</span><span class="p">)</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">)</span>
+        <span class="n">log</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;Using&quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="s2">&quot;as output file&quot;</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_file</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file</span><span class="o">.</span><span class="n">suffix</span> <span class="o">!=</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">:</span>
+          <span class="k">raise</span> <span class="n">ArgumentException</span><span class="p">(</span><span class="s2">&quot;Input file suffix does not match with -f argument&quot;</span><span class="p">)</span>
+    
+    <span class="c1"># store an object containing a pd object database</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">internals</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="sd">&quot;&quot;&quot;  Attempt to load PDDB manager: https://github.com/fdch/pddb</span>
+<span class="sd">      Fall back to json if the package is not there</span>
+<span class="sd">      &quot;&quot;&quot;</span>
+      <span class="kn">import</span> <span class="nn">sys</span>
+      <span class="n">pddb_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">internals</span><span class="p">)</span>
+      <span class="k">if</span> <span class="n">pddb_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+          <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">pddb_path</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">&#39;src&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">as_posix</span><span class="p">())</span>
+          <span class="kn">from</span> <span class="nn">pddb</span> <span class="kn">import</span> <span class="n">PDDB</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">pddb</span> <span class="o">=</span> <span class="n">PDDB</span><span class="p">(</span><span class="n">dbname</span><span class="o">=</span><span class="n">pddb_path</span><span class="o">.</span><span class="n">resolve</span><span class="p">(),</span> <span class="n">listen</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+          <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not import pddb. Loading json instead.&quot;</span><span class="p">)</span>
+          <span class="k">try</span><span class="p">:</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">internals</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+              <span class="bp">self</span><span class="o">.</span><span class="n">pddb</span><span class="o">=</span><span class="n">json_load</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span><span class="n">object_hook</span><span class="o">=</span><span class="k">lambda</span> <span class="n">o</span><span class="p">:</span><span class="n">SimpleNamespace</span><span class="p">(</span><span class="o">**</span><span class="n">o</span><span class="p">))</span>
+          <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Could not load pddb.json. See error below.&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ArgumentException</span><span class="p">(</span><span class="s2">&quot;PDDB:&quot;</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="n">pddb_path</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span> <span class="o">+</span> <span class="s2">&quot; &quot;</span> <span class="o">+</span> <span class="s2">&quot;is missing.&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Load the source file</span>
+    
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;pd&quot;</span><span class="p">:</span>
+      <span class="n">pd_file_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">as_posix</span><span class="p">()</span>
+      <span class="n">pd_file</span> <span class="o">=</span> <span class="n">loadPdFile</span><span class="p">(</span><span class="n">pd_file_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
+      <span class="n">pd_lines</span> <span class="o">=</span> <span class="n">parsePdFileLines</span><span class="p">(</span><span class="n">pd_file</span><span class="p">)</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">pdpy</span> <span class="o">=</span> <span class="n">PdPy</span><span class="p">(</span>
+          <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+          <span class="n">encoding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span>
+          <span class="n">pd_lines</span> <span class="o">=</span> <span class="n">pd_lines</span>
+      <span class="p">)</span>
+
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;json&quot;</span><span class="p">:</span>
+      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdpy</span> <span class="o">=</span> <span class="n">json_load</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">object_hook</span> <span class="o">=</span> <span class="n">PdPyEncoder</span><span class="p">())</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">pdpy</span><span class="o">.</span><span class="n">__jsontree__</span><span class="p">()</span>
+
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;pkl&quot;</span><span class="p">:</span>
+      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">pickle_load</span><span class="p">(</span><span class="n">fp</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdpy</span> <span class="o">=</span> <span class="n">json_loads</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">object_hook</span> <span class="o">=</span> <span class="n">PdPyEncoder</span><span class="p">())</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">pdpy</span><span class="o">.</span><span class="n">__jsontree__</span><span class="p">()</span>
+    
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;pdpy&quot;</span><span class="p">:</span>
+      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdpy</span> <span class="o">=</span> <span class="n">PdPyParser</span><span class="p">(</span>
+          <span class="n">fp</span><span class="o">.</span><span class="n">readlines</span><span class="p">(),</span> <span class="c1"># pdpy_file_pointer</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">pddb</span><span class="p">,</span>
+          <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+          <span class="n">encoding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span>
+        <span class="p">)</span>
+    
+    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">source</span> <span class="o">==</span> <span class="s2">&quot;xml&quot;</span><span class="p">:</span>
+      <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pdpy</span> <span class="o">=</span> <span class="n">PdPy</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">encoding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span>
+            <span class="n">xml</span> <span class="o">=</span> <span class="n">fp</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unknown source type: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">source</span><span class="p">))</span>
+  
+
+  <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    
+    <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span>
+    
+    <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_file</span>
+    
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">Path</span><span class="p">):</span>
+      <span class="n">out</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+    
+    <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;json&#39;</span> <span class="ow">or</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;pkl&#39;</span><span class="p">:</span>
+      <span class="c1"># return a json string representation from pdpy</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdpy</span><span class="o">.</span><span class="n">__json__</span><span class="p">()</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="s1">&#39;json&#39;</span><span class="p">:</span>
+          <span class="n">ofname</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.json&quot;</span><span class="p">)</span>
+          <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ofname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">target</span> <span class="o">==</span> <span class="s2">&quot;pkl&quot;</span><span class="p">:</span>
+          <span class="n">ofname</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.pkl&quot;</span><span class="p">)</span>
+          <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.pkl&quot;</span><span class="p">),</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+            <span class="n">pickle_dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">json</span><span class="p">,</span> <span class="n">fp</span><span class="p">,</span> <span class="n">PICKLE_HIGHEST_PROTOCOL</span><span class="p">)</span>
+
+        <span class="c1"># the Pd reflection logic when json is the target</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reflect</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">pd_ref</span> <span class="o">=</span> <span class="n">PdPy</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">encoding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span>
+            <span class="n">json</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">json</span>
+          <span class="p">)</span><span class="o">.</span><span class="n">__pd__</span><span class="p">()</span>
+          <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pd_ref</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">stem</span> <span class="o">+</span> <span class="s1">&#39;_ref&#39;</span><span class="p">)</span>
+            <span class="n">ofname</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.pd&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ofname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+              <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pd_ref</span><span class="p">)</span>
+
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;No JSON representation available&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="s2">&quot;pd&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdpy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="c1"># get the pd representation</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">pd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdpy</span><span class="o">.</span><span class="n">__pd__</span><span class="p">()</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pd</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+          <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pd</span><span class="p">)</span>
+        <span class="c1"># the Json reflection logic when Pd is the target</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reflect</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">json_ref</span> <span class="o">=</span> <span class="n">PdPy</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">encoding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span>
+            <span class="n">pd_lines</span> <span class="o">=</span> <span class="n">parsePdBinBuf</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pd</span><span class="p">)</span>
+           <span class="p">)</span><span class="o">.</span><span class="n">__json__</span><span class="p">()</span>
+          <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">json_ref</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">stem</span> <span class="o">+</span> <span class="s1">&#39;_ref&#39;</span><span class="p">)</span>
+            <span class="n">ofname</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.json&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ofname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+              <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">json_ref</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;No Pd representation available&quot;</span><span class="p">)</span>
+      
+    <span class="k">if</span> <span class="n">target</span> <span class="o">==</span> <span class="s2">&quot;xml&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdpy</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="c1"># get the xml representation</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">xml</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pdpy</span><span class="o">.</span><span class="n">__xml__</span><span class="p">()</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">ofname</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.xml&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">xml</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">ofname</span><span class="o">.</span><span class="n">as_posix</span><span class="p">(),</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span>
+
+        <span class="c1"># the Pd reflection logic when xml is the target</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reflect</span><span class="p">:</span>
+          <span class="bp">self</span><span class="o">.</span><span class="n">xml_ref</span> <span class="o">=</span> <span class="n">PdPy</span><span class="p">(</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">encoding</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">,</span>
+            <span class="n">xml</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml</span><span class="o">.</span><span class="n">to_string</span><span class="p">()</span> <span class="c1"># give it an xml string</span>
+           <span class="p">)</span><span class="o">.</span><span class="n">__pd__</span><span class="p">()</span>
+          <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">xml_ref</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="p">(</span><span class="n">out</span><span class="o">.</span><span class="n">stem</span> <span class="o">+</span> <span class="s1">&#39;_ref&#39;</span><span class="p">)</span>
+            <span class="n">ofname</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.pd&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">ofname</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">fp</span><span class="p">:</span>
+              <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xml_ref</span><span class="p">)</span>
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">log</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;No XML representation available&quot;</span><span class="p">)</span></div>
+      
+      <span class="c1"># self.xml = JsonToXml(self.pdpy)</span>
+      <span class="c1"># if self.xml is not None:</span>
+      <span class="c1">#   ofname = out.with_suffix(&quot;.xml&quot;)</span>
+      <span class="c1">#   with open(ofname, &#39;w&#39;) as fp:</span>
+      <span class="c1">#     fp.write(self.xml.to_string())</span>
+      <span class="c1">#   if self.reflect:</span>
+      <span class="c1">#      self.xml_ref = JsonToXml(self.pdpy)</span>
+
+  <span class="c1"># end def __call__</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Fede Camara Halac.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
