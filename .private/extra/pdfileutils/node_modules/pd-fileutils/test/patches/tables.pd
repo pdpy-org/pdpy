@@ -1,3 +1,0 @@
-#N canvas 114 400 450 300 10;
-#X obj 290 57 table myTable 35;
-#X obj 40 250 osc~ 440;
