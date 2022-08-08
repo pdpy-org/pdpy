@@ -13,7 +13,7 @@ author = 'Fede Camara Halac'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.autosummary']
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.napoleon', 'sphinx.ext.todo', 'sphinx.ext.viewcode', 'sphinx.ext.autosummary', 'sphinx.ext.githubpages']
 
 templates_path = ['_templates']
 exclude_patterns = []
@@ -51,3 +51,5 @@ html_static_path = ['_static']
 html_css_files = [
     'css/custom.css',
 ]
+
+html_baseurl = "https://pdpy-org.github.com/doc"
