@@ -28,11 +28,10 @@ class Coords(Base):
   - `margin` : if present, next 2 floats are the margins. See ::func::`addmargin`)
 
   """
-  def __init__(self, coords=None, json=None, xml=None):
+  def __init__(self, coords=None, json=None, xml=None, **kwargs):
     
     self.__pdpy__ = self.__class__.__name__
     super().__init__(cls='coords', json=json, xml=xml)
-    super().__init__()
     if json is not None:
       super().__populate__(self, json)
     elif xml is not None:
@@ -41,7 +40,7 @@ class Coords(Base):
       self.gop = self.__num__(xml.findtext('gop', 0))
       if xml.find('margin'):
         self.addmargin(xml=xml.find('margin'))
-    elif json is None and xml is None:
+    elif json is None and xml is None and coords is not None:
       # NON-GOP
       self.range = Area(coords=coords[:4]) if coords is not None else Area()
       self.dimension = Size(w=coords[4], h=coords[5]) if coords is not None else Size()
@@ -49,6 +48,26 @@ class Coords(Base):
       # GOP
       if 9 == len(coords):
         self.addmargin(x=coords[7], y=coords[8])
+    else:
+      if 'gop' in kwargs:
+        self.gop = kwargs.pop('gop')
+      else:
+        self.gop = 0
+      if 'range' in kwargs:
+        self.range = Area(kwargs.pop('area'))
+      else:
+        self.range = Area(coords=[0,1,100,-1])
+      if 'dimen' in kwargs:
+        self.dimension = Size(kwargs.pop('dimen'))
+      else:
+        self.dimension = Size(w=200,h=140)
+      
+      if self.gop:
+        if 'margin' in kwargs:
+          self.addmargin(kwargs.pop('margin'))
+        else:
+          self.addmargin(x=0, y=0)
+
 
   def addmargin(self, **kwargs):
     self.margin = Point(**kwargs)

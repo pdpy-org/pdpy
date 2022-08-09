@@ -175,13 +175,18 @@ class Base(XmlBuilder, XmlTagConvert):
 
   def __get_obj_size__(self):
     
+    # print(self.__json__())
     font_size = self.__parent__().font
 
     if hasattr(self, 'size'):
-      if hasattr(self.size, 'height'):
+      # print("Size", self.size.__pd__())
+      if hasattr(self.size, 'width') and hasattr(self.size, 'height'):
         return self.size.width, self.size.height
       else:
-        return self.size.width, self.size.width
+        if hasattr(self.size, 'height'):
+          return font_size, self.size.height
+        elif hasattr(self.size, 'width'):
+          return self.size.width, font_size
     
     text_h = font_size * 2
     text_w = 0
@@ -259,6 +264,22 @@ class Base(XmlBuilder, XmlTagConvert):
     arg = arg.replace('$', '\\$',1)
     return arg
 
+  def __closeline__(self, pdtype, pdcls, pdargs):
+    """ Closes a Pd file line
+    """
+    s = str("#") + str(pdtype) + " " + str(pdcls)
+
+    if pdargs is not None:
+      if isinstance(pdargs, list):
+        s += ' ' + ' '.join(pdargs)
+      else:
+        s += str(" ") + str(pdargs)
+        s += self.__end__
+    
+    s = s.replace('  ', ' ')
+    
+    return s
+  
   def __pd__(self, args=None):
     """ Returns a the pd line for this object
     
@@ -268,34 +289,25 @@ class Base(XmlBuilder, XmlTagConvert):
     
     Parameters
     -----------
-    args : `list` of `str` or `str` or `None`
+    args : ``list`` of ``str`` or ``str`` or ``None``
       The arguments to the pd line.
     
-    If args is present, the pd line will end with `;\r\n` with the arguments:
+    If args is present, the pd line will end with ``;\r\n`` with the arguments:
       If args is a list of strings, each element is appended to the pd line.
-        `#N canvas 0 22 340 520 12;`
+        ``#N canvas 0 22 340 520 12;``
       If args is a string, it is appended to the pd line: 
-        `#X obj 10 30 print;`
+        ``#X obj 10 30 print;``
     If args is None, the pd line is returned without arguments: 
-      `#X connect`
+      ``#X connect``
 
     Returns
     -----------
-    `str` : the pd line for this object built with `__type__` and `__cls__`
+    ``str`` : the pd line for this object built with ``__type__`` and ``__cls__``
 
     """
     
-    s = str("#") + str(self.__type__) + " " + str(self.__cls__)
+    s = self.__closeline__(self.__type__, self.__cls__, args)
     # log(1, "Base.__pd__()", repr(s))
-
-    if args is not None:
-      if isinstance(args, list):
-        s += ' ' + ' '.join(args)
-      else:
-        s += str(" ") + str(args)
-        s += self.__end__
-    
-    s = s.replace('  ', ' ')
 
     # split line at 80 chars: 
     # insert \r\n on the last space char
@@ -372,3 +384,6 @@ class Base(XmlBuilder, XmlTagConvert):
           raise MalformedName("Special chars in name were detected.")
     return name
 
+  def addpos(self, x, y):
+    from .point import Point
+    setattr(self, 'position', Point(x=x, y=y))

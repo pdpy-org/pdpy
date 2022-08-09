@@ -32,7 +32,7 @@ class Radio(Obj):
   5. 17: `value`: the initial value of the radio button (with `init`)
   """
 
-  def __init__(self, pd_lines=None, json=None):
+  def __init__(self, pd_lines=None, json=None, **kwargs):
     self.__pdpy__ = self.__class__.__name__
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
@@ -48,6 +48,32 @@ class Radio(Obj):
       self.value   = self.__num__(pd_lines[14])
     elif json is not None:
       super().__init__(json=json)
+    else:
+      if 'className' in kwargs:
+        _c = kwargs.pop('className')
+      else:
+        _c = 'hradio' # just default to horizontal radio
+      super().__init__(className=_c)
+      d = self.__d__.iemgui['radio'] # keep an easy dict access
+      self.size = Size(
+          w = d['size']
+      )
+      self.flag = self.__pdbool__(d['flag'])
+      self.init = self.__pdbool__(d['init'])
+      self.number = self.__num__(d['number'])
+      self.comm = Comm(
+        send = self.__d__.iemgui['symbol'],
+        receive = self.__d__.iemgui['symbol']
+      )
+      self.label = IEMLabel(
+        xoff    = d['xoff'],
+        yoff    = d['yoff'],
+        fface   = self.__d__.iemgui['fontface'],
+        fsize   = d['fsize'],
+        lbcolor = d['lbcolor'], **kwargs)
+      self.bgcolor = self.__num__(d['bgcolor'])
+      self.fgcolor = self.__num__(self.__d__.iemgui['fgcolor'])
+      self.value   = float(d['value'])
   
   def __pd__(self):
     """ Return the pd string for this object """

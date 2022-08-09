@@ -1,12 +1,10 @@
 
-# used in github actions - do not edit
-local:
-	make clean
-	make build
-	make install-local
-	echo "Done with all"
+help:
+	@echo "Help file here"
 
-# used in github actions - do not edit
+local:
+	python setup.py develop --user --no-deps
+
 doc:
 	cd docs && make html
 
@@ -19,15 +17,13 @@ activate:
 deploy:
 	python -m twine upload --repository testpypi dist/*
 
-install-local:
-	python -m pip install ./dist/*.tar.gz
-
 install:
 	python -m pip install -i https://test.pypi.org/simple/ $(shell ./scripts/get_version.sh ./pyproject.toml ==)
 
 clean:
 	rm -rf ./build
 	rm -rf ./dist
+	rm -rf pdpy.egg-info
 
 test:
 	tox

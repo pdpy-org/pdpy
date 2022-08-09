@@ -63,7 +63,7 @@ class Canvas(CanvasBase, Base):
       self.dimension = Size(w=450, h=300)
       self.font = 12
       self.vis = 0
-      self.name = None
+      self.name = self.__d__.name
     
     if hasattr(self, 'isroot'):
       self.isroot = self.__pdbool__(self.isroot)
@@ -133,51 +133,49 @@ class Canvas(CanvasBase, Base):
       self.comments = []
     self.comments.append(comment)
 
-  def update_cursor(self, width=0, height=0):
+  def update_cursor(self, w_step=12, h_step=12):
     """ Fill objects from top to bottom until we reach bottom
     (used to be get_position)
     """
-    
+    print("Object Size:", w_step, h_step)
     mod_x = self.__cursor__.x // self.dimension.width
     mod_y = self.__cursor__.y // self.dimension.height
 
     # def _print():
     #   print(self.__cursor__.x, self.__cursor__.y, mod_x, mod_y)
 
-    if mod_x > 1 and mod_y > 1:
-      print("out of bounds --------------------")
-    # if cursor is out of bounds, grow downwards...
-      # reset x, 
-      # resize the canvas to be twice as tall as before
-      # and make y be the bottom most position
-      self.__cursor__.x = self.__cursor_init__.x
-      self.__cursor__.y += self.dimension.height
-      self.__cursor__.y += self.__pad__.height
-      return
+    # if mod_x > 1 and mod_y > 1:
+    #   print("out of bounds --------------------")
+    # # if cursor is out of bounds, grow downwards...
+    #   # reset x, 
+    #   # resize the canvas to be twice as tall as before
+    #   # and make y be the bottom most position
+    #   self.__cursor__.x = self.__cursor_init__.x
+    #   self.__cursor__.y += self.dimension.height
+    #   self.__cursor__.y += self.__pad__.height
+    #   return
 
-    if mod_x < 1 and mod_y > 1:
-      print("surpassed y", mod_y)
-      # reset y and increment x position
-      self.dimension.set_height(self.dimension.height * 2)
-      self.__cursor__.y = self.__cursor_init__.y + height
-      self.__cursor__.x += width
-      return
+    # if mod_x < 1 and mod_y > 1:
+    #   print("surpassed y", mod_y)
+    #   # reset y and increment x position
+    #   self.dimension.set_height(self.dimension.height * 2)
+    #   self.__cursor__.y = self.__cursor_init__.y + h_step
+    #   self.__cursor__.x += w_step
+    #   return
 
-    if mod_x > 1 and mod_y < 1:
-      print("surpassed x")
-      # reset x and increment y position
-      self.dimension.set_width(self.dimension.width * 2)
-      self.__cursor__.y += self.dimension.height * (1+mod_y)
-      self.__cursor__.x = self.__cursor_init__.x
-      return 
+    # if mod_x > 1 and mod_y < 1:
+    #   print("surpassed x")
+    #   # reset x and increment y position
+    #   self.dimension.set_width(self.dimension.width * 2)
+    #   self.__cursor__.y += self.dimension.height * (1+mod_y)
+    #   self.__cursor__.x = self.__cursor_init__.x
+    #   return 
 
-    self.__cursor__.y += height
+    # grow downwards
+    self.__cursor__.y += h_step
 
   def get_char_dim(self):
     return int(self.dimension.width / self.font * 1.55)
-
-  def addpos(self, x, y):
-    setattr(self, 'position', Point(x=x, y=y))
 
   def get(self, id):
     if hasattr(self, 'nodes'):
@@ -192,9 +190,18 @@ class Canvas(CanvasBase, Base):
 
     # the canvas line
     s = super().__pd__()
+
+    # print("Screen:",self.screen.__pd__())
+    # print("Dimension:",self.dimension.__pd__())
+    # print("Name:",self.name)
+    # print("Font:",self.font)
+    # print("Vis:",self.vis)
+    # print("End:",repr(self.__end__))
+
     s += " " + self.screen.__pd__() + " " + self.dimension.__pd__()
     
     isroot = getattr(self, 'isroot', False)
+    isgraph = getattr(self, 'isgraph', False)
 
     if isroot:
       # root canvas only reports font
@@ -206,7 +213,7 @@ class Canvas(CanvasBase, Base):
     # end the line so we can continue appending to `s`
     s += self.__end__
     
-    s = super().__render__(s, isroot=isroot)
+    s = super().__render__(s, isroot=isroot, isgraph=isgraph)
     
     # the border, only if not root
     if hasattr(self, 'border') and (not isroot):

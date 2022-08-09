@@ -68,8 +68,9 @@ class Default(object):
   def __init__(self):
     self.screen       = { 'x':0, 'y': 22 }
     self.dimen        = { 'width': 450, 'height': 300 }
+    self.arrdimen     = { 'width': 450, 'height': 278 }
     self.font         = { 'size': 12, 'face': 0 }
-    self.array        = { 'size': 100 }
+    self.array        = { 'size': 100, 'type': 'float', 'flag': 3}
     self.vis          = 0
     self.digits_width = 0 
     self.limits       = { 'lower':0, 'upper':0 } 

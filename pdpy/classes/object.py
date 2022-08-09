@@ -36,9 +36,6 @@ class Object(Base):
       self.args = []
     self.args += self.__unescape__(argv)
     return self
-  
-  def addpos(self, x, y):
-    setattr(self, 'position', Point(x=x, y=y))
 
   def __pd__(self, args=None):
     """ Parses the pd object into a string """

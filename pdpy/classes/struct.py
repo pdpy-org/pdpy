@@ -62,8 +62,9 @@ class Struct(Base):
           log(1, self.name, pd_lines)
           self.__dumps__()
         i += 2
-    else: 
-      raise ArgumentException("Struct: Incorrect arguments given")
+    else:
+      pass
+      # raise ArgumentException("Struct: Incorrect arguments given")
   
   def addFloat(self, pd_name):
     if not hasattr(self, 'float'):
@@ -161,6 +162,9 @@ class Struct(Base):
   def __pd__(self):
     """ Returns the struct instruction for the pd file """
     
+    if not hasattr(self, 'name'):
+      return self.__closeline__("X", "obj", self.position.__pd__() + " " + self.__cls__)
+
     s = self.name
 
     for a in getattr(self, 'order', []):

@@ -11,6 +11,7 @@ from collections import defaultdict
 from itertools import zip_longest
 
 __all__ = [
+  'Int',
   'Float',
   'Symbol',
   'List',
@@ -51,6 +52,20 @@ class Symbol(Float):
       super().__populate__(self, json=json)
     elif json is None and xml is None:
       self.value = str(value) if value is not None else None
+      self.name = name
+
+class Int(Float):
+  """ A Int base class """
+  def __init__(self, value=None, name=None, json=None, xml=None):
+    self.__pdpy__ = self.__class__.__name__
+    super().__init__()
+    if xml is not None:
+      self.name = xml.findtext('name')
+      self.value = xml.findtext('value')
+    elif json is not None:
+      super().__populate__(self, json=json)
+    elif json is None and xml is None:
+      self.value = int(value) if value is not None else None
       self.name = name
 
 class List(Base):

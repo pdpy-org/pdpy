@@ -51,6 +51,9 @@ class Data(Base):
         if template is not None:
           self.template = template.name
           self.data = self.fill(template, splitByEscapedChar(data, char=';'))
+        elif data is not None:
+          self.header = 0
+          self.data = super().__setdata__(self, data)
         else:
           raise ValueError("Struct and Data must be present.")
   

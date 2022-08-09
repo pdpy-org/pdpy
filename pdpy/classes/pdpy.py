@@ -184,6 +184,10 @@ class PdPy(CanvasBase, Base):
       canvas = Canvas(json=json)
     else:
       canvas = Canvas()
+    
+    if not hasattr(canvas, 'id'):
+        setattr(canvas, 'id', self.__obj_idx__)
+    
     self.__canvas_idx__.append(__canvas__.add(canvas))
 
     return canvas
@@ -315,15 +319,32 @@ class PdPy(CanvasBase, Base):
   def create(self, *anything):
     """ Create an object, message, comment, or any other pd object """
     for a in anything:
-      self.__obj_idx__ = self.__last_canvas__().grow()
-      __last_canvas__ = self.__last_canvas__()
-      __obj_id__ = __last_canvas__.add(a)
-      a.__parent__(parent=__last_canvas__)
-      a.id = __obj_id__
+      canvas = self.__last_canvas__()
+      self.__obj_idx__ = canvas.grow()
+      a.id = canvas.add(a)
+      a.__parent__(parent=canvas)
     return self
 
+  def createArray(self, array):
+    """ Create a GOP Array construction on the canvas """
+    canvas = Canvas()
+    canvas.name = self.__d__.name
+    canvas.vis = 0
+    
+    canvas.dimension.set_height(self.__d__.arrdimen['height'])
+    array.id = canvas.add(array)
+    array.__parent__(parent=canvas)
+
+    setattr(canvas, 'coords', Coords(gop=1))
+    setattr(canvas, 'isgraph', True)
+    
+    self.create(canvas)
+    
+    return self
+
+
   def __add_xy__(self, nodes, canvas):
-    if not isinstance(nodes, tuple):
+    if type(nodes) not in (tuple, list):
       nodes = [nodes]
     
     max_width = 0
@@ -331,50 +352,58 @@ class PdPy(CanvasBase, Base):
 
     for node in nodes:
       width, height = node.__get_obj_size__()
-      canvas.update_cursor(width=width, height=height)
-      # if width >= max_width:
-      #   max_width = width
-      # if height >= max_height:
-      #   max_height = height
-      # canvas.update_cursor(width=max_width, height=max_height)
+      if width >= max_width:
+        max_width = width
+      if height >= max_height:
+        max_height = height
+      canvas.update_cursor(w_step=max_width, h_step=max_height)
+
+    for node in nodes:
+      canvas.update_cursor(w_step=max_width, h_step=max_height)
       node.addpos(canvas.__cursor__.x,canvas.__cursor__.y)
 
 
   def arrange(self):
 
-    __last_canvas__ = self.__last_canvas__()
-    edges = set()
-    sources = []
-    sinks = []
-    for edge in __last_canvas__.edges:
-      src = __last_canvas__.get(edge.source.id)
-      snk = __last_canvas__.get(edge.sink.id)
-      edges.add((src,snk))
-      if src not in sources: 
-        sources.append(src)
-      if snk not in sinks: 
-        sinks.append(snk)
+    canvas = self.__last_canvas__()
+    if not hasattr(canvas, 'edges'):
+      if hasattr(canvas, 'nodes'):
+        self.__add_xy__(canvas.nodes, canvas)
+      else:
+        log(0, self, "No objects to write.")
+    
+    else: 
+      edges = set()
+      sources = []
+      sinks = []
+      for edge in canvas.edges:
+        src = canvas.get(edge.source.id)
+        snk = canvas.get(edge.sink.id)
+        edges.add((src,snk))
+        if src not in sources: 
+          sources.append(src)
+        if snk not in sinks: 
+          sinks.append(snk)
 
-    unconnected = []
-    for node in __last_canvas__.nodes:
-      if node.id not in sources and node.id not in sinks and node.id not in unconnected:
-        unconnected.append(__last_canvas__.get(node.id))
+      unconnected = []
+      for node in canvas.nodes:
+        if node.id not in sources and node.id not in sinks and node.id not in unconnected:
+          unconnected.append(canvas.get(node.id))
 
-    for edge in edges:
-      self.__add_xy__(edge, __last_canvas__)
+      for edge in edges:
+        self.__add_xy__(edge, canvas)
 
-    for node in unconnected:
-      self.__add_xy__(node, __last_canvas__)
-      
+      for node in unconnected:
+        self.__add_xy__(node, canvas)
+        
 
   def write(self, filename=None):
     """ Write out the pd file to disk """
     
     self.arrange()
-
+    
     if filename is None:
       filename = self.patchname + '.pd'
-
     with open(filename, 'w') as patchfile:
       if '.pd' in filename:
         patchfile.write(self.__pd__())
@@ -558,4 +587,9 @@ class PdPy(CanvasBase, Base):
     __run__(" ".join(command), shell=True, check=True)
 
 
+  def __enter__(self):
+    return self
   
+  def __exit__(self, ctx_type, ctx_value, ctx_traceback):
+    self.write()
+    

@@ -19,8 +19,8 @@ class Area(Base):
   Description
   -----------
   Represents an area with two points. See ::class::`Point`.
-  The first two coordinates are the upper left corner `a`,
-  and the second two are the upper lower corner, `b`.
+  The first two coordinates are the upper-left corner `a`,
+  and the second two are the lower-right corner, `b`.
   a ------------------- |
   |                     |
   |                     |

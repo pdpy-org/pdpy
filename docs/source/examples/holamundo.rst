@@ -43,9 +43,9 @@ With the ``PdPy`` class we can initialize a pdpy root patch (line 2):
 
 .. code-block:: python
 
-  mypatch = PdPy(name="simple_patch", root=True)
+  mypatch = PdPy(name="holamundo", root=True)
 
-The ``name`` keyword argument stores the name of the patch, in this case ``simple_patch``. 
+The ``name`` keyword argument stores the name of the patch, in this case ``holamundo``. 
 Because we want ``mypatch`` to be the ``root`` of our Pure Data patch (or in pd-lingo, the parent canvas), we set it to ``true``. 
 
 There are more keyword arguments available, but we wont need them here.
@@ -140,6 +140,6 @@ We do this with the ``write`` method (line 8):
 
   mypatch.write()
 
-After writing the patch, you should be able to find a ``simple_patch.pd`` file 
+After writing the patch, you should be able to find a ``holamundo.pd`` file 
 in the same directory you were running the python code.
 

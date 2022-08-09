@@ -28,7 +28,7 @@ class Vu(Obj):
   6. 15: `flag`: another flag.
   """
 
-  def __init__(self, pd_lines=None, json=None):
+  def __init__(self, pd_lines=None, json=None, **kwargs):
     self.__pdpy__ = self.__class__.__name__
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
@@ -41,6 +41,27 @@ class Vu(Obj):
       self.flag = self.__pdbool__(pd_lines[11]) if 11 < len(pd_lines) else None
     elif json is not None:
       super().__init__(json=json)
+    else:
+      super().__init__(className='vu')
+      d = self.__d__.iemgui['vu'] # keep an easy dict access
+      self.area = Size(
+          w = d['width'],
+          h = d['height']
+      )
+      self.comm     = Comm(
+        send = False,
+        receive = self.__d__.iemgui['symbol']
+      )
+      self.label = IEMLabel(
+        xoff    = d['xoff'],
+        yoff    = d['yoff'],
+        fface   = self.__d__.iemgui['fontface'],
+        fsize   = d['fsize'],
+        lbcolor = d['lbcolor'], **kwargs)
+      self.bgcolor = self.__num__(d['bgcolor'])
+      self.fgcolor = self.__num__(self.__d__.iemgui['fgcolor'])
+      self.scale = self.__pdbool__(d['scale'])
+      self.flag = self.__pdbool__(d['flag'])
 
   def __pd__(self):
     """ Return the pd string for this object """

@@ -7,6 +7,7 @@
 """ Class Definitions for GOP Array """
 
 from .base import Base
+from .data import Data
 from .default import GOPArrayFlags
 from ..util.utils import  log
 
@@ -43,7 +44,23 @@ class GOPArray(Base):
       super().__populate__(self, json)
     if hasattr(self, 'className') and self.className == 'goparray':
       self.__cls__ = 'array'
-    print("Pdtype", self.__type__, self.__cls__)
+    else:
+      self.__cls__ = 'array'
+      self.name = 'array1'
+      self.length = self.__d__.array['size']
+      self.type = self.__d__.array['type']
+      self.flag = self.__d__.array['flag']
+      if 'data' in kwargs:
+        _data = kwargs.pop('data')
+      else:
+        _data = [0 for _ in range(1 + self.length)]
+      if 'head' in kwargs:
+        _head = kwargs.pop('head')
+      else:
+        _head = 0
+      super().__setdata__(self, Data(data=_data, head=_head))
+
+    # print("Pdtype", self.__type__, self.__cls__)
 
   def addflag(self, flag):
     # log(1, "Adding flag: {}".format(flag))
@@ -60,7 +77,7 @@ class GOPArray(Base):
     if hasattr(self, 'template'):
       return "array " + str(self.name) + " " + str(self.template)
     
-    elif self.__cls__ in ('array','obj'):
+    elif self.__cls__ in ('array', 'obj'):
       s = super().__pd__(" ".join(map(lambda x:str(x),[self.name,self.length,self.type,self.flag])))
       for x in getattr(self, 'data', []):
         s += x.__pd__()

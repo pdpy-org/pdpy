@@ -45,7 +45,7 @@ class Gui(Object):
       self.__pdpy__ = self.__class__.__name__
       self.className = self.__cls__
       if 3 < len(pd_lines):
-        self.digit_width = pd_lines[3]
+        self.digits_width = pd_lines[3]
         self.limits = Bounds(lower=pd_lines[4], upper=pd_lines[5])
         self.flag = pd_lines[6] if 6 < len(pd_lines) else None
         if 7 < len(pd_lines):
@@ -60,7 +60,7 @@ class Gui(Object):
   def __pd__(self):
     """ Returns the pd-code representation of the object """
     
-    s = str(int(getattr(self,'digit_width',self.__d__.digits_width)))
+    s = str(int(getattr(self,'digits_width',self.__d__.digits_width)))
     
     if not hasattr(self, "limits"):
       self.limits = Bounds(lower=self.__d__.limits['lower'], upper=self.__d__.limits['upper'])
@@ -78,4 +78,4 @@ class Gui(Object):
   
   def __xml__(self):
     """ Returns an XML Element for this object """
-    return super().__xml__(scope=self, tag=self.className, attrib=('className','digit_width', 'limits', 'flag', 'label', 'comm', 'font_size'))
+    return super().__xml__(scope=self, tag=self.className, attrib=('className','digits_width', 'limits', 'flag', 'label', 'comm', 'font_size'))

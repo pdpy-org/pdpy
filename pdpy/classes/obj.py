@@ -57,11 +57,12 @@ class Obj(Object):
   
   def __pd__(self, args=None):
     """ Return the pd code of the object. """
+    # print(1, "Obj args:", repr(args))
+    # print(self.__json__())
     if args is None:
       args = self.className
     else:
       args = self.className + ' ' + args
-    # log(1, "Obj args:", args)
     return super().__pd__(args)
 
   def __xml__(self, args=None, **kwargs):

@@ -67,15 +67,17 @@ class CanvasBase(XmlBuilder):
       s += self.coords.__pd__()
     return s
 
-  def __restore__(self, s):
+  def __restore__(self, s, isgraph=False):
     if hasattr(self, 'position'):
       s += "#X restore " + self.position.__pd__()
       if hasattr(self, 'title'):
         s += " " + self.title
+      if isgraph:
+        s += " graph"
       s += self.__end__
     return s
   
-  def __render__(self, s, isroot=False):
+  def __render__(self, s, isroot=False, isgraph=False):
     s = self.__nodes__(s)
     s = self.__comments__(s)
     if isroot:
@@ -85,7 +87,7 @@ class CanvasBase(XmlBuilder):
     else:
       s = self.__edges__(s)
       s = self.__coords__(s)
-    s = self.__restore__(s)
+    s = self.__restore__(s, isgraph=isgraph)
     return s
   
   def __xml_nodes__(self, parent):

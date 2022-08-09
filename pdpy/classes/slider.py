@@ -34,7 +34,7 @@ class Slider(Obj):
   5. 19: `value`: the initial value of the number box (with `init`)
   5. 20: `log_height`: upper limit of the log scale (with `log_flag`)
   """
-  def __init__(self, pd_lines=None, json=None):
+  def __init__(self, pd_lines=None, json=None, **kwargs):
     self.__pdpy__ = self.__class__.__name__
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
@@ -51,6 +51,48 @@ class Slider(Obj):
       self.steady = self.__num__(pd_lines[17])
     elif json is not None:
       super().__init__(json=json)
+    else:
+      if 'className' in kwargs:
+        _c = kwargs.pop('className')
+      else:
+        _w = 0
+        _h = 0
+        if 'width' in kwargs:
+          _w = kwargs.pop('width')
+        if 'height' in kwargs:
+          _h = kwargs.pop('height')
+        if _w != 0 and _h != 0:
+          _c = 'vslider' if _w <= _h else 'hslider'
+        else:
+          _c = 'vslider' # just default to vertical slider
+      
+      # initialize the class default values
+      super().__init__(className=_c)
+      d = self.__d__.iemgui['vsl'] # keep an easy dict access
+      self.area = Size(
+          w = d['width'], 
+          h = d['height']
+      )
+      self.limits = Bounds(
+          d['lower'],
+          d['upper']
+      )
+      self.log_flag = self.__pdbool__(d['log_flag'])
+      self.init     = self.__pdbool__(d['init'])
+      self.comm     = Comm(
+        send = self.__d__.iemgui['symbol'],
+        receive = self.__d__.iemgui['symbol']
+      )
+      self.label = IEMLabel(
+        xoff    = d['xoff'],
+        yoff    = d['yoff'],
+        fface   = self.__d__.iemgui['fontface'],
+        fsize   = d['fsize'],
+        lbcolor = d['lbcolor'], **kwargs)
+      self.bgcolor = self.__num__(d['bgcolor'])
+      self.fgcolor = self.__num__(self.__d__.iemgui['fgcolor'])
+      self.value   = float(d['value'])
+      self.steady  = self.__num__(d['steady'])
 
   def __pd__(self):
     """ Return the pd string for this object """

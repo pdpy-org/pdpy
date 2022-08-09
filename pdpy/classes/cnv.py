@@ -30,7 +30,7 @@ class Cnv(Obj):
     4. 10-15: `IEMLabel` Parameters
     5. 16: `flag`: a flag
   """
-  def __init__(self, pd_lines=None, json=None):
+  def __init__(self, pd_lines=None, json=None, **kwargs):
     self.__pdpy__ = self.__class__.__name__
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
@@ -48,7 +48,32 @@ class Cnv(Obj):
       self.flag    = self.__num__(pd_lines[12-off])
     elif json is not None:
       super().__init__(json=json)
-  
+    else:
+      super().__init__(className='cnv')
+      d = self.__d__.iemgui['cnv']
+      if 'size' in kwargs:
+        self.size = Size(kwargs.pop('size'))
+      else:
+        self.size = Size(d['size'])
+        self.area = Size(
+          w = d['width'],
+          h = d['height']
+        )
+        self.comm = Comm(
+          send = False, 
+          receive = self.__d__.iemgui['symbol']
+        )
+        self.label = IEMLabel(
+          xoff = d['xoff'],
+          yoff = d['yoff'],
+          fface = self.__d__.iemgui['fontface'],
+          fsize = d['fsize'],
+          lbcolor = d['lbcolor'], **kwargs
+        )
+        self.bgcolor = d['bgcolor']
+        self.fgcolor = self.__d__.iemgui['fgcolor']
+        self.flag    = d['flag']
+
   def __pd__(self):
     """ Return the pd string for this object """
     s = self.size.__pd__()
