@@ -214,7 +214,7 @@ class Base(XmlBuilder, XmlTagConvert):
 
     if mod_80 >= 1: text_h *= mod_80
 
-    return (text_w-1)*font_size, text_h
+    return (text_w-1)*font_size//2, text_h
 
 
   def __populate__(self, child, json):
@@ -384,6 +384,12 @@ class Base(XmlBuilder, XmlTagConvert):
           raise MalformedName("Special chars in name were detected.")
     return name
 
+  def getname(self):
+    return getattr(self, 'className', self.__class__.__name__)
+
   def addpos(self, x, y):
     from .point import Point
+    x = int(x)
+    y = int(y)
+    # print("Adding position for:", self.getname(), x, y)
     setattr(self, 'position', Point(x=x, y=y))

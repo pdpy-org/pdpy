@@ -5,16 +5,15 @@
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
 from pdpy import PdPy, Obj, Bng
-mypatch = PdPy(name='multiple_objects', root=True, pdpath="/Users/fd/Development/pure-data")
-for i in range(25):
-  objects = [
-    Bng(label=str(i), size=20),
-    Obj('print').addargs(i),
-    Obj('print').addargs(i)
-  ]
-  mypatch.create(*objects)
-  mypatch.connect(objects[0], objects[1])
-  mypatch.connect(objects[0], objects[2])
-# mypatch.write('multiple_objects.json')
-mypatch.write()
-mypatch.run()
+# path to where the Pd-*.app exists
+# pdpath = "/Users/fd/Development/pure-data"
+pdpath = None
+with PdPy(name="multiple_objects", root=True) as mypatch:
+  for i in range(20):
+    objects = [
+      Bng(label=str(i), size=20),
+      Obj('print').addargs(i),
+      Obj('print').addargs(i)
+    ]
+    mypatch.create(*objects)
+    mypatch.connect(objects[0], objects[1])

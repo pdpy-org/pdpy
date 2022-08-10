@@ -133,11 +133,11 @@ class Canvas(CanvasBase, Base):
       self.comments = []
     self.comments.append(comment)
 
-  def update_cursor(self, w_step=12, h_step=12):
+  def update_cursor(self, w_step=0, h_step=0):
     """ Fill objects from top to bottom until we reach bottom
     (used to be get_position)
     """
-    print("Object Size:", w_step, h_step)
+    print("Update Cursor:", w_step, h_step)
     mod_x = self.__cursor__.x // self.dimension.width
     mod_y = self.__cursor__.y // self.dimension.height
 
@@ -173,6 +173,7 @@ class Canvas(CanvasBase, Base):
 
     # grow downwards
     self.__cursor__.y += h_step
+    self.__cursor__.x += w_step
 
   def get_char_dim(self):
     return int(self.dimension.width / self.font * 1.55)

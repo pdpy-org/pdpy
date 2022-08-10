@@ -47,13 +47,15 @@ class PdPy(CanvasBase, Base):
                xml=None,
                pdpath=None):
     """ Initialize a PdPy object """
-
+    
     self.patchname = Base.__sane_name__(self, name)
     self.encoding = encoding
     self.__pdpy__ = self.__class__.__name__
     self.__canvas_idx__ = []
     self.__depth__ = 0
-
+    self.__max_w__ = 0
+    self.__max_h__ = 0
+    
     CanvasBase.__init__(self, obj_idx=0)
     Base.__init__(self, json=json, xml=xml)
     
@@ -71,8 +73,7 @@ class PdPy(CanvasBase, Base):
       # update the parent of all childs
       self.__jsontree__()
 
-    if pdpath is not None:
-      self.pdpath(pdpath)
+    self.__set_pd_path__(pdpath)
 
 
   def __jsontree__(self):
@@ -344,58 +345,151 @@ class PdPy(CanvasBase, Base):
 
 
   def __add_xy__(self, nodes, canvas):
+    """ This function is called by ``PdPy.arrange()``
+    """
+    
+    if nodes is None or canvas is None:
+      raise Exception("Must provide a node and a canvas.")
+
+    # make sure nodes are iterable
     if type(nodes) not in (tuple, list):
       nodes = [nodes]
     
-    max_width = 0
-    max_height = 0
-
+    # check the size of all nodes 
+    # increment the stored max height and width
     for node in nodes:
       width, height = node.__get_obj_size__()
-      if width >= max_width:
-        max_width = width
-      if height >= max_height:
-        max_height = height
-      canvas.update_cursor(w_step=max_width, h_step=max_height)
+      if width >= self.__max_w__:
+        self.__max_w__ = width
+      if height >= self.__max_h__:
+        self.__max_h__ = height
 
-    for node in nodes:
-      canvas.update_cursor(w_step=max_width, h_step=max_height)
-      node.addpos(canvas.__cursor__.x,canvas.__cursor__.y)
+    # print("addXY: length ", len(nodes))
+    
+    if len(nodes) == 0:
+      raise Exception("No nodes provided in: ", nodes)
+    elif len(nodes) == 1:
+      # there is only one node,
+      # place the node at the current cursor
+      node[0].addpos(canvas.__cursor__.x,canvas.__cursor__.y)
+      # update the cursor offsetting it VERTICALLY
+      canvas.update_cursor(w_step=0, h_step=self.__max_h__)
+    else:    
+      # there is a group of nodes to connect
+      for node in nodes:
+        node.addpos(canvas.__cursor__.x,canvas.__cursor__.y)
+        canvas.update_cursor(w_step=self.__max_w__, h_step=self.__max_h__)
 
 
   def arrange(self):
 
     canvas = self.__last_canvas__()
-    if not hasattr(canvas, 'edges'):
-      if hasattr(canvas, 'nodes'):
-        self.__add_xy__(canvas.nodes, canvas)
-      else:
-        log(0, self, "No objects to write.")
+
+    # declarar
+    # cada uno con su ancho y largo en ``w`` y ``h``
+    objetos = list(canvas.nodes)
+    fila = []
+    ubicados = [] # en la pagina
+    C = [] # lista de puntos
+
+    # inicializar
     
-    else: 
-      edges = set()
-      sources = []
-      sinks = []
-      for edge in canvas.edges:
-        src = canvas.get(edge.source.id)
-        snk = canvas.get(edge.sink.id)
-        edges.add((src,snk))
-        if src not in sources: 
-          sources.append(src)
-        if snk not in sinks: 
-          sinks.append(snk)
+    # Inicializar el indice de puntos
+    self.__pidx__ = 0
+    self.h_stretch = 1.25
+    self.v_stretch = 1.25
+    
+    # Inicializar ``W`` y ``H`` con el máximo valor de ``w`` y ``h`` de todos los ``objetos``
+    for obj in objetos:
+      width, height = obj.__get_obj_size__()
+      if width >= self.__max_w__:
+        self.__max_w__ = width
+      if height >= self.__max_h__:
+        self.__max_h__ = height
 
-      unconnected = []
-      for node in canvas.nodes:
-        if node.id not in sources and node.id not in sinks and node.id not in unconnected:
-          unconnected.append(canvas.get(node.id))
+    # Inicializar ``C_i`` con el punto ``(W,H)``
+    C.append((10, 10)) 
 
-      for edge in edges:
-        self.__add_xy__(edge, canvas)
+    # Inicializar la ``fila`` con todos los ``objetos``
+    fila = list(objetos)
 
-      for node in unconnected:
-        self.__add_xy__(node, canvas)
-        
+    def acomodador(fila):
+
+      if len(fila) <= 0:
+        # print("---- end ----")
+        return 
+      # print("--------------------- begin ---------------------")
+      # 1. Quitar el primer elemento de la fila y ponerlo en ``o``
+      o = fila.pop(0)
+      
+      # uncomment for prints
+      # namit = lambda objs: list(map(lambda x: x.getname(),objs)) 
+      
+      # 2. Obtener todos los nodos cuyas conexiones que
+      #    tienen como origen a ``o`` y no estan ya ubicados.
+      #    Para esto, iteramos sobre los bordes/conexiones
+      subfila = sorted([ canvas.get(edge.sink.id) for edge in canvas.edges if edge.source.id == o.id and o.id not in ubicados], key=lambda x:x.id)
+      
+      # print(("Objeto:",o.getname(), o.id))
+      # print("Resto:",namit(fila))
+      # print("SUBFILA:", namit(subfila))
+      # print("ubicados:", ubicados)
+      
+      # 3. Chequear si ``o`` ya está en la ``ubicados``:
+      #   1. Si **no** está en la ``ubicados``: *ubicarlo en la ubicados*
+      if o.id not in ubicados:
+        # print("Not located yet:", (o.getname(),o.id))
+      #   1. Ubicarlo con las coordenadas de ``C_i``
+        o.addpos(*C[self.__pidx__])
+      #   2. Agregar el objeto ``o`` a la ``ubicados``
+        ubicados.append(o.id)
+      #   3. Agregar el siguiente punto a la lista de puntos
+      #    - en x: ponemos el valor de C_i_x en ese punto
+        x = C[self.__pidx__][0]
+      #    - en y: incrementamos el valor de C_i_y con ``V * H``, donde
+      #    V es el factor de estiramiento vertical,
+      #    H es el máximo valor de y que existe en ``objetos``
+        y = C[self.__pidx__][1] + self.v_stretch * self.__max_h__
+      #   Esto queda en:
+        C.append((x, y))
+      #   4. Incrementar el indice de puntos ``i = i + 1``
+        self.__pidx__ += 1
+      #   5. paso recursivo con la nueva ``fila``
+
+      # 2. Si está en la página: *mover el objeto previo*
+      else:
+        # print("It is already here: ", o.getname())
+      #   1. obtener el indice previo a ``o`` en ``C``, ``iprev = C <- o``
+        # print(C)
+        for iprev, c in enumerate(C):
+          if (o.position.x, o.position.y) == c:
+            break
+        # dijimos el previo
+        iprev -= 2
+        # proteger en caso del primer objeto
+        iprev = 0 if iprev < 0 else iprev
+        # print(o.getname(), "found in C at", str(iprev))
+      #   2. cambiar el valor de ``C_iprev`` por ``(2W * iprev, C_iprev_h)``
+        x = C[iprev][0] + self.h_stretch * self.__max_w__
+        y = C[iprev][1] + self.v_stretch * self.__max_h__
+        C[iprev] = (x, y)
+      #   3. actualizar la posición de ese objeto 
+        canvas.get(iprev).addpos(*C[iprev])
+      
+      #1. si hay, ponerlos en orden en una ``subfila`` y concatenar a derecha ``fila``
+      if len(subfila) >= 1:
+        # print(namit([o]), "Is connected to", namit(subfila))
+        acomodador(subfila)
+      
+      #2. si no hay, continuar
+      # recurse
+      return acomodador(fila)
+
+    # iniciar algoritmo
+    acomodador(fila)
+    print("Done arranging")
+    for n in canvas.nodes:
+      print(n.getname(), n.position.__pd__())
 
   def write(self, filename=None):
     """ Write out the pd file to disk """
@@ -565,16 +659,49 @@ class PdPy(CanvasBase, Base):
     
     return super().__tree__(x)
 
-  def pdpath(self, path_to_pd):
-    from pathlib import Path
-    pdpath = Path(path_to_pd)
-    apps = [p for p in sorted(pdpath.glob("Pd*.app"))]
-    if len(apps) >= 1:
-      pdbinpath = Path(apps[0].as_posix()+"/Contents/Resources/bin/pd")
-      setattr(self, 'pdbin', pdbinpath)
-    else:
-      raise Exception("Could not find pd in " + path_to_pd)
-  
+  def __set_pd_path__(self, path_to_pd):
+      """ Attempt to locate the ``pd`` executable
+      """
+      
+      from sys import platform
+      from pathlib import Path
+      
+      installed = False
+      
+      print("Found ", platform, " platform.")
+      
+      if "darwin" in platform: # macos
+        pdpath = Path("/Applications")
+        bindir = "/Contents/Resources/bin/pd"
+      elif "win" in platform: # windoz
+        pdpath = Path("C:/Program Files (x86)")
+        bindir = "/usr/bin/pd"
+      else: # asume pd is out there
+        installed = True
+        pdbin = Path("/")
+      
+      if path_to_pd is not None:
+        pdpath = Path(path_to_pd)
+
+      if installed:
+        pdbin += "pd"
+      else:
+        print("Locating pd...")
+        apps = [p for p in sorted(pdpath.glob("Pd*.app"))]
+        
+        if len(apps) >= 1:
+          appdir = apps[0]
+        else:
+          raise Exception("Could not find pd in " + pdpath)
+
+        pdbin = Path(appdir.as_posix() + bindir)
+      
+      if Path(pdbin).exists():
+        print("Found pd at: ", pdbin.as_posix())
+        setattr(self, 'pdbin', pdbin)
+      else:
+        raise Exception("This pd binary does not exist: " + pdbin.as_posix())
+    
   def run(self):
     from subprocess import run as __run__
     if not hasattr(self, 'patchname'):
