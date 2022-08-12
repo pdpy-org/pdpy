@@ -3,9 +3,9 @@
 #X obj 10 58 t b b;
 #X obj 70 82 until;
 #X obj 70 106 f;
-#X obj 130 130 + 1;
-#X obj 200 82 sel 99;
-#X obj 10 166 print;
+#X obj 130 106 + 1;
+#X obj 130 130 sel 99;
+#X obj 10 154 print;
 #X msg 10 82 Done;
 #X connect 0 0 1 0;
 #X connect 1 0 7 0;

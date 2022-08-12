@@ -1,59 +1,95 @@
 Found  darwin  platform.
 Locating pd...
 Found pd at:  /Applications/Pd-0.52-2.app/Contents/Resources/bin/pd
+========= begin arrange algorithm arrange 1b ==========
+input X: [('loadbang', 0), ('t', 1), ('until', 2), ('f', 3), ('+', 4), ('sel', 5), ('print', 6), ('Msg', 7)]
+Ubicando <pdpy.classes.obj.Obj object at 0x10f8fba60> => 10 10
 Adding position for: loadbang 10 10
-Children: [(<pdpy.classes.obj.Obj object at 0x10a725ac0>, 0)]
-0 is connected to [1]
+Children-Port: [[1, 't', 0]]
+input step3 X: [('until', 2), ('f', 3), ('+', 4), ('sel', 5), ('print', 6), ('Msg', 7)]
+0 is connected to [(1, 0)]
 1 NOT IN [0]
 Ports 0 index 0
+Ubicando <pdpy.classes.obj.Obj object at 0x10f8fbac0> => 10.0 58
 Adding position for: t 10 58
-Children: [(<pdpy.classes.message.Msg object at 0x10a726370>, 0), (<pdpy.classes.obj.Obj object at 0x10a725bb0>, 1)]
+Children-Port: [[7, 'Msg', 0], [2, 'until', 1]]
+==> recursive step ==>
+input step3 X: [('f', 3), ('+', 4), ('sel', 5), ('print', 6)]
 1 is connected to [(7, 0), (2, 1)]
 7 NOT IN [0, 1]
 Ports 0 index 0
+Ubicando <pdpy.classes.message.Msg object at 0x10f8fc370> => 10.0 82
 Adding position for: Msg 10 82
-Children: [(<pdpy.classes.obj.Obj object at 0x10a7261f0>, 0)]
+Children-Port: [[6, 'print', 0]]
+==> recursive step ==>
+input step3 X: [('f', 3), ('+', 4), ('sel', 5)]
 7 is connected to [(6, 0)]
 6 NOT IN [0, 1, 7]
 Ports 0 index 0
+Ubicando <pdpy.classes.obj.Obj object at 0x10f8fc1f0> => 10.0 106
 Adding position for: print 10 106
-Children: []
+Children-Port: []
+==> recursive step ==>
+input step3 X: [('f', 3), ('+', 4), ('sel', 5)]
 6 is connected to []
 2 NOT IN [0, 1, 7, 6]
 Ports 1 index 1
+Ubicando <pdpy.classes.obj.Obj object at 0x10f8fbbb0> => 70.0 82
 Adding position for: until 70 82
-Children: [(<pdpy.classes.obj.Obj object at 0x10a725d30>, 0)]
+Children-Port: [[3, 'f', 0]]
+==> recursive step ==>
+input step3 X: [('+', 4), ('sel', 5)]
 2 is connected to [(3, 0)]
 3 NOT IN [0, 1, 7, 6, 2]
 Ports 0 index 0
+Ubicando <pdpy.classes.obj.Obj object at 0x10f8fbd30> => 70.0 106
 Adding position for: f 70 106
-Children: [(<pdpy.classes.obj.Obj object at 0x10a726070>, 0), (<pdpy.classes.obj.Obj object at 0x10a725eb0>, 0), (<pdpy.classes.obj.Obj object at 0x10a7261f0>, 0)]
+Children-Port: [[5, 'sel', 0], [4, '+', 0], [6, 'print', 0]]
 >> Object >> 6 named print not in X list
 Relocate 6 with 3 ?
 10 106 and 70 106
+Children: []
 EQUAL_Y
-Adding position for: print 10 166
---> Relocated to: 10 166 and 70 106
+Reubicando <pdpy.classes.obj.Obj object at 0x10f8fc1f0>
+Ubicando <pdpy.classes.obj.Obj object at 0x10f8fc1f0> => 10 154
+Adding position for: print 10 154
+--> Relocated to: 10 154 and 70 106
+==> recursive step ==>
+input step3 X: []
 3 is connected to [(5, 0), (4, 0)]
-5 NOT IN [0, 1, 7, 6, 2, 3]
+5 NOT IN [0, 1, 7, 6, 2, 3, 6]
 Ports 0 index 0
+Ubicando <pdpy.classes.obj.Obj object at 0x10f8fc070> => 70.0 130
 Adding position for: sel 70 130
-Children: [(<pdpy.classes.obj.Obj object at 0x10a725bb0>, 0)]
+Children-Port: [[2, 'until', 0]]
 >> Object >> 2 named until not in X list
 Relocate 2 with 5 ?
 70 82 and 70 130
+Children: [3]
 UNEQUAL_Y
-Adding position for: sel 200 82
---> Relocated to: 70 82 and 200 82
+Reubicando <pdpy.classes.obj.Obj object at 0x10f8fc070>
+Ubicando <pdpy.classes.obj.Obj object at 0x10f8fc070> => 130.0 130
+Adding position for: sel 130 130
+--> Relocated to: 70 82 and 130 130
+==> recursive step ==>
+input step3 X: []
 5 is connected to []
-4 NOT IN [0, 1, 7, 6, 2, 3, 5]
+4 NOT IN [0, 1, 7, 6, 2, 3, 6, 5, 5]
 Ports 0 index 1
+Ubicando <pdpy.classes.obj.Obj object at 0x10f8fbeb0> => 70.0 154
 Adding position for: + 70 154
-Children: [(<pdpy.classes.obj.Obj object at 0x10a725d30>, 0)]
+Children-Port: [[3, 'f', 0]]
 >> Object >> 3 named f not in X list
 Relocate 3 with 4 ?
 70 106 and 70 154
+Children: [5, 4, 6]
+Children: [3]
 CIRCULAR
-Adding position for: + 130 130
---> Relocated to: 70 106 and 130 130
+Reubicando <pdpy.classes.obj.Obj object at 0x10f8fbeb0>
+Ubicando <pdpy.classes.obj.Obj object at 0x10f8fbeb0> => 130.0 106
+Adding position for: + 130 106
+--> Relocated to: 70 106 and 130 106
+==> recursive step ==>
+input step3 X: []
 4 is connected to []
+------------- end -----------
