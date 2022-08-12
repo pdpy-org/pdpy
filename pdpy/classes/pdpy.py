@@ -55,7 +55,30 @@ class PdPy(CanvasBase, Base):
     self.__depth__ = 0
     self.__max_w__ = 0
     self.__max_h__ = 0
-    self.__soring_alg__ = 1
+    self.__soring_alg__ = 3
+
+    if self.__soring_alg__ == 0: # good, but fails on circular conections
+      from ..util.arrange import arrange
+    elif self.__soring_alg__ == 1: # this one fails
+      from ..util.arrange1 import arrange1 as arrange
+    elif self.__soring_alg__ == 2: # fails on dac~
+      from ..util.arrange1a import arrange1a as arrange
+    elif self.__soring_alg__ == 3: # this one is nice (fails on dac~)
+      from ..util.arrange1b import arrange1b as arrange
+    elif self.__soring_alg__ == 4: # max recursion depth error
+      from ..util.arrange2 import arrange2 as arrange
+    else:
+      arrange = lambda x:x
+    
+
+    # The following are used in the arrange function:
+    # the horizontal step size for increments
+    self.__hstep__ = 1.25 
+    # the vertical step size for increments
+    self.__vstep__ = 1
+    
+    self.arrange = arrange
+    
 
     CanvasBase.__init__(self, obj_idx=0)
     Base.__init__(self, json=json, xml=xml)
@@ -343,370 +366,12 @@ class PdPy(CanvasBase, Base):
     self.create(canvas)
     
     return self
-
-
-  def __add_xy__(self, nodes, canvas):
-    """ This function is called by ``PdPy.arrange()``
-    """
-    
-    if nodes is None or canvas is None:
-      raise Exception("Must provide a node and a canvas.")
-
-    # make sure nodes are iterable
-    if type(nodes) not in (tuple, list):
-      nodes = [nodes]
-    
-    # check the size of all nodes 
-    # increment the stored max height and width
-    for node in nodes:
-      width, height = node.__get_obj_size__()
-      if width >= self.__max_w__:
-        self.__max_w__ = width
-      if height >= self.__max_h__:
-        self.__max_h__ = height
-
-    # print("addXY: length ", len(nodes))
-    
-    if len(nodes) == 0:
-      raise Exception("No nodes provided in: ", nodes)
-    elif len(nodes) == 1:
-      # there is only one node,
-      # place the node at the current cursor
-      node[0].addpos(canvas.__cursor__.x,canvas.__cursor__.y)
-      # update the cursor offsetting it VERTICALLY
-      canvas.update_cursor(w_step=0, h_step=self.__max_h__)
-    else:    
-      # there is a group of nodes to connect
-      for node in nodes:
-        node.addpos(canvas.__cursor__.x,canvas.__cursor__.y)
-        canvas.update_cursor(w_step=self.__max_w__, h_step=self.__max_h__)
-
-
-  def arrange(self):
-
-    canvas = self.__last_canvas__()
-
-    # declarar
-    # cada uno con su ancho y largo en ``w`` y ``h``
-    objetos = list(canvas.nodes)
-    fila = []
-    self.__u__ = [] # en la pagina
-    C = [] # lista de puntos
-
-    # inicializar
-    
-    # Inicializar el indice de puntos
-    self.__pidx__ = 0
-    self.__hstep__ = 1.25
-    self.__vstep__ = 1.25
-    
-    # Inicializar ``W`` y ``H`` con el máximo valor de ``w`` y ``h`` de todos los ``objetos``
-    for obj in objetos:
-      width, height = obj.__get_obj_size__()
-      if width >= self.__max_w__:
-        self.__max_w__ = width
-      if height >= self.__max_h__:
-        self.__max_h__ = height
-
-    # Inicializar ``C_i`` con el punto ``(W,H)``
-    C.append((10, 10)) 
-
-    # Inicializar la ``fila`` con todos los ``objetos``
-    fila = list(objetos)
-
-    def acomodador(fila):
-
-      if len(fila) <= 0:
-        # print("---- end ----")
-        return 
-      # print("--------------------- begin ---------------------")
-      # 1. Quitar el primer elemento de la fila y ponerlo en ``o``
-      o = fila.pop(0)
-      
-      # uncomment for prints
-      # namit = lambda objs: list(map(lambda x: x.getname(),objs)) 
-      
-      # 2. Obtener todos los nodos cuyas conexiones que
-      #    tienen como origen a ``o`` y no estan ya self.__u__.
-      #    Para esto, iteramos sobre los bordes/conexiones
-      subfila = sorted([ canvas.get(edge.sink.id) for edge in canvas.edges if edge.source.id == o.id and o.id not in self.__u__], key=lambda x:x.id)
-      
-      # print(("Objeto:",o.getname(), o.id))
-      # print("Resto:",namit(fila))
-      # print("SUBFILA:", namit(subfila))
-      # print("self.__u__:", self.__u__)
-      
-      # 3. Chequear si ``o`` ya está en la ``self.__u__``:
-      #   1. Si **no** está en la ``self.__u__``: *ubicarlo en la self.__u__*
-      if o.id not in self.__u__:
-        # print("Not located yet:", (o.getname(),o.id))
-      #   1. Ubicarlo con las coordenadas de ``C_i``
-        o.addpos(*C[self.__pidx__])
-      #   2. Agregar el objeto ``o`` a la ``self.__u__``
-        self.__u__.append(o.id)
-      #   3. Agregar el siguiente punto a la lista de puntos
-      #    - en x: ponemos el valor de C_i_x en ese punto
-        x = C[self.__pidx__][0]
-      #    - en y: incrementamos el valor de C_i_y con ``V * H``, donde
-      #    V es el factor de estiramiento vertical,
-      #    H es el máximo valor de y que existe en ``objetos``
-        y = C[self.__pidx__][1] + self.__vstep__ * self.__max_h__
-      #   Esto queda en:
-        C.append((x, y))
-      #   4. Incrementar el indice de puntos ``i = i + 1``
-        self.__pidx__ += 1
-      #   5. paso recursivo con la nueva ``fila``
-
-      # 2. Si está en la página: *mover el objeto previo*
-      else:
-        # print("It is already here: ", o.getname())
-      #   1. obtener el indice previo a ``o`` en ``C``, ``iprev = C <- o``
-        # print(C)
-        for iprev, c in enumerate(C):
-          if (o.position.x, o.position.y) == c:
-            break
-        # dijimos el previo
-        iprev -= 2
-        # proteger en caso del primer objeto
-        iprev = 0 if iprev < 0 else iprev
-        # print(o.getname(), "found in C at", str(iprev))
-      #   2. cambiar el valor de ``C_iprev`` por ``(2W * iprev, C_iprev_h)``
-        x = C[iprev][0] + self.__hstep__ * self.__max_w__
-        y = C[iprev][1] + self.__vstep__ * self.__max_h__
-        C[iprev] = (x, y)
-      #   3. actualizar la posición de ese objeto 
-        canvas.get(iprev).addpos(*C[iprev])
-      
-      #1. si hay, ponerlos en orden en una ``subfila`` y concatenar a derecha ``fila``
-      if len(subfila) >= 1:
-        # print(namit([o]), "Is connected to", namit(subfila))
-        acomodador(subfila)
-      
-      #2. si no hay, continuar
-      # recurse
-      return acomodador(fila)
-
-    # iniciar algoritmo
-    acomodador(fila)
-    print("Done arranging")
-    for n in canvas.nodes:
-      print(n.getname(), n.position.__pd__())
-
-  def arrange2(self):
-    canvas = self.__last_canvas__()
-    self.__u__ = []
-    canvas.__cursor__.x = 0
-    canvas.__cursor__.y = 0
-    self.__level__ = 0
-    def _print(level, *message): print(self.__level__*"\t", level*"\t", *message)
-
-    # paso 1:
-    def paso1(objetos):
-      self.__level__ += 1
-      _print(1, "Paso 1:")
-      # elegir el primer objeto que no está en la página
-      no_obj = True
-      for o in objetos:
-        if o not in self.__u__:
-          no_obj = False
-          break
-      if no_obj:
-        _print(1, "No objects found")
-        return
-      else:
-        # goto 2
-        return paso2(o)
-    
-    def paso2(obj, parent=None, idx=None):
-      self.__level__ += 1
-      _print(2, "Paso 2")
-      # paso 2:
-      # ¿esta el objeto en la pagina?
-      if obj in self.__u__:
-        _print(2, "obj is ubicado")
-        # si, 
-        # reubicar el objeto que llamó esta conexión
-        # al lado de este objeto si y solo si 
-        # no estan ya en la misma fila (canvas.__cursor__.x)
-        # return
-        par_pos = (parent.position.x, parent.position.y)
-        obj_pos = (obj.position.x, obj.position.y)
-        _print(2, "parent and child position:", par_pos, obj_pos)
-        if par_pos[0] != obj_pos[0]:
-          _print(2, "diff parent and obj position")
-          canvas.__cursor__.x += (1 + idx)
-          canvas.__cursor__.y += 1
-          parent.addpos(canvas.__cursor__.x, canvas.__cursor__.y)
-        else:
-          _print(2, "SAME pos", obj.id, parent.id)
-        return
-      else:
-        _print(2, "Not ubicado, placing", obj.id)
-        # if parent is not None and idx is not None:
-          # canvas.__cursor__.x += (1 + idx)
-        obj.addpos(canvas.__cursor__.x, canvas.__cursor__.y)
-        canvas.__cursor__.y += 1
-        # goto 3
-
-      # paso 3:
-        self.__level__ += 1
-        _print(3,"Paso 3")
-        # ¿tiene conexiones?
-        # Returns a list of connected objets ordered by obj's ports or None
-        _print(3,"-- Get Connections --")
-        conexiones = []
-        children = [edge for edge in canvas.edges if obj.id == edge.source.id]
-        
-        if len(children):
-          children_sorted = reversed(sorted(children, key=lambda e:e.source.port))
-          conexiones = list(map(lambda e:canvas.get(e.sink.id), children_sorted))
-
-          _print(3,obj.id, "is connected to", list(map(lambda x:x.id, conexiones)))
-          for i, conn in enumerate(conexiones):
-            # run conn in paso 2:
-            _print(3,"CONNECTION:", conn.id)
-            self.__level__ -= 1
-            paso2(conn, parent=obj, idx=i)
-        
-        else:
-          _print(3,obj.id, "is an endpoint.")
-          
-          self.__level__ -= 2
-          paso1(canvas.nodes)
-
-    # paso 4:
-    # ir al paso 1:
-    # def paso4():
-      # return paso1(canvas.nodes)
-    paso1(canvas.nodes)
-    
-    # paso 5:
-    # terminar
-    return
-
-  def arrange1(self):
-
-
-    # inicializar
-    canvas = self.__last_canvas__()
-    canvas.__cursor__.x = 10
-    canvas.__cursor__.y = 10
-    self.__hstep__ = 1.25
-    self.__vstep__ = 1
-    Z = [] # the placed nodes
-    C = [] # the list of connections
-
-    # Inicializar los maximos de w y h
-    for obj in canvas.nodes:
-      width, height = obj.__get_obj_size__()
-      if width >= self.__max_w__:
-        self.__max_w__ = width
-      if height >= self.__max_h__:
-        self.__max_h__ = height
-
-    def ids(x):
-      result = []
-      for e in x:
-        if isinstance(e, tuple):
-          result.append((e[0].id, e[1]))
-        else:
-          result.append(e.id)
-      return result
-
-    
-    def _children(o, port=0):
-      if port:
-        result = [(canvas.get(e.sink.id), e.source.port) for e in canvas.edges if e.source.id == o.id]
-        print("Children:",result)
-        return result
-      else:
-        return [canvas.get(e.sink.id) for e in canvas.edges if e.source.id == o.id]
-
-    def step3(o, C):
-      print(o.id, "is connected to", ids(C))
-      for i, c in enumerate(C):
-        if isinstance(c, tuple):
-          ci = c[0]
-          port = c[1]
-        else:
-          ci = c
-          port = 0
-        print(ci.id, "NOT IN", ids(Z))
-        print("Ports", port, "index", i)
-        
-        if port >= 1:
-          canvas.__cursor__.y = o.position.y
-        else:
-          canvas.__cursor__.y += (self.__vstep__ * self.__max_h__)
-        canvas.__cursor__.x += (self.__hstep__ * self.__max_w__ * port)
-        
-        ci.addpos(canvas.__cursor__.x, canvas.__cursor__.y)
-        
-        o = ci
-        Z.append(ci)
-        C = []
-        try:
-          for (child, port) in _children(o, 1):
-            C.append((X.pop(X.index(child)), port))
-        except ValueError:
-          
-          print(">> Object >>", child.id, "named", child.getname(), "not in X list")
-          
-          if child not in Z:
-            print("But,", child.id, "is not placed in", ids(Z))
-            raise Exception("What sourcery is this?")
-          
-          print("Relocate", child.id, "with", ci.id, "?")
-          print(child.position.__pd__(), "and", ci.position.__pd__())
-          
-          if ci in _children(child) and child in _children(ci):
-            print("CIRCULAR")
-            ci.addpos(ci.position.x + self.__hstep__ * self.__max_w__, child.position.y + self.__vstep__ * self.__max_h__)
-          elif child.position.y != ci.position.y:
-            print("UNEQUAL_Y")
-            ci.addpos(ci.position.x + ci.position.x + self.__hstep__ * self.__max_w__, child.position.y)
-          elif child.position.y == ci.position.y:
-            print("EQUAL_Y")
-            child.addpos(child.position.x, child.position.y + self.__hstep__ * self.__max_w__)
-          else:
-            print("Leaving", child.id, "as is.")
-          
-          print("--> Relocated to:",child.position.__pd__(), "and", ci.position.__pd__())
-        
-        finally:
-          # canvas.__cursor__.y -= (len(_children(o)))
-          step3(o, C)
-
-    X = list(canvas.nodes) # the nodes to place
-    # tomar el primer elemento de X
-    obj = X.pop(0)
-    # ubicarlo
-    obj.addpos(canvas.__cursor__.x, canvas.__cursor__.y)
-    # incrementar Y
-    canvas.__cursor__.y += (self.__vstep__ * self.__max_h__)
-    # añadirlo a la lista Z
-    Z.append(obj)
-    # tomar de X todos los elemntos cuyo origen es obj
-    C = list(map(lambda x: X.pop(X.index(x[0])), _children(obj, 1)))
-    
-    # pasar obj y la lista al paso recursivo
-    step3(obj, C)
-    
-    return
-
     
   def write(self, filename=None):
     """ Write out the pd file to disk """
     
-    if self.__soring_alg__ == 2:
-      self.arrange2()
-    elif self.__soring_alg__ == 3:
-      self.arrange1()
-    elif self.__soring_alg__ == 1:
-      self.arrange1b()
-    else:
-      self.arrange()
-    
+    self.arrange(self)
+
     if filename is None:
       filename = self.patchname + '.pd'
     
@@ -722,172 +387,6 @@ class PdPy(CanvasBase, Base):
     elif '.json' in filename:
       with open(filename, 'w') as patchfile:
         patchfile.write(self.__json__())
-  
-  def arrange1b(self):
-    print("========= begin arrange algorithm arrange 1b ==========")
-
-    # inicializar
-    canvas = self.__last_canvas__()
-    X = list(canvas.nodes) # the nodes to place
-    canvas.__cursor__.x = 10
-    canvas.__cursor__.y = 10
-    self.__hstep__ = 1.25
-    self.__vstep__ = 1
-    Z = [] # the placed nodes
-
-    # Inicializar los maximos de w y h
-    for obj in canvas.nodes:
-      width, height = obj.__get_obj_size__()
-      if width >= self.__max_w__:
-        self.__max_w__ = width
-      if height >= self.__max_h__:
-        self.__max_h__ = height
-
-    def ids(x):
-      result = []
-      for e in x:
-        if isinstance(e, tuple):
-          result.append((e[0].id, e[1]))
-        else:
-          result.append(e.id)
-      return result
-
-    
-    def _children(o, port=0):
-      if port:
-        r = [(canvas.get(e.sink.id), e.source.port) for e in canvas.edges if e.source.id == o.id]
-        print("Children-Port:",list(map(lambda x:[x[0].id,x[0].getname(),x[1]], r)))
-        return r
-      else:
-        r = [canvas.get(e.sink.id) for e in canvas.edges if e.source.id == o.id]
-        print("Children:", ids(r))
-        return r
-
-    def step3(o, C, X):
-      print("input step3 X:",list(zip(map(lambda x:x.getname(),X),ids(X))))
-      print(o.id, "is connected to", ids(C))
-      for i, c in enumerate(C):
-        if isinstance(c, tuple):
-          ci = c[0]
-          port = c[1]
-        else:
-          ci = c
-          port = 0
-        print(ci.id, "NOT IN", ids(Z))
-        print("Ports", port, "index", i)
-        
-        if port:
-          canvas.__cursor__.y = o.position.y
-        else:
-          canvas.__cursor__.y += (self.__vstep__ * self.__max_h__)
-        canvas.__cursor__.x += (self.__hstep__ * self.__max_w__ * port)
-        
-        ubicar(ci, canvas.__cursor__.x, canvas.__cursor__.y, yinc=False)
-        
-        o = ci
-        
-        SUBC = []
-        try:
-          for (child, port) in _children(o, 1):
-            SUBC.append((X.pop(X.index(child)), port))
-        except ValueError:
-          
-          print(">> Object >>", child.id, "named", child.getname(), "not in X list")
-          
-          if child not in Z:
-            print("But,", child.id, "is not placed in", ids(Z))
-            ubicar(child)
-          
-          print("Relocate", child.id, "with", ci.id, "?")
-          print(child.position.__pd__(), "and", ci.position.__pd__())
-          
-          if ci in _children(child) and child in _children(ci):
-            print("CIRCULAR")
-            reubicar(ci, self.__hstep__ * self.__max_w__, 0, y=child)
-            
-          elif child.position.y != ci.position.y:
-            print("UNEQUAL_Y")
-            reubicar(ci, self.__hstep__ * self.__max_w__, 0)
-
-          elif child.position.y == ci.position.y:
-            print("EQUAL_Y")
-            reubicar(child, 0, self.__vstep__ * self.__max_w__, y=ci)
-          else:
-            print("Leaving", child.id, "as is.")
-          
-          print("--> Relocated to:",child.position.__pd__(), "and", ci.position.__pd__())
-        
-        finally:
-          
-          if len(C) == 0:
-            print(o.id, "has no children.")
-            step1(X)
-          else:
-            print("==> recursive step ==>")
-            step3(o, SUBC, X)
-
-    def ubicar(obj, xpos=None, ypos=None, yinc=True):
-      x = xpos if xpos is not None else canvas.__cursor__.x
-      y = ypos if ypos is not None else canvas.__cursor__.y
-      print("Ubicando", obj, "=>", x, y)
-      # ubicarlo
-      obj.addpos(x, y)
-      # incrementar Y
-      if yinc:
-        canvas.__cursor__.y += (self.__vstep__ * self.__max_h__)
-      # añadirlo a la lista Z
-      Z.append(obj)
-
-    def takeChildren(obj):
-      children = _children(obj, 1) # the actual list of children -> (child,port)
-      C = [] # the list of children taken from x
-      try:
-        for (child, port) in children:
-          child_index = X.index(child)
-          child_from_x = X.pop(child_index)
-          C.append((child_from_x, port))
-      except ValueError:
-        print(ids(_children(obj)))
-        print(child.id, "is not connected to anybody.")
-        if child not in Z:
-          ubicar(child)
-        else:
-          reubicar(child, 0, self.__vstep__ * self.__max_h__)
-      finally:
-        return C
-    
-    def reubicar(obj, xoffset, yoffset, x=None, y=None):
-      print("Reubicando", obj)
-      xobj = x if x is not None else obj
-      yobj = y if y is not None else obj
-      ubicar(obj,
-        xobj.position.x + xoffset, 
-        yobj.position.y + yoffset, 
-        yinc = False
-      )
-    
-    def step1(X):
-      print("input X:",list(zip(map(lambda x:x.getname(),X),ids(X))))
-      if len(X) == 0:
-        print("===> No more objects to place.")
-        return 
-      else:
-        # tomar el primer elemento de X
-        obj = X.pop(0)
-        # ubicarlo
-        ubicar(obj)
-        # tomar de X todos los elemntos cuyo origen es obj
-        children = takeChildren(obj)
-        if len(children):
-          # pasar obj y la lista al paso recursivo
-          step3(obj, children, X)
-        else:
-          step1(X)
-    
-
-    step1(X)
-    print("------------- end -----------")
-    return
   
   def connect(self, *argv):
     """ Attempt to autoconnect the objects together """
@@ -925,8 +424,6 @@ class PdPy(CanvasBase, Base):
       elif srclist and snklist:
         for i in range(1,min(len(src),len(snk))):
           _connect(src[0].id, src[i], snk[0].id, snk[i])
-  
-    
 
   def parse(self, argvecs):
     """ Parse a list of Pd argument vectors (1) into this instance's scope
@@ -1099,7 +596,6 @@ class PdPy(CanvasBase, Base):
       self.patchname+".pd",
     ]
     __run__(" ".join(command), shell=True, check=True)
-
 
   def __enter__(self):
     return self

@@ -18,5 +18,5 @@ for i in range(1, partials):                # loop through all partials
   mypatch.create(*objects)                  # create the objects list
   mypatch.connect(*objects)                 # connect it
   mypatch.connect(objects[-1], [dac, 0, 1]) # connect ``*~`` to dac chans 1,2
-mypatch.write("additive.json")
+# mypatch.write("additive.json")
 mypatch.write()                             # write the patch out

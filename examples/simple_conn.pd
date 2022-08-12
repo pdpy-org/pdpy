@@ -1,9 +1,9 @@
 #N canvas 0 22 450 300 12;
-#X obj 10 10 loadbang;
-#X obj 10 58 t b b;
-#X msg 100 58 Hi There...;
-#X msg 190 106 Bye!;
-#X obj 100 82 print;
+#X obj 12 12 loadbang;
+#X obj 12 60 t b b;
+#X msg 102 60 Hi There...;
+#X msg 192 108 Bye!;
+#X obj 102 84 print;
 #X connect 1 1 2 0;
 #X connect 2 0 4 0;
 #X connect 0 0 1 0;
