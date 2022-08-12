@@ -27,4 +27,5 @@ for i in range(1, partials):                # loop through all partials
   mypatch.connect(*objects)                 # connect it
   mypatch.connect(lopass, [objects[-1], 1]) # multiply by envelope 
   mypatch.connect(objects[-1], [dac, 0, 1]) # connect ``*~`` to dac chans 1,2
+mypatch.write("additive_env.json")          # write the patch out
 mypatch.write()                             # write the patch out

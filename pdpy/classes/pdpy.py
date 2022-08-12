@@ -55,7 +55,8 @@ class PdPy(CanvasBase, Base):
     self.__depth__ = 0
     self.__max_w__ = 0
     self.__max_h__ = 0
-    
+    self.__soring_alg__ = 1
+
     CanvasBase.__init__(self, obj_idx=0)
     Base.__init__(self, json=json, xml=xml)
     
@@ -389,15 +390,15 @@ class PdPy(CanvasBase, Base):
     # cada uno con su ancho y largo en ``w`` y ``h``
     objetos = list(canvas.nodes)
     fila = []
-    ubicados = [] # en la pagina
+    self.__u__ = [] # en la pagina
     C = [] # lista de puntos
 
     # inicializar
     
     # Inicializar el indice de puntos
     self.__pidx__ = 0
-    self.h_stretch = 1.25
-    self.v_stretch = 1.25
+    self.__hstep__ = 1.25
+    self.__vstep__ = 1.25
     
     # Inicializar ``W`` y ``H`` con el máximo valor de ``w`` y ``h`` de todos los ``objetos``
     for obj in objetos:
@@ -426,30 +427,30 @@ class PdPy(CanvasBase, Base):
       # namit = lambda objs: list(map(lambda x: x.getname(),objs)) 
       
       # 2. Obtener todos los nodos cuyas conexiones que
-      #    tienen como origen a ``o`` y no estan ya ubicados.
+      #    tienen como origen a ``o`` y no estan ya self.__u__.
       #    Para esto, iteramos sobre los bordes/conexiones
-      subfila = sorted([ canvas.get(edge.sink.id) for edge in canvas.edges if edge.source.id == o.id and o.id not in ubicados], key=lambda x:x.id)
+      subfila = sorted([ canvas.get(edge.sink.id) for edge in canvas.edges if edge.source.id == o.id and o.id not in self.__u__], key=lambda x:x.id)
       
       # print(("Objeto:",o.getname(), o.id))
       # print("Resto:",namit(fila))
       # print("SUBFILA:", namit(subfila))
-      # print("ubicados:", ubicados)
+      # print("self.__u__:", self.__u__)
       
-      # 3. Chequear si ``o`` ya está en la ``ubicados``:
-      #   1. Si **no** está en la ``ubicados``: *ubicarlo en la ubicados*
-      if o.id not in ubicados:
+      # 3. Chequear si ``o`` ya está en la ``self.__u__``:
+      #   1. Si **no** está en la ``self.__u__``: *ubicarlo en la self.__u__*
+      if o.id not in self.__u__:
         # print("Not located yet:", (o.getname(),o.id))
       #   1. Ubicarlo con las coordenadas de ``C_i``
         o.addpos(*C[self.__pidx__])
-      #   2. Agregar el objeto ``o`` a la ``ubicados``
-        ubicados.append(o.id)
+      #   2. Agregar el objeto ``o`` a la ``self.__u__``
+        self.__u__.append(o.id)
       #   3. Agregar el siguiente punto a la lista de puntos
       #    - en x: ponemos el valor de C_i_x en ese punto
         x = C[self.__pidx__][0]
       #    - en y: incrementamos el valor de C_i_y con ``V * H``, donde
       #    V es el factor de estiramiento vertical,
       #    H es el máximo valor de y que existe en ``objetos``
-        y = C[self.__pidx__][1] + self.v_stretch * self.__max_h__
+        y = C[self.__pidx__][1] + self.__vstep__ * self.__max_h__
       #   Esto queda en:
         C.append((x, y))
       #   4. Incrementar el indice de puntos ``i = i + 1``
@@ -470,8 +471,8 @@ class PdPy(CanvasBase, Base):
         iprev = 0 if iprev < 0 else iprev
         # print(o.getname(), "found in C at", str(iprev))
       #   2. cambiar el valor de ``C_iprev`` por ``(2W * iprev, C_iprev_h)``
-        x = C[iprev][0] + self.h_stretch * self.__max_w__
-        y = C[iprev][1] + self.v_stretch * self.__max_h__
+        x = C[iprev][0] + self.__hstep__ * self.__max_w__
+        y = C[iprev][1] + self.__vstep__ * self.__max_h__
         C[iprev] = (x, y)
       #   3. actualizar la posición de ese objeto 
         canvas.get(iprev).addpos(*C[iprev])
@@ -491,10 +492,218 @@ class PdPy(CanvasBase, Base):
     for n in canvas.nodes:
       print(n.getname(), n.position.__pd__())
 
+  def arrange2(self):
+    canvas = self.__last_canvas__()
+    self.__u__ = []
+    canvas.__cursor__.x = 0
+    canvas.__cursor__.y = 0
+    self.__level__ = 0
+    def _print(level, *message): print(self.__level__*"\t", level*"\t", *message)
+
+    # paso 1:
+    def paso1(objetos):
+      self.__level__ += 1
+      _print(1, "Paso 1:")
+      # elegir el primer objeto que no está en la página
+      no_obj = True
+      for o in objetos:
+        if o not in self.__u__:
+          no_obj = False
+          break
+      if no_obj:
+        _print(1, "No objects found")
+        return
+      else:
+        # goto 2
+        return paso2(o)
+    
+    def paso2(obj, parent=None, idx=None):
+      self.__level__ += 1
+      _print(2, "Paso 2")
+      # paso 2:
+      # ¿esta el objeto en la pagina?
+      if obj in self.__u__:
+        _print(2, "obj is ubicado")
+        # si, 
+        # reubicar el objeto que llamó esta conexión
+        # al lado de este objeto si y solo si 
+        # no estan ya en la misma fila (canvas.__cursor__.x)
+        # return
+        par_pos = (parent.position.x, parent.position.y)
+        obj_pos = (obj.position.x, obj.position.y)
+        _print(2, "parent and child position:", par_pos, obj_pos)
+        if par_pos[0] != obj_pos[0]:
+          _print(2, "diff parent and obj position")
+          canvas.__cursor__.x += (1 + idx)
+          canvas.__cursor__.y += 1
+          parent.addpos(canvas.__cursor__.x, canvas.__cursor__.y)
+        else:
+          _print(2, "SAME pos", obj.id, parent.id)
+        return
+      else:
+        _print(2, "Not ubicado, placing", obj.id)
+        # if parent is not None and idx is not None:
+          # canvas.__cursor__.x += (1 + idx)
+        obj.addpos(canvas.__cursor__.x, canvas.__cursor__.y)
+        canvas.__cursor__.y += 1
+        # goto 3
+
+      # paso 3:
+        self.__level__ += 1
+        _print(3,"Paso 3")
+        # ¿tiene conexiones?
+        # Returns a list of connected objets ordered by obj's ports or None
+        _print(3,"-- Get Connections --")
+        conexiones = []
+        children = [edge for edge in canvas.edges if obj.id == edge.source.id]
+        
+        if len(children):
+          children_sorted = reversed(sorted(children, key=lambda e:e.source.port))
+          conexiones = list(map(lambda e:canvas.get(e.sink.id), children_sorted))
+
+          _print(3,obj.id, "is connected to", list(map(lambda x:x.id, conexiones)))
+          for i, conn in enumerate(conexiones):
+            # run conn in paso 2:
+            _print(3,"CONNECTION:", conn.id)
+            self.__level__ -= 1
+            paso2(conn, parent=obj, idx=i)
+        
+        else:
+          _print(3,obj.id, "is an endpoint.")
+          
+          self.__level__ -= 2
+          paso1(canvas.nodes)
+
+    # paso 4:
+    # ir al paso 1:
+    # def paso4():
+      # return paso1(canvas.nodes)
+    paso1(canvas.nodes)
+    
+    # paso 5:
+    # terminar
+    return
+
+  def arrange1(self):
+
+
+    # inicializar
+    canvas = self.__last_canvas__()
+    canvas.__cursor__.x = 10
+    canvas.__cursor__.y = 10
+    self.__hstep__ = 1.25
+    self.__vstep__ = 1
+    Z = [] # the placed nodes
+    C = [] # the list of connections
+
+    # Inicializar los maximos de w y h
+    for obj in canvas.nodes:
+      width, height = obj.__get_obj_size__()
+      if width >= self.__max_w__:
+        self.__max_w__ = width
+      if height >= self.__max_h__:
+        self.__max_h__ = height
+
+    def ids(x):
+      result = []
+      for e in x:
+        if isinstance(e, tuple):
+          result.append((e[0].id, e[1]))
+        else:
+          result.append(e.id)
+      return result
+
+    
+    def _children(o, port=0):
+      if port:
+        result = [(canvas.get(e.sink.id), e.source.port) for e in canvas.edges if e.source.id == o.id]
+        print("Children:",result)
+        return result
+      else:
+        return [canvas.get(e.sink.id) for e in canvas.edges if e.source.id == o.id]
+
+    def step3(o, C):
+      print(o.id, "is connected to", ids(C))
+      for i, c in enumerate(C):
+        if isinstance(c, tuple):
+          ci = c[0]
+          port = c[1]
+        else:
+          ci = c
+          port = 0
+        print(ci.id, "NOT IN", ids(Z))
+        print("Ports", port, "index", i)
+        
+        if port >= 1:
+          canvas.__cursor__.y = o.position.y
+        else:
+          canvas.__cursor__.y += (self.__vstep__ * self.__max_h__)
+        canvas.__cursor__.x += (self.__hstep__ * self.__max_w__ * port)
+        
+        ci.addpos(canvas.__cursor__.x, canvas.__cursor__.y)
+        
+        o = ci
+        Z.append(ci)
+        C = []
+        try:
+          for (child, port) in _children(o, 1):
+            C.append((X.pop(X.index(child)), port))
+        except ValueError:
+          
+          print(">> Object >>", child.id, "named", child.getname(), "not in X list")
+          
+          if child not in Z:
+            print("But,", child.id, "is not placed in", ids(Z))
+            raise Exception("What sourcery is this?")
+          
+          print("Relocate", child.id, "with", ci.id, "?")
+          print(child.position.__pd__(), "and", ci.position.__pd__())
+          
+          if ci in _children(child) and child in _children(ci):
+            print("CIRCULAR")
+            ci.addpos(ci.position.x + self.__hstep__ * self.__max_w__, child.position.y + self.__vstep__ * self.__max_h__)
+          elif child.position.y != ci.position.y:
+            print("UNEQUAL_Y")
+            ci.addpos(ci.position.x + ci.position.x + self.__hstep__ * self.__max_w__, child.position.y)
+          elif child.position.y == ci.position.y:
+            print("EQUAL_Y")
+            child.addpos(child.position.x, child.position.y + self.__hstep__ * self.__max_w__)
+          else:
+            print("Leaving", child.id, "as is.")
+          
+          print("--> Relocated to:",child.position.__pd__(), "and", ci.position.__pd__())
+        
+        finally:
+          # canvas.__cursor__.y -= (len(_children(o)))
+          step3(o, C)
+
+    X = list(canvas.nodes) # the nodes to place
+    # tomar el primer elemento de X
+    obj = X.pop(0)
+    # ubicarlo
+    obj.addpos(canvas.__cursor__.x, canvas.__cursor__.y)
+    # incrementar Y
+    canvas.__cursor__.y += (self.__vstep__ * self.__max_h__)
+    # añadirlo a la lista Z
+    Z.append(obj)
+    # tomar de X todos los elemntos cuyo origen es obj
+    C = list(map(lambda x: X.pop(X.index(x[0])), _children(obj, 1)))
+    
+    # pasar obj y la lista al paso recursivo
+    step3(obj, C)
+    
+    return
+
+    
   def write(self, filename=None):
     """ Write out the pd file to disk """
     
-    self.arrange()
+    if self.__soring_alg__ == 2:
+      self.arrange2()
+    elif self.__soring_alg__ == 1:
+      self.arrange1()
+    else:
+      self.arrange()
     
     if filename is None:
       filename = self.patchname + '.pd'
@@ -698,7 +907,7 @@ class PdPy(CanvasBase, Base):
       
       if Path(pdbin).exists():
         print("Found pd at: ", pdbin.as_posix())
-        setattr(self, 'pdbin', pdbin)
+        setattr(self, '__pdbin__', pdbin)
       else:
         raise Exception("This pd binary does not exist: " + pdbin.as_posix())
     
@@ -706,8 +915,10 @@ class PdPy(CanvasBase, Base):
     from subprocess import run as __run__
     if not hasattr(self, 'patchname'):
       raise Exception("No patchname found")
+    if not hasattr(self, '__pdbin__'):
+      raise Exception("Pd binary not set.")
     command = [
-      self.pdbin.as_posix(),
+      self.__pdbin__.as_posix(),
       "-open",
       self.patchname+".pd",
     ]

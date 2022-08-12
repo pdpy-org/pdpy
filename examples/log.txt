@@ -1,0 +1,59 @@
+Found  darwin  platform.
+Locating pd...
+Found pd at:  /Applications/Pd-0.52-2.app/Contents/Resources/bin/pd
+Adding position for: loadbang 10 10
+Children: [(<pdpy.classes.obj.Obj object at 0x10a725ac0>, 0)]
+0 is connected to [1]
+1 NOT IN [0]
+Ports 0 index 0
+Adding position for: t 10 58
+Children: [(<pdpy.classes.message.Msg object at 0x10a726370>, 0), (<pdpy.classes.obj.Obj object at 0x10a725bb0>, 1)]
+1 is connected to [(7, 0), (2, 1)]
+7 NOT IN [0, 1]
+Ports 0 index 0
+Adding position for: Msg 10 82
+Children: [(<pdpy.classes.obj.Obj object at 0x10a7261f0>, 0)]
+7 is connected to [(6, 0)]
+6 NOT IN [0, 1, 7]
+Ports 0 index 0
+Adding position for: print 10 106
+Children: []
+6 is connected to []
+2 NOT IN [0, 1, 7, 6]
+Ports 1 index 1
+Adding position for: until 70 82
+Children: [(<pdpy.classes.obj.Obj object at 0x10a725d30>, 0)]
+2 is connected to [(3, 0)]
+3 NOT IN [0, 1, 7, 6, 2]
+Ports 0 index 0
+Adding position for: f 70 106
+Children: [(<pdpy.classes.obj.Obj object at 0x10a726070>, 0), (<pdpy.classes.obj.Obj object at 0x10a725eb0>, 0), (<pdpy.classes.obj.Obj object at 0x10a7261f0>, 0)]
+>> Object >> 6 named print not in X list
+Relocate 6 with 3 ?
+10 106 and 70 106
+EQUAL_Y
+Adding position for: print 10 166
+--> Relocated to: 10 166 and 70 106
+3 is connected to [(5, 0), (4, 0)]
+5 NOT IN [0, 1, 7, 6, 2, 3]
+Ports 0 index 0
+Adding position for: sel 70 130
+Children: [(<pdpy.classes.obj.Obj object at 0x10a725bb0>, 0)]
+>> Object >> 2 named until not in X list
+Relocate 2 with 5 ?
+70 82 and 70 130
+UNEQUAL_Y
+Adding position for: sel 200 82
+--> Relocated to: 70 82 and 200 82
+5 is connected to []
+4 NOT IN [0, 1, 7, 6, 2, 3, 5]
+Ports 0 index 1
+Adding position for: + 70 154
+Children: [(<pdpy.classes.obj.Obj object at 0x10a725d30>, 0)]
+>> Object >> 3 named f not in X list
+Relocate 3 with 4 ?
+70 106 and 70 154
+CIRCULAR
+Adding position for: + 130 130
+--> Relocated to: 70 106 and 130 130
+4 is connected to []

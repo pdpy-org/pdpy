@@ -27,7 +27,11 @@ class Point(Base):
       self.y = self.__d__.screen['y']
     
   def __pd__(self):
-    return str(self.x) + " " + str(self.y)
+    try:
+      return str(self.x) + " " + str(self.y)
+    except ValueError as ve:
+      raise Exception(ve, "in object", self.id, "named", self.getname())
+
 
   def __xml__(self, tag=None):
     """ Return an XML Element """
