@@ -1,0 +1,1077 @@
+Found  darwin  platform.
+Locating pd...
+Found pd at:  /Applications/Pd-0.52-2.app/Contents/Resources/bin/pd
+Initialized Arrange graph placing algorithm.
+========= begin arrange algorithm arrange 1b ==========
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('dac~', 0), ('phasor~', 1), ('*~', 2), ('lop~', 3), ('osc~', 4), ('*~', 5), ('*~', 6), ('osc~', 7), ('*~', 8), ('*~', 9), ('osc~', 10), ('*~', 11), ('*~', 12), ('osc~', 13), ('*~', 14), ('*~', 15), ('osc~', 16), ('*~', 17), ('*~', 18), ('osc~', 19), ('*~', 20), ('*~', 21), ('osc~', 22), ('*~', 23), ('*~', 24)]
+place(): 0 => 10 10
+'''''''''' BEGIN STEP 2 ''''''''''
+input 0 dac~ NoneType
+getChildren(): dac~ ==> []
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('phasor~', 1), ('*~', 2), ('lop~', 3), ('osc~', 4), ('*~', 5), ('*~', 6), ('osc~', 7), ('*~', 8), ('*~', 9), ('osc~', 10), ('*~', 11), ('*~', 12), ('osc~', 13), ('*~', 14), ('*~', 15), ('osc~', 16), ('*~', 17), ('*~', 18), ('osc~', 19), ('*~', 20), ('*~', 21), ('osc~', 22), ('*~', 23), ('*~', 24)]
+place(): 1 => 10 34
+'''''''''' BEGIN STEP 2 ''''''''''
+input 1 phasor~ NoneType
+getChildren(): phasor~ ==> [[2, '*~', 0], [2, '*~', 0]]
+child exists, appending 2
+2 is not connected to anybody.
+But, 2 is not placed in [0, 1]
+place(): 2 => 10 82
+ *** done relocating, continuing
+done with child loop 1
+`````````` (end STEP 2) for  phasor~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 1 phasor~
+1 is connected to [(2, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for phasor~
+>>>> Child #0 2 *~ 0
+>>>> 2 NOT IN [0, 1, 2]
+PLACEMENT
+place(): 2 => 10.0 106
+'''''''''' BEGIN STEP 2 ''''''''''
+input 2 *~ method
+getChildren(): *~ ==> [[3, 'lop~', 0]]
+child exists, appending 3
+done with child loop 1
+`````````` (end STEP 2) for  *~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 2 *~
+2 is connected to [(3, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for *~
+>>>> Child #0 3 lop~ 0
+>>>> 3 NOT IN [0, 1, 2, 2]
+PLACEMENT
+place(): 3 => 10.0 130
+'''''''''' BEGIN STEP 2 ''''''''''
+input 3 lop~ method
+getChildren(): lop~ ==> [[6, '*~', 0], [9, '*~', 0], [12, '*~', 0], [15, '*~', 0], [18, '*~', 0], [21, '*~', 0], [24, '*~', 0]]
+child exists, appending 6
+child exists, appending 9
+child exists, appending 12
+child exists, appending 15
+child exists, appending 18
+child exists, appending 21
+child exists, appending 24
+done with child loop 7
+`````````` (end STEP 2) for  lop~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 3 lop~
+3 is connected to [(6, 0), (9, 0), (12, 0), (15, 0), (18, 0), (21, 0), (24, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for lop~
+>>>> Child #0 6 *~ 0
+>>>> 6 NOT IN [0, 1, 2, 2, 3]
+PLACEMENT
+place(): 6 => 10.0 154
+'''''''''' BEGIN STEP 2 ''''''''''
+input 6 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 6 0
+10 154 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 154
+ *** done relocating, continuing
+0 is not connected to anybody.
+relocator() 6 0
+10 154 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 154
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 4), ('*~', 5), ('osc~', 7), ('*~', 8), ('osc~', 10), ('*~', 11), ('osc~', 13), ('*~', 14), ('osc~', 16), ('*~', 17), ('osc~', 19), ('*~', 20), ('osc~', 22), ('*~', 23)]
+place(): 4 => 10.0 154
+'''''''''' BEGIN STEP 2 ''''''''''
+input 4 osc~ NoneType
+getChildren(): osc~ ==> [[5, '*~', 0]]
+child exists, appending 5
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 4 osc~
+4 is connected to [(5, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 5 *~ 0
+>>>> 5 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4]
+PLACEMENT
+place(): 5 => 10.0 202
+'''''''''' BEGIN STEP 2 ''''''''''
+input 5 *~ method
+getChildren(): *~ ==> [[6, '*~', 0]]
+6 is not connected to anybody.
+relocator() 5 6
+10 202 and 10 154
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is ABOVE the parent
+move(): *~
+place(): 6 => 10 154
+--> Relocated to: 10 154 and 10 202
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 7), ('*~', 8), ('osc~', 10), ('*~', 11), ('osc~', 13), ('*~', 14), ('osc~', 16), ('*~', 17), ('osc~', 19), ('*~', 20), ('osc~', 22), ('*~', 23)]
+place(): 7 => 10.0 202
+'''''''''' BEGIN STEP 2 ''''''''''
+input 7 osc~ NoneType
+getChildren(): osc~ ==> [[8, '*~', 0]]
+child exists, appending 8
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 7 osc~
+7 is connected to [(8, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 8 *~ 0
+>>>> 8 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7]
+PLACEMENT
+place(): 8 => 10.0 250
+'''''''''' BEGIN STEP 2 ''''''''''
+input 8 *~ method
+getChildren(): *~ ==> [[9, '*~', 0]]
+9 is not connected to anybody.
+But, 9 is not placed in [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8]
+place(): 9 => 10.0 274
+relocator() 8 9
+10 250 and 10 274
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is BELOW the parent
+move(): *~
+place(): 9 => 10 274
+--> Relocated to: 10 274 and 10 250
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 10), ('*~', 11), ('osc~', 13), ('*~', 14), ('osc~', 16), ('*~', 17), ('osc~', 19), ('*~', 20), ('osc~', 22), ('*~', 23)]
+place(): 10 => 10.0 274
+'''''''''' BEGIN STEP 2 ''''''''''
+input 10 osc~ NoneType
+getChildren(): osc~ ==> [[11, '*~', 0]]
+child exists, appending 11
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 10 osc~
+10 is connected to [(11, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 11 *~ 0
+>>>> 11 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10]
+PLACEMENT
+place(): 11 => 10.0 322
+'''''''''' BEGIN STEP 2 ''''''''''
+input 11 *~ method
+getChildren(): *~ ==> [[12, '*~', 0]]
+12 is not connected to anybody.
+But, 12 is not placed in [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11]
+place(): 12 => 10.0 346
+relocator() 11 12
+10 322 and 10 346
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is BELOW the parent
+move(): *~
+place(): 12 => 10 346
+--> Relocated to: 10 346 and 10 322
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 13), ('*~', 14), ('osc~', 16), ('*~', 17), ('osc~', 19), ('*~', 20), ('osc~', 22), ('*~', 23)]
+place(): 13 => 10.0 346
+'''''''''' BEGIN STEP 2 ''''''''''
+input 13 osc~ NoneType
+getChildren(): osc~ ==> [[14, '*~', 0]]
+child exists, appending 14
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 13 osc~
+13 is connected to [(14, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 14 *~ 0
+>>>> 14 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13]
+PLACEMENT
+place(): 14 => 10.0 394
+'''''''''' BEGIN STEP 2 ''''''''''
+input 14 *~ method
+getChildren(): *~ ==> [[15, '*~', 0]]
+15 is not connected to anybody.
+But, 15 is not placed in [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14]
+place(): 15 => 10.0 418
+relocator() 14 15
+10 394 and 10 418
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is BELOW the parent
+move(): *~
+place(): 15 => 10 418
+--> Relocated to: 10 418 and 10 394
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 16), ('*~', 17), ('osc~', 19), ('*~', 20), ('osc~', 22), ('*~', 23)]
+place(): 16 => 10.0 418
+'''''''''' BEGIN STEP 2 ''''''''''
+input 16 osc~ NoneType
+getChildren(): osc~ ==> [[17, '*~', 0]]
+child exists, appending 17
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 16 osc~
+16 is connected to [(17, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 17 *~ 0
+>>>> 17 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16]
+PLACEMENT
+place(): 17 => 10.0 466
+'''''''''' BEGIN STEP 2 ''''''''''
+input 17 *~ method
+getChildren(): *~ ==> [[18, '*~', 0]]
+18 is not connected to anybody.
+But, 18 is not placed in [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17]
+place(): 18 => 10.0 490
+relocator() 17 18
+10 466 and 10 490
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is BELOW the parent
+move(): *~
+place(): 18 => 10 490
+--> Relocated to: 10 490 and 10 466
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 19), ('*~', 20), ('osc~', 22), ('*~', 23)]
+place(): 19 => 10.0 490
+'''''''''' BEGIN STEP 2 ''''''''''
+input 19 osc~ NoneType
+getChildren(): osc~ ==> [[20, '*~', 0]]
+child exists, appending 20
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 19 osc~
+19 is connected to [(20, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 20 *~ 0
+>>>> 20 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19]
+PLACEMENT
+place(): 20 => 10.0 538
+'''''''''' BEGIN STEP 2 ''''''''''
+input 20 *~ method
+getChildren(): *~ ==> [[21, '*~', 0]]
+21 is not connected to anybody.
+But, 21 is not placed in [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20]
+place(): 21 => 10.0 562
+relocator() 20 21
+10 538 and 10 562
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is BELOW the parent
+move(): *~
+place(): 21 => 10 562
+--> Relocated to: 10 562 and 10 538
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 22), ('*~', 23)]
+place(): 22 => 10.0 562
+'''''''''' BEGIN STEP 2 ''''''''''
+input 22 osc~ NoneType
+getChildren(): osc~ ==> [[23, '*~', 0]]
+child exists, appending 23
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 22 osc~
+22 is connected to [(23, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 23 *~ 0
+>>>> 23 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22]
+PLACEMENT
+place(): 23 => 10.0 610
+'''''''''' BEGIN STEP 2 ''''''''''
+input 23 *~ method
+getChildren(): *~ ==> [[24, '*~', 0]]
+24 is not connected to anybody.
+But, 24 is not placed in [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23]
+place(): 24 => 10.0 634
+relocator() 23 24
+10 610 and 10 634
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is BELOW the parent
+move(): *~
+place(): 24 => 10 634
+--> Relocated to: 10 634 and 10 610
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+>>>> Child #1 9 *~ 0
+>>>> 9 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23, 24, 24]
+PLACEMENT
+place(): 9 => 10.0 658
+'''''''''' BEGIN STEP 2 ''''''''''
+input 9 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 9 0
+10 658 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 658
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+>>>> Child #2 12 *~ 0
+>>>> 12 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23, 24, 24, 9, 0]
+PLACEMENT
+place(): 12 => 10.0 682
+'''''''''' BEGIN STEP 2 ''''''''''
+input 12 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 12 0
+10 682 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 682
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+>>>> Child #3 15 *~ 0
+>>>> 15 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23, 24, 24, 9, 0, 12, 0]
+PLACEMENT
+place(): 15 => 10.0 706
+'''''''''' BEGIN STEP 2 ''''''''''
+input 15 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 15 0
+10 706 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 706
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+>>>> Child #4 18 *~ 0
+>>>> 18 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23, 24, 24, 9, 0, 12, 0, 15, 0]
+PLACEMENT
+place(): 18 => 10.0 730
+'''''''''' BEGIN STEP 2 ''''''''''
+input 18 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 18 0
+10 730 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 730
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+>>>> Child #5 21 *~ 0
+>>>> 21 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23, 24, 24, 9, 0, 12, 0, 15, 0, 18, 0]
+PLACEMENT
+place(): 21 => 10.0 754
+'''''''''' BEGIN STEP 2 ''''''''''
+input 21 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 21 0
+10 754 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 754
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+>>>> Child #6 24 *~ 0
+>>>> 24 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23, 24, 24, 9, 0, 12, 0, 15, 0, 18, 0, 21, 0]
+PLACEMENT
+place(): 24 => 10.0 778
+'''''''''' BEGIN STEP 2 ''''''''''
+input 24 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 24 0
+10 778 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 778
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for lop~
+---------- (end STEP 3) ----------
+<<<<<<<<<< end child loop for *~
+---------- (end STEP 3) ----------
+<<<<<<<<<< end child loop for phasor~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+------------- end -----------
+Initialized Arrange graph placing algorithm.
+========= begin arrange algorithm arrange 1b ==========
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('dac~', 0), ('phasor~', 1), ('*~', 2), ('lop~', 3), ('osc~', 4), ('*~', 5), ('*~', 6), ('osc~', 7), ('*~', 8), ('*~', 9), ('osc~', 10), ('*~', 11), ('*~', 12), ('osc~', 13), ('*~', 14), ('*~', 15), ('osc~', 16), ('*~', 17), ('*~', 18), ('osc~', 19), ('*~', 20), ('*~', 21), ('osc~', 22), ('*~', 23), ('*~', 24)]
+place(): 0 => 10 10
+'''''''''' BEGIN STEP 2 ''''''''''
+input 0 dac~ NoneType
+getChildren(): dac~ ==> []
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('phasor~', 1), ('*~', 2), ('lop~', 3), ('osc~', 4), ('*~', 5), ('*~', 6), ('osc~', 7), ('*~', 8), ('*~', 9), ('osc~', 10), ('*~', 11), ('*~', 12), ('osc~', 13), ('*~', 14), ('*~', 15), ('osc~', 16), ('*~', 17), ('*~', 18), ('osc~', 19), ('*~', 20), ('*~', 21), ('osc~', 22), ('*~', 23), ('*~', 24)]
+place(): 1 => 10 34
+'''''''''' BEGIN STEP 2 ''''''''''
+input 1 phasor~ NoneType
+getChildren(): phasor~ ==> [[2, '*~', 0], [2, '*~', 0]]
+child exists, appending 2
+2 is not connected to anybody.
+But, 2 is not placed in [0, 1]
+place(): 2 => 10 82
+ *** done relocating, continuing
+done with child loop 1
+`````````` (end STEP 2) for  phasor~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 1 phasor~
+1 is connected to [(2, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for phasor~
+>>>> Child #0 2 *~ 0
+>>>> 2 NOT IN [0, 1, 2]
+PLACEMENT
+place(): 2 => 10.0 106
+'''''''''' BEGIN STEP 2 ''''''''''
+input 2 *~ method
+getChildren(): *~ ==> [[3, 'lop~', 0]]
+child exists, appending 3
+done with child loop 1
+`````````` (end STEP 2) for  *~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 2 *~
+2 is connected to [(3, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for *~
+>>>> Child #0 3 lop~ 0
+>>>> 3 NOT IN [0, 1, 2, 2]
+PLACEMENT
+place(): 3 => 10.0 130
+'''''''''' BEGIN STEP 2 ''''''''''
+input 3 lop~ method
+getChildren(): lop~ ==> [[6, '*~', 0], [9, '*~', 0], [12, '*~', 0], [15, '*~', 0], [18, '*~', 0], [21, '*~', 0], [24, '*~', 0]]
+child exists, appending 6
+child exists, appending 9
+child exists, appending 12
+child exists, appending 15
+child exists, appending 18
+child exists, appending 21
+child exists, appending 24
+done with child loop 7
+`````````` (end STEP 2) for  lop~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 3 lop~
+3 is connected to [(6, 0), (9, 0), (12, 0), (15, 0), (18, 0), (21, 0), (24, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for lop~
+>>>> Child #0 6 *~ 0
+>>>> 6 NOT IN [0, 1, 2, 2, 3]
+PLACEMENT
+place(): 6 => 10.0 154
+'''''''''' BEGIN STEP 2 ''''''''''
+input 6 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 6 0
+10 154 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 154
+ *** done relocating, continuing
+0 is not connected to anybody.
+relocator() 6 0
+10 154 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 154
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 4), ('*~', 5), ('osc~', 7), ('*~', 8), ('osc~', 10), ('*~', 11), ('osc~', 13), ('*~', 14), ('osc~', 16), ('*~', 17), ('osc~', 19), ('*~', 20), ('osc~', 22), ('*~', 23)]
+place(): 4 => 10.0 154
+'''''''''' BEGIN STEP 2 ''''''''''
+input 4 osc~ NoneType
+getChildren(): osc~ ==> [[5, '*~', 0]]
+child exists, appending 5
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 4 osc~
+4 is connected to [(5, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 5 *~ 0
+>>>> 5 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4]
+PLACEMENT
+place(): 5 => 10.0 202
+'''''''''' BEGIN STEP 2 ''''''''''
+input 5 *~ method
+getChildren(): *~ ==> [[6, '*~', 0]]
+6 is not connected to anybody.
+relocator() 5 6
+10 202 and 10 154
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is ABOVE the parent
+move(): *~
+place(): 6 => 10 154
+--> Relocated to: 10 154 and 10 202
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 7), ('*~', 8), ('osc~', 10), ('*~', 11), ('osc~', 13), ('*~', 14), ('osc~', 16), ('*~', 17), ('osc~', 19), ('*~', 20), ('osc~', 22), ('*~', 23)]
+place(): 7 => 10.0 202
+'''''''''' BEGIN STEP 2 ''''''''''
+input 7 osc~ NoneType
+getChildren(): osc~ ==> [[8, '*~', 0]]
+child exists, appending 8
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 7 osc~
+7 is connected to [(8, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 8 *~ 0
+>>>> 8 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7]
+PLACEMENT
+place(): 8 => 10.0 250
+'''''''''' BEGIN STEP 2 ''''''''''
+input 8 *~ method
+getChildren(): *~ ==> [[9, '*~', 0]]
+9 is not connected to anybody.
+But, 9 is not placed in [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8]
+place(): 9 => 10.0 274
+relocator() 8 9
+10 250 and 10 274
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is BELOW the parent
+move(): *~
+place(): 9 => 10 274
+--> Relocated to: 10 274 and 10 250
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 10), ('*~', 11), ('osc~', 13), ('*~', 14), ('osc~', 16), ('*~', 17), ('osc~', 19), ('*~', 20), ('osc~', 22), ('*~', 23)]
+place(): 10 => 10.0 274
+'''''''''' BEGIN STEP 2 ''''''''''
+input 10 osc~ NoneType
+getChildren(): osc~ ==> [[11, '*~', 0]]
+child exists, appending 11
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 10 osc~
+10 is connected to [(11, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 11 *~ 0
+>>>> 11 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10]
+PLACEMENT
+place(): 11 => 10.0 322
+'''''''''' BEGIN STEP 2 ''''''''''
+input 11 *~ method
+getChildren(): *~ ==> [[12, '*~', 0]]
+12 is not connected to anybody.
+But, 12 is not placed in [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11]
+place(): 12 => 10.0 346
+relocator() 11 12
+10 322 and 10 346
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is BELOW the parent
+move(): *~
+place(): 12 => 10 346
+--> Relocated to: 10 346 and 10 322
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 13), ('*~', 14), ('osc~', 16), ('*~', 17), ('osc~', 19), ('*~', 20), ('osc~', 22), ('*~', 23)]
+place(): 13 => 10.0 346
+'''''''''' BEGIN STEP 2 ''''''''''
+input 13 osc~ NoneType
+getChildren(): osc~ ==> [[14, '*~', 0]]
+child exists, appending 14
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 13 osc~
+13 is connected to [(14, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 14 *~ 0
+>>>> 14 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13]
+PLACEMENT
+place(): 14 => 10.0 394
+'''''''''' BEGIN STEP 2 ''''''''''
+input 14 *~ method
+getChildren(): *~ ==> [[15, '*~', 0]]
+15 is not connected to anybody.
+But, 15 is not placed in [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14]
+place(): 15 => 10.0 418
+relocator() 14 15
+10 394 and 10 418
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is BELOW the parent
+move(): *~
+place(): 15 => 10 418
+--> Relocated to: 10 418 and 10 394
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 16), ('*~', 17), ('osc~', 19), ('*~', 20), ('osc~', 22), ('*~', 23)]
+place(): 16 => 10.0 418
+'''''''''' BEGIN STEP 2 ''''''''''
+input 16 osc~ NoneType
+getChildren(): osc~ ==> [[17, '*~', 0]]
+child exists, appending 17
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 16 osc~
+16 is connected to [(17, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 17 *~ 0
+>>>> 17 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16]
+PLACEMENT
+place(): 17 => 10.0 466
+'''''''''' BEGIN STEP 2 ''''''''''
+input 17 *~ method
+getChildren(): *~ ==> [[18, '*~', 0]]
+18 is not connected to anybody.
+But, 18 is not placed in [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17]
+place(): 18 => 10.0 490
+relocator() 17 18
+10 466 and 10 490
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is BELOW the parent
+move(): *~
+place(): 18 => 10 490
+--> Relocated to: 10 490 and 10 466
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 19), ('*~', 20), ('osc~', 22), ('*~', 23)]
+place(): 19 => 10.0 490
+'''''''''' BEGIN STEP 2 ''''''''''
+input 19 osc~ NoneType
+getChildren(): osc~ ==> [[20, '*~', 0]]
+child exists, appending 20
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 19 osc~
+19 is connected to [(20, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 20 *~ 0
+>>>> 20 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19]
+PLACEMENT
+place(): 20 => 10.0 538
+'''''''''' BEGIN STEP 2 ''''''''''
+input 20 *~ method
+getChildren(): *~ ==> [[21, '*~', 0]]
+21 is not connected to anybody.
+But, 21 is not placed in [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20]
+place(): 21 => 10.0 562
+relocator() 20 21
+10 538 and 10 562
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is BELOW the parent
+move(): *~
+place(): 21 => 10 562
+--> Relocated to: 10 562 and 10 538
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input [('osc~', 22), ('*~', 23)]
+place(): 22 => 10.0 562
+'''''''''' BEGIN STEP 2 ''''''''''
+input 22 osc~ NoneType
+getChildren(): osc~ ==> [[23, '*~', 0]]
+child exists, appending 23
+done with child loop 1
+`````````` (end STEP 2) for  osc~ ``````````
+==> passing to step3
+========== STEP 3 ==========
+input 22 osc~
+22 is connected to [(23, 0)]
+>>>>>>>>>> BEGIN CHILD LOOP for osc~
+>>>> Child #0 23 *~ 0
+>>>> 23 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22]
+PLACEMENT
+place(): 23 => 10.0 610
+'''''''''' BEGIN STEP 2 ''''''''''
+input 23 *~ method
+getChildren(): *~ ==> [[24, '*~', 0]]
+24 is not connected to anybody.
+But, 24 is not placed in [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23]
+place(): 24 => 10.0 634
+relocator() 23 24
+10 610 and 10 634
+getChildren(): [0, 0]
+UNEQUAL_Y
+child is BELOW the parent
+move(): *~
+place(): 24 => 10 634
+--> Relocated to: 10 634 and 10 610
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for osc~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+>>>> Child #1 9 *~ 0
+>>>> 9 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23, 24, 24]
+PLACEMENT
+place(): 9 => 10.0 658
+'''''''''' BEGIN STEP 2 ''''''''''
+input 9 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 9 0
+10 658 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 658
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+>>>> Child #2 12 *~ 0
+>>>> 12 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23, 24, 24, 9, 0]
+PLACEMENT
+place(): 12 => 10.0 682
+'''''''''' BEGIN STEP 2 ''''''''''
+input 12 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 12 0
+10 682 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 682
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+>>>> Child #3 15 *~ 0
+>>>> 15 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23, 24, 24, 9, 0, 12, 0]
+PLACEMENT
+place(): 15 => 10.0 706
+'''''''''' BEGIN STEP 2 ''''''''''
+input 15 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 15 0
+10 706 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 706
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+>>>> Child #4 18 *~ 0
+>>>> 18 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23, 24, 24, 9, 0, 12, 0, 15, 0]
+PLACEMENT
+place(): 18 => 10.0 730
+'''''''''' BEGIN STEP 2 ''''''''''
+input 18 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 18 0
+10 730 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 730
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+>>>> Child #5 21 *~ 0
+>>>> 21 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23, 24, 24, 9, 0, 12, 0, 15, 0, 18, 0]
+PLACEMENT
+place(): 21 => 10.0 754
+'''''''''' BEGIN STEP 2 ''''''''''
+input 21 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 21 0
+10 754 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 754
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+>>>> Child #6 24 *~ 0
+>>>> 24 NOT IN [0, 1, 2, 2, 3, 6, 0, 0, 4, 5, 6, 7, 8, 9, 9, 10, 11, 12, 12, 13, 14, 15, 15, 16, 17, 18, 18, 19, 20, 21, 21, 22, 23, 24, 24, 9, 0, 12, 0, 15, 0, 18, 0, 21, 0]
+PLACEMENT
+place(): 24 => 10.0 778
+'''''''''' BEGIN STEP 2 ''''''''''
+input 24 *~ method
+getChildren(): *~ ==> [[0, 'dac~', 0], [0, 'dac~', 0]]
+0 is not connected to anybody.
+relocator() 24 0
+10 778 and 10 10
+getChildren(): []
+UNEQUAL_Y
+child is ABOVE the parent
+move(): dac~
+place(): 0 => 10 10
+--> Relocated to: 10 10 and 10 778
+ *** done relocating, continuing
+done with child loop 0
+`````````` (end STEP 2) for  *~ ``````````
+<== going back to step1
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+<<<<<<<<<< end child loop for lop~
+---------- (end STEP 3) ----------
+<<<<<<<<<< end child loop for *~
+---------- (end STEP 3) ----------
+<<<<<<<<<< end child loop for phasor~
+---------- (end STEP 3) ----------
+---------- (end STEP 1) ----------
+~~~~~~~~~~ STEP 1 ~~~~~~~~~~
+input []
+#2 ===> No more objects to place.
+------------- end -----------

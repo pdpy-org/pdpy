@@ -10,9 +10,9 @@ single:
 all: $(examples)
 	@for example in $(examples); do \
 		. ~/.pdpy/bin/activate; \
-		echo BEGIN $$example example; \
+		echo "==> BEGIN $$example <==================================="; \
 		python $$example; \
-		echo END; \
+		echo "==> END $$example <==================================="; \
 	done
 
 clean:

@@ -12,6 +12,21 @@ __all__ = ['Point']
 
 class Point(Base):
   def __init__(self, x=None, y=None, json=None, xml=None):
+    """ A point in x-y space
+
+    Arguments
+    ---------
+    All of the following are optional:
+
+    ``x``: the position in the X-axis
+    ``y``: the position in the Y-axis
+    ``json``: a json dictionary like ``{x:value, y:value}``
+    ``xml``: an XML Element with children``<x>value</x><y>value</y>``
+    
+    If no arguments are provided, 
+    the default values are from the ``screen`` attribute in :class:`Default`
+
+    """
     self.__pdpy__ = self.__class__.__name__
     super().__init__()
     if json is not None:

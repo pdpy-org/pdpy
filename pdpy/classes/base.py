@@ -391,5 +391,5 @@ class Base(XmlBuilder, XmlTagConvert):
     from .point import Point
     x = int(x)
     y = int(y)
-    print("Adding position for:", self.getname(), x, y)
+    # print("Adding position for:", self.getname(), x, y)
     setattr(self, 'position', Point(x=x, y=y))

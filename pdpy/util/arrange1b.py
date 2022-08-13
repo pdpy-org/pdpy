@@ -8,10 +8,9 @@
 
 __all__ = [ "arrange1b" ]
 
-from multiprocessing.sharedctypes import Value
+verbose = 0
 
-
-print("Initialized", __all__[0], "graph placing algorithm.")
+if verbose: print("Initialized", __all__[0], "graph placing algorithm.")
 
 def ids(x):
   """ Returns the IDs of a list of objects or tuplets of (obj,port)
@@ -38,11 +37,11 @@ def getChildren(o, canvas, port=0):
   """
   if port:
     r = [(canvas.get(e.sink.id), e.source.port) for e in canvas.edges if e.source.id == o.id]
-    print("Children-Port:",list(map(lambda x:[x[0].id,x[0].getname(),x[1]], r)))
+    if verbose: print(o.getname(), "==> (child,port) ==>",list(map(lambda x:[x[0].id,x[0].getname(),x[1]], r)))
     return r
   else:
     r = [canvas.get(e.sink.id) for e in canvas.edges if e.source.id == o.id]
-    print("Children:", ids(r))
+    if verbose: print("Children:", ids(r))
     return r
 
 def y_increment(self, canvas):
@@ -85,7 +84,7 @@ def arrange1b(self):
   3. step3: :func:`step3`
 
   """
-  print("========= begin arrange algorithm arrange 1b ==========")
+  if verbose: print("========= begin arrange algorithm arrange 1b ==========")
 
   # inicializar
   canvas = self.__last_canvas__()
@@ -103,31 +102,36 @@ def arrange1b(self):
     """ Relocates the ``child`` object based on the ``parent``
     """
     
-    print("Relocate", child.id, "with", parent.id, "?")
-    print(child.position.__pd__(), "and", parent.position.__pd__())
+    if verbose: print("Relocate", child.id, "with", parent.id, "?")
+    if verbose: print(child.position.__pd__(), "and", parent.position.__pd__())
     
     if parent in getChildren(child, canvas) and child in getChildren(parent, canvas):
-      print("CIRCULAR")
+      if verbose: print("CIRCULAR")
       reubicar(parent, self.__hstep__ * self.__max_w__, 0, y=child)
 
       
     elif child.position.y != parent.position.y:
-      print("UNEQUAL_Y")
-      reubicar(parent, self.__hstep__ * self.__max_w__, 0)
+      if verbose: print("UNEQUAL_Y")
+      if child.position.y > parent.position.y:
+        if verbose: print("child is AFTER the parent")
+        reubicar(parent, self.__hstep__ * self.__max_w__, 0, x=child)
+      else:
+        if verbose: print("child is BEFORe the parent")
+        reubicar(child, 0, self.__vstep__ * self.__max_h__, y=parent)
 
 
     elif child.position.y == parent.position.y:
-      print("EQUAL_Y")
+      if verbose: print("EQUAL_Y")
       reubicar(child, 0, self.__vstep__ * self.__max_w__, y=parent)
     else:
-      print("Leaving", child.id, "as is.")
+      if verbose: print("Leaving", child.id, "as is.")
       return
     
-    print("--> Relocated to:",child.position.__pd__(), "and", parent.position.__pd__())
+    if verbose: print("--> Relocated to:",child.position.__pd__(), "and", parent.position.__pd__())
   
   def step3(o, C, X):
-    print("input step3 X:",list(zip(map(lambda x:x.getname(),X),ids(X))))
-    print(o.id, "is connected to", ids(C))
+    if verbose: print("input step3 X:",list(zip(map(lambda x:x.getname(),X),ids(X))))
+    if verbose: print(o.id, "is connected to", ids(C))
     for i, c in enumerate(C):
       if isinstance(c, tuple):
         ci = c[0]
@@ -135,8 +139,8 @@ def arrange1b(self):
       else:
         ci = c
         port = 0
-      print(ci.id, "NOT IN", ids(Z))
-      print("Ports", port, "index", i)
+      if verbose: print(ci.id, "NOT IN", ids(Z))
+      if verbose: print("Ports", port, "index", i)
       
       if port:
         canvas.__cursor__.y = o.position.y
@@ -145,7 +149,7 @@ def arrange1b(self):
       
       x_increment(self, canvas, port)
       
-      ubicar(ci, canvas.__cursor__.x, canvas.__cursor__.y, yinc=0)
+      ubicar(ci, canvas.__cursor__.x, canvas.__cursor__.y, yinc=1)
       
       o = ci
       takeChildren(o, callback=relocator)
@@ -159,7 +163,7 @@ def arrange1b(self):
     y = ypos if ypos is not None else canvas.__cursor__.y
     
     # ubicarlo
-    print("Ubicando", obj, "=>", x, y)
+    if verbose: print("Ubicando", obj.id, "=>", x, y)
     obj.addpos(x, y)
     
     # incrementar Y despues
@@ -169,11 +173,12 @@ def arrange1b(self):
     Z.append(obj)
 
   def takeChildren(obj, callback=None):
+    if verbose: print("takeChildren:")
     # the actual list of children -> (child,port)
     children = getChildren(obj, canvas, 1)
     if len(children) == 0:
-      # no children, so continue with next in line
-      return step2(X)
+      # no children, so continue with next in line if no callback
+      return step2(X) if callback is None else None
     
     C = [] # the list of children taken from x
     try:
@@ -182,11 +187,11 @@ def arrange1b(self):
         child_from_x = X.pop(child_index)
         C.append((child_from_x, port))
     except ValueError: # from X.index(child) not finding it
-      print(ids(getChildren(obj, canvas)))
-      print(child.id, "is not connected to anybody.")
+      if verbose: print(ids(getChildren(obj, canvas)))
+      if verbose: print(child.id, "is not connected to anybody.")
       
       if child not in Z:
-        print("But,", child.id, "is not placed in", ids(Z))
+        if verbose: print("But,", child.id, "is not placed in", ids(Z))
         ubicar(child, yinc = -1)
       else:
         if callback is None:
@@ -197,13 +202,15 @@ def arrange1b(self):
     
     finally:
       if len(C):
+        if verbose: print("==> passing to step3")
         # pasar obj y la lista al paso recursivo
         step3(obj, C, X)
       else:
+        if verbose: print("<== going back to step2")
         step2(X)
   
   def reubicar(obj, xoffset, yoffset, x=None, y=None):
-    print("Reubicando", obj)
+    if verbose: print("Reubicando", obj.getname())
     xobj = x if x is not None else obj
     yobj = y if y is not None else obj
     ubicar(obj,
@@ -213,9 +220,9 @@ def arrange1b(self):
     )
   
   def step2(X):
-    print("input X:",list(zip(map(lambda x:x.getname(),X),ids(X))))
+    if verbose: print("input X:",list(zip(map(lambda x:x.getname(),X),ids(X))))
     if len(X) == 0:
-      print("===> No more objects to place.")
+      if verbose: print("===> No more objects to place.")
       return 
     else:
       # tomar el primer elemento de X
@@ -226,7 +233,9 @@ def arrange1b(self):
       takeChildren(obj)
         
   
-
+  # begin algorithm
   step2(X)
-  print("------------- end -----------")
+  
+  if verbose: print("------------- end -----------")
+  
   return

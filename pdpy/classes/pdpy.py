@@ -55,30 +55,12 @@ class PdPy(CanvasBase, Base):
     self.__depth__ = 0
     self.__max_w__ = 0
     self.__max_h__ = 0
-    self.__soring_alg__ = 3
-
-    if self.__soring_alg__ == 0: # good, but fails on circular conections
-      from ..util.arrange import arrange
-    elif self.__soring_alg__ == 1: # this one fails
-      from ..util.arrange1 import arrange1 as arrange
-    elif self.__soring_alg__ == 2: # fails on dac~
-      from ..util.arrange1a import arrange1a as arrange
-    elif self.__soring_alg__ == 3: # this one is nice (fails on dac~)
-      from ..util.arrange1b import arrange1b as arrange
-    elif self.__soring_alg__ == 4: # max recursion depth error
-      from ..util.arrange2 import arrange2 as arrange
-    else:
-      arrange = lambda x:x
-    
-
+    self.arrangement(5) # set the arrangement function
     # The following are used in the arrange function:
     # the horizontal step size for increments
     self.__hstep__ = 1.25 
     # the vertical step size for increments
     self.__vstep__ = 1
-    
-    self.arrange = arrange
-    
 
     CanvasBase.__init__(self, obj_idx=0)
     Base.__init__(self, json=json, xml=xml)
@@ -98,7 +80,6 @@ class PdPy(CanvasBase, Base):
       self.__jsontree__()
 
     self.__set_pd_path__(pdpath)
-
 
   def __jsontree__(self):
     # log(0, f"{self.__class__.__name__}.__jsontree__()")
@@ -602,4 +583,36 @@ class PdPy(CanvasBase, Base):
   
   def __exit__(self, ctx_type, ctx_value, ctx_traceback):
     self.write()
+  
+
+  def arrangement(self, choice=-1):
+    """ Sets the arrange function from :module;`util`
+
+    Arguments
+    ---------
+    ``choice``: the choices are numbered starting at 0
+    if negative or not one of the available choices,
+    it defaults to ``arrange1b``
+    """
+
+    if choice == 0: 
+      # good, but fails on circular conections
+      from ..util.arrange import arrange
+    elif choice == 1: 
+      # this one fails
+      from ..util.arrange1 import arrange1 as arrange
+    elif choice == 2: 
+      # fails on dac~
+      from ..util.arrange1a import arrange1a as arrange
+    elif choice == 3: 
+      # max recursion depth error
+      from ..util.arrange2 import arrange2 as arrange
+    elif choice == 5: 
+      # max recursion depth error
+      from ..util.arranger import Arrange as arrange
+    else:
+      # this one is nice (fails on dac~)
+      from ..util.arrange1b import arrange1b as arrange
+
+    self.arrange = arrange
     
