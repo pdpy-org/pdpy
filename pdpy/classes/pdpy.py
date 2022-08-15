@@ -28,7 +28,7 @@ from .data import Data
 from .obj import Obj
 from .array import Array
 from .gui import Gui
-from .message import Msg
+from .msg import Msg
 from .dependencies import Dependencies
 from .comment import Comment
 from .connections import Edge

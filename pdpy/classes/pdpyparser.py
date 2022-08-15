@@ -7,7 +7,7 @@
 """ PdPy file to Json-format file """
 
 from .pdpy import PdPy
-from .message import Msg
+from .msg import Msg
 from .comment import Comment
 from .connections import Edge
 from .point import Point

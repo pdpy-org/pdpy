@@ -3,17 +3,9 @@
     "encoding": "utf-8",
     "__pdpy__": "PdPy",
     "arrange": {
-        "ids": {},
-        "getChildren": {},
-        "y_increment": {},
-        "x_increment": {},
-        "place": {},
-        "move": {},
-        "relocator": {},
         "step3": {},
         "step2": {},
-        "step1": {},
-        "print": {}
+        "step1": {}
     },
     "root": {
         "__pdpy__": "Canvas",
@@ -83,8 +75,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 154
+                    "x": 118,
+                    "y": 10
                 },
                 "className": "osc~",
                 "args": [
@@ -96,8 +88,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 202
+                    "x": 118,
+                    "y": 58
                 },
                 "className": "*~",
                 "args": [
@@ -119,8 +111,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 202
+                    "x": 226,
+                    "y": 10
                 },
                 "className": "osc~",
                 "args": [
@@ -132,8 +124,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 250
+                    "x": 226,
+                    "y": 58
                 },
                 "className": "*~",
                 "args": [
@@ -145,8 +137,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 658
+                    "x": 874,
+                    "y": 34
                 },
                 "className": "*~",
                 "id": 9
@@ -155,8 +147,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 274
+                    "x": 334,
+                    "y": 10
                 },
                 "className": "osc~",
                 "args": [
@@ -168,8 +160,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 322
+                    "x": 334,
+                    "y": 58
                 },
                 "className": "*~",
                 "args": [
@@ -181,8 +173,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 682
+                    "x": 982,
+                    "y": 34
                 },
                 "className": "*~",
                 "id": 12
@@ -191,8 +183,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 346
+                    "x": 442,
+                    "y": 10
                 },
                 "className": "osc~",
                 "args": [
@@ -204,8 +196,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 394
+                    "x": 442,
+                    "y": 58
                 },
                 "className": "*~",
                 "args": [
@@ -217,8 +209,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 706
+                    "x": 1090,
+                    "y": 34
                 },
                 "className": "*~",
                 "id": 15
@@ -227,8 +219,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 418
+                    "x": 550,
+                    "y": 10
                 },
                 "className": "osc~",
                 "args": [
@@ -240,8 +232,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 466
+                    "x": 550,
+                    "y": 58
                 },
                 "className": "*~",
                 "args": [
@@ -253,8 +245,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 730
+                    "x": 1198,
+                    "y": 34
                 },
                 "className": "*~",
                 "id": 18
@@ -263,8 +255,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 490
+                    "x": 658,
+                    "y": 10
                 },
                 "className": "osc~",
                 "args": [
@@ -276,8 +268,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 538
+                    "x": 658,
+                    "y": 58
                 },
                 "className": "*~",
                 "args": [
@@ -289,8 +281,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 754
+                    "x": 1306,
+                    "y": 34
                 },
                 "className": "*~",
                 "id": 21
@@ -299,8 +291,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 562
+                    "x": 766,
+                    "y": 10
                 },
                 "className": "osc~",
                 "args": [
@@ -312,8 +304,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 610
+                    "x": 766,
+                    "y": 58
                 },
                 "className": "*~",
                 "args": [
@@ -325,8 +317,8 @@
                 "__pdpy__": "Obj",
                 "position": {
                     "__pdpy__": "Point",
-                    "x": 10,
-                    "y": 778
+                    "x": 1414,
+                    "y": 34
                 },
                 "className": "*~",
                 "id": 24

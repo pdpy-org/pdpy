@@ -2,7 +2,7 @@
 pdpy
 ****
 
-**pdpy** is a Pure Data scripting language written in Python.
+``pdpy`` is a Pure Data scripting language written in Python.
 
 .. note::
   This project is under active development. PRs are welcome!

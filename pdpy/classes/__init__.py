@@ -14,6 +14,7 @@ from .PdPyXMLParser import *
 from .connections import *
 from .object import *
 from .message import *
+from .msg import *
 from .pdpyencoder import *
 from .default import *
 from .array import *

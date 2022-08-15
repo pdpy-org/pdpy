@@ -9,7 +9,7 @@ from math import factorial, pow, exp, cos
 import random
 
 def poisson(k, l=6): 
-  return ( pow(l, k) / factorial(k) ) * exp(-k)
+  return float(( pow(l, k) / factorial(k) ) * exp(-k))
 
 # initialize a patch (ie, a pdpy root patch)
 with PdPy(name="complex_additive", root=True) as pd:
@@ -20,7 +20,8 @@ with PdPy(name="complex_additive", root=True) as pd:
   pd.create(dac)
 
   for i in range(1, partials):
-    p = poisson(i) / partials
+    p = poisson(i) / float(partials)
+    if p <= 0.0001: break
     rand = random.random()
     objects = [
       Obj('phasor~').addargs(p * 10, cos(p)),

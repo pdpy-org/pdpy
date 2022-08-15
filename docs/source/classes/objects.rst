@@ -6,7 +6,7 @@ Pure Data Gui Object Definitions
   :undoc-members:
   :show-inheritance:
 
-.. automodule:: pdpy.classes.message
+.. automodule:: pdpy.classes.msg
   :members:
   :undoc-members:
   :show-inheritance:

@@ -1,12 +1,15 @@
 Utilities
 =========
 
+Classes
+-------
+
 .. automodule:: pdpy.classes.translator
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.util.utils
+.. automodule:: pdpy.util.arranger
     :members:
     :undoc-members:
     :show-inheritance:
@@ -17,6 +20,14 @@ Utilities
     :show-inheritance:
 
 .. automodule:: pdpy.classes.exceptions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Functions
+---------
+
+.. automodule:: pdpy.util.utils
     :members:
     :undoc-members:
     :show-inheritance:

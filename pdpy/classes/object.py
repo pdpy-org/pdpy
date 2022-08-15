@@ -14,8 +14,6 @@ __all__ = [ 'Object' ]
 class Object(Base):
   """ A Object base class 
   
-  Description
-  -----------
   A Object holds the id, and the x and y coordinates of the pd object,
   as well as the arguments array.
 

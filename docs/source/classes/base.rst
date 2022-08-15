@@ -6,17 +6,17 @@ Base Classes
     :undoc-members:
     :show-inheritance:
 
+.. automodule:: pdpy.classes.message
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 .. automodule:: pdpy.classes.canvasbase
     :members:
     :undoc-members:
     :show-inheritance:
 
 .. automodule:: pdpy.classes.base
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: pdpy.classes.pdpy
     :members:
     :undoc-members:
     :show-inheritance:

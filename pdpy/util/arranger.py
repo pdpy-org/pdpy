@@ -4,40 +4,107 @@
 # This file is part of the pdpy project
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
-""" arrange1b definition """
+"""
+Arrange
+=======
+"""
 
 from ..classes.point import Point
 
 __all__ = [ "Arrange" ]
 
 class Arrange:
+  r""" Arrange objects on a 2d surface
   
-  def __init__(self, scope):
-    """ Arrange objects on a 2d surface
-    
-    Description
-    -----------
-    This class attempts to arrange objects graphically on the self.canvas.
-    It consists of three steps:
-    
-    1. step1: Initialization
-    2. step1: :func:`step1`
-    3. step3: :func:`step3`
+  Description
+  -----------
+  
+  This class attempts to arrange objects graphically on the self.canvas.
+  To use, simply import and call the class.
 
-    """
+  The main algorithm consists of initialization and three steps:
+  
+  1. Initialization
+  2. step1: :func:`step1`
+  3. step2: :func:`step2`
+  4. step3: :func:`step3`
+  
+  Parameters
+  ----------
+
+  scope : :class:`pdpy.pdpy.PdPy`
+    The `self` attribute of the PdPy class
+  
+  verbose : `bool`
+    (optional) set verbosity level (default: `False`)
+  
+  hstep : `float`
+    (optional) set the horizontal step factor for x-increments (default: `1.5`)
+    
+    This factor multiplies the width maxima of all nodes in a canvas.
+  
+  vstep : `float`
+    (optional) set the vertical step factor for y-increments (default: `1`)
+    
+    This factor multiplies the height maxima of all nodes in a canvas.
+
+  xmargin : `int`
+    (optional) set the initial x margin on the canvas (default: `10`)
+
+  xmargin : `int`
+    (optional) set the initial x margin on the canvas (default: `10`)
+
+  Returns
+  -------
+  
+  `None`
+
+  Raises
+  ------
+
+  Exception
+    if there were errors during arrangement
+  
+  ValueError
+    if the `Canvas` has no nodes to arrange
+
+  Example
+  -------
+
+  Import the PdPy and Arrange classes
+
+  >>> from .classes.pdpy import PdPy
+  >>> from .util.arrange import Arrange as arrange
+  
+  Create the PdPy instance (and add some objects)
+  
+  >>> pd = PdPy()
+  
+  Call the function
+
+  >>> arrange(p)
+
+
+  """
+  def __init__(self, scope, 
+              verbose=False,
+              hstep=1.5, vstep=1,
+              xmargin=10, ymargin=10):
+  
     # inicializar
     self.canvas = scope.__last_canvas__()
     
     if not hasattr(self.canvas, 'nodes') or len(self.canvas.nodes) == 0:
       raise ValueError("Canvas", self.canvas.getname(), "has no nodes.")
 
-    self.verbose = True
+    self.verbose = verbose
     # the horizontal step size for increments
-    self.hstep = 1.5 
+    self.hstep = hstep
     # the vertical step size for increments
-    self.vstep = 1
+    self.vstep = vstep
     # the cursor
-    self.cursor = Point(x=10, y=10)
+    self.margin = Point(x=xmargin, y=ymargin)
+    self.cursor = Point(x=self.margin.x, y=self.margin.y)
     
     self.O = list(self.canvas.nodes) # the nodes to place
     self.Z = [] # the placed nodes
@@ -52,8 +119,16 @@ class Arrange:
     print("Initialized", __all__[0], "graph placing algorithm.")
     self.__call__()
 
+  def __call__(self):
+    self.__print__("========= begin arrange algorithm ==========")
+    if self.step1():
+      raise Exception("There were errors with the arrangement.")    
+    self.__print__("------------- end -----------")
 
-  def ids(self, x):
+  def __print__(self, *args):
+    if self.verbose: print(*args)
+
+  def __ids__(self, x):
     """ Returns the IDs of a list of objects or tuplets of (obj,port)
     This is useful for printing.
     """
@@ -65,7 +140,7 @@ class Arrange:
         result.append(e.id)
     return result
 
-  def getChildren(self, o, port=0):
+  def __get_children__(self, o, port=0):
     """ Returns a the list of children nodes of an object ``o``
     
     Arguments
@@ -78,8 +153,8 @@ class Arrange:
     """
     if port:
       r = [(self.canvas.get(e.sink.id), e.source.port) for e in self.canvas.edges if e.source.id == o.id]
-      self.print(
-        "getChildren():",
+      self.__print__(
+        "__get_children__():",
         o.getname(), 
         "==>", 
         list(map(lambda x:[x[0].id,x[0].getname(),x[1]], r))
@@ -87,10 +162,10 @@ class Arrange:
       return r
     else:
       r = [self.canvas.get(e.sink.id) for e in self.canvas.edges if e.source.id == o.id]
-      self.print("getChildren():", self.ids(r))
+      self.__print__("__get_children__():", self.__ids__(r))
       return r
 
-  def y_increment(self):
+  def __y_inc__(self):
     """ This increments the Y cursor of a canvas
 
     Arguments
@@ -104,13 +179,12 @@ class Arrange:
     """
     self.cursor.increment(0, self.y_inc)
 
-  def x_increment(self, port):
+  def __x_inc__(self, port = 0):
     """ This increments the self.O cursor of a canvas
 
     Arguments
     ---------
-    ``self`` : the scope of the :class:`PdPy` class
-    ``canvas``: the :class:`Canvas` within ``self`` containing the nodes
+    ``port`` : the port number to offset (default = 0)
     
     Returns
     -------
@@ -118,7 +192,7 @@ class Arrange:
     """
     self.cursor.increment(self.x_inc * port, 0)
 
-  def place(self, o, xpos=None, ypos=None, yinc=1):
+  def __place__(self, o, xpos=None, ypos=None, yinc=1):
     """ Place the object on the canvas
 
     Arguments
@@ -128,101 +202,159 @@ class Arrange:
     """
       
     # incrementar Y antes
-    if yinc == -1: self.y_increment()
+    if yinc == -1: self.__y_inc__()
     
     x = xpos if xpos is not None else self.cursor.x
     y = ypos if ypos is not None else self.cursor.y
     
     # placelo
-    self.print("place():", o.id, "=>", x, y)
+    self.__print__("place():", o.id, "=>", x, y)
     o.addpos(x, y)
     
     # incrementar Y despues
-    if yinc == 1: self.y_increment()
+    if yinc == 1: self.__y_inc__()
     
     # añadirlo a la lista Z
     self.Z.append(o)
 
-  def move(self, o, xoffset, yoffset, x=None, y=None):
-    self.print("move():", o.getname())
+  def __move__(self, o, xoffset, yoffset, x=None, y=None):
+    self.__print__("__move__():", o.getname())
     xobj = x if x is not None else o
     yobj = y if y is not None else o
     
-    self.place(o,
+    self.__place__(o,
       xobj.position.x + xoffset, 
       yobj.position.y + yoffset, 
       yinc = 0
     )
 
-  def relocator(self, parent, child):
+  def __relocator__(self, parent, child):
     """ Relocates the ``child`` object based on the ``parent``
     """
-    self.print("relocator()", parent.id, child.id)
-    self.print(parent.position.__pd__(), "and", child.position.__pd__())
+    self.__print__("__relocator__()", parent.id, child.id)
+    self.__print__(parent.position.__pd__(), "and", child.position.__pd__())
     
-    if parent in self.getChildren(child) and child in self.getChildren(parent):
-      self.print("CIRCULAR")
-      self.move(parent, self.x_inc, 0, y = child)
+    if parent in self.__get_children__(child) and child in self.__get_children__(parent):
+      self.__print__("CIRCULAR")
+      self.__move__(parent, self.x_inc, 0, y = child)
 
       
     elif child.position.y != parent.position.y:
-      self.print("UNEQUAL_Y")
+      self.__print__("UNEQUAL_Y")
       if child.position.y > parent.position.y:
-        self.print("child is BELOW the parent")
+        self.__print__("child is BELOW the parent")
         xoff = -abs(child.position.x-parent.position.x)
-        self.move(child, xoff, 0, x = parent)
+        self.__move__(child, xoff, 0, x = parent)
       else:
-        self.print("child is ABOVE the parent")
+        self.__print__("child is ABOVE the parent")
         yoff = -abs(child.position.y-parent.position.y)
-        self.move(child, 0, yoff, y = parent)
+        self.__move__(child, 0, yoff, y = parent)
 
     elif child.position.y == parent.position.y:
-      self.print("EQUAL_Y")
-      self.move(child, 0, self.y_inc, y = parent)
+      self.__print__("EQUAL_Y")
+      self.__move__(child, 0, self.y_inc, y = parent)
 
     else:
-      self.print("Leaving", child.id, "as is.")
+      self.__print__("Leaving", child.id, "as is.")
       return
     
-    self.print("--> Relocated to:",child.position.__pd__(), "and", parent.position.__pd__())
+    self.__print__("--> Relocated to:",child.position.__pd__(), "and", parent.position.__pd__())
     return
   
-  def step3(self, o, children):
-    parent = o
-    self.print("="*10,"STEP 3","="*10)
-    self.print("input", parent.id, parent.getname())
-    self.print(parent.id, "is connected to", self.ids(children))
-    self.print(">>>>>>>>>> BEGIN CHILD LOOP for", o.getname())
+  def step3(self, obj, children):
+    """ Step3: Place every child
+
+    Description
+    -----------
+
+    For every child in the ``children`` list:
+
+    #. Adjust y-position
+    #. Adjust x-position
+    #. Place the child
+    #. Pass the child to :func:`step2` with ``relocate=True``
+
+    Parameters
+    ----------
+
+    obj: :class:`pdpy.classes.object.Object`
+      The PdPy object with ``position`` attribute
+    
+    children: ``list``
+      The list of children whose parent is the passed ``obj``
+
+    """
+    parent = obj
+    self.__print__("="*10,"STEP 3","="*10)
+    self.__print__("input", parent.id, parent.getname())
+    self.__print__(parent.id, "is connected to", self.__ids__(children))
+    self.__print__(">>>>>>>>>> BEGIN CHILD LOOP for", obj.getname())
     for i, (child, portnum) in enumerate(children):
-      self.print(">"*4,"Child #"+str(i), child.id, child.getname(), portnum)
-      self.print(">"*4,child.id, "NOT IN", self.ids(self.Z))
+      self.__print__(">"*4,"Child #"+str(i), child.id, child.getname(), portnum)
+      self.__print__(">"*4,child.id, "NOT IN", self.__ids__(self.Z))
       
       if portnum:
         self.cursor.y = parent.position.y
       else:
-        self.y_increment()
+        self.__y_inc__()
       
-      self.x_increment(portnum)
-      self.print("PLACEMENT")
-      self.place(child,
+      self.__x_inc__(portnum)
+      self.__print__("PLACEMENT")
+      self.__place__(child,
         self.cursor.x, 
         self.cursor.y, 
         yinc = 0
       )
-      self.step2(child, relocate = self.relocator)
-      # if self.step2(child, relocate = self.relocator): continue
+      self.step2(child, relocate = True)
     
-    self.print("<<<<<<<<<< end child loop for", o.getname())
-    self.print("-"*10,"(end STEP 3)","-"*10)
+    self.__print__("<<<<<<<<<< end child loop for", obj.getname())
+    self.__print__("-"*10,"(end STEP 3)","-"*10)
 
-  def step2(self, obj, relocate=None):
+  def step2(self, obj, relocate = False):
+    """ Step 2: Take the object's children from the object list
+
+    Description
+    -----------
+
+    This step takes performs the following instructions:
+
+    #. ``return`` if the `obj` has no children
+    #. otherwise, pop all children from the object list
     
-    self.print("'"*10,"BEGIN STEP 2","'"*10)
-    self.print("input", obj.id, obj.getname(), relocate.__class__.__name__)
+    For each child, if the child is not on the object list:
+    
+    #. If the child is not placed, place it, otherwise move it
+    #. If ``relocate`` is ``True``, run the relocator on that child
+    
+    If there are popped children, pass them to :func:`step3`, otherwise
+    
+    #. reset y-position
+    #. and go back to :func:`step1`
 
+    Parameters
+    ----------
 
+    obj: :class:`pdpy.classes.object.Object`
+      A patchable PdPy object based on `object` with a `position` attribute
+    
+    relocate: ``callback`` or ``None``
+      A callback function to perform object relocation
+
+    Returns
+    -------
+
+    `None`
+    
+    """
+    
+    self.__print__("'"*10,"BEGIN STEP 2","'"*10)
+    self.__print__("input", obj.id, obj.getname(), relocate.__class__.__name__)
+
+    if not hasattr(self.canvas, 'edges'):
+      self.__print__(self.canvas.getname(), "has no connections.")
+      return
     # the actual list of children -> (child,port)
-    children = self.getChildren(obj, port = True)
+    children = self.__get_children__(obj, port = True)
 
     # no children, so continue with next in line if no relocate
     if not len(children): return
@@ -232,23 +364,23 @@ class Arrange:
     for (child, port) in children:
             
       if child not in self.O:
-        self.print(child.id, "is not connected to anybody.")
+        self.__print__(child.id, "is not connected to anybody.")
         
         if child not in self.Z:
-          self.print("But,", child.id, "is not placed in", self.ids(self.Z))
-          self.place(child, yinc = -1)
+          self.__print__("But,", child.id, "is not placed in", self.__ids__(self.Z))
+          self.__place__(child, yinc = 1)
         elif relocate is None:
           # move the child if there is no relocate callback
-          self.move(child, 0, self.y_inc)
+          self.__move__(child, 0, self.y_inc)
         
-        # also: run the relocate callback if it is there
-        if relocate is not None:
-          relocate(obj, child)
+        # also: run the relocator callback if it is there
+        if relocate:
+          self.__relocator__(obj, child)
       
-        self.print(" *** done relocating, continuing")
+        self.__print__(" *** done relocating, continuing")
       
       else:
-        self.print("child exists, appending", child.id)
+        self.__print__("child exists, appending", child.id)
         child_index = self.O.index(child)
         child_from_x = self.O.pop(child_index)
         C.append((child_from_x, port))
@@ -256,43 +388,51 @@ class Arrange:
       if not len(self.O): break
 
     
-    self.print("done with child loop", len(C))
-    self.print("`"*10,"(end STEP 2) for ", obj.getname(),"`"*10)
+    self.__print__("done with child loop", len(C))
+    self.__print__("`"*10,"(end STEP 2) for ", obj.getname(),"`"*10)
     if len(C):
-      self.print("==> passing to step3")
+      self.__print__("==> passing to step3")
       # pasar obj y la lista al paso recursivo
       self.step3(obj, C)
     else:
-      self.print("<== going back to step1")
+      self.__print__("<== going back to step1")
+      self.__x_inc__(1)
+      self.cursor.y = self.margin.y
       self.step1()
 
-
   def step1(self):
-    self.print("~"*10,"STEP 1","~"*10)
-    self.print("input",list(zip(map(lambda x:x.getname(),self.O),self.ids(self.O))))
+    """ Step 1: Take the object from the object list
+
+    Description
+    -----------
+
+    This step takes no arguments and performs the following instructions:
+
+    1. take an object from the object list
+    2. place the object
+    3. pass the object to :func:`step2` without callback 
+
+    If there are no objects on the list, it returns
+
+    Returns
+    -------
+
+    `None`
+
+    """
+    self.__print__("~"*10,"STEP 1","~"*10)
+    self.__print__("input",list(zip(map(lambda x:x.getname(),self.O),self.__ids__(self.O))))
     
     if len(self.O) == 0:
-      self.print("#2 ===> No more objects to place.")
+      self.__print__("#2 ===> No more objects to place.")
       return 
     else:
       # tomar el primer elemento de self.O
       obj = self.O.pop(0)
       # ubicarlo
-      self.place(obj)
+      self.__place__(obj)
       # tomar de self.O todos los elemntos cuyo origen es obj
       self.step2(obj)
     
-    self.print("-"*10,"(end STEP 1)","-"*10)
+    self.__print__("-"*10,"(end STEP 1)","-"*10)
     self.step1()
-  
-  def print(self, *args):
-    if self.verbose: print(*args)
-
-  def __call__(self):
-    self.print("========= begin arrange algorithm arrange 1b ==========")
-    # begin algorithm
-    if self.step1():
-      raise Exception("There were errors with the arrangement.")    
-    self.print("------------- end -----------")
-    
-    return

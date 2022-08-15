@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" Base Class """
+"""
+Base
+====
+"""
 
 from json import dumps as json_dumps
 from ..util.utils import log
@@ -16,22 +19,37 @@ from .default import Default, Namespace
 __all__ = ['Base']
 
 class Base(XmlBuilder, XmlTagConvert):
-  """ Pd Base class
-  
-  Description
-  -----------
-  The base class for all pd objects in pdpy.
+  """ The base class for all pd objects in pdpy.
 
-  Paramaeters
-  -----------
-  patchname : `str` (optional)
-    Name of the Pd patch file (default: `None`)
-  pdtype : `str` (optional)
-    Type of the Pd object (one of X, N, or A). Defaults to 'X': `#X ...`
-  cls : `str` (optional) 
-    Class of the Pd object (eg. msg, text, etc.) Defaults to `obj`. `#X obj ...`
-  json : `dict` (optional)
-    A dictionary of key/value pairs to populate the object. 
+  Parameters
+  ----------
+  
+  patchname : :class:`str` or ``None``
+    Name of the Pd patch file (default: ``None``)
+  
+  pdtype : :class:`str` or ``None``
+    Type of the Pd object: ``X``, ``N``, or ``A`` (default: ``X``)
+  
+  cls : :class:`str`  or ``None``
+    Class of the Pd object, eg.: ``msg``, ``text``, ... (default: ``obj``)
+  
+  json : ``dict`` or ``None``
+    A json dictionary of key/value pairs to populate the object.
+
+  xml : ``xml.etree.ElementTree.Element`` or ``None``
+    An Xml Element with the appropriate element structure.
+  
+  default : :class:`pdpy.classes.default.Default` or ``None``
+    A class containing a template for default values.
+
+
+  .. document private functions
+  
+  .. automethod:: __pd__
+  .. automethod:: __xml_load__
+  .. automethod:: __json__
+    
+  
 
   """
   
@@ -283,26 +301,32 @@ class Base(XmlBuilder, XmlTagConvert):
   def __pd__(self, args=None):
     """ Returns a the pd line for this object
     
-    Description
-    -----------
     Called by all derived classes to return a Pd line for this object.
+    If ``args`` is present the pd line will end with ``;\\r\\n``, and:
+
+    * If ``args`` is a list of strings, each element is appended to the pd line::
+    
+        #N canvas >>> 0 22 340 520 12 >>> ; <<<
+    
+    * If ``args`` is a string, it is appended to the pd line::
+      
+        #X obj >>> 10 30 print >>> ; <<<
+    
+    * If ``args`` is ``None``, the pd line is returned without arguments::
+      
+        #X connect >>> <<<
+
     
     Parameters
-    -----------
-    args : ``list`` of ``str`` or ``str`` or ``None``
+    ----------
+    args : ``list`` of :class:`str` or :class:`str` or ``None``
       The arguments to the pd line.
-    
-    If args is present, the pd line will end with ``;\r\n`` with the arguments:
-      If args is a list of strings, each element is appended to the pd line.
-        ``#N canvas 0 22 340 520 12;``
-      If args is a string, it is appended to the pd line: 
-        ``#X obj 10 30 print;``
-    If args is None, the pd line is returned without arguments: 
-      ``#X connect``
 
-    Returns
-    -----------
-    ``str`` : the pd line for this object built with ``__type__`` and ``__cls__``
+    
+    Return
+    ------
+    :class:`str`
+      the pd line for this object built with ``__type__`` and ``__cls__``
 
     """
     
@@ -317,12 +341,11 @@ class Base(XmlBuilder, XmlTagConvert):
   def __xml_load__(self, xml_tree):
     """ Parse an XML tree into a PdPy object 
     
-    Description
-    -----------
     Called if loading a PdPy object from an XML file.
     
-    NOTE: This method assumes it belongs to a PdPy class, because:
-    `class PdPy(CanvasBase, Base):` <-- PdPy is derived from Base
+    .. note:: 
+      This method assumes it belongs to a PdPy class, because:
+      :class:`pdpy.classes.pdpy.PdPy` bases :class:`pdpy.classes.base.Base`
     
     """
     # get the xml root element
@@ -385,11 +408,17 @@ class Base(XmlBuilder, XmlTagConvert):
     return name
 
   def getname(self):
+    """ Returns the className of this object """
     return getattr(self, 'className', self.__class__.__name__)
 
   def addpos(self, x, y):
-    from .point import Point
-    x = int(x)
-    y = int(y)
+    """ Adds or updates the position :class:`pdpy.classes.point.Point` """
     # print("Adding position for:", self.getname(), x, y)
-    setattr(self, 'position', Point(x=x, y=y))
+    if not hasattr(self, 'position'):
+      from .point import Point
+      x = int(x)
+      y = int(y)
+      setattr(self, 'position', Point(x=x, y=y))
+    else:
+      self.position.set_x(x)
+      self.position.set_y(y)

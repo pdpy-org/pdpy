@@ -1,6 +1,11 @@
 Patching
 ========
 
+.. automodule:: pdpy.classes.pdpy
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 .. automodule:: pdpy.classes.canvas
     :members:
     :undoc-members:

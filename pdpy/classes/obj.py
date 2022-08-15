@@ -2,30 +2,41 @@
 # -*- coding: utf-8 -*-
 # **************************************************************************** #
 # This file is part of the pdpy project
-# Copyright (C) 2021 Fede Camara Halac
+# Copyright (C) 2021-22 Fede Camara Halac
 # **************************************************************************** #
-""" Obj Class Definition """
+""" 
+Obj
+===
+"""
 
 from .object import Object
 
 __all__ = [ 'Obj' ]
 
 class Obj(Object):
-  """ A Pure Data Obj object
-  
-  Description
-  -----------
-  This class represents a Pure Data object.
+  """ This class represents a Pure Data object.
 
-  Initialization Arguments
+  Parameters
   ----------
-  The first three arguments correspond to the `Object` class.
-  1. `id`: The id of the pd object.
-  2. `x`: The x-coordinate of the pd object.
-  3. `y`: The y-coordinate of the pd object.
-  4. `className`: The class name of the pd object.
-  5. `args`: The argument `list` of the pd object.
+  
+  className : ``string`` or ``None``
+    The className of the pd object.
+  
+  pd_lines : ``string`` or ``None``
+    The pd-lang line that represents the object, eg: ``#X obj 10 10 float 1``
+  
+  json : ``dict`` or None
+    The `json` dictionary representing the object.
+  
+  **kwargs
+    Additional keyword arguments are passed :class:`pdpy.classes.object.Object` 
 
+  Raises
+  ------
+  
+  ValueError
+      If the ``pd_lines`` provided invalid arguments
+    
   """
   def __init__(self, className=None, pd_lines=None, json=None, **kwargs):
 
@@ -79,3 +90,7 @@ class Obj(Object):
     kwargs.update({'attrib':attrib})
 
     return super().__xml__(classname=self.className, args=args, **kwargs)
+
+  def __getitem__(self, iolet):
+    """ Hack to simplify object iolet indexing """
+    return [self, iolet]

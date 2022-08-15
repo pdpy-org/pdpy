@@ -14,6 +14,7 @@ from .classes.default import *
 
 # base classes
 from .classes.object import *
+from .classes.message import *
 from .classes.canvasbase import *
 from .classes.base import *
 from .classes.pdpy import *
@@ -23,7 +24,7 @@ from .classes.translator import *
 
 # pd classes
 from .classes.obj import *
-from .classes.message import *
+from .classes.msg import *
 from .classes.gui import *
 from .classes.comment import *
 
