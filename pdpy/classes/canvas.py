@@ -50,7 +50,7 @@ class Canvas(CanvasBase, Base):
   `__pdpy__` (`str`) PdPy className (`self.__class__.__name__`)
   
   """
-  def __init__(self, json=None):
+  def __init__(self, json=None, name=None, **kwargs):
 
     CanvasBase.__init__(self, obj_idx=-1)
     Base.__init__(self, pdtype='N', cls='canvas')
@@ -59,14 +59,25 @@ class Canvas(CanvasBase, Base):
     if json is not None:
       super().__populate__(self, json)
     else:
-      self.screen = Point(x=0, y=22)
-      self.dimension = Size(w=450, h=300)
-      self.font = 12
-      self.vis = 0
-      self.name = self.__d__.name
+      
+      def _set(k, default):
+        setattr(self, k, kwargs.pop(k) if k in kwargs else default)
+      
+      _set('screen',
+        Point(x=0, y=22))
+      _set('dimension',
+        Size(w=450, h=300))
+      _set('font', 12)
+      _set('vis', 0)
+      _set('name',
+        self.__d__.name if name is None else self.__sane_name__(name))
+      _set('root', False)
     
     if hasattr(self, 'isroot'):
       self.isroot = self.__pdbool__(self.isroot)
+    elif not hasattr(self, 'title'):
+      self.title = "pd " + self.name
+      
     
     if hasattr(self, 'font'):
       self.font = self.__num__(self.font)
@@ -76,47 +87,6 @@ class Canvas(CanvasBase, Base):
       self.__box__ = Size(w=int(self.font * 1.25), h=int(self.font * 2))
       self.__margin__ = Size(w=self.font, h=self.font)
 
-  def grow(self):
-    """ Increments the canvas object index by 1
-    """
-    self.__obj_idx__ += 1
-    return self.__obj_idx__
-  
-  def add(self, node):
-    """ Add (append) a Node to this canvas `nodes`
-
-    Description:
-    ------------
-    This method creates and/or appends a 'node' to an internal array `nodes`.
-    Each node is a Pure Data object that is neither a comment nor a connection
-
-    Returns:
-    --------
-    The position (index) of the most recently added node
-
-    """
-    if not hasattr(self, 'nodes'): 
-      self.nodes = []
-    self.nodes.append(node)
-    return len(self.nodes) - 1
-
-  def edge(self, edge):
-    """ Append a pure data connection (edge)
-
-    Description:
-    ------------
-    This method creates and/or appends a pure data connection as an `Edge`.
-    See `Edge` to see how connections are handled.
-
-    Return:
-    -------
-    None
-    """
-    if not hasattr(self, 'edges'): 
-      self.edges = []
-    super().__parent__(self, edge)
-    self.edges.append(edge.connect())
-    # log(1,"Edge",edge.__dict__)
 
   def comment(self, comment):
     """ Append a pure data comment

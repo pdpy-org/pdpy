@@ -32,8 +32,8 @@ class Arrange:
   Parameters
   ----------
 
-  scope : :class:`pdpy.pdpy.PdPy`
-    The `self` attribute of the PdPy class
+  canvas : :class:`pdpy.pdpy.canvas.Canvas`
+    The canvas to arrange
   
   verbose : `bool`
     (optional) set verbosity level (default: `False`)
@@ -86,13 +86,13 @@ class Arrange:
 
 
   """
-  def __init__(self, scope, 
+  def __init__(self, canvas,
               verbose=False,
               hstep=1.5, vstep=1,
               xmargin=10, ymargin=10):
   
     # inicializar
-    self.canvas = scope.__last_canvas__()
+    self.canvas = canvas
     
     if not hasattr(self.canvas, 'nodes') or len(self.canvas.nodes) == 0:
       raise ValueError("Canvas", self.canvas.getname(), "has no nodes.")
@@ -110,8 +110,14 @@ class Arrange:
     self.Z = [] # the placed nodes
 
     # Inicializar los maximos de w y h
-    self.W = max(map(lambda x:x[0],[o.__get_obj_size__() for o in self.O]))
-    self.H = max(map(lambda x:x[1],[o.__get_obj_size__() for o in self.O]))
+    self.W = max(map(
+      lambda x:x[0],
+      [o.__get_obj_size__(self.canvas) for o in self.O]
+    ))
+    self.H = max(map(
+      lambda x:x[1],
+      [o.__get_obj_size__(self.canvas) for o in self.O]
+    ))
 
     self.y_inc = self.vstep * self.H
     self.x_inc = self.hstep * self.W
@@ -121,8 +127,12 @@ class Arrange:
 
   def __call__(self):
     self.__print__("========= begin arrange algorithm ==========")
-    if self.step1():
-      raise Exception("There were errors with the arrangement.")    
+    
+    try:
+      self.step1()
+    except RecursionError as e:
+      raise Exception("There were errors with the arrangement:", e)    
+    
     self.__print__("------------- end -----------")
 
   def __print__(self, *args):
@@ -135,9 +145,9 @@ class Arrange:
     result = []
     for e in x:
       if isinstance(e, tuple):
-        result.append((e[0].id, e[1]))
+        result.append((e[0].getid(), e[1]))
       else:
-        result.append(e.id)
+        result.append(e.getid())
     return result
 
   def __get_children__(self, o, port=0):
@@ -152,16 +162,16 @@ class Arrange:
 
     """
     if port:
-      r = [(self.canvas.get(e.sink.id), e.source.port) for e in self.canvas.edges if e.source.id == o.id]
+      r = [(self.canvas.get(e.sink.getid()), e.source.port) for e in self.canvas.edges if e.source.getid() == o.getid()]
       self.__print__(
         "__get_children__():",
         o.getname(), 
         "==>", 
-        list(map(lambda x:[x[0].id,x[0].getname(),x[1]], r))
+        list(map(lambda x:[x[0].getid(),x[0].getname(),x[1]], r))
       )
       return r
     else:
-      r = [self.canvas.get(e.sink.id) for e in self.canvas.edges if e.source.id == o.id]
+      r = [self.canvas.get(e.sink.getid()) for e in self.canvas.edges if e.source.getid() == o.getid()]
       self.__print__("__get_children__():", self.__ids__(r))
       return r
 
@@ -170,7 +180,7 @@ class Arrange:
 
     Arguments
     ---------
-    ``self`` : the scope of the :class:`PdPy` class
+    ``self`` : the canvas of the :class:`PdPy` class
     ``canvas``: the :class:`Canvas` within ``self`` containing the nodes
     
     Returns
@@ -208,12 +218,10 @@ class Arrange:
     y = ypos if ypos is not None else self.cursor.y
     
     # placelo
-    self.__print__("place():", o.id, "=>", x, y)
+    self.__print__("place():", o.getid(), "=>", x, y)
     o.addpos(x, y)
-    
     # incrementar Y despues
     if yinc == 1: self.__y_inc__()
-    
     # añadirlo a la lista Z
     self.Z.append(o)
 
@@ -231,7 +239,7 @@ class Arrange:
   def __relocator__(self, parent, child):
     """ Relocates the ``child`` object based on the ``parent``
     """
-    self.__print__("__relocator__()", parent.id, child.id)
+    self.__print__("__relocator__()", parent.getid(), child.getid())
     self.__print__(parent.position.__pd__(), "and", child.position.__pd__())
     
     if parent in self.__get_children__(child) and child in self.__get_children__(parent):
@@ -255,7 +263,7 @@ class Arrange:
       self.__move__(child, 0, self.y_inc, y = parent)
 
     else:
-      self.__print__("Leaving", child.id, "as is.")
+      self.__print__("Leaving", child.getid(), "as is.")
       return
     
     self.__print__("--> Relocated to:",child.position.__pd__(), "and", parent.position.__pd__())
@@ -286,12 +294,12 @@ class Arrange:
     """
     parent = obj
     self.__print__("="*10,"STEP 3","="*10)
-    self.__print__("input", parent.id, parent.getname())
-    self.__print__(parent.id, "is connected to", self.__ids__(children))
+    self.__print__("input", parent.getid(), parent.getname())
+    self.__print__(parent.getid(), "is connected to", self.__ids__(children))
     self.__print__(">>>>>>>>>> BEGIN CHILD LOOP for", obj.getname())
     for i, (child, portnum) in enumerate(children):
-      self.__print__(">"*4,"Child #"+str(i), child.id, child.getname(), portnum)
-      self.__print__(">"*4,child.id, "NOT IN", self.__ids__(self.Z))
+      self.__print__(">"*4,"Child #"+str(i), child.getid(), child.getname(), portnum)
+      self.__print__(">"*4,child.getid(), "NOT IN", self.__ids__(self.Z))
       
       if portnum:
         self.cursor.y = parent.position.y
@@ -348,7 +356,7 @@ class Arrange:
     """
     
     self.__print__("'"*10,"BEGIN STEP 2","'"*10)
-    self.__print__("input", obj.id, obj.getname(), relocate.__class__.__name__)
+    self.__print__("input", obj.getid(), obj.getname(), relocate.__class__.__name__)
 
     if not hasattr(self.canvas, 'edges'):
       self.__print__(self.canvas.getname(), "has no connections.")
@@ -364,10 +372,10 @@ class Arrange:
     for (child, port) in children:
             
       if child not in self.O:
-        self.__print__(child.id, "is not connected to anybody.")
+        self.__print__(child.getid(), "is not connected to anybody.")
         
         if child not in self.Z:
-          self.__print__("But,", child.id, "is not placed in", self.__ids__(self.Z))
+          self.__print__("But,", child.getid(), "is not placed in", self.__ids__(self.Z))
           self.__place__(child, yinc = 1)
         elif relocate is None:
           # move the child if there is no relocate callback
@@ -380,7 +388,7 @@ class Arrange:
         self.__print__(" *** done relocating, continuing")
       
       else:
-        self.__print__("child exists, appending", child.id)
+        self.__print__("child exists, appending", child.getid())
         child_index = self.O.index(child)
         child_from_x = self.O.pop(child_index)
         C.append((child_from_x, port))

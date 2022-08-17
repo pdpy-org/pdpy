@@ -6,6 +6,7 @@
 # **************************************************************************** #
 """ Canvas Base Class Definition """
 
+from .connections import Edge
 from .xmlbuilder import XmlBuilder
 
 __all__ = [ 'CanvasBase' ]
@@ -111,3 +112,104 @@ class CanvasBase(XmlBuilder):
       for e in getattr(self, 'edges', []):
         super().__subelement__(edges, e.__xml__(self.__obj_map__))
       super().__subelement__(parent, edges)
+
+  def edge(self, edge):
+    """ Append a pure data connection (edge)
+
+    Description:
+    ------------
+    This method creates and/or appends a pure data connection as an `Edge`.
+    See `Edge` to see how connections are handled.
+
+    Return:
+    -------
+    None
+    """
+    if not hasattr(self, 'edges'): 
+      self.edges = []
+    super().__parent__(self, edge)
+    self.edges.append(edge.connect())
+    # log(1,"Edge",edge.__dict__)
+
+  def connect(self, *argv):
+    """ Attempt to autoconnect the objects together """
+    cnv = self.__last_canvas__() if hasattr(self, '__last_canvas__') else self
+
+    length = len(argv)
+    
+    stepsize = 1
+    maxlen = length - 1
+    
+    # utility routine 
+    def _connect(*argv):
+      e = Edge(pd_lines=argv)
+      cnv.edge(e)
+
+    for i in range(0, maxlen, stepsize):
+      src = argv[i] # the source
+      snk = argv[i+1] # the sink
+      # check if we are lists
+      srclist = isinstance(src, list)
+      snklist = isinstance(snk, list)
+      # neither is a list
+      if not srclist and not snklist:
+        _connect(src.id, 0, snk.id, 0)
+      # only sink is a list (connect sequentially to multiple inlets)
+      elif not srclist and snklist:
+        for i in range(1,len(snk)):
+          _connect(src.id, 0, snk[0].id, snk[i])
+      # only source is a list (connect sequentially from multiple outlets)
+      elif srclist and not snklist:
+        for i in range(1,len(src)):
+          _connect(src[0].id, src[i], snk.id, 0)  
+      # both are lists (limit to minimum iolets between source and sink), so
+      # connect([source, 0, 1, 2], [sink, 1, 2]) gives
+      # #X connect source.id 0 sink.id 1
+      # #X connect source.id 1 sink.id 2 
+      elif srclist and snklist:
+        for i in range(1,min(len(src),len(snk))):
+          _connect(src[0].id, src[i], snk[0].id, snk[i])
+
+  def create(self, *anything):
+    """ Create an object, message, comment, or any other pd object """
+    cnv = self.__last_canvas__() if hasattr(self, '__last_canvas__') else self
+    for a in anything:
+      self.__obj_idx__ = self.grow()
+      a.id = cnv.add(a)
+      a.__parent__(parent=cnv)
+    return self
+
+  def createCanvas(self, **kwargs):
+    """ Create a subpatch """
+    from .canvas import Canvas
+    new_canvas = Canvas(**kwargs)
+    last_canvas = self.__last_canvas__()
+    new_canvas.id = self.__obj_idx__
+    new_canvas.__parent__(parent=last_canvas)
+    self.__canvas_idx__.append(last_canvas.add(new_canvas))
+
+    return new_canvas
+
+  def grow(self):
+    """ Increments the canvas object index by 1
+    """
+    self.__obj_idx__ += 1
+    return self.__obj_idx__
+  
+  def add(self, node):
+    """ Add (append) a Node to this canvas `nodes`
+
+    Description:
+    ------------
+    This method creates and/or appends a 'node' to an internal array `nodes`.
+    Each node is a Pure Data object that is neither a comment nor a connection
+
+    Returns:
+    --------
+    The position (index) of the most recently added node
+
+    """
+    if not hasattr(self, 'nodes'): 
+      self.nodes = []
+    self.nodes.append(node)
+    return len(self.nodes) - 1

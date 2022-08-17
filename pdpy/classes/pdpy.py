@@ -316,20 +316,11 @@ class PdPy(CanvasBase, Base):
     last = self.__last_canvas__()
     if argv is not None:
       setattr(last, 'position', Point(x=argv[0], y=argv[1]))
-      setattr(self.__last_canvas__(), 'title', ' '.join(argv[2:]))
+      setattr(last, 'title', ' '.join(argv[2:]))
     self.__depth__ -= 1
     if len(self.__canvas_idx__):
       self.__canvas_idx__.pop()
     return last
-
-  def create(self, *anything):
-    """ Create an object, message, comment, or any other pd object """
-    for a in anything:
-      canvas = self.__last_canvas__()
-      self.__obj_idx__ = canvas.grow()
-      a.id = canvas.add(a)
-      a.__parent__(parent=canvas)
-    return self
 
   def createArray(self, array):
     """ Create a GOP Array construction on the canvas """
@@ -351,7 +342,7 @@ class PdPy(CanvasBase, Base):
   def write(self, filename=None):
     """ Write out the pd file to disk """
     
-    self.arrange(self)
+    self.__arrange__(self)
 
     if filename is None:
       filename = self.patchname + '.pd'
@@ -369,43 +360,6 @@ class PdPy(CanvasBase, Base):
       with open(filename, 'w') as patchfile:
         patchfile.write(self.__json__())
   
-  def connect(self, *argv):
-    """ Attempt to autoconnect the objects together """
-    length = len(argv)
-    
-    stepsize = 1
-    maxlen = length - 1
-    
-    # utility routine 
-    def _connect(*argv):
-      e = Edge(pd_lines=argv)
-      self.__last_canvas__().edge(e)
-
-    for i in range(0, maxlen, stepsize):
-      src = argv[i] # the source
-      snk = argv[i+1] # the sink
-      # check if we are lists
-      srclist = isinstance(src, list)
-      snklist = isinstance(snk, list)
-      # neither is a list
-      if not srclist and not snklist:
-        _connect(src.id, 0, snk.id, 0)
-      # only sink is a list (connect sequentially to multiple inlets)
-      elif not srclist and snklist:
-        for i in range(1,len(snk)):
-          _connect(src.id, 0, snk[0].id, snk[i])
-      # only source is a list (connect sequentially from multiple outlets)
-      elif srclist and not snklist:
-        for i in range(1,len(src)):
-          _connect(src[0].id, src[i], snk.id, 0)  
-      # both are lists (limit to minimum iolets between source and sink), so
-      # connect([source, 0, 1, 2], [sink, 1, 2]) gives
-      # #X connect source.id 0 sink.id 1
-      # #X connect source.id 1 sink.id 2 
-      elif srclist and snklist:
-        for i in range(1,min(len(src),len(snk))):
-          _connect(src[0].id, src[i], snk[0].id, snk[i])
-
   def parse(self, argvecs):
     """ Parse a list of Pd argument vectors (1) into this instance's scope
 
@@ -583,7 +537,6 @@ class PdPy(CanvasBase, Base):
   
   def __exit__(self, ctx_type, ctx_value, ctx_traceback):
     self.write()
-  
 
   def arrangement(self, choice=-1):
     """ Sets the arrange function from :module;`util`
@@ -597,22 +550,35 @@ class PdPy(CanvasBase, Base):
 
     if choice == 0: 
       # good, but fails on circular conections
-      from ..util.arrange import arrange
+      from ..util.arrange import arrange as _do_arrange
     elif choice == 1: 
       # this one fails
-      from ..util.arrange1 import arrange1 as arrange
+      from ..util.arrange1 import arrange1 as _do_arrange
     elif choice == 2: 
       # fails on dac~
-      from ..util.arrange1a import arrange1a as arrange
+      from ..util.arrange1a import arrange1a as _do_arrange
     elif choice == 3: 
       # max recursion depth error
-      from ..util.arrange2 import arrange2 as arrange
+      from ..util.arrange2 import arrange2 as _do_arrange
     elif choice == 5: 
       # max recursion depth error
-      from ..util.arranger import Arrange as arrange
+      from ..util.arranger import Arrange as _do_arrange
     else:
       # this one is nice (fails on dac~)
-      from ..util.arrange1b import arrange1b as arrange
+      from ..util.arrange1b import arrange1b as _do_arrange
 
-    self.arrange = arrange
+    def _recurse_arrange(node):
+      # in every child of ``node``, check if child is a parent
+      for child in getattr(node, 'nodes', []):
+        if hasattr(child, 'nodes'):
+          # it is a parent, so recurse
+          _recurse_arrange(child)
+      # finally, arrange
+      _do_arrange(node)
+    
+    def _begin_arrange(scope):
+      if hasattr(scope, 'root'):
+        _recurse_arrange(scope.root)
+
+    self.__arrange__ = _begin_arrange
     

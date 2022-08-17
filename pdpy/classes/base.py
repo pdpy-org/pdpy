@@ -191,10 +191,10 @@ class Base(XmlBuilder, XmlTagConvert):
     except:
       return False
 
-  def __get_obj_size__(self):
+  def __get_obj_size__(self, parent):
     
     # print(self.__json__())
-    font_size = self.__parent__().font
+    font_size = parent.font
 
     if hasattr(self, 'size'):
       # print("Size", self.size.__pd__())
@@ -407,8 +407,12 @@ class Base(XmlBuilder, XmlTagConvert):
           raise MalformedName("Special chars in name were detected.")
     return name
 
+  def getid(self):
+    """ Returns the id attribute or 0 if missing """
+    return self.id if hasattr(self, 'id') else 0
+
   def getname(self):
-    """ Returns the className of this object """
+    """ Returns the className or PdPy class of the object if missing """
     return getattr(self, 'className', self.__class__.__name__)
 
   def addpos(self, x, y):
@@ -420,5 +424,5 @@ class Base(XmlBuilder, XmlTagConvert):
       y = int(y)
       setattr(self, 'position', Point(x=x, y=y))
     else:
-      self.position.set_x(x)
-      self.position.set_y(y)
+      self.position.set_x(int(x))
+      self.position.set_y(int(y))
