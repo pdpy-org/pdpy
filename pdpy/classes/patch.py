@@ -16,12 +16,12 @@ class Patch(PdPy, pylibpd.PdManager, PyAudio):
     """ Constructor """
     
     PdPy.__init__(self, name, **kwargs)
+
     self.__inch__ = inch
     self.__outch__ = outch
     self.__sr__ = sr
     self.__bs__ = pylibpd.libpd_blocksize()
     self.__tpb__ = 6
-    
     pylibpd.PdManager.__init__(self, self.__inch__, self.__outch__, self.__sr__, 1)
     
     PyAudio.__init__(self)
