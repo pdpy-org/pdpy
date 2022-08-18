@@ -17,7 +17,10 @@ from .classes.object import *
 from .classes.message import *
 from .classes.canvasbase import *
 from .classes.base import *
+
+# patching
 from .classes.pdpy import *
+from .classes.patch import *
 
 # translator class
 from .classes.translator import *

@@ -36,6 +36,7 @@ from .area import *
 from .bounds import *
 from .coords import *
 from .translator import *
+from .patch import *
 from .pdpy import *
 from .data import *
 from .gui import *
@@ -46,4 +47,5 @@ from .canvasbase import *
 from .canvas import *
 from .dependencies import *
 from .pdpyparser import *
+
 
