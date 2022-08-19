@@ -3,10 +3,11 @@ help:
 	@echo "Help file here"
 
 local:
-	python setup.py develop --user --no-deps
+	python setup.py build
 
 doc:
 	cd docs && make html
+	cd scripts && python touch_version.py
 
 build:
 	python -m build
