@@ -90,7 +90,7 @@ class Default(object):
         'yoff':-8,
         'fsize':10,
         'bgcolor':-66577,
-        'lbcolor':'#000000',
+        'lbcolor':-1,
         'scale':True,
         'flag':1
       },
@@ -112,8 +112,8 @@ class Default(object):
         'xoff':20,
         'yoff':12,
         'fsize':14,
-        'bgcolor':-233017,
-        'lbcolor':-66577,
+        'bgcolor':-66577,
+        'lbcolor':-233017,
         'flag':1
       },
       'radio': {
