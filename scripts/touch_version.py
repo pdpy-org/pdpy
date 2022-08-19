@@ -6,10 +6,10 @@
 # **************************************************************************** #
 """ Touches up the last version, for automated uploads """
 
-from version import get_version
+from version import main
 
-version = get_version(filename="../pyproject.toml")
+version = main(filename="../pyproject.toml")
 
 with open("../../doc/version.txt", "w") as f:
-    f.write(".".join(map(lambda x:str(x), version[0])))
+    f.write(".".join(map(lambda x:str(x), version)))
 

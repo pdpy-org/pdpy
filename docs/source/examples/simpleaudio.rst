@@ -27,19 +27,15 @@ The thing to notice here is the connections in lines 7 and 8.
 Connections
 -----------
 
-In line 7, the ``connect`` method is called with ``obj1`` and ``obj2``:
-
-.. code-block:: python
-
+In line 7, the ``connect`` method is called with ``obj1`` and ``obj2``::
+  
   mypatch.connect(obj1, obj2)
 
 This means that the first outlet of the first object is connected to the first inlet of the second object. 
 That is to say, the first (and only) outlet of ``osc~ 440`` is connected to the first inlet of the multiplier ``*~ 0.01``.
 
-In line 8, however, we have a different syntax on the second object:
-
-.. code-block:: python
-
+In line 8, however, we have a different syntax on the second object::
+  
   mypatch.connect(obj2, [obj3, 0, 2, 3])
 
 What this means is that we are connecting the first outlet of the first object, 
@@ -47,14 +43,16 @@ with the 1st, 3rd, and 4th inlets of the second object.
 In other words, we connect the first outlet of the multiplier ``*~ 0.01`` to
 the ``dac~ 1 2 3 4`` object's inlets 1, 3, and 4. 
 
+
 .. note::
+  
   When a list is passed to ``mypatch.connect`` the inlet indices start at 0. 
   So, the first inlet is the 0th, the second is the 1st, and so on.
 
+
 .. note::
-  The order does not matter, so we can get the same result calling:
   
-  .. code-block:: python
+  The order does not matter, so we can get the same result calling::
 
     mypatch.connect(obj2, [obj3, 3, 0, 2])
 

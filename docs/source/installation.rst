@@ -9,6 +9,7 @@ To do this, simply type::
   
   pip install pdpy
 
+
 From Github
 -----------
 
@@ -25,6 +26,6 @@ To compile the documentation you can type::
 
 
 .. note::
+  
   In any case, it is recommended to use pdpy within a virtual environment.
-  
-  
+

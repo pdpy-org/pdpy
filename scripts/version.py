@@ -61,8 +61,11 @@ def set_version(prev_file,
     for line in prev_file:
       f.write(line)
 
-if __name__ == '__main__':
-
-  old_version, version_line, prev_file = get_version()
+def main(filename=None):
+  old_version, version_line, prev_file = get_version(filename=filename)
   new_version = increment(old_version)
-  set_version(prev_file, version_line, new_version)
+  set_version(prev_file, version_line, new_version, filename=filename)
+  return new_version
+
+if __name__ == '__main__':
+  main()

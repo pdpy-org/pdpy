@@ -26,10 +26,8 @@ Let's break this into parts:
 Import
 ------
 
-First, you import the necessary pdpy Classes (line 1):
+First, you import the necessary pdpy Classes (line 1)::
 
-.. code-block:: python
-  
   from pdpy import PdPy, Obj, Msg
 
 We will briefly go through these classes in this example.
@@ -39,9 +37,7 @@ A PdPy patch
 ------------
 
 The PdPy class contains a representation of a Pure Data patch.
-With the ``PdPy`` class we can initialize a pdpy root patch (line 2):
-
-.. code-block:: python
+With the ``PdPy`` class we can initialize a pdpy root patch (line 2)::
 
   mypatch = PdPy(name="holamundo", root=True)
 
@@ -57,9 +53,7 @@ Objects
 With the ``Obj`` class we can instantiate a few objects (lines 3,4).
 Notice that we can pass a :class:`str` upon instantiation.
 The ``Obj`` instance will represent the Pd object called as such.
-We will instantiate them in variables arbitrarily called ``obj1`` and ``obj2``.
-
-.. code-block:: python
+We will instantiate them in variables arbitrarily called ``obj1`` and ``obj2``:
 
   obj1 = Obj('loadbang')
   obj2 = Obj('print')
@@ -73,10 +67,8 @@ Message
 The ``Msg`` class represents Pd's message box.
 As such, it can store multiple messages.
 In this case, we only have one message that reads ``Hola Mundo!``. 
-We will store it in the variable ``msg1`` (line 5):
+We will store it in the variable ``msg1`` (line 5)::
 
-.. code-block:: python
-  
   msg1 = Msg('Hola Mundo!')
 
 
@@ -86,27 +78,21 @@ Create
 We now have an instance of the PdPy class in ``mypatch``, together with
 two objects ``obj1`` and ``obj2``, and a message box ``msg1``.
 What we need to do now is create these objects within the PdPy class. 
-We can do that in this way (line 6):
-
-.. code-block:: python
+We can do that in this way (line 6)::
 
   mypatch.create(obj1, msg1, obj2)
 
+
 .. note::
-  There are other ways of creating objects, for example:
   
-  .. code-block:: python
-    :linenos:
+  There are other ways of creating objects, for example::
 
     mypatch.create(obj1)
     mypatch.create(msg1)
     mypatch.create(obj2)
 
-  Or, we pass a python list to the create function, this way:
+  Or, we pass a python list to the create function, this way::
   
-  .. code-block:: python
-    :linenos:
-
     myobjects = [obj1, msg1, obj2]
     mypatch.create(*myobjects) # notice the expansion * char before the list
 
@@ -116,28 +102,24 @@ Connect
 -------
 
 Once the objects are created, we need to connect them. 
-We use the ``connect`` method to do this (line 7):
-
-.. code-block:: python
+We use the ``connect`` method to do this (line 7)::
 
   mypatch.connect(obj1, msg1, obj2)
 
+
 .. note::
-  If we reuse our ``myobjects`` list above, we can connect objects this way:
   
-  .. code-block:: python
-    :linenos:
+  If we reuse our ``myobjects`` list above, we can connect objects this way::
 
     mypatch.connect(*myobjects)
+
 
 Write
 -----
 
 Finally, we can write the patch to disk. 
-We do this with the ``write`` method (line 8):
-
-.. code-block:: python
-
+We do this with the ``write`` method (line 8)::
+  
   mypatch.write()
 
 After writing the patch, you should be able to find a ``holamundo.pd`` file 

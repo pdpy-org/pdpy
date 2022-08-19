@@ -16,14 +16,15 @@ pdpy
 
 .. toctree::
   :caption: Documentation
-  :maxdepth: 1
+  :maxdepth: 2
   
-  overview
+  .. overview
   classes
 
 .. toctree::
   :caption: Examples
   :maxdepth: 1
-
+  
   examples/holamundo
   examples/simpleaudio
+  examples/translation
