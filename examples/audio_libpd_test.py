@@ -4,6 +4,11 @@
 # This file is part of the pdpy project
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
+"""
+Testing Audio with libpd
+========================
+"""
+
 from pdpy import PdPy, Obj, Msg, Canvas
 import pylibpd as libpd
 import pyaudio

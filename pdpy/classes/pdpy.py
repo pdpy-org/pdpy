@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" PdPy class definition """
+""" 
+PdPy
+====
+"""
 
 from .base import Base
 from .canvasbase import CanvasBase

@@ -4,6 +4,11 @@
 # This file is part of the pdpy project
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
+"""
+Patcher
+=======
+"""
+
 from pdpy import Patch, Obj
 
 with Patch(name="mypatch", root=True) as p:

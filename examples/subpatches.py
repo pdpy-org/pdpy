@@ -4,6 +4,11 @@
 # This file is part of the pdpy project
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
+"""
+Making Subpatches
+=================
+"""
+
 from pdpy import PdPy, Obj, Msg
 import pylibpd as libpd
 import pyaudio

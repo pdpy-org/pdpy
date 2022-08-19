@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" Array Class Definition """
+"""
+Array
+=====
+"""
 
 from .obj import Obj
 
@@ -13,25 +16,22 @@ __all__ = [ 'Array' ]
 class Array(Obj):
   """ A Pure Data array object
   
-  Description
-  -----------
   This class represents a Pure Data array or text object.
 
-  Initialization Arguments
+  Parameters
   ----------
-  The first four arguments correspond to the `Obj` arguments. 
-  See the `Obj` class.
-  1. `id`: The id of the pd object.
-  2. `x`: The x-coordinate of the pd object.
-  3. `y`: The y-coordinate of the pd object.
-  4. `className`: The class name of the array.
-  5. `subclass`: The sub family of the array, eg. `define` or `sum`, etc.
-  6. `-k` flag (optional), or `name`: the name of the array
-  7. If it is an `array`, then the remaining argument is the array `length`
-
-  Returns
-  -------
-  A `Array` object.
+  
+  pd_lines : :class:`str`
+    The lines of the Pure Data patch that define the object.
+  
+  json : :class:`dict`
+    A JSON representation of the object.
+  
+  Return
+  ------
+  
+  :class:`pdpy.classes.array.Array`
+    An `Array` object.
   
   """
   def __init__(self, pd_lines = None, json = None):
@@ -109,9 +109,8 @@ class Array(Obj):
       except IndexError:
         pass
 
-
   def __pd__(self):
-    """ Return the pd code of the object. """
+    """ Return the pd-lang string for the object. """
     s = ''
     if hasattr(self, 'subclass'):  
       s += str(self.subclass)

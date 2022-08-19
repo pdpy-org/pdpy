@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 # **************************************************************************** #
 # This file is part of the pdpy project
-# Copyright (C) 2021 Fede Camara Halac
+# Copyright (C) 2021-22 Fede Camara Halac
 # **************************************************************************** #
-""" IEMGUI Bang Class Definitions """
+""" 
+IEMGui Bang
+===========
+"""
 
 from .obj import Obj
 from .size import Size
@@ -14,23 +17,34 @@ from .iemgui import IEMLabel
 __all__ = [ 'Bng' ]
 
 class Bng(Obj):
-  """
-  The IEM Button Obj
-  =====================
+  """ The IEM Bang Button Obj
   
   The IEM gui object is a IEM Bang button.
 
-  1. 5: `size`: the size of the button
-  2. 6: `hold`: time of the button on hold
-  2. 7: `intrrpt`: the interruption time of the button
-  2. 8: `init`: the init flag to trigger the button on loadtime
-  3. 9: `send`: the sender symbol of the button
-  3. 10: `receive`: the receiver symbol of the button
-  4. 11-16: `IEMLabel` Parameters
+  * ``size``: the size of the button
+  * ``hold``: time of the button on hold
+  * ``intrrpt``: the interruption time of the button
+  * ``init``: the init flag to trigger the button on loadtime
+  * ``send``: the sender symbol of the button
+  * ``receive``: the receiver symbol of the button
+  * ``IEMLabel``: See :class:`pdpy.classes.iemgui.IEMLabel`
+
+  Parameters
+  ----------
+
+  pd_lines : :class:`str`
+    The lines of the Pure Data patch that define the object.
+  
+  json : :class:`dict`
+    A JSON representation of the object.
+
   """
 
   def __init__(self, pd_lines=None, json=None, **kwargs):
+    """ Constructor """
+
     self.__pdpy__ = self.__class__.__name__
+    
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
@@ -43,8 +57,10 @@ class Bng(Obj):
       self.label = IEMLabel(*pd_lines[6:11], pd_lines[13])
       self.bgcolor = self.__num__(pd_lines[11])
       self.fgcolor = self.__num__(pd_lines[12])
+    
     elif json is not None:
       super().__init__(json=json)
+    
     else:
       super().__init__(className='bng')
       if 'size' in kwargs:
@@ -67,7 +83,7 @@ class Bng(Obj):
       self.fgcolor = self.__d__.iemgui['fgcolor']
 
   def __pd__(self):
-    """ Return the pd string for this object """
+    """ Return the pd-lang string for this object """
     s = self.size.__pd__()
     s += " " + str(self.hold)
     s += " " + str(self.intrrpt)
