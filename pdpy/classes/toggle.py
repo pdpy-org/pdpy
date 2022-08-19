@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" IEMGUI Toggle Class Definitions """
+"""
+IEMGui Toggle
+=============
+"""
 
 from .size import Size
 from .connections import Comm
@@ -14,12 +17,7 @@ from .iemgui import IEMLabel
 __all__ = [ 'Toggle' ]
 
 class Toggle(Obj):
-  """
-  The IEM Toggle Obj
-  ======================
-
-  The case of `tgl`
-  --------------------
+  """ The IEM Toggle Obj, aka. `tgl`
   
   The IEM gui object is a Toggle button.
 
@@ -32,8 +30,10 @@ class Toggle(Obj):
   6. 16: `nonzero`: the non-zero value when toggle is on.
   """
 
-  def __init__(self, pd_lines=None, json=None):
+  def __init__(self, pd_lines=None, json=None, **kwargs):
+    
     self.__pdpy__ = self.__class__.__name__
+    
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
@@ -45,8 +45,35 @@ class Toggle(Obj):
       self.fgcolor = self.__num__(pd_lines[10])
       self.flag    = self.__num__(pd_lines[12])
       self.nonzero = self.__num__(pd_lines[13])
+    
     elif json is not None:
       super().__init__(json=json)
+    
+    else:
+
+      super().__init__(className='tgl')
+      
+      iemgui = self.__d__.iemgui
+      default = iemgui[self.className]
+      
+      super().__set_default__(kwargs, [
+        ('size', Size(w = default['size'])),
+        ('init', self.__pdbool__(default['init'])),
+        ('comm', Comm(
+            send = iemgui['symbol'],
+            receive = iemgui['symbol'])),
+        ('label', IEMLabel(
+            xoff = default['xoff'],
+            yoff = default['yoff'],
+            fface = iemgui['fontface'],
+            fsize = default['fsize'],
+            lbcolor = default['lbcolor'], **kwargs)),
+        ('bgcolor', self.__num__(default['bgcolor'])),
+        ('fgcolor', self.__num__(iemgui['fgcolor'])),
+        ('flag', self.__num__(default['flag'])),
+        ('nonzero', self.__num__(default['nonzero'])),
+      ])
+
 
   def __pd__(self):
     """ Return the pd string for this object """

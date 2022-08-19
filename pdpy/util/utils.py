@@ -67,9 +67,18 @@ def printer(func):
 def log(level, *argv):
   """ log utility with level and variable arguments
 
-  Description
-  -----------
-  This function printst to console with error `level` 
+  This function printt to console with the following `level`:
+  
+  1. Normal
+  2. Warning
+  3. Error
+  
+  Parameters
+  ----------
+
+  level : :class:`int`
+    The log level (defaults: None)
+
   """
   
   if 0 == level:

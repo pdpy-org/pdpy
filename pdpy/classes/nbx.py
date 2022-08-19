@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" IEMGUI Number box Class Definitions """
+""" 
+IEMGui Number Box
+=================
+"""
 
 from .obj import Obj
 from .size import Size
@@ -15,9 +18,7 @@ from .iemgui import IEMLabel
 __all__ = [ 'Nbx' ]
 
 class Nbx(Obj):
-  """
-  The IEM Number Box Obj
-  ==========================
+  """ The IEM Number Box Obj, aka ``nbx``
   
   The IEM gui object is a IEM Number box (Number2).
 
@@ -53,31 +54,31 @@ class Nbx(Obj):
       super().__init__(json=json)
     else:
       super().__init__(className='nbx')
-      d = self.__d__.iemgui['nbx'] # keep an easy dict access
-      self.digits_width = self.__num__(d['digits_width'])
-      self.size = Size(
-          h = d['height']
-      )
-      self.limits = Bounds(
-          d['lower'],
-          d['upper']
-      )
-      self.log_flag = self.__pdbool__(d['log_flag'])
-      self.init     = self.__pdbool__(d['init'])
-      self.comm     = Comm(
-        send = self.__d__.iemgui['symbol'],
-        receive = self.__d__.iemgui['symbol']
-      )
-      self.label = IEMLabel(
-        xoff    = d['xoff'],
-        yoff    = d['yoff'],
-        fface   = self.__d__.iemgui['fontface'],
-        fsize   = d['fsize'],
-        lbcolor = d['lbcolor'], **kwargs)
-      self.bgcolor = self.__num__(d['bgcolor'])
-      self.fgcolor = self.__num__(self.__d__.iemgui['fgcolor'])
-      self.value   = float(d['value'])
-      self.log_height = self.__num__(d['log_height'])
+      
+      iemgui = self.__d__.iemgui
+      default = iemgui[self.className]
+      
+      super().__set_default__(kwargs, [
+        ('digits_width', self.__num__(default['digits_width'])),
+        ('size', Size(h = default['height'])),
+        ('limits', Bounds(default['lower'],default['upper'])),
+        ('log_flag', self.__pdbool__(default['log_flag'])),
+        ('init', self.__pdbool__(default['init'])),
+        ('comm', Comm(
+            send = iemgui['symbol'],
+            receive = iemgui['symbol'])),
+        ('label', IEMLabel(
+            xoff = default['xoff'],
+            yoff = default['yoff'],
+            fface = iemgui['fontface'],
+            fsize = default['fsize'],
+            lbcolor = default['lbcolor'], **kwargs)),
+        ('bgcolor', self.__num__(default['bgcolor'])),
+        ('fgcolor', self.__num__(iemgui['fgcolor'])), 
+        ('value', float(default['value'])),
+        ('log_height', self.__num__(default['log_height']))
+      ])
+
   
   def __pd__(self):
     """ Return the pd string for this object """

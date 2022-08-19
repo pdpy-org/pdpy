@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" IEMGUI Vu Meter Class Definitions """
+"""
+IEMGui Vu Meter
+===============
+"""
 
 from .size import Size
 from .connections import Comm
@@ -14,11 +17,7 @@ from .iemgui import IEMLabel
 __all__ = [ 'Vu' ]
 
 class Vu(Obj):
-  """ 
-  The IEM Vu Object
-  ==================
-
-  The IEM gui object is a vu meter.
+  """ The IEM Vu Meter Object, aka. ``vu``.
 
   1. 5: `width`: the width of the vu meter area
   2. 6: `height`: the height of the vu meter area
@@ -29,7 +28,9 @@ class Vu(Obj):
   """
 
   def __init__(self, pd_lines=None, json=None, **kwargs):
+    
     self.__pdpy__ = self.__class__.__name__
+    
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
@@ -39,29 +40,32 @@ class Vu(Obj):
       self.bgcolor = self.__num__(pd_lines[8])
       self.scale= self.__pdbool__(pd_lines[10]) if 10 < len(pd_lines) else None
       self.flag = self.__pdbool__(pd_lines[11]) if 11 < len(pd_lines) else None
+    
     elif json is not None:
       super().__init__(json=json)
+    
     else:
       super().__init__(className='vu')
-      d = self.__d__.iemgui['vu'] # keep an easy dict access
-      self.area = Size(
-          w = d['width'],
-          h = d['height']
-      )
-      self.comm     = Comm(
-        send = False,
-        receive = self.__d__.iemgui['symbol']
-      )
-      self.label = IEMLabel(
-        xoff    = d['xoff'],
-        yoff    = d['yoff'],
-        fface   = self.__d__.iemgui['fontface'],
-        fsize   = d['fsize'],
-        lbcolor = d['lbcolor'], **kwargs)
-      self.bgcolor = self.__num__(d['bgcolor'])
-      self.fgcolor = self.__num__(self.__d__.iemgui['fgcolor'])
-      self.scale = self.__pdbool__(d['scale'])
-      self.flag = self.__pdbool__(d['flag'])
+  
+      iemgui = self.__d__.iemgui
+      default = iemgui[self.className]
+      
+      super().__set_default__(kwargs, [
+        ('area', Size(w = default['width'], h = default['height'])),
+        ('comm', Comm(
+            send = False,
+            receive = iemgui['symbol'])),
+        ('label', IEMLabel(
+            xoff = default['xoff'],
+            yoff = default['yoff'],
+            fface = iemgui['fontface'],
+            fsize = default['fsize'],
+            lbcolor = default['lbcolor'], **kwargs)),
+        ('bgcolor', self.__num__(default['bgcolor'])),
+        ('fgcolor', self.__num__(iemgui['fgcolor'])),
+        ('scale', self.__pdbool__(default['scale'])),
+        ('flag', self.__pdbool__(default['flag'])),
+      ])
 
   def __pd__(self):
     """ Return the pd string for this object """

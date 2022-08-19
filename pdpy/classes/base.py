@@ -130,6 +130,11 @@ class Base(XmlBuilder, XmlTagConvert):
     if value is not None:
       self.__dict__[name] = value
 
+  def __set_default__(self, kwargs, parameters):
+    """ Sets the defaut values or uses the provided keyword argument """
+    for (k, v) in parameters:
+      setattr(self, k, kwargs.pop(k) if k in kwargs else v)
+
   def __json__(self, indent=4):
     """ Return a JSON representation of the instance's scope as a string """
 

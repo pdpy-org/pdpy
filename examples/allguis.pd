@@ -1,0 +1,13 @@
+#N canvas 0 22 450 300 12;
+#X obj 10 10 bng 15 250 50 1 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000;
+#X obj 10 34 tgl 15 1 empty empty empty 17 7 0 10 #fcfcfc #000000 #000000 1 1;
+#X obj 10 58 cnv 15 100 60 empty empty 20 12 0 14 -233017 -66577 1;
+#X obj 10 82 nbx 5 14 0.0 0.0 0 1 empty empty empty 0 -8 0 10 #fcfcfc #000000 #000000 0.0 256;
+#X obj 10 106 vslider 15 128 0.0 127.0 0 1 empty empty empty -2 -8 0 10 #fcfcfc #000000 #000000 0.0 0;
+#X obj 10 130 hslider 128 15 0.0 127.0 0 1 empty empty empty -2 -8 0 10 #fcfcfc #000000 #000000 0.0 0;
+#X obj 10 154 hradio 15 1 1 8 empty empty empty 0 -8 0 10 #fcfcfc #000000 #000000 0.0;
+#X obj 10 178 vradio 15 1 1 8 empty empty empty 0 -8 0 10 #fcfcfc #000000 #000000 0.0;
+#X obj 10 202 vu 15 120 empty empty -1 -8 0 10 -66577 #000000 1 1;
+#X floatatom 10 226 0 0.0 0.0 0 - - - 12;
+#X symbolatom 10 250 0 0.0 0.0 0 - - - 12;
+#X listbox 10 274 0 0.0 0.0 0 - - - 12;

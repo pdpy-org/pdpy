@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" IEMGUI Cnv Class Definitions """
+"""
+Cnv
+===
+"""
 
 from .size import Size
 from .connections import Comm
@@ -14,21 +17,18 @@ from .iemgui import IEMLabel
 __all__ = [ 'Cnv' ]
 
 class Cnv(Obj):
-  """
-  The IEM Canvas Obj
-  ======================
-      The case of `cnv` or `my_canvas`
-    --------------------
+  """ The IEM Canvas Obj: The case of `cnv` or `my_canvas`
     
-    The IEM gui object is a IEM canvas.
+  The IEM gui object is a IEM canvas.
 
-    1. 5: `size`: the size of the canvas mouse selection box
-    2. 6: `width`: the width of the canvas area
-    2. 7: `height`: the height of the canvas area
-    3. 8: `send`: the sender symbol of the canvas # why is this here?
-    3. 9: `receive`: the receiver symbol of the toggle
-    4. 10-15: `IEMLabel` Parameters
-    5. 16: `flag`: a flag
+  1. 5: `size`: the size of the canvas mouse selection box
+  2. 6: `width`: the width of the canvas area
+  2. 7: `height`: the height of the canvas area
+  3. 8: `send`: the sender symbol of the canvas # why is this here?
+  3. 9: `receive`: the receiver symbol of the toggle
+  4. 10-15: `IEMLabel` Parameters
+  5. 16: `flag`: a flag
+  
   """
   def __init__(self, pd_lines=None, json=None, **kwargs):
     self.__pdpy__ = self.__class__.__name__
@@ -50,29 +50,26 @@ class Cnv(Obj):
       super().__init__(json=json)
     else:
       super().__init__(className='cnv')
-      d = self.__d__.iemgui['cnv']
-      if 'size' in kwargs:
-        self.size = Size(kwargs.pop('size'))
-      else:
-        self.size = Size(d['size'])
-        self.area = Size(
-          w = d['width'],
-          h = d['height']
-        )
-        self.comm = Comm(
-          send = False, 
-          receive = self.__d__.iemgui['symbol']
-        )
-        self.label = IEMLabel(
-          xoff = d['xoff'],
-          yoff = d['yoff'],
-          fface = self.__d__.iemgui['fontface'],
-          fsize = d['fsize'],
-          lbcolor = d['lbcolor'], **kwargs
-        )
-        self.bgcolor = d['bgcolor']
-        self.fgcolor = self.__d__.iemgui['fgcolor']
-        self.flag    = d['flag']
+
+      iemgui = self.__d__.iemgui
+      default = iemgui[self.className]
+      
+      super().__set_default__(kwargs, [
+        ('size', Size(default['size'])),
+        ('area', Size(w=default['width'], h=default['height'])),
+        ('comm', Comm(
+            send = False,
+            receive = iemgui['symbol'])),
+        ('label', IEMLabel(
+            xoff = default['xoff'],
+            yoff = default['yoff'],
+            fface = iemgui['fontface'],
+            fsize = default['fsize'],
+            lbcolor = default['lbcolor'], **kwargs)),
+        ('bgcolor', self.__num__(default['bgcolor'])),
+        ('fgcolor', self.__num__(iemgui['fgcolor'])), 
+        ('flag', self.__pdbool__(default['flag']))
+      ])
 
   def __pd__(self):
     """ Return the pd string for this object """

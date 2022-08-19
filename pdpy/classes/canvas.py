@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" Canvas Class Definition """
+"""
+Canvas
+======
+"""
 
 from .base import Base
 from .canvasbase import CanvasBase
@@ -12,22 +15,18 @@ from .point import Point
 from .size import Size
 
 __all__ = [ 'Canvas' ]
-class Canvas(CanvasBase, Base):
-  """ A Pure Data 'canvas' or 'subpatch' represented as a `pdpy` object
 
-  Description:
-  ------------
-  This class holds the pure data subpach/canvas properties 
-  as defined in the pure data text file.
-  
-  `Canvas` has some base properties inherited from the super class
-  `Properties`. Besides basic properties, the `Canvas` class takes 
+class Canvas(CanvasBase, Base):
+  """ Represents a Pure Data canvas, aka subpatch
+
+  Besides basic properties, the Canvas class takes 
   `#X connect`, `#X coords`, and `#X restore` into its own namespace, 
   as well as the pure data nodes that are created within the context 
   of a subpatch/canvas window. 
 
-  Attributes:
+  Parameters
   ----------
+  
   - `__pdpy__` (`str`) PdPy className (`self.__class__.__name__`)
   - `name`     (`str`) The canvas name on parent ('(subpatch)')
   - `vis`      (`bool`) Flag to tell if canvas should be visible or not (False)
@@ -60,18 +59,16 @@ class Canvas(CanvasBase, Base):
       super().__populate__(self, json)
     else:
       
-      def _set(k, default):
-        setattr(self, k, kwargs.pop(k) if k in kwargs else default)
-      
-      _set('screen',
-        Point(x=0, y=22))
-      _set('dimension',
-        Size(w=450, h=300))
-      _set('font', 12)
-      _set('vis', 0)
-      _set('name',
-        self.__d__.name if name is None else self.__sane_name__(name))
-      _set('root', False)
+      super().__set_default__(kwargs, [
+        ('screen', 
+          Point(x=self.__d__.screen['x'], y=self.__d__.screen['y'])),
+        ('dimension', 
+          Size(w=self.__d__.dimen['width'], h=self.__d__.dimen['height'])),
+        ('font', self.__d__.font['size']),
+        ('vis', self.__d__.vis),
+        ('name', self.__d__.name if name is None else self.__sane_name__(name)),
+        ('root', False)
+      ])
     
     if hasattr(self, 'isroot'):
       self.isroot = self.__pdbool__(self.isroot)

@@ -63,24 +63,27 @@ class Bng(Obj):
     
     else:
       super().__init__(className='bng')
-      if 'size' in kwargs:
-        self.size = Size(w=kwargs.pop('size'))
-      else:
-        self.size = Size(w=self.__d__.iemgui['bng']['size'])
-      self.hold = self.__d__.iemgui['bng']['hold']
-      self.intrrpt= self.__d__.iemgui['bng']['intrrpt']
-      self.init = self.__d__.iemgui['bng']['init']
-      self.comm = Comm(
-        send=self.__d__.iemgui['symbol'], 
-        receive=self.__d__.iemgui['symbol'])
-      self.label = IEMLabel(
-        xoff=self.__d__.iemgui['bng']['xoff'],
-        yoff=self.__d__.iemgui['bng']['yoff'],
-        fface=self.__d__.iemgui['fontface'],
-        fsize=self.__d__.iemgui['bng']['fsize'],
-        lbcolor=self.__d__.iemgui['bng']['lbcolor'], **kwargs)
-      self.bgcolor = self.__d__.iemgui['bng']['bgcolor']
-      self.fgcolor = self.__d__.iemgui['fgcolor']
+
+      iemgui = self.__d__.iemgui
+      default = iemgui[self.className]
+      
+      super().__set_default__(kwargs, [
+        ('size', Size(w = default['size'])),
+        ('hold', self.__num__(default['hold'])),
+        ('intrrpt', self.__num__(default['intrrpt'])),
+        ('init', self.__pdbool__(default['init'])),
+        ('comm', Comm(
+            send = iemgui['symbol'],
+            receive = iemgui['symbol'])),
+        ('label', IEMLabel(
+            xoff = default['xoff'],
+            yoff = default['yoff'],
+            fface = iemgui['fontface'],
+            fsize = default['fsize'],
+            lbcolor = default['lbcolor'], **kwargs)),
+        ('bgcolor', self.__num__(default['bgcolor'])),
+        ('fgcolor', self.__num__(iemgui['fgcolor']))
+      ])
 
   def __pd__(self):
     """ Return the pd-lang string for this object """

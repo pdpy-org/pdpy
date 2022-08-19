@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" IEMGUI Class Definitions """
+""" 
+IEMGUI Label and Font 
+=====================
+"""
 
 from .base import Base
 from .point import Point
@@ -16,6 +19,9 @@ __all__ = [
 ]
 
 class IEMFont(Base):
+  """ Represents the IEM gui fonts 
+  
+  """
   def __init__(self, face=None, points=None, json=None, xml=None):
     """ Initialize the object """
     self.__pdpy__ = self.__class__.__name__
@@ -35,22 +41,31 @@ class IEMFont(Base):
     return super().__xml__(scope=self, tag=tag, attrib=('face', 'points'))
 
 class IEMLabel(Base):
-  """ 
-  The IEM IEMLabel Obj
-  ====================
+  """ The IEM IEMLabel Obj
 
-  Description
-  -----------
-  This is the base class for the IEM gui.
+  This is the base class for all IEM gui.
 
-  Initialization Arguments
-  ------------------------
-  1. `label`: the label text
-  2. `x`: the x-offset of the label
-  3. `y`: the y-offset of the label
-  4. `fface`: the font face of the label
-  5. `fsize`: the font size of the label
-  6. `lbcolor`: the color of the label
+  Parameters
+  ----------
+  
+  label : :class:`str`
+    the label text
+    
+  x : :class:`int`
+    the x-offset of the label
+    
+  y : :class:`int`
+    the y-offset of the label
+    
+  fface : :class:`int`
+    the font face of the label
+    
+  fsize : :class:`int`
+    the font size of the label
+    
+  lbcolor : :class:`str`
+    the color of the label
+    
   """
   def __init__(self,
               label=None,
@@ -71,7 +86,7 @@ class IEMLabel(Base):
       self.lbcolor = self.__num__(lbcolor)
 
   def __pd__(self):
-    """ Return the pd string for this iem label """
+    """ Return the pd-lang string for this iem label """
     return str(self.label) + " " + self.offset.__pd__() + " " + self.font.__pd__()
 
   def __xml__(self, tag=None):

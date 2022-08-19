@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" IEMGUI Slider Class Definitions """
+"""
+IEMGui Slider
+=============
+"""
 
 from .obj import Obj
 from .size import Size
@@ -15,9 +18,7 @@ from .iemgui import IEMLabel
 __all__ = [ 'Slider' ]
 
 class Slider(Obj):
-  """
-  The IEM Slider Obj
-  =====================
+  """ The IEM Slider Obj
   
   The IEM gui object is a IEM horizontal or vertical slider.
   The case of `vsl` or `hsl`
@@ -35,7 +36,9 @@ class Slider(Obj):
   5. 20: `log_height`: upper limit of the log scale (with `log_flag`)
   """
   def __init__(self, pd_lines=None, json=None, **kwargs):
+    
     self.__pdpy__ = self.__class__.__name__
+    
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
@@ -49,9 +52,12 @@ class Slider(Obj):
       self.fgcolor = self.__num__(pd_lines[14])
       self.value = float(pd_lines[16])
       self.steady = self.__num__(pd_lines[17])
+    
     elif json is not None:
       super().__init__(json=json)
+    
     else:
+    
       if 'className' in kwargs:
         _c = kwargs.pop('className')
       else:
@@ -68,31 +74,29 @@ class Slider(Obj):
       
       # initialize the class default values
       super().__init__(className=_c)
-      d = self.__d__.iemgui['vsl'] # keep an easy dict access
-      self.area = Size(
-          w = d['width'], 
-          h = d['height']
-      )
-      self.limits = Bounds(
-          d['lower'],
-          d['upper']
-      )
-      self.log_flag = self.__pdbool__(d['log_flag'])
-      self.init     = self.__pdbool__(d['init'])
-      self.comm     = Comm(
-        send = self.__d__.iemgui['symbol'],
-        receive = self.__d__.iemgui['symbol']
-      )
-      self.label = IEMLabel(
-        xoff    = d['xoff'],
-        yoff    = d['yoff'],
-        fface   = self.__d__.iemgui['fontface'],
-        fsize   = d['fsize'],
-        lbcolor = d['lbcolor'], **kwargs)
-      self.bgcolor = self.__num__(d['bgcolor'])
-      self.fgcolor = self.__num__(self.__d__.iemgui['fgcolor'])
-      self.value   = float(d['value'])
-      self.steady  = self.__num__(d['steady'])
+    
+      iemgui = self.__d__.iemgui
+      default = iemgui['vsl' if self.className == 'vslider' else 'hsl']
+      
+      super().__set_default__(kwargs, [
+        ('area', Size(w = default['width'], h = default['height'])),
+        ('limits', Bounds(default['lower'],default['upper'])),
+        ('log_flag', self.__pdbool__(default['log_flag'])),
+        ('init', self.__pdbool__(default['init'])),
+        ('comm', Comm(
+            send = iemgui['symbol'],
+            receive = iemgui['symbol'])),
+        ('label', IEMLabel(
+            xoff = default['xoff'],
+            yoff = default['yoff'],
+            fface = iemgui['fontface'],
+            fsize = default['fsize'],
+            lbcolor = default['lbcolor'], **kwargs)),
+        ('bgcolor', self.__num__(default['bgcolor'])),
+        ('fgcolor', self.__num__(iemgui['fgcolor'])), 
+        ('value', float(default['value'])),
+        ('steady', self.__num__(default['steady'])), 
+      ])
 
   def __pd__(self):
     """ Return the pd string for this object """

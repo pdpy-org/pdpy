@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" IEMGUI Radio Class Definitions """
+"""
+IEMGui Radio
+============
+"""
 
 from .obj import Obj
 from .size import Size
@@ -14,11 +17,7 @@ from .iemgui import IEMLabel
 __all__ = [ 'Radio' ]
 
 class Radio(Obj):
-  """
-  The IEM Radio Obj
-  =====================
-  The case of `hradio` or `vradio`
-  --------------------
+  """ The IEM Radio Obj aka. `hradio` or `vradio`
   
   The IEM gui object is a IEM horizontal or vertica radio button.
 
@@ -33,7 +32,9 @@ class Radio(Obj):
   """
 
   def __init__(self, pd_lines=None, json=None, **kwargs):
+    
     self.__pdpy__ = self.__class__.__name__
+    
     if pd_lines is not None:
       super().__init__(pd_lines=pd_lines[:4])
       pd_lines = pd_lines[4:]
@@ -46,34 +47,40 @@ class Radio(Obj):
       self.bgcolor = self.__num__(pd_lines[11])
       self.fgcolor = self.__num__(pd_lines[12])
       self.value   = self.__num__(pd_lines[14])
+    
     elif json is not None:
       super().__init__(json=json)
+    
     else:
+
       if 'className' in kwargs:
         _c = kwargs.pop('className')
       else:
         _c = 'hradio' # just default to horizontal radio
       super().__init__(className=_c)
-      d = self.__d__.iemgui['radio'] # keep an easy dict access
-      self.size = Size(
-          w = d['size']
-      )
-      self.flag = self.__pdbool__(d['flag'])
-      self.init = self.__pdbool__(d['init'])
-      self.number = self.__num__(d['number'])
-      self.comm = Comm(
-        send = self.__d__.iemgui['symbol'],
-        receive = self.__d__.iemgui['symbol']
-      )
-      self.label = IEMLabel(
-        xoff    = d['xoff'],
-        yoff    = d['yoff'],
-        fface   = self.__d__.iemgui['fontface'],
-        fsize   = d['fsize'],
-        lbcolor = d['lbcolor'], **kwargs)
-      self.bgcolor = self.__num__(d['bgcolor'])
-      self.fgcolor = self.__num__(self.__d__.iemgui['fgcolor'])
-      self.value   = float(d['value'])
+      
+      iemgui = self.__d__.iemgui
+      default = iemgui['radio']
+      
+      super().__set_default__(kwargs, [
+        ('size', Size(w = default['size'])),
+        ('flag', self.__pdbool__(default['flag'])),
+        ('init', self.__pdbool__(default['init'])),
+        ('number', self.__num__(default['number'])),
+        ('comm', Comm(
+            send = iemgui['symbol'],
+            receive = iemgui['symbol'])),
+        ('label', IEMLabel(
+            xoff = default['xoff'],
+            yoff = default['yoff'],
+            fface = iemgui['fontface'],
+            fsize = default['fsize'],
+            lbcolor = default['lbcolor'], **kwargs)),
+        ('bgcolor', self.__num__(default['bgcolor'])),
+        ('fgcolor', self.__num__(iemgui['fgcolor'])), 
+        ('value', float(default['value']))
+      ])      
+
   
   def __pd__(self):
     """ Return the pd string for this object """
