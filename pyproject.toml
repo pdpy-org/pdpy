@@ -1,7 +1,7 @@
 
 [project]
 name = "pdpy"
-version ="0.0.9"
+version ="0.0.10"
 authors = [
   { name="Fede Camara Halac", email="fdch@nyu.edu" },
 ]
