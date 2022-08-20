@@ -67,12 +67,12 @@ class Source(Base):
     self.id = int(self.id)
     self.port = int(self.port)
   
-  def locate(self, parent):
+  def setobj(self, parent):
     """ Locates the node in the parent (Canvas) object """
     for obj in getattr(parent, 'nodes', []):
       if getattr(obj, 'id') == self.id:
         setattr(self, '__obj__', obj) # update with a new attribute
-    # log(1, f"locate()::{self.__dict__}")
+    # log(1, f"setobj()::{self.__dict__}")
     
 
   def __remap__(self, obj_map):
@@ -100,8 +100,7 @@ class Source(Base):
 
 class Edge(Base):
   """ A Pd Connection 
-  Description
-  -----------
+
   A Pd Connection object is a connection between two objects.
 
   Parameters
@@ -123,10 +122,10 @@ class Edge(Base):
       log(1, "connect(): No parent Instance Attached")
     else:
       canvas = getattr(self,'__p__')
-      # log(1, f"connect(): locating source")
-      self.source.locate(canvas)
-      # log(1, f"connect(): locating sink")
-      self.sink.locate(canvas)
+      # log(1, f"connect(): setting source")
+      self.source.setobj(canvas)
+      # log(1, f"connect(): setting sink")
+      self.sink.setobj(canvas)
     return self
 
   def __pd__(self, o=None):

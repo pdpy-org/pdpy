@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" Canvas Base Class Definition """
+"""
+Canvas Base
+===========
+"""
 
 from .connections import Edge
 from .xmlbuilder import XmlBuilder
@@ -13,7 +16,11 @@ from .comment import Comment # for the create method
 __all__ = [ 'CanvasBase' ]
 
 class CanvasBase(XmlBuilder):
-  """ Base class for a canvas -- used by pdpy.pdpy and pdpy.canvas """
+  """ Base class for a canvas
+  
+  This class is based by :class:`pdpy.classes.pdpy.PdPy` and :class:`pdpy.classes.canvas.Canvas 
+  
+  """
 
   def __init__(self, obj_idx=0, isroot=False):
     """ Initialize the canvas base class """
@@ -129,6 +136,43 @@ class CanvasBase(XmlBuilder):
     super().__parent__(self, edge)
     self.edges.append(edge.connect())
     # log(1,"Edge",edge.__dict__)
+  
+  def disconnect(self, *argv):
+    """ Attempt to disconnect the objects """
+    cnv = self.__last_canvas__() if hasattr(self, '__last_canvas__') else self
+    
+    # return if there are no edges
+    if not len(cnv.edges): return
+    
+    try:
+      argv = sorted(argv, key = lambda x:x.id)
+    except ValueError as e:
+      # skip uncreated objects
+      print("Object not created on the canvas: missing id")
+      print(e)
+    
+    # loop through the arguments
+    for arg in argv:
+      # skip uncreated objects
+      # if not hasattr(arg, 'id'): continue
+      # second loop through the edges
+      for i, edge in enumerate(sorted(cnv.edges, key = lambda x:x.source.id)):
+        
+        # if the object id matches any, remove it
+        if arg.id in (edge.source.id, edge.sink.id):
+          cnv.edges.pop(i)
+          print("Disconnected", arg.id)
+          break
+
+      # # second loop through the edges
+      # i = 0
+      # while len(self.edges):
+      #   # if the object id matches any, remove it
+      #   if arg.id in (self.edges[i].source.id, self.edges[i].sink.id):
+          
+      #     self.edges.pop(self.edges.index(i))
+      #   i += 1
+
 
   def connect(self, *argv):
     """ Attempt to autoconnect the objects together """
