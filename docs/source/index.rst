@@ -28,3 +28,4 @@ pdpy
   examples/holamundo
   examples/simpleaudio
   examples/translation
+  examples/connections

@@ -27,12 +27,14 @@ First, we import pdpy and create a PdPy instance::
   Locating pd...
   Found pd at:  /Applications/Pd-0.52-2.app/Contents/Resources/bin/pd
 
+
 Then, we create a loadbang and a printer, to test::
 
   >>> obj = pdpy.Obj('loadbang')
   >>> printer = pdpy.Obj('print')
   >>> pd.create(obj, printer)
   <pdpy.classes.pdpy.PdPy object at 0x106596820>
+
 
 We connect them, and let's arrange them so that we can print them::
   
@@ -45,10 +47,12 @@ We connect them, and let's arrange them so that we can print them::
   #X obj 10 58 print;
   #X connect 0 0 1 0;
 
+
 Now, try disconnecting them::
 
   >>> pd.disconnect(obj,printer)
   Disconnected 0
+
 
 Let's see the result::
 
