@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" Pure Data Default Definitions """
+"""
+Pure Data Default Values
+========================
+"""
 
 __all__ = [
   'Namespace',
@@ -22,7 +25,9 @@ class Namespace:
   def __init__(self):
     import pdpy
     self.__module__ = pdpy
-    self.__name__ = { e.lower().replace('__', ''):e for e in dir(self.__module__) }
+    self.__name__ = { 
+      e.lower().replace('__', '') : e for e in dir(self.__module__) 
+    }
 
   def __get__(self, name=None, tag=None):
     """ Get a PdPy Namespace Element """
@@ -45,7 +50,7 @@ class Namespace:
       raise KeyError("No PdPy class found for element: " + str(tag))
     return __pdpy__
 
-    
+
 Formats = {
   "pkl" : [ "pickle", "pkl"],
   "json": [ "json" ],
@@ -191,7 +196,6 @@ class Default(object):
       'data_as_text': False
     }
 
-
 GOPArrayFlags = [
   "polygon", "polygon-saved",
   "points", "points-saved",
@@ -213,7 +217,6 @@ PdFonts = [
   "Helvetica",
   "Times"
 ]
-
 PdNativeGuiNames = [
   'floatatom',
   'symbolatom',
