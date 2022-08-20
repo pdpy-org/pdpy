@@ -72,7 +72,7 @@ class Default(object):
     self.font         = { 'size': 12, 'face': 0 }
     self.array        = { 'size': 100, 'type': 'float', 'flag': 3}
     self.vis          = 0
-    self.digits_width = 0 
+    self.digits_width = { 'floatatom': 5, 'symbolatom': 10, 'listbox': 20 } 
     self.limits       = { 'lower':0, 'upper':0 } 
     self.flag         = 0
     self.label        = '-'
@@ -92,7 +92,7 @@ class Default(object):
         'bgcolor':-66577,
         'lbcolor':-1,
         'scale':True,
-        'flag':1
+        'flag':0
       },
       'tgl': {
         'size':15,

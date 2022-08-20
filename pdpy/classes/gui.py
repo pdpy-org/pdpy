@@ -83,10 +83,11 @@ class Gui(Object):
       default = self.__d__
       
       super().__set_default__(kwargs, [
-        ('digits_width', self.__num__(default.digits_width)),
+        ('digits_width', self.__num__(default.digits_width[self.__cls__])),
         ('limits', Bounds(
             lower = default.limits['lower'],
-            upper = default.limits['upper'])),
+            upper = default.limits['upper'],
+            dtype = int)),
         ('flag', self.__num__(default.flag)),
         ('comm', Comm(send = default.send, receive = default.receive)),
         ('label', default.label),
@@ -97,10 +98,10 @@ class Gui(Object):
   def __pd__(self):
     """ Returns the pd-lang string for the object """
     
-    s = str(int(getattr(self,'digits_width',self.__d__.digits_width)))
+    s = str(int(getattr(self,'digits_width',self.__d__.digits_width[self.__cls__])))
     
     if not hasattr(self, "limits"):
-      self.limits = Bounds(lower=self.__d__.limits['lower'], upper=self.__d__.limits['upper'])
+      self.limits = Bounds(lower=self.__d__.limits['lower'], upper=self.__d__.limits['upper'], dtype=int)
     
     s += " " + self.limits.__pd__()
     s += " " + str(int(getattr(self,'flag', self.__d__.flag)))
