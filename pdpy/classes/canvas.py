@@ -84,22 +84,6 @@ class Canvas(CanvasBase, Base):
       self.__box__ = Size(w=int(self.font * 1.25), h=int(self.font * 2))
       self.__margin__ = Size(w=self.font, h=self.font)
 
-
-  def comment(self, comment):
-    """ Append a pure data comment
-
-    Description:
-    ------------
-    This method creates and/or appends a pure data comment. 
-
-    Return:
-    -------
-    None
-    """
-    if not hasattr(self, 'comments'): 
-      self.comments = []
-    self.comments.append(comment)
-
   def update_cursor(self, w_step=0, h_step=0):
     """ Fill objects from top to bottom until we reach bottom
     (used to be get_position)

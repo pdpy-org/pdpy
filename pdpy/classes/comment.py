@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" Pure Data Text Comment Definitions """
+""" 
+Comment
+=======
+"""
 
 from .object import Object
 from .point import Point
@@ -14,7 +17,8 @@ __all__ = [ 'Comment' ]
 
 class Comment(Object):
   """ A Pure Data comment """
-  def __init__(self, pd_lines=None, json=None, xml=None):
+  
+  def __init__(self, comments=None, pd_lines=None, json=None, xml=None):
     self.__pdpy__ = self.__class__.__name__
     super().__init__(cls='text')
     
@@ -37,6 +41,11 @@ class Comment(Object):
           argv = argv[:-2]
           argv[-1] = argv[-1].replace(",","")
         self.text = splitSemi(argv)
+    elif comments is not None:
+      if not isinstance(comments, list):
+        comments = [comments]    
+      for comment in comments:
+        self.addtext(comment)
     else:
       self.position = Point()
 
@@ -70,8 +79,8 @@ class Comment(Object):
     return x
     
   def addtext(self, text):
-    """ Add a text row to the comment be semicolon-terminated. """
+    """ Add a text row to the comment. It will be semicolon-terminated. """
     if not hasattr(self, 'text'):
       self.text = []
-    self.text.append(text)
+    self.text.append(text.replace(',', ' \\,').replace(';', ' \\;'))
   

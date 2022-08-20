@@ -9,6 +9,7 @@ Arrange
 =======
 """
 
+from argparse import ArgumentError
 from ..classes.point import Point
 
 __all__ = [ "Arrange" ]
@@ -92,12 +93,32 @@ class Arrange:
               xmargin=10, ymargin=10):
   
     # inicializar
+    self.verbose = verbose
     self.canvas = canvas
     
-    if not hasattr(self.canvas, 'nodes') or len(self.canvas.nodes) == 0:
-      raise ValueError("Canvas", self.canvas.getname(), "has no nodes.")
+    self.nodes = True
+    self.comments = True
 
-    self.verbose = verbose
+    if not hasattr(self.canvas, 'nodes') or len(self.canvas.nodes) == 0:
+      self.__print__("Canvas has no nodes.")
+      self.nodes = False
+
+    if not hasattr(self.canvas, 'comments') or len(self.canvas.comments) == 0:
+      self.__print__("Canvas has no comments.")
+      self.comments = False
+    
+    
+    # the nodes to place
+    if self.nodes and self.comments:
+      self.O = list(self.canvas.nodes) + list(self.canvas.comments)
+    elif self.nodes:
+      self.O = list(self.canvas.nodes)
+    elif self.comments:
+      self.O = list(self.canvas.comments)
+    else:
+      self.__print__("Nothing to arrange.")
+      return
+    
     # the horizontal step size for increments
     self.hstep = hstep
     # the vertical step size for increments
@@ -105,8 +126,7 @@ class Arrange:
     # the cursor
     self.margin = Point(x=xmargin, y=ymargin)
     self.cursor = Point(x=self.margin.x, y=self.margin.y)
-    
-    self.O = list(self.canvas.nodes) # the nodes to place
+
     self.Z = [] # the placed nodes
 
     # Inicializar los maximos de w y h

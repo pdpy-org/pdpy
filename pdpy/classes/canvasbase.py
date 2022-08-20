@@ -8,6 +8,7 @@
 
 from .connections import Edge
 from .xmlbuilder import XmlBuilder
+from .comment import Comment # for the create method
 
 __all__ = [ 'CanvasBase' ]
 
@@ -31,8 +32,7 @@ class CanvasBase(XmlBuilder):
   def __update_obj_map__(self, x):
     """ Update the object map with the current object
 
-    Description:
-    ------------
+
     This method updates the object map with the current object. This is meant
     to keep track of the objects in the current canvas, so we can connect
     them later with their respective edges.
@@ -116,13 +116,12 @@ class CanvasBase(XmlBuilder):
   def edge(self, edge):
     """ Append a pure data connection (edge)
 
-    Description:
-    ------------
+
     This method creates and/or appends a pure data connection as an `Edge`.
     See `Edge` to see how connections are handled.
 
-    Return:
-    -------
+    Return
+    ------
     None
     """
     if not hasattr(self, 'edges'): 
@@ -170,14 +169,37 @@ class CanvasBase(XmlBuilder):
         for i in range(1,min(len(src),len(snk))):
           _connect(src[0].id, src[i], snk[0].id, snk[i])
 
+  def comment(self, comment):
+    """ Append a pure data comment
+
+
+    This method creates and/or appends a pure data comment. 
+
+    Return
+    ------
+    None
+    """
+    if not hasattr(self, 'comments'): 
+      self.comments = []
+    self.comments.append(comment)
+
   def create(self, *anything):
     """ Create an object, message, comment, or any other pd object """
     cnv = self.__last_canvas__() if hasattr(self, '__last_canvas__') else self
     for a in anything:
       self.__obj_idx__ = self.grow()
-      a.id = cnv.add(a)
+      if isinstance(a, Comment):
+        cnv.comment(a)
+      else:
+        a.id = cnv.add(a)
       a.__parent__(parent=cnv)
     return self
+
+  def createComment(self, *anything):
+    """ Helper to create comments """
+    comments = list(map(lambda x:Comment(x), anything))
+    self.create(*comments)
+    return comments
 
   def createCanvas(self, **kwargs):
     """ Create a subpatch """
@@ -199,8 +221,7 @@ class CanvasBase(XmlBuilder):
   def add(self, node):
     """ Add (append) a Node to this canvas `nodes`
 
-    Description:
-    ------------
+
     This method creates and/or appends a 'node' to an internal array `nodes`.
     Each node is a Pure Data object that is neither a comment nor a connection
 
