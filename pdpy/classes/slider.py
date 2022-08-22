@@ -76,27 +76,22 @@ class Slider(Obj):
       super().__init__(className=_c)
     
       iemgui = self.__d__.iemgui
-      default = iemgui['vsl' if self.className == 'vslider' else 'hsl']
-      
+      _cls = 'vsl' if self.className == 'vslider' else 'hsl'
+      default = iemgui[_cls]
+
       super().__set_default__(kwargs, [
-        ('area', Size(w = default['width'], h = default['height'])),
-        ('limits', Bounds(default['lower'],default['upper'])),
-        ('log_flag', self.__pdbool__(default['log_flag'])),
-        ('init', self.__pdbool__(default['init'])),
-        ('comm', Comm(
-            send = iemgui['symbol'],
-            receive = iemgui['symbol'])),
-        ('label', IEMLabel(
-            xoff = default['xoff'],
-            yoff = default['yoff'],
-            fface = iemgui['fontface'],
-            fsize = default['fsize'],
-            lbcolor = default['lbcolor'], **kwargs)),
-        ('bgcolor', self.__num__(default['bgcolor'])),
-        ('fgcolor', self.__num__(iemgui['fgcolor'])), 
-        ('value', float(default['value'])),
-        ('steady', self.__num__(default['steady'])), 
+        ('area', default, lambda d: Size(w = d['width'], h = d['height'])),
+        ('limits', default, lambda d: Bounds(lower = d['lower'], upper = d['upper'])),
+        ('init', default, lambda x: self.__pdbool__(x)),
+        ('log_flag', default, lambda x: self.__pdbool__(x)),
+        ('bgcolor', default, lambda x: self.__num__(x)),
+        ('fgcolor', iemgui, lambda x: self.__num__(x)),
+        ('value', default, lambda x: float(x)),
+        ('steady', default, lambda x: self.__num__(x)),
       ])
+
+      self.comm = Comm(**kwargs)
+      self.label = IEMLabel(className = _cls, **kwargs)
 
   def __pd__(self):
     """ Return the pd string for this object """

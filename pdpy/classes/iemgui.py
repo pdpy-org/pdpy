@@ -22,15 +22,29 @@ class IEMFont(Base):
   """ Represents the IEM gui fonts 
   
   """
-  def __init__(self, face=None, points=None, json=None, xml=None):
+  def __init__(self, face=None, points=None, json=None, xml=None, **kwargs):
     """ Initialize the object """
+    
     self.__pdpy__ = self.__class__.__name__
+    
     super().__init__(json=json, xml=xml)
+    
     if json is None and xml is None:
+      
       self.__pdpy__ = self.__class__.__name__
-      self.face = self.__num__(face)
+      
+      if face is not None:
+        self.face = self.__num__(face)
+      else:
+        self.face = self.__d__.iemgui['fontface']
+      
+      
+      if points is not None:
+        self.points = self.__num__(points)
+      else:
+        self.points = self.__d__.iemgui['fontsize']
+      
       self.name = PdFonts[self.face if self.face < len(PdFonts) else -1]
-      self.points = self.__num__(points)
   
   def __pd__(self):
     """ Return the pd lines for this object """
@@ -67,23 +81,20 @@ class IEMLabel(Base):
     the color of the label
     
   """
-  def __init__(self,
-              label=None,
-              xoff=None,
-              yoff=None,
-              fface=None,
-              fsize=None,
-              lbcolor=None,
-              json=None,
-              xml=None):
+  def __init__(self, json=None, xml=None, **kwargs):
     self.__pdpy__ = self.__class__.__name__
     super().__init__(json=json, xml=xml)
     if json is None and xml is None:
       self.__pdpy__ = self.__class__.__name__
-      self.label = label if label is not None else self.__d__.iemgui['symbol']
-      self.offset = Point(xoff, yoff)
-      self.font = IEMFont(fface, fsize)
-      self.lbcolor = self.__num__(lbcolor)
+      default = self.__d__
+      iemgui = default.iemgui
+      className = kwargs.pop('className')
+      self.__set_default__(kwargs, [
+        ('label', iemgui),
+        ('offset', iemgui[className], lambda d:Point(d['xoff'],d['yoff'])),
+        ('lbcolor', iemgui[className], lambda d:self.__num__(d))
+      ])
+      self.font = IEMFont(**kwargs)
 
   def __pd__(self):
     """ Return the pd-lang string for this iem label """

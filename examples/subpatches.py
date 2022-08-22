@@ -9,13 +9,12 @@ Making Subpatches
 =================
 """
 
-from pdpy import PdPy, Obj, Msg
-import pylibpd as libpd
-import pyaudio
+from pdpy import Patch, Obj, Msg
 import random
 patchname = "subpatches"
 
-with PdPy(name=patchname, root=True) as pd:
+# switch to callback=False for live performance
+with Patch(name=patchname, root=True, callback=True) as pd:
 
   lb = pd.createCanvas(name='loadbang')
   msg = Msg()
@@ -63,31 +62,31 @@ with PdPy(name=patchname, root=True) as pd:
   pd.write("audio_libpd_test.json")
   pd.write()
 
-p = pyaudio.PyAudio()
-sr = 44100
-tpb = 6
-bs = libpd.libpd_blocksize()
+# p = pyaudio.PyAudio()
+# sr = 44100
+# tpb = 6
+# bs = libpd.libpd_blocksize()
 
-stream = p.open(format = pyaudio.paInt16,
-                channels = 1,
-                rate = sr,
-                input = True,
-                output = True,
-                frames_per_buffer = bs * tpb)
+# stream = p.open(format = pyaudio.paInt16,
+#                 channels = 1,
+#                 rate = sr,
+#                 input = True,
+#                 output = True,
+#                 frames_per_buffer = bs * tpb)
 
-m = libpd.PdManager(1, 1, sr, 1)
+# m = libpd.PdManager(1, 1, sr, 1)
 
-# open patch
-libpd.libpd_open_patch(patchname + '.pd')
+# # open patch
+# libpd.libpd_open_patch(patchname + '.pd')
 
-# start dsp
-libpd.libpd_compute_audio(1) 
+# # start dsp
+# libpd.libpd_compute_audio(1) 
 
-while 1:
-    data = stream.read(bs, exception_on_overflow=False)
-    outp = m.process(data)
-    stream.write(bytes(outp))
+# while 1:
+#     data = stream.read(bs, exception_on_overflow=False)
+#     outp = m.process(data)
+#     stream.write(bytes(outp))
 
-stream.close()
-p.terminate()
-libpd.libpd_release()
+# stream.close()
+# p.terminate()
+# libpd.libpd_release()

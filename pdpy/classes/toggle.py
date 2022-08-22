@@ -57,23 +57,16 @@ class Toggle(Obj):
       default = iemgui[self.className]
       
       super().__set_default__(kwargs, [
-        ('size', Size(w = default['size'])),
-        ('init', self.__pdbool__(default['init'])),
-        ('comm', Comm(
-            send = iemgui['symbol'],
-            receive = iemgui['symbol'])),
-        ('label', IEMLabel(
-            xoff = default['xoff'],
-            yoff = default['yoff'],
-            fface = iemgui['fontface'],
-            fsize = default['fsize'],
-            lbcolor = default['lbcolor'], **kwargs)),
-        ('bgcolor', self.__num__(default['bgcolor'])),
-        ('fgcolor', self.__num__(iemgui['fgcolor'])),
-        ('flag', self.__num__(default['flag'])),
-        ('nonzero', self.__num__(default['nonzero'])),
+        ('size', default, lambda x: Size(w = x)),
+        ('init', default, lambda x: self.__pdbool__(x)),
+        ('bgcolor', default, lambda x: self.__num__(x)),
+        ('fgcolor', iemgui, lambda x: self.__num__(x)),
+        ('flag', default, lambda x: self.__num__(x)),
+        ('nonzero', default, lambda x: self.__num__(x)),
       ])
 
+      self.comm = Comm(**kwargs)
+      self.label = IEMLabel(className = self.className, **kwargs)
 
   def __pd__(self):
     """ Return the pd string for this object """

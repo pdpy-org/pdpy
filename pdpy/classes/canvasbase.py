@@ -185,6 +185,7 @@ class CanvasBase(XmlBuilder):
     
     # utility routine 
     def _connect(*argv):
+      # print(argv)
       e = Edge(pd_lines=argv)
       cnv.edge(e)
 

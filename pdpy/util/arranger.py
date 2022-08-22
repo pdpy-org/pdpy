@@ -9,7 +9,6 @@ Arrange
 =======
 """
 
-from argparse import ArgumentError
 from ..classes.point import Point
 
 __all__ = [ "Arrange" ]
@@ -130,19 +129,19 @@ class Arrange:
     self.Z = [] # the placed nodes
 
     # Inicializar los maximos de w y h
-    self.W = max(map(
-      lambda x:x[0],
-      [o.__get_obj_size__(self.canvas) for o in self.O]
-    ))
-    self.H = max(map(
-      lambda x:x[1],
-      [o.__get_obj_size__(self.canvas) for o in self.O]
-    ))
+    # self.W = max(map(
+    #   lambda x:x[0],
+    #   [o.__get_obj_size__(self.canvas) for o in self.O]
+    # ))
+    # self.H = max(map(
+    #   lambda x:x[1],
+    #   [o.__get_obj_size__(self.canvas) for o in self.O]
+    # ))
 
-    self.y_inc = self.vstep * self.H
-    self.x_inc = self.hstep * self.W
+    # selfs.y_inc = self.vstep * self.H
+    # self.x_inc = self.hstep * self.W
 
-    print("Initialized", __all__[0], "graph placing algorithm.")
+    self.__print__("Initialized", __all__[0], "graph placing algorithm.")
     self.__call__()
 
   def __call__(self):
@@ -195,7 +194,7 @@ class Arrange:
       self.__print__("__get_children__():", self.__ids__(r))
       return r
 
-  def __y_inc__(self):
+  def __y_inc__(self, y_inc):
     """ This increments the Y cursor of a canvas
 
     Arguments
@@ -207,9 +206,9 @@ class Arrange:
     -------
     None
     """
-    self.cursor.increment(0, self.y_inc)
+    self.cursor.increment(0, y_inc * self.vstep)
 
-  def __x_inc__(self, port = 0):
+  def __x_inc__(self, x_inc, port = 0):
     """ This increments the self.O cursor of a canvas
 
     Arguments
@@ -220,7 +219,7 @@ class Arrange:
     -------
     None
     """
-    self.cursor.increment(self.x_inc * port, 0)
+    self.cursor.increment(x_inc * port * self.hstep, 0)
 
   def __place__(self, o, xpos=None, ypos=None, yinc=1):
     """ Place the object on the canvas
@@ -230,10 +229,16 @@ class Arrange:
     ``o``: the object
     ``xpos``: the position 
     """
-      
-    # incrementar Y antes
-    if yinc == -1: self.__y_inc__()
     
+    # incrementar Y antes
+    if yinc == -1: self.__y_inc__(self.prev_y_inc)
+    
+    # obtener el tamaño del objeto
+    x_inc, y_inc = o.__get_obj_size__(self.canvas)
+    
+    x_inc += self.margin.x
+    y_inc += self.margin.y
+
     x = xpos if xpos is not None else self.cursor.x
     y = ypos if ypos is not None else self.cursor.y
     
@@ -241,9 +246,11 @@ class Arrange:
     self.__print__("place():", o.getid(), "=>", x, y)
     o.addpos(x, y)
     # incrementar Y despues
-    if yinc == 1: self.__y_inc__()
+    if yinc == 1: self.__y_inc__(y_inc)
     # añadirlo a la lista Z
     self.Z.append(o)
+    # actualizar el tamaño previo
+    self.prev_y_inc, self.prev_x_inc = y_inc, x_inc
 
   def __move__(self, o, xoffset, yoffset, x=None, y=None):
     self.__print__("__move__():", o.getname())
@@ -264,7 +271,7 @@ class Arrange:
     
     if parent in self.__get_children__(child) and child in self.__get_children__(parent):
       self.__print__("CIRCULAR")
-      self.__move__(parent, self.x_inc, 0, y = child)
+      self.__move__(parent, self.prev_x_inc, 0, y = child)
 
       
     elif child.position.y != parent.position.y:
@@ -280,7 +287,7 @@ class Arrange:
 
     elif child.position.y == parent.position.y:
       self.__print__("EQUAL_Y")
-      self.__move__(child, 0, self.y_inc, y = parent)
+      self.__move__(child, 0, self.prev_y_inc, y = parent)
 
     else:
       self.__print__("Leaving", child.getid(), "as is.")
@@ -321,18 +328,23 @@ class Arrange:
       self.__print__(">"*4,"Child #"+str(i), child.getid(), child.getname(), portnum)
       self.__print__(">"*4,child.getid(), "NOT IN", self.__ids__(self.Z))
       
+      x_inc, y_inc = child.__get_obj_size__(parent.__parent__())
+
       if portnum:
         self.cursor.y = parent.position.y
       else:
-        self.__y_inc__()
+        self.__y_inc__(y_inc)
       
-      self.__x_inc__(portnum)
+      self.__x_inc__(x_inc, portnum)
       self.__print__("PLACEMENT")
       self.__place__(child,
         self.cursor.x, 
         self.cursor.y, 
         yinc = 0
       )
+      self.prev_x_inc = x_inc
+      self.prev_y_inc = y_inc
+      
       self.step2(child, relocate = True)
     
     self.__print__("<<<<<<<<<< end child loop for", obj.getname())
@@ -423,8 +435,11 @@ class Arrange:
       # pasar obj y la lista al paso recursivo
       self.step3(obj, C)
     else:
+      x_inc, _ = obj.__get_obj_size__(self.canvas)
       self.__print__("<== going back to step1")
-      self.__x_inc__(1)
+      self.__x_inc__(x_inc, 1)
+      self.prev_x_inc = x_inc
+      self.prev_y_inc = 0
       self.cursor.y = self.margin.y
       self.step1()
 

@@ -60,27 +60,21 @@ class Radio(Obj):
       super().__init__(className=_c)
       
       iemgui = self.__d__.iemgui
-      default = iemgui['radio']
-      
-      super().__set_default__(kwargs, [
-        ('size', Size(w = default['size'])),
-        ('flag', self.__pdbool__(default['flag'])),
-        ('init', self.__pdbool__(default['init'])),
-        ('number', self.__num__(default['number'])),
-        ('comm', Comm(
-            send = iemgui['symbol'],
-            receive = iemgui['symbol'])),
-        ('label', IEMLabel(
-            xoff = default['xoff'],
-            yoff = default['yoff'],
-            fface = iemgui['fontface'],
-            fsize = default['fsize'],
-            lbcolor = default['lbcolor'], **kwargs)),
-        ('bgcolor', self.__num__(default['bgcolor'])),
-        ('fgcolor', self.__num__(iemgui['fgcolor'])), 
-        ('value', float(default['value']))
-      ])      
+      _cls = 'radio'
+      default = iemgui[_cls]
 
+      super().__set_default__(kwargs, [
+        ('size', default, lambda x: Size(h = x)),
+        ('flag', default, lambda x: self.__pdbool__(x)),
+        ('init', default, lambda x: self.__pdbool__(x)),
+        ('number', default, lambda x: self.__num__(x)),
+        ('bgcolor', default, lambda x: self.__num__(x)),
+        ('fgcolor', iemgui, lambda x: self.__num__(x)),
+        ('value', default, lambda x: float(x)),
+      ])
+
+      self.comm = Comm(**kwargs)
+      self.label = IEMLabel(className = _cls, **kwargs)
   
   def __pd__(self):
     """ Return the pd string for this object """

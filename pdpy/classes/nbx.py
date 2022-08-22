@@ -57,28 +57,21 @@ class Nbx(Obj):
       
       iemgui = self.__d__.iemgui
       default = iemgui[self.className]
-      
+
       super().__set_default__(kwargs, [
-        ('digits_width', self.__num__(default['digits_width'])),
-        ('size', Size(h = default['height'])),
-        ('limits', Bounds(default['lower'],default['upper'])),
-        ('log_flag', self.__pdbool__(default['log_flag'])),
-        ('init', self.__pdbool__(default['init'])),
-        ('comm', Comm(
-            send = iemgui['symbol'],
-            receive = iemgui['symbol'])),
-        ('label', IEMLabel(
-            xoff = default['xoff'],
-            yoff = default['yoff'],
-            fface = iemgui['fontface'],
-            fsize = default['fsize'],
-            lbcolor = default['lbcolor'], **kwargs)),
-        ('bgcolor', self.__num__(default['bgcolor'])),
-        ('fgcolor', self.__num__(iemgui['fgcolor'])), 
-        ('value', float(default['value'])),
-        ('log_height', self.__num__(default['log_height']))
+        ('digits_width', default, lambda x: self.__num__(x)),
+        ('size', default, lambda x: Size(h = x['height'])),
+        ('limits', default, lambda d: Bounds(lower = d['lower'], upper = d['upper'])),
+        ('init', default, lambda x: self.__pdbool__(x)),
+        ('log_flag', default, lambda x: self.__pdbool__(x)),
+        ('bgcolor', default, lambda x: self.__num__(x)),
+        ('fgcolor', iemgui, lambda x: self.__num__(x)),
+        ('value', default, lambda x: float(x)),
+        ('log_height', default, lambda x: self.__num__(x)),
       ])
 
+      self.comm = Comm(**kwargs)
+      self.label = IEMLabel(className = self.className, **kwargs)
   
   def __pd__(self):
     """ Return the pd string for this object """

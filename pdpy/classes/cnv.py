@@ -55,21 +55,15 @@ class Cnv(Obj):
       default = iemgui[self.className]
       
       super().__set_default__(kwargs, [
-        ('size', Size(default['size'])),
-        ('area', Size(w=default['width'], h=default['height'])),
-        ('comm', Comm(
-            send = False,
-            receive = iemgui['symbol'])),
-        ('label', IEMLabel(
-            xoff = default['xoff'],
-            yoff = default['yoff'],
-            fface = iemgui['fontface'],
-            fsize = default['fsize'],
-            lbcolor = default['lbcolor'], **kwargs)),
-        ('bgcolor', self.__num__(default['bgcolor'])),
-        ('fgcolor', self.__num__(iemgui['fgcolor'])), 
-        ('flag', self.__pdbool__(default['flag']))
+        ('size', default, lambda x: Size(w = x)),
+        ('area', default, lambda d: Size(w = d['width'], h = d['height'])),
+        ('bgcolor', default, lambda x: self.__num__(x)),
+        ('fgcolor', iemgui, lambda x: self.__num__(x)),
+        ('flag', default, lambda x: self.__pdbool__(x)),
       ])
+
+      self.comm = Comm(**kwargs)
+      self.label = IEMLabel(className = self.className, **kwargs)
 
   def __pd__(self):
     """ Return the pd string for this object """

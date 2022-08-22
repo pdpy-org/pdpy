@@ -1,0 +1,92 @@
+{
+    "patchname": "singleton",
+    "encoding": "utf-8",
+    "__pdpy__": "PdPy",
+    "root": {
+        "__pdpy__": "Canvas",
+        "name": "(subpatch)",
+        "root": false,
+        "screen": {
+            "__pdpy__": "Point",
+            "x": 0,
+            "y": 22
+        },
+        "dimension": {
+            "__pdpy__": "Size",
+            "width": 450,
+            "height": 300
+        },
+        "font": 12,
+        "vis": 0,
+        "title": "pd (subpatch)",
+        "isroot": true,
+        "patchname": "singleton",
+        "nodes": [
+            {
+                "__pdpy__": "Bng",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 10,
+                    "y": 10
+                },
+                "className": "bng",
+                "size": {
+                    "__pdpy__": "Size",
+                    "width": 20
+                },
+                "hold": 250,
+                "intrrpt": 50,
+                "init": false,
+                "bgcolor": "#fcfcfc",
+                "fgcolor": "#000000",
+                "comm": {
+                    "__pdpy__": "Comm",
+                    "send": "empty",
+                    "receive": "empty"
+                },
+                "label": {
+                    "__pdpy__": "IEMLabel",
+                    "label": "mybang",
+                    "offset": {
+                        "__pdpy__": "Point",
+                        "x": 30,
+                        "y": 10
+                    },
+                    "lbcolor": "#555888",
+                    "font": {
+                        "__pdpy__": "IEMFont",
+                        "face": 0,
+                        "points": 20,
+                        "name": "Menlo"
+                    }
+                },
+                "id": 0
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 10,
+                    "y": 64
+                },
+                "className": "print",
+                "id": 1
+            }
+        ],
+        "edges": [
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 1,
+                    "port": 0
+                }
+            }
+        ]
+    }
+}

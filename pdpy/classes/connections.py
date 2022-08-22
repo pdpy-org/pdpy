@@ -24,12 +24,12 @@ class Comm(Base):
                receive=None,
                json=None,
                xml=None,
-               default=None):
+               default=None, **kwargs):
     """ Takes in a send and receive symbol pair or a json dict """
     self.__pdpy__ = self.__class__.__name__
     super().__init__(json=json, xml=xml)
     if default is None:
-      default = self.__d__.iemgui['symbol']
+      default = self.__d__.iemgui['label']
     if json is None and xml is None:
       self.send = send if send is not None else default
       self.receive = receive if receive is not None else default

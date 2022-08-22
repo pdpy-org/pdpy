@@ -132,8 +132,45 @@ class Base(XmlBuilder, XmlTagConvert):
 
   def __set_default__(self, kwargs, parameters):
     """ Sets the defaut values or uses the provided keyword argument """
-    for (k, v) in parameters:
-      setattr(self, k, kwargs.pop(k) if k in kwargs else v)
+    # print(kwargs, parameters)
+    # label = l or iemgui['symbol'],
+    #         xoff = default['xoff'],
+    #         yoff = default['yoff'],
+    #         fface = iemgui['fontface'],
+    #         fsize = default['fsize'],
+    #         lbcolor = default['lbcolor']
+    for param in parameters:
+      # print(param)
+      k, d = param[:2]
+      # print(k)
+      # print(d)
+      callback = param[2] if len(param) == 3 else lambda x:x
+      if k in kwargs:
+        v = callback(kwargs.pop(k))
+        # print('found', v)
+      else:
+        # v = d if isinstance(d, dict) else getattr(d, k)
+        # print('notfound', k, type(d))
+        if isinstance(d, dict):
+          # print("d is a dictionary")
+          if k in d:
+            # print(k,"is in", d)
+            v = callback(d[k])
+            # print("after callback", v)
+          else:
+            # print(k,"not in", d)
+            v = callback(d)
+            # print("after callback", v)
+        elif isinstance(d, Default):
+          # print("passed Default")
+          v = getattr(d, k)
+          v = callback(v)
+          # print("after callback", v)
+        else:
+          v = d
+        # print('after callback', v)
+      # print("setting", k, "with value", v)
+      setattr(self, k, v)
 
   def __json__(self, indent=4):
     """ Return a JSON representation of the instance's scope as a string """
@@ -201,16 +238,20 @@ class Base(XmlBuilder, XmlTagConvert):
     # print(self.__json__())
     font_size = parent.font
 
-    if hasattr(self, 'size'):
-      # print("Size", self.size.__pd__())
-      if hasattr(self.size, 'width') and hasattr(self.size, 'height'):
-        return self.size.width, self.size.height
+    if hasattr(self, 'size') or hasattr(self, 'area'):
+      size = self.area if hasattr(self, 'area') else self.size
+      # print(self.getname(), "Size", size.__pd__())
+      if hasattr(size, 'width') and hasattr(size, 'height'):
+        return size.width, size.height
       else:
-        if hasattr(self.size, 'height'):
-          return font_size, self.size.height
-        elif hasattr(self.size, 'width'):
-          return self.size.width, font_size
-    
+        if hasattr(size, 'height'):
+          if self.className == 'vradio':
+            return size.height, size.height * self.number
+          else:
+            return size.height, size.height
+        elif hasattr(size, 'width'):
+          return size.width, size.width
+
     text_h = font_size * 2
     text_w = 0
     

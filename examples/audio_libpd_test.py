@@ -83,7 +83,12 @@ m = libpd.PdManager(nchans, nchans, sr, 1)
 # open patch
 libpd.libpd_open_patch(patchname + '.pd')
 
-while 1:
+
+# if user inputs q or ESC, quit
+while True:
+    inp = input()
+    if inp == 'q' or inp == '\x1b':
+        break
     data = stream.read(bs, exception_on_overflow=False)
     outp = m.process(data)
     stream.write(bytes(outp))

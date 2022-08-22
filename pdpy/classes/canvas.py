@@ -58,16 +58,15 @@ class Canvas(CanvasBase, Base):
     if json is not None:
       super().__populate__(self, json)
     else:
+      default = self.__d__
+      self.name = default.name if name is None else self.__sane_name__(name)
+      self.root = False
       
       super().__set_default__(kwargs, [
-        ('screen', 
-          Point(x=self.__d__.screen['x'], y=self.__d__.screen['y'])),
-        ('dimension', 
-          Size(w=self.__d__.dimen['width'], h=self.__d__.dimen['height'])),
-        ('font', self.__d__.font['size']),
-        ('vis', self.__d__.vis),
-        ('name', self.__d__.name if name is None else self.__sane_name__(name)),
-        ('root', False)
+        ('screen', default, lambda d: Point(x=d['x'], y=d['y'])),
+        ('dimension', default, lambda d: Size(w=d['width'], h=d['height'])),
+        ('font', default, lambda d: d['size']),
+        ('vis', default)
       ])
     
     if hasattr(self, 'isroot'):

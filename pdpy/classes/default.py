@@ -72,7 +72,7 @@ def getFormat(fmt):
 class Default(object):
   def __init__(self):
     self.screen       = { 'x':0, 'y': 22 }
-    self.dimen        = { 'width': 450, 'height': 300 }
+    self.dimension    = { 'width': 450, 'height': 300 }
     self.arrdimen     = { 'width': 450, 'height': 278 }
     self.font         = { 'size': 12, 'face': 0 }
     self.array        = { 'size': 100, 'type': 'float', 'flag': 3}
@@ -85,15 +85,18 @@ class Default(object):
     self.send         = '-'
     self.name         = '(subpatch)'
     self.iemgui = {
-      'symbol'   : 'empty',
+      'label'    : 'empty',
       'fontface' : 0,
-      'fgcolor'  : '#000000',
+      'fontsize' : 10,
+      'fgcolor'  : '#000000'
+    }
+    self.iemgui.update({
       'vu': {
         'xoff':-1,
         'width':15,
         'height':120,
         'yoff':-8,
-        'fsize':10,
+        'fsize':self.iemgui['fontsize'],
         'bgcolor':-66577,
         'lbcolor':-1,
         'scale':True,
@@ -104,7 +107,7 @@ class Default(object):
         'init':0,
         'xoff':17,
         'yoff':7,
-        'fsize':10,
+        'fsize':self.iemgui['fontsize'],
         'bgcolor':'#fcfcfc',
         'lbcolor':'#000000',
         'flag':1,
@@ -116,7 +119,7 @@ class Default(object):
         'height':60,
         'xoff':20,
         'yoff':12,
-        'fsize':14,
+        'fsize':self.iemgui['fontsize'] + 4,
         'bgcolor':-66577,
         'lbcolor':-233017,
         'flag':1
@@ -128,7 +131,7 @@ class Default(object):
         'number':8,
         'xoff':0,
         'yoff':-8,
-        'fsize':10,
+        'fsize':self.iemgui['fontsize'],
         'bgcolor':'#fcfcfc',
         'lbcolor':'#000000',
         'value':0
@@ -140,7 +143,7 @@ class Default(object):
         'init':0,
         'xoff':17,
         'yoff':7,
-        'fsize':10,
+        'fsize':self.iemgui['fontsize'],
         'bgcolor':'#fcfcfc',
         'lbcolor':'#000000'
       },
@@ -153,7 +156,7 @@ class Default(object):
         'init':0,
         'xoff':0,
         'yoff':-8,
-        'fsize':10,
+        'fsize':self.iemgui['fontsize'],
         'bgcolor':'#fcfcfc',
         'lbcolor':'#000000',
         'value':0,
@@ -168,7 +171,7 @@ class Default(object):
         'init':0,
         'xoff':-2,
         'yoff':-8,
-        'fsize':10,
+        'fsize':self.iemgui['fontsize'],
         'bgcolor':'#fcfcfc',
         'lbcolor':'#000000',
         'log_height':256,
@@ -184,14 +187,14 @@ class Default(object):
         'init':0,
         'xoff':-2,
         'yoff':-8,
-        'fsize':10,
+        'fsize':self.iemgui['fontsize'],
         'bgcolor':'#fcfcfc',
         'lbcolor':'#000000',
         'log_height':256,
         'value':0,
         'steady':0
       }
-    }
+    }) # iemgui update
     self.xml = {
       'data_as_text': False
     }

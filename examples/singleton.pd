@@ -1,0 +1,4 @@
+#N canvas 0 22 450 300 12;
+#X obj 10 10 bng 20 250 50 1 empty empty mybang 30 10 0 20 #fcfcfc #000000 #555888;
+#X obj 10 64 print;
+#X connect 0 0 1 0;

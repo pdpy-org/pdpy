@@ -1,0 +1,821 @@
+{
+    "patchname": "additive_env",
+    "encoding": "utf-8",
+    "__pdpy__": "PdPy",
+    "root": {
+        "__pdpy__": "Canvas",
+        "name": "(subpatch)",
+        "root": false,
+        "screen": {
+            "__pdpy__": "Point",
+            "x": 0,
+            "y": 22
+        },
+        "dimension": {
+            "__pdpy__": "Size",
+            "width": 450,
+            "height": 300
+        },
+        "font": 12,
+        "vis": 0,
+        "title": "pd (subpatch)",
+        "isroot": true,
+        "patchname": "additive_env",
+        "nodes": [
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 10,
+                    "y": 10
+                },
+                "className": "dac~",
+                "id": 0
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 10,
+                    "y": 44
+                },
+                "className": "phasor~",
+                "args": [
+                    -0.5
+                ],
+                "id": 1
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 10,
+                    "y": 136
+                },
+                "className": "*~",
+                "id": 2
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 10,
+                    "y": 160
+                },
+                "className": "lop~",
+                "args": [
+                    100
+                ],
+                "id": 3
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 28,
+                    "y": 10
+                },
+                "className": "osc~",
+                "args": [
+                    110
+                ],
+                "id": 4
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 28,
+                    "y": 68
+                },
+                "className": "*~",
+                "args": [
+                    0.125
+                ],
+                "id": 5
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 10,
+                    "y": 184
+                },
+                "className": "*~",
+                "id": 6
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 100,
+                    "y": 10
+                },
+                "className": "osc~",
+                "args": [
+                    220
+                ],
+                "id": 7
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 100,
+                    "y": 68
+                },
+                "className": "*~",
+                "args": [
+                    0.125
+                ],
+                "id": 8
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 532,
+                    "y": 34
+                },
+                "className": "*~",
+                "id": 9
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 172,
+                    "y": 10
+                },
+                "className": "osc~",
+                "args": [
+                    330
+                ],
+                "id": 10
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 172,
+                    "y": 68
+                },
+                "className": "*~",
+                "args": [
+                    0.125
+                ],
+                "id": 11
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 550,
+                    "y": 34
+                },
+                "className": "*~",
+                "id": 12
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 244,
+                    "y": 10
+                },
+                "className": "osc~",
+                "args": [
+                    440
+                ],
+                "id": 13
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 244,
+                    "y": 68
+                },
+                "className": "*~",
+                "args": [
+                    0.125
+                ],
+                "id": 14
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 568,
+                    "y": 34
+                },
+                "className": "*~",
+                "id": 15
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 316,
+                    "y": 10
+                },
+                "className": "osc~",
+                "args": [
+                    550
+                ],
+                "id": 16
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 316,
+                    "y": 68
+                },
+                "className": "*~",
+                "args": [
+                    0.125
+                ],
+                "id": 17
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 586,
+                    "y": 34
+                },
+                "className": "*~",
+                "id": 18
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 388,
+                    "y": 10
+                },
+                "className": "osc~",
+                "args": [
+                    660
+                ],
+                "id": 19
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 388,
+                    "y": 68
+                },
+                "className": "*~",
+                "args": [
+                    0.125
+                ],
+                "id": 20
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 604,
+                    "y": 34
+                },
+                "className": "*~",
+                "id": 21
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 460,
+                    "y": 10
+                },
+                "className": "osc~",
+                "args": [
+                    770
+                ],
+                "id": 22
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 460,
+                    "y": 68
+                },
+                "className": "*~",
+                "args": [
+                    0.125
+                ],
+                "id": 23
+            },
+            {
+                "__pdpy__": "Obj",
+                "position": {
+                    "__pdpy__": "Point",
+                    "x": 622,
+                    "y": 34
+                },
+                "className": "*~",
+                "id": 24
+            }
+        ],
+        "edges": [
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 1,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 2,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 1,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 2,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 2,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 3,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 4,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 5,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 5,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 6,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 3,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 6,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 6,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 6,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 7,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 8,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 8,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 9,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 3,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 9,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 9,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 9,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 10,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 11,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 11,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 12,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 3,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 12,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 12,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 12,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 13,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 14,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 14,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 15,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 3,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 15,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 15,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 15,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 16,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 17,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 17,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 18,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 3,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 18,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 18,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 18,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 19,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 20,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 20,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 21,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 3,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 21,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 21,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 21,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 22,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 23,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 23,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 24,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 3,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 24,
+                    "port": 1
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 24,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 0
+                }
+            },
+            {
+                "__pdpy__": "Edge",
+                "source": {
+                    "__pdpy__": "Source",
+                    "id": 24,
+                    "port": 0
+                },
+                "sink": {
+                    "__pdpy__": "Source",
+                    "id": 0,
+                    "port": 1
+                }
+            }
+        ]
+    }
+}

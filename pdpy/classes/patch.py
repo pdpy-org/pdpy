@@ -9,13 +9,14 @@ Patch
 =====
 """
 
-from .pdpy import PdPy
+import time
 import pylibpd
-from pyaudio import PyAudio, paInt16
+import pyaudio
+from .pdpy import PdPy
 
 __all__ = [ 'Patch' ]
 
-class Patch(PdPy, pylibpd.PdManager, PyAudio):
+class Patch(PdPy):
   """ Patch interface to use pdpy and libpd
 
   Parameters
@@ -76,19 +77,27 @@ class Patch(PdPy, pylibpd.PdManager, PyAudio):
   You should now hear a sinewave at 440 Hz.
 
   """
-  def __init__(self, name=None, inch=2, outch=2, sr=44100, **kwargs):
+  def __init__(self, name=None, inch=2, outch=2, sr=44100, callback=True, **kwargs):
     """ Constructor """
     
     PdPy.__init__(self, name, **kwargs)
 
+    self.__callback__ = callback
     self.__inch__ = inch
     self.__outch__ = outch
     self.__sr__ = sr
     self.__bs__ = pylibpd.libpd_blocksize()
     self.__tpb__ = 6
-    pylibpd.PdManager.__init__(self, self.__inch__, self.__outch__, self.__sr__, 1)
     
-    PyAudio.__init__(self)
+    
+    self.__libpd__ = pylibpd.PdManager(
+        self.__inch__, 
+        self.__outch__, 
+        self.__sr__,
+        1
+    )
+    
+    self.__pyaudio__ = pyaudio.PyAudio()
 
   def __enter__(self):
     self.start_audio()
@@ -96,31 +105,52 @@ class Patch(PdPy, pylibpd.PdManager, PyAudio):
   
   def start_audio(self):
     """ Start the pyaudio stream """
-    self.__stream__ = self.open(
-              format = paInt16,
+    
+    def _callback(in_data, frame_count, time_info, status):
+      data = self.__libpd__.process(in_data)
+      return (bytes(data), pyaudio.paContinue)
+    
+    self.__stream__ = self.__pyaudio__.open(
+              format = pyaudio.paInt16,
               channels = min(self.__inch__, self.__outch__),
               rate = self.__sr__,
               input = True,
               output = True,
-              frames_per_buffer = self.__bs__ * self.__tpb__)
+              frames_per_buffer = self.__bs__ * self.__tpb__, 
+              stream_callback=_callback if self.__callback__ else None)
     return self.__stream__
+
+  def performCallback(self):
+    """ Begin the audio stream loop in callback mode """
+    self.__stream__.start_stream()
+    while self.__stream__.is_active():
+      time.sleep(0.1)
+    self.__stream__.stop_stream()
   
   def perform(self):
-    """ Open the patch and begin the audio stream loop """
-    pylibpd.libpd_open_patch(self.patchname + '.pd')
-  
+    """ Begin the audio stream loop """
+
     while 1:
       data = self.__stream__.read(self.__bs__, exception_on_overflow=False)
-      outp = self.process(data)
+      outp = self.__libpd__.process(data)
       self.__stream__.write(bytes(outp))
-
-
+    
+    self.__stream__.close()
+  
   def __exit__(self, ctx_type, ctx_value, ctx_traceback):
     super().__exit__(ctx_type, ctx_value, ctx_traceback)
-  
-    self.perform()
-    self.__stream__.close()
-    self.terminate()
-
+    
+    pylibpd.libpd_open_patch(self.patchname + '.pd')
+    
+    if self.__callback__:
+      try:
+        self.performCallback()
+      except Exception as e:
+        raise Exception("There was an error", e)
+    else:
+      self.perform()
+    
+    self.__pyaudio__.terminate()
+    
     pylibpd.libpd_release()
   
