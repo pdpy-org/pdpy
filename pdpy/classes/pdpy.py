@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # **************************************************************************** #
 # This file is part of the pdpy project
-# Copyright (C) 2021 Fede Camara Halac
+# Copyright (C) 2021-22 Fede Camara Halac
 # **************************************************************************** #
 """ 
 PdPy
@@ -85,6 +85,7 @@ class PdPy(CanvasBase, Base):
     self.__set_pd_path__(pdpath)
 
   def __jsontree__(self):
+    """ Spawn a json tree structure adding parents to every child """
     # log(0, f"{self.__class__.__name__}.__jsontree__()")
     setattr(self.root, '__p__', self)
     for x in getattr(self, 'structs', []):
@@ -92,11 +93,13 @@ class PdPy(CanvasBase, Base):
     self.__addparents__(self.root)
 
   def getTemplate(self, template_name):
+    """ Get the template related to this object's Struct """
     for idx, s in enumerate(getattr(self, 'structs')):
       if template_name == getattr(s, 'name'):
         return idx, s
   
   def addStruct(self, pd_lines=None, json=None, xml=None):
+    """ Add a Struct object from pure data syntax tokens """
     if not hasattr(self, 'structs'): 
       self.structs = []
     struct = Struct(pd_lines=pd_lines, json=json, xml=xml)
@@ -105,13 +108,11 @@ class PdPy(CanvasBase, Base):
   
   def addRoot(self, pd_lines=None, json=None, name=None):
     """ Add a root canvas object from pure data, json, or an empty canvas 
-    
-    Description:
-    ------------
-    Called by the parse() method as well as the PdPyParser class
 
-    Returns:
-    --------
+    Called by the :func:`parse` method as well as the :class:`pdpy.classes.pdpyparser.PdPyParser` class
+
+    Return
+    ------
     The root canvas object
 
     """
@@ -139,8 +140,7 @@ class PdPy(CanvasBase, Base):
     return self.root
   
   def addDependencies(self, **kwargs):
-    """ handle embedded declarations
-    """
+    """ Handle dependencies called with ``declare`` """
     if not hasattr(self,"dependencies"):
       self.dependencies = Dependencies(**kwargs)
     else:
@@ -149,8 +149,6 @@ class PdPy(CanvasBase, Base):
   def __last_canvas__(self):
     """ Returns the most recent canvas (from the nodes list)
 
-    Description
-    -----------
     1. Start at the root canvas
     2. Do `__depth__` amount of iterations (0 depth will return `self.root`)
     3. Get the `canvas_node_index` by indexing `__canvas_idx__` with `__depth__`
@@ -165,8 +163,7 @@ class PdPy(CanvasBase, Base):
     return __canvas__
   
   def __get_canvas__(self):
-    """ Return the last canvas taking depth and incrementing object index count
-    """
+    """ Return the last canvas taking depth and incrementing object index count """
     # __canvas__ = self.root if self.__depth__ == 0 else self.__last_canvas__()
     __canvas__ = self.__last_canvas__()
     self.__obj_idx__ = __canvas__.grow()
@@ -174,12 +171,7 @@ class PdPy(CanvasBase, Base):
     return __canvas__
 
   def addCanvas(self, pd_lines=None, json=None):
-    """ Add a Canvas object from pure data syntax tokens
-    
-    Description:
-    ------------
-    This 
-    """
+    """ Add a Canvas object from pure data syntax tokens """
     __canvas__ = self.__get_canvas__()
     if pd_lines is not None:
       canvas = Canvas(json={
@@ -202,8 +194,7 @@ class PdPy(CanvasBase, Base):
     return canvas
 
   def addObj(self, argv):
-    """ Add a Pd object from pure data syntax tokens
-    """
+    """ Add a Pd object from pure data syntax tokens """
     # log(1,"addOBJ", argv)
     self.__obj_idx__ = self.__last_canvas__().grow()
     if 2 == len(argv):
@@ -259,6 +250,7 @@ class PdPy(CanvasBase, Base):
     return obj
   
   def addMsg(self, argv):
+    """ Add a Message object from pure data syntax tokens """
     # log(1,"msg", nodes)
     self.__obj_idx__ = self.__last_canvas__().grow()
     msg = Msg(pd_lines=[self.__obj_idx__]+argv)
@@ -266,6 +258,7 @@ class PdPy(CanvasBase, Base):
     return msg
   
   def addComment(self, argv):
+    """ Add a Comment object from pure data syntax tokens """
     self.__last_canvas__().grow()
     # log(1,"COMMENT",argv)
     comment = Comment(pd_lines=argv)
@@ -273,20 +266,21 @@ class PdPy(CanvasBase, Base):
     return comment
 
   def addNativeGui(self, className, argv):
+    """ Add a Gui object from pure data syntax tokens """
     self.__obj_idx__ = self.__last_canvas__().grow()
     obj = Gui(pd_lines=[ className, self.__obj_idx__ ] + argv)
     self.__last_canvas__().add(obj)
     return obj
 
   def addGraph(self, argv):
-    """ The ye-olde array ancestor
-    """
+    """ Add the ye-olde array ancestor from pure data syntax tokens """
     self.__obj_idx__ = self.__last_canvas__().grow()
     graph = Graph(pd_lines=[self.__obj_idx__, argv[0]] + argv[5:9] + argv[1:5])
     self.__last_canvas__().add(graph)
     return graph
 
   def addGOPArray(self, argv):
+    """ Add a Graph-on-Parent Array object from pure data syntax tokens """
     # log(1,"addGOPArray", argv)
     arr = GOPArray(json={
       'name' : argv[0],
@@ -299,21 +293,21 @@ class PdPy(CanvasBase, Base):
     return arr
   
   def addScalar(self, pd_lines):
+    """ Add a Scalar object from pure data syntax tokens """
     scalar = Scalar(struct=self.structs, pd_lines=pd_lines)
     self.__last_canvas__().add(scalar)
     return scalar
 
   def addEdge(self, pd_lines):
+    """ Add a connection (Edge) object from pure data syntax tokens """
     self.__last_canvas__().edge(Edge(pd_lines=pd_lines))
 
   def addCoords(self, coords):
-    """ the coords constructor
-    """
+    """ Adds the Coords class to the canvas """
     setattr(self.__last_canvas__(), "coords", Coords(coords=coords))
 
   def restore(self, argv=None):
-    """ Restore constructor
-    """
+    """ Restore constructor called from :func:`parse` """
     # restored canvases also have borders
     # log(0,"RESTORE",argv)
     last = self.__last_canvas__()
@@ -337,7 +331,7 @@ class PdPy(CanvasBase, Base):
       try:
         binbuf = self.__pd__()
       except Exception as e:
-        print(e, "ERROR WITH BINBUF", self.patchname)
+        log(3, e, "ERROR WITH BINBUF", self.patchname)
         raise Exception(e)
       with open(filename, 'w') as patchfile:
         patchfile.write(binbuf)
@@ -349,8 +343,6 @@ class PdPy(CanvasBase, Base):
   def parse(self, argvecs):
     """ Parse a list of Pd argument vectors (1) into this instance's scope
 
-    Description:
-    ------------
     This method populates the current class with appropriate calls to 
     individual classes refered to by parsing the argument vector `argv`.
 
@@ -406,8 +398,6 @@ class PdPy(CanvasBase, Base):
   def __pd__(self):
     """ Unparse this instance's scope into a list of pure data argument vectors
 
-    Description:
-    ------------
     This method returns a list of pure data argument vectors (1) from this 
     class' scope.
 
@@ -463,15 +453,14 @@ class PdPy(CanvasBase, Base):
     return super().__tree__(x)
 
   def __set_pd_path__(self, path_to_pd):
-      """ Attempt to locate the ``pd`` executable
-      """
+      """ Attempt to locate the ``pd`` executable """
       
       from sys import platform
       from pathlib import Path
       
       installed = False
       
-      print("Found ", platform, " platform.")
+      # print("Found ", platform, " platform.")
       
       if "darwin" in platform: # macos
         pdpath = Path("/Applications")
@@ -489,23 +478,24 @@ class PdPy(CanvasBase, Base):
       if installed:
         pdbin += "pd"
       else:
-        print("Locating pd...")
+        # print("Locating pd...")
         apps = [p for p in sorted(pdpath.glob("Pd*.app"))]
         
         if len(apps) >= 1:
           appdir = apps[0]
         else:
-          raise Exception("Could not find pd in " + pdpath)
+          log(2, "Could not find pd in " + pdpath)
 
         pdbin = Path(appdir.as_posix() + bindir)
       
       if Path(pdbin).exists():
-        print("Found pd at: ", pdbin.as_posix())
+        # print("Found pd at: ", pdbin.as_posix())
         setattr(self, '__pdbin__', pdbin)
       else:
-        raise Exception("This pd binary does not exist: " + pdbin.as_posix())
+        log(2, "This pd binary does not exist: " + pdbin.as_posix())
     
   def run(self):
+    """ Run Pd from the Pure Data binary """
     from subprocess import run as __run__
     if not hasattr(self, 'patchname'):
       raise Exception("No patchname found")
@@ -525,13 +515,13 @@ class PdPy(CanvasBase, Base):
     self.write()
 
   def arrangement(self, choice=-1):
-    """ Sets the arrange function from :module;`util`
+    """ Sets the arranger function
 
-    Arguments
-    ---------
-    ``choice``: the choices are numbered starting at 0
-    if negative or not one of the available choices,
-    it defaults to ``arrange1b``
+    Parameters
+    ----------
+    choice: :class:`int`
+      The choices are numbered starting at 0. If negative or not one of the available choices, it defaults to ``arrange1b``
+    
     """
 
     if choice == 0: 

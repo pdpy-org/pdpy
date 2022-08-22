@@ -55,8 +55,8 @@ class Message(Base):
     self.messages.append(msg)
 
   def __pd__(self):
-    """ 
-    Returns a string of escaped comma-separated Pd messages or an empty string.
+    """  Returns a string of escaped comma-separated Pd messages or an empty string.
+    
     If there is a address, output an escaped semicolon 
     and the address before the message    
     """

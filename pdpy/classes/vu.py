@@ -19,12 +19,35 @@ __all__ = [ 'Vu' ]
 class Vu(Obj):
   """ The IEM Vu Meter Object, aka. ``vu``.
 
-  1. 5: `width`: the width of the vu meter area
-  2. 6: `height`: the height of the vu meter area
-  3. 7: `receive`: the receiver symbol of the vu meter
-  4. 8-13: `IEMLabel` Parameters
-  5. 14: `scale`: flag to draw the dB scale or not
-  6. 15: `flag`: another flag.
+  This IEM gui object represents an IEM Vu Meter.
+  
+  Parameters
+  ----------
+
+  pd_lines : :class:`list`
+    The lines of the Pure Data patch that define the object.
+  
+  json : :class:`dict`
+    A JSON representation of the object.
+  
+  **kwargs: optional
+    Keyword arguments are:
+
+    *  ``width``: the width of the vu meter area
+    *  ``height``: the height of the vu meter area
+    *  ``scale``: flag to draw the dB scale or not
+    *  ``flag``: another flag.
+    *  ``bgcolor``: the background color of the vu meter
+    *  ``fgcolor``: the foreground of the vu meter
+
+    Other keyword arguments are passed to :class:`pdpy.classes.iemlabel.IEMLabel` and :class:`pdpy.classes.connections.Comm`
+  
+  See also
+  --------
+  :class:`pdpy.classes.default.Default`
+    For default parameters.
+  
+
   """
 
   def __init__(self, pd_lines=None, json=None, **kwargs):

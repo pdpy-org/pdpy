@@ -1,0 +1,112 @@
+sphinx-build -b html "source" _build/html  
+Running Sphinx v5.1.1
+making output directory... done
+[autosummary] generating autosummary for: classes.rst, classes/base.rst, classes/data.rst, classes/encoders.rst, classes/iemgui.rst, classes/objects.rst, classes/patching.rst, classes/primitives.rst, classes/utilities.rst, examples/arrays.rst, ..., examples/holamundo.rst, examples/libpd.rst, examples/simpleaudio.rst, examples/translation.rst, index.rst, install_libpd.rst, installation.rst, overview.rst, usage.rst, virtual_env.rst
+building [mo]: targets for 0 po files that are out of date
+building [html]: targets for 21 source files that are out of date
+updating environment: [new config] 21 added, 0 changed, 0 removed
+reading sources... [  4%] classes
+reading sources... [  9%] classes/base
+reading sources... [ 14%] classes/data
+reading sources... [ 19%] classes/encoders
+reading sources... [ 23%] classes/iemgui
+reading sources... [ 28%] classes/objects
+reading sources... [ 33%] classes/patching
+reading sources... [ 38%] classes/primitives
+reading sources... [ 42%] classes/utilities
+reading sources... [ 47%] examples/arrays
+reading sources... [ 52%] examples/connections
+reading sources... [ 57%] examples/holamundo
+reading sources... [ 61%] examples/libpd
+reading sources... [ 66%] examples/simpleaudio
+reading sources... [ 71%] examples/translation
+reading sources... [ 76%] index
+reading sources... [ 80%] install_libpd
+reading sources... [ 85%] installation
+reading sources... [ 90%] overview
+reading sources... [ 95%] usage
+reading sources... [100%] virtual_env
+
+looking for now-outdated files... none found
+pickling environment... done
+checking consistency... done
+preparing documents... done
+writing output... [  4%] classes
+writing output... [  9%] classes/base
+writing output... [ 14%] classes/data
+writing output... [ 19%] classes/encoders
+writing output... [ 23%] classes/iemgui
+writing output... [ 28%] classes/objects
+writing output... [ 33%] classes/patching
+writing output... [ 38%] classes/primitives
+writing output... [ 42%] classes/utilities
+writing output... [ 47%] examples/arrays
+writing output... [ 52%] examples/connections
+writing output... [ 57%] examples/holamundo
+writing output... [ 61%] examples/libpd
+writing output... [ 66%] examples/simpleaudio
+writing output... [ 71%] examples/translation
+writing output... [ 76%] index
+writing output... [ 80%] install_libpd
+writing output... [ 85%] installation
+writing output... [ 90%] overview
+writing output... [ 95%] usage
+writing output... [100%] virtual_env
+
+generating indices... genindex py-modindex done
+highlighting module code... [  2%] pdpy.classes.PdPyXMLParser
+highlighting module code... [  4%] pdpy.classes.area
+highlighting module code... [  6%] pdpy.classes.array
+highlighting module code... [  8%] pdpy.classes.base
+highlighting module code... [ 11%] pdpy.classes.bng
+highlighting module code... [ 13%] pdpy.classes.bounds
+highlighting module code... [ 15%] pdpy.classes.canvas
+highlighting module code... [ 17%] pdpy.classes.canvasbase
+highlighting module code... [ 20%] pdpy.classes.cnv
+highlighting module code... [ 22%] pdpy.classes.comment
+highlighting module code... [ 24%] pdpy.classes.connections
+highlighting module code... [ 26%] pdpy.classes.coords
+highlighting module code... [ 28%] pdpy.classes.data
+highlighting module code... [ 31%] pdpy.classes.default
+highlighting module code... [ 33%] pdpy.classes.dependencies
+highlighting module code... [ 35%] pdpy.classes.exceptions
+highlighting module code... [ 37%] pdpy.classes.goparray
+highlighting module code... [ 40%] pdpy.classes.graph
+highlighting module code... [ 42%] pdpy.classes.gui
+highlighting module code... [ 44%] pdpy.classes.iemfont
+highlighting module code... [ 46%] pdpy.classes.iemlabel
+highlighting module code... [ 48%] pdpy.classes.message
+highlighting module code... [ 51%] pdpy.classes.msg
+highlighting module code... [ 53%] pdpy.classes.nbx
+highlighting module code... [ 55%] pdpy.classes.obj
+highlighting module code... [ 57%] pdpy.classes.object
+highlighting module code... [ 60%] pdpy.classes.patch
+highlighting module code... [ 62%] pdpy.classes.pdpy
+highlighting module code... [ 64%] pdpy.classes.pdpyencoder
+highlighting module code... [ 66%] pdpy.classes.pdpyparser
+highlighting module code... [ 68%] pdpy.classes.point
+highlighting module code... [ 71%] pdpy.classes.radio
+highlighting module code... [ 73%] pdpy.classes.scalar
+highlighting module code... [ 75%] pdpy.classes.size
+highlighting module code... [ 77%] pdpy.classes.slider
+highlighting module code... [ 80%] pdpy.classes.struct
+highlighting module code... [ 82%] pdpy.classes.toggle
+highlighting module code... [ 84%] pdpy.classes.translator
+highlighting module code... [ 86%] pdpy.classes.types
+highlighting module code... [ 88%] pdpy.classes.vu
+highlighting module code... [ 91%] pdpy.classes.xmlbuilder
+highlighting module code... [ 93%] pdpy.classes.xmltagconvert
+highlighting module code... [ 95%] pdpy.parse.pdpy2json
+highlighting module code... [ 97%] pdpy.util.arranger
+highlighting module code... [100%] pdpy.util.utils
+
+writing additional pages... search done
+copying static files... done
+copying extra files... done
+dumping search index in English (code: en)... done
+dumping object inventory... done
+build succeeded, 7 warnings.
+
+The HTML pages are in _build/html.
+
+Build finished. The HTML pages are in _build/html.

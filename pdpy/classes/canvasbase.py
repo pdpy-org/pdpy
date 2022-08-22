@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # **************************************************************************** #
 # This file is part of the pdpy project
-# Copyright (C) 2021 Fede Camara Halac
+# Copyright (C) 2021-22 Fede Camara Halac
 # **************************************************************************** #
 """
 Canvas Base
@@ -18,7 +18,7 @@ __all__ = [ 'CanvasBase' ]
 class CanvasBase(XmlBuilder):
   """ Base class for a canvas
   
-  This class is based by :class:`pdpy.classes.pdpy.PdPy` and :class:`pdpy.classes.canvas.Canvas 
+  This class is based by :class:`pdpy.classes.pdpy.PdPy` and :class:`pdpy.classes.canvas.Canvas`
   
   """
 
@@ -38,7 +38,6 @@ class CanvasBase(XmlBuilder):
     
   def __update_obj_map__(self, x):
     """ Update the object map with the current object
-
 
     This method updates the object map with the current object. This is meant
     to keep track of the objects in the current canvas, so we can connect
@@ -122,7 +121,6 @@ class CanvasBase(XmlBuilder):
 
   def edge(self, edge):
     """ Append a pure data connection (edge)
-
 
     This method creates and/or appends a pure data connection as an `Edge`.
     See `Edge` to see how connections are handled.
@@ -217,7 +215,6 @@ class CanvasBase(XmlBuilder):
   def comment(self, comment):
     """ Append a pure data comment
 
-
     This method creates and/or appends a pure data comment. 
 
     Return
@@ -309,23 +306,22 @@ class CanvasBase(XmlBuilder):
     
     return array
 
-
   def grow(self):
-    """ Increments the canvas object index by 1
-    """
+    """ Increments the canvas object index by 1 """
     self.__obj_idx__ += 1
     return self.__obj_idx__
   
   def add(self, node):
-    """ Add (append) a Node to this canvas `nodes`
+    """ Add (append) a Node to this canvas ``nodes``
 
-
-    This method creates and/or appends a 'node' to an internal array `nodes`.
+    This method creates and/or appends a node to an internal array ``nodes``.
     Each node is a Pure Data object that is neither a comment nor a connection
 
-    Returns:
-    --------
-    The position (index) of the most recently added node
+    Return
+    ------
+    
+    :class:`int`
+      The position (index) of the most recently added node
 
     """
     if not hasattr(self, 'nodes'): 

@@ -36,7 +36,12 @@ IEMGui
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.classes.iemgui
+.. automodule:: pdpy.classes.iemlabel
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+.. automodule:: pdpy.classes.iemfont
     :members:
     :undoc-members:
     :show-inheritance:

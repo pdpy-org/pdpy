@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" Translator class """
+""" 
+Translator
+==========
+"""
 
 from pathlib import Path
 from json import load as json_load
@@ -21,30 +24,29 @@ from pdpy.classes.default import getFormat
 from pdpy.util.utils import log, parsePdBinBuf, parsePdFileLines, loadPdFile
 from pdpy.classes.pdpyencoder import PdPyEncoder
 
-
 __all__ = [ 'Translator' ] 
 
 class Translator(Base):
-  """ This class maintains and translates a `pdpy` Obj in memory. 
+  r""" This class maintains and translates a `pdpy` Obj in memory. 
 
-  Description:
-  -------------
   This class loads a file in `.pd` or `.json` formats and keeps an
   internal mirror (aka, translation) between the two. The direction
   of the translation depends on the input file type. Use the `save_*`
   functions to write translations to disk. Alternatively, you can load 
   a `.pkl` (aka, pickle) file  containing a `pdpy` object.
 
-  Inputs:
-  --------
-  A dictionary of arguments with the following keys:
-  `to`: the target format. Can be `json`, `xml`, `pd`, or `pkl`.
-  `fro`: the source format. Can be `json`, `xml`, `pd`, or `pkl`.
-  `input`: An input file Path, will be formated using `pathlib.Path`
-  `output`: An output file Path, will be formated using `pathlib.Path`
-  `encoding`  (`str`, default is 'utf-8'): Encoding of the input file
-  `source`    (`str`, inferred from `input_file`): Source file type
-  `reflect`   (`bool`): If set to `True`, performs a reflected translation
+  Parameters
+  ----------
+  json: :class:`dict`
+    A dictionary of arguments with the following keys:
+    
+    *  ``to``: the target format. Can be `json`, `xml`, `pd`, or `pkl`.
+    *  ``fro``: the source format. Can be `json`, `xml`, `pd`, or `pkl`.
+    *  ``input``: An input file Path, will be formated using `pathlib.Path`
+    *  ``output``: An output file Path, will be formated using `pathlib.Path`
+    *  ``encoding`` (`str`, defaults: 'utf-8'): Encoding of the input file
+    *  ``source`` (`str`, inferred from `input_file`): Source file type
+    *  ``reflect`` (`bool`): If set to `True`, performs a reflected translation
   """
   def __init__(self, json):
 
@@ -79,8 +81,10 @@ class Translator(Base):
     
     # store an object containing a pd object database
     if self.internals is not None:
-      """  Attempt to load PDDB manager: https://github.com/fdch/pddb
-      Fall back to json if the package is not there
+      r"""  Attempt to load PDDB manager
+
+      Fall back to json if the package is not there.
+      Get it here: `<https://github.com/pdpy-org/pddb>`_
       """
       import sys
       pddb_path = Path(self.internals)

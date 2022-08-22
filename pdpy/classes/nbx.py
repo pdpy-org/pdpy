@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # **************************************************************************** #
 # This file is part of the pdpy project
-# Copyright (C) 2021 Fede Camara Halac
+# Copyright (C) 2021-22 Fede Camara Halac
 # **************************************************************************** #
 """ 
 IEMGui Number Box
@@ -18,21 +18,40 @@ from .iemlabel import IEMLabel
 __all__ = [ 'Nbx' ]
 
 class Nbx(Obj):
-  """ The IEM Number Box Obj, aka ``nbx``
+  """ The IEM Number Box object, aka. ``nbx``
   
-  The IEM gui object is a IEM Number box (Number2).
+  This IEM gui object represents an IEM Number box (Number2)
+  
+  Parameters
+  ----------
 
-  1. 5: `digits_width`: the width of the number box in digits.
-  2. 6: `height`: the height of the numbers
-  2. 7: `lower`: the lower limit of the number box range
-  2. 8: `upper`: the upper limit of the number box range
-  2. 9: `log_flag`: a flag to enable logarithmic value scaling
-  2. 10: `init`: the init flag to trigger the number box on loadtime
-  3. 11: `send`: the sender symbol of the number box
-  3. 12: `receive`: the receiver symbol of the number box
-  4. 13-18: `IEMLabel` Parameters
-  5. 19: `value`: the initial value of the number box (with `init`)
-  5. 20: `log_height`: upper limit of the log scale (with `log_flag`)
+  pd_lines : :class:`list`
+    The lines of the Pure Data patch that define the object.
+  
+  json : :class:`dict`
+    A JSON representation of the object.
+  
+  **kwargs: optional
+    Keyword arguments are:
+    
+    * ``digits_width``: the width of the number box in digits.
+    * ``height``: the height of the numbers
+    * ``lower``: the lower limit of the number box range
+    * ``upper``: the upper limit of the number box range
+    * ``log_flag``: a flag to enable logarithmic value scaling
+    * ``init``: the init flag to trigger the number box on loadtime
+    * ``value``: the initial value of the number box (with ``init``)
+    * ``log_height``: upper limit of the log scale (with ``log_flag``)
+    * ``bgcolor``: the background color of the bang
+    * ``fgcolor``: the foreground of the bang
+    
+    Other keyword arguments are passed to :class:`pdpy.classes.iemlabel.IEMLabel` and :class:`pdpy.classes.connections.Comm`
+  
+  See also
+  --------
+  :class:`pdpy.classes.default.Default`
+    For default parameters.
+
   """
   def __init__(self, pd_lines=None, json=None, **kwargs):
     self.__pdpy__ = self.__class__.__name__

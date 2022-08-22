@@ -19,10 +19,10 @@ class Bounds(Base):
   Parameters
   ----------
 
-  lower : :ref:`dtype` or None
+  lower : dtype or None
     The lower (minima) of the boundary (defaults: ``0``)
 
-  upper : :ref:`dtype` or None
+  upper : dtype or None
     The upper (maxima) of the boundary (defaults: ``0``)
 
   dtype : class

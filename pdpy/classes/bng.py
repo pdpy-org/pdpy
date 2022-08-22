@@ -17,26 +17,35 @@ from .iemlabel import IEMLabel
 __all__ = [ 'Bng' ]
 
 class Bng(Obj):
-  """ The IEM Bang Button Obj
+  """ The IEM Bang object, aka. ``bng``
   
-  The IEM gui object is a IEM Bang button.
-
-  * ``size``: the size of the button
-  * ``hold``: time of the button on hold
-  * ``intrrpt``: the interruption time of the button
-  * ``init``: the init flag to trigger the button on loadtime
-  * ``send``: the sender symbol of the button
-  * ``receive``: the receiver symbol of the button
-  * ``IEMLabel``: See :class:`pdpy.classes.iemgui.IEMLabel`
-
+  This IEM gui object represents an IEM Bang button.
+  
   Parameters
   ----------
 
-  pd_lines : :class:`str`
+  pd_lines : :class:`list`
     The lines of the Pure Data patch that define the object.
   
   json : :class:`dict`
     A JSON representation of the object.
+  
+  **kwargs: optional
+    Keyword arguments are:
+
+    *  ``size``: the size of the button
+    *  ``hold``: time of the button on hold
+    *  ``intrrpt``: the interruption time of the button
+    *  ``init``: the init flag to trigger the button on loadtime
+    *  ``bgcolor``: the background color of the bang
+    *  ``fgcolor``: the foreground of the bang
+    
+    Other keyword arguments are passed to :class:`pdpy.classes.iemlabel.IEMLabel` and :class:`pdpy.classes.connections.Comm`
+  
+  See also
+  --------
+  :class:`pdpy.classes.default.Default`
+    For default parameters.
 
   """
 

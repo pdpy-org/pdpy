@@ -16,7 +16,32 @@ __all__ = [ 'IEMFont' ]
 
 class IEMFont(Base):
   """ Represents the IEM gui fonts 
+ 
+  This IEM gui object represents an IEM Font
   
+  Parameters
+  ----------
+
+  face : :class:`int`
+    An index that refers to a font-face or font-family
+  
+  points : :class:`int`
+    An integer representing the font size in points
+  
+  json : :class:`dict`
+    A JSON representation of the object.
+
+  xml : ``xml.etree.ElementTree.Element`` or ``None``
+    An Xml Element with the appropriate element structure.  
+  
+  **kwargs: optional
+    Other keyword arguments are ignored.
+  
+  See also
+  --------
+  :class:`pdpy.classes.default.Default`
+    For default parameters.
+
   """
   def __init__(self, face=None, points=None, json=None, xml=None, **kwargs):
     """ Initialize the object """

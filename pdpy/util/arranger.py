@@ -16,9 +16,6 @@ __all__ = [ "Arrange" ]
 class Arrange:
   r""" Arrange objects on a 2d surface
   
-  Description
-  -----------
-  
   This class attempts to arrange objects graphically on the self.canvas.
   To use, simply import and call the class.
 
@@ -224,10 +221,21 @@ class Arrange:
   def __place__(self, o, xpos=None, ypos=None, yinc=1):
     """ Place the object on the canvas
 
-    Arguments
-    ---------
-    ``o``: the object
-    ``xpos``: the position 
+    Parameters
+    ----------
+    o: pdpy object
+      the object
+    
+    xpos: :class:`int`
+      The position in the x-axis to place the object
+    
+    ypos: :class:`int`
+      The position in the y-axis to place the object
+    
+    yinc: :class:`int`
+      A flag for y-increments to be performed before ``-1``, after ``1``, or not at all ``0``
+    
+    
     """
     
     # incrementar Y antes
@@ -299,9 +307,6 @@ class Arrange:
   def step3(self, obj, children):
     """ Step3: Place every child
 
-    Description
-    -----------
-
     For every child in the ``children`` list:
 
     #. Adjust y-position
@@ -352,9 +357,6 @@ class Arrange:
 
   def step2(self, obj, relocate = False):
     """ Step 2: Take the object's children from the object list
-
-    Description
-    -----------
 
     This step takes performs the following instructions:
 
@@ -445,9 +447,6 @@ class Arrange:
 
   def step1(self):
     """ Step 1: Take the object from the object list
-
-    Description
-    -----------
 
     This step takes no arguments and performs the following instructions:
 

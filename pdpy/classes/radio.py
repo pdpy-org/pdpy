@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # **************************************************************************** #
 # This file is part of the pdpy project
-# Copyright (C) 2021 Fede Camara Halac
+# Copyright (C) 2021-22 Fede Camara Halac
 # **************************************************************************** #
 """
 IEMGui Radio
@@ -17,18 +17,38 @@ from .iemlabel import IEMLabel
 __all__ = [ 'Radio' ]
 
 class Radio(Obj):
-  """ The IEM Radio Obj aka. `hradio` or `vradio`
+  """ The IEM Radio object, aka. `hradio` or `vradio`
   
-  The IEM gui object is a IEM horizontal or vertica radio button.
+  This IEM gui object represents an IEM horizontal or vertical radio selector.
+  
+  Parameters
+  ----------
 
-  1. 5: `size`: the size of each radio button
-  2. 6: `flag`: a flag
-  2. 7: `init`: the init flag to trigger the radio on loadtime
-  2. 8: `number`: the number of buttons
-  3. 9: `send`: the sender symbol of the radio
-  3. 10: `receive`: the receiver symbol of the radio
-  4. 11-16: `IEMLabel` Parameters
-  5. 17: `value`: the initial value of the radio button (with `init`)
+  pd_lines : :class:`list`
+    The lines of the Pure Data patch that define the object.
+  
+  json : :class:`dict`
+    A JSON representation of the object.
+  
+  **kwargs: optional
+    Keyword arguments are:
+
+    *  ``size``: the size of each radio button
+    *  ``flag``: a flag
+    *  ``init``: the init flag to trigger the radio on loadtime
+    *  ``number``: the number of buttons
+    *  ``value``: the initial value of the radio button (with `init`)
+    *  ``bgcolor``: the background color of the radio
+    *  ``fgcolor``: the foreground of the radio
+
+    Other keyword arguments are passed to :class:`pdpy.classes.iemlabel.IEMLabel` and :class:`pdpy.classes.connections.Comm`
+  
+  
+  See also
+  --------
+  :class:`pdpy.classes.default.Default`
+    For default parameters.
+
   """
 
   def __init__(self, pd_lines=None, json=None, **kwargs):

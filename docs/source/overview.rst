@@ -51,7 +51,8 @@ IEMgui
     pdpy.classes.radio
     pdpy.classes.vu
     pdpy.classes.cnv
-    pdpy.classes.iemgui
+    pdpy.classes.iemlabel
+    pdpy.classes.iemfont
 
 Objects
 -------

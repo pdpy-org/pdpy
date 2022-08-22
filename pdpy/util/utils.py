@@ -2,9 +2,12 @@
 # -*- coding: utf-8 -*-
 # **************************************************************************** #
 # This file is part of the pdpy project
-# Copyright (C) 2021 Fede Camara Halac
+# Copyright (C) 2021-22 Fede Camara Halac
 # **************************************************************************** #
-""" Utilities """
+"""
+Utilities
+=========
+"""
 
 import sys
 import re
@@ -94,15 +97,17 @@ def log(level, *argv):
 
 def findIndices(data, cond_func):
   """ Find the start and stop slice indices 
-  of elements in a list that satisfy a condition function `cond_func`
+  of elements in a list that satisfy a condition function ``cond_func``
 
-  Returns
-  -------
-  list of tuples (start, stop)
+  Return
+  ------
+  :class:`list`
+    list of tuples (start, stop)
 
   Example
   -------
-  `indices = findIndices(data, lambda x: not len(x))`
+
+  indices = findIndices(data, lambda x: not len(x))
 
   """
 
@@ -117,10 +122,14 @@ def findIndices(data, cond_func):
 def splitByNone(data):
   """ Split a list by None elements
 
-  Description
-  -----------
   This function splits a list by None elements
   and returns a list of lists
+
+  Return
+  ------
+  :class:`list`
+    A list of lists
+  
   """
   
   indices = findIndices(data, lambda x: not len(x))
@@ -135,17 +144,15 @@ def splitByNone(data):
 def splitByEscapedChar(data, char=";"):
   """ Split a string by escaped char
 
-  Description
-  -----------
   This function splits a string by escaped char
   and returns a list of lists or the original string
 
   Parameters
   ----------
-  data : list
+  data : :class:`list`
     list to be split
-  char : str
-    char to split by (default ";")
+  char : :class:`str`
+    char to split by (defaults: ``;``)
 
   """
 
@@ -183,6 +190,7 @@ def splitSemi(argv):
   return lines
 
 def splitAtChar(line, char=",", escaped=True, double=False):
+  """ Split a string by a default character """
 
   if escaped:
     if double:
@@ -199,6 +207,7 @@ def splitAtChar(line, char=",", escaped=True, double=False):
   return result
 
 def tokenize(line):
+  """ Return a list of tokens from a string """
   # account for comma chararcter delimiting obj border box
   line = splitAtChar(line, escaped=False)
 
@@ -217,8 +226,6 @@ def tokenize(line):
 def parsePdFileLines(file_lines):
   """ Feed in file lines and return a list with pure data lines
 
-  Description
-  -----------
   This function returns a nodes list containing
   pure data lines split by the semicolon char,
   accounting specially for lines that span multiple rows 
@@ -241,8 +248,6 @@ def parsePdFileLines(file_lines):
 def parsePdBinBuf(binbuf):
   """ Feed in a pd file string and return a list with pure data lines
 
-  Description
-  -----------
   This function returns a nodes list containing
   pure data lines split by the semicolon char,
   accounting specially for lines that span multiple rows 
@@ -264,12 +269,20 @@ def quit_help(msg=None, parser=None):
   sys.exit(1)
 
 def loadPdData(encoding, filename):
+  """ Load a Pure Data file with the given encoding """
   # log(1,"Trying", encoding)
   with open(filename, "r", encoding=encoding) as fp:
     lines = [line for line in fp.readlines()]
   return lines, encoding
 
 def loadPdFile(filename, encoding='utf-8'):
+  """ Attempt to load a pd file with the correct encoding 
+  
+  Return
+  ------
+  :class:`list`
+    A list of pure data file lines
+  """
   try:
     pd_data, encoding = loadPdData(encoding, filename)
   except UnicodeDecodeError:

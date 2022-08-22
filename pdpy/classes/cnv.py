@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # **************************************************************************** #
 # This file is part of the pdpy project
-# Copyright (C) 2021 Fede Camara Halac
+# Copyright (C) 2021-22 Fede Camara Halac
 # **************************************************************************** #
 """
 IEMGui Canvas
@@ -17,17 +17,35 @@ from .iemlabel import IEMLabel
 __all__ = [ 'Cnv' ]
 
 class Cnv(Obj):
-  """ The IEM Canvas Obj: The case of `cnv` or `my_canvas`
+  """ The IEM Canvas object, aka. ``cnv`` or ``my_canvas``
     
-  The IEM gui object is a IEM canvas.
+  This IEM gui object represents an IEM canvas.
+  
+  Parameters
+  ----------
+  
+  pd_lines : :class:`list`
+    A list of pure data tokens representing this object
 
-  1. 5: `size`: the size of the canvas mouse selection box
-  2. 6: `width`: the width of the canvas area
-  2. 7: `height`: the height of the canvas area
-  3. 8: `send`: the sender symbol of the canvas # why is this here?
-  3. 9: `receive`: the receiver symbol of the toggle
-  4. 10-15: `IEMLabel` Parameters
-  5. 16: `flag`: a flag
+  json : :class:`dict`
+    A json dictionary representing this object
+  
+  **kwargs: optional
+    Keyword arguments are:
+
+    *  ``size``: the size of the canvas mouse selection box
+    *  ``width``: the width of the canvas area
+    *  ``height``: the height of the canvas area
+    *  ``bgcolor``: the background color of the canvas
+    *  ``fgcolor``: the foreground of the canvas
+    *  ``flag``: a flag
+
+    Other keyword arguments are passed to :class:`pdpy.classes.iemlabel.IEMLabel` and :class:`pdpy.classes.connections.Comm`
+  
+  See also
+  --------
+  :class:`pdpy.classes.default.Default`
+    For default parameters.
   
   """
   def __init__(self, pd_lines=None, json=None, **kwargs):

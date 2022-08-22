@@ -17,25 +17,35 @@ from .bounds import Bounds
 __all__ = [ 'Gui' ]
 
 class Gui(Object):
-  """ A Pd Native Gui object like floatatom, symbolatom, or listbox
+  """ A Pd Native Gui object like ``floatatom``, ``symbolatom``, or ``listbox``
   
   A Pd Native Gui object is a graphical user interface that is implemented in
-  pure data. It is a sublcass of the `Object`
+  pure data.
 
   Parameters
   ----------
   
-  1. `className`: the name of the class of the object
-  2. id: The id of the object
-  3. `x`: The x position of the object
-  4. `y`: The y position of the object
-  5. `digits_width` : The width of the object in digits
-  6. lower limit: The lower limit of the object
-  7. upper limit: The upper limit of the object
-  8. `flag`: The flag of the object
-  9. `label`: The label of the object
-  10. `receive`: the receiver symbol of the object
-  11. `send`: the sender symbol of the object
+  pd_lines : :class:`list`
+    The lines of the Pure Data patch that define the object.
+  
+  json : :class:`dict`
+    A JSON representation of the object.
+  
+  **kwargs: optional
+    Keyword arguments are:
+  
+    *  ``className``: the name of the class of the object
+    *  ``digits_width`` : The width of the object in digits
+    *  ``flag``: The flag of the object
+    *  ``label``: The label of the object
+    *  ``fontsize``: The font-size of the object
+    
+    Other keyword arguments are passed to :class:`pdpy.classes.bounds.Bounds` and :class:`pdpy.classes.connections.Comm`
+  
+  See also
+  --------
+  :class:`pdpy.classes.default.Default`
+    For default parameters.
 
   """
   def __init__(self, pd_lines=None, json=None, **kwargs):
@@ -84,15 +94,12 @@ class Gui(Object):
       
       super().__set_default__(kwargs, [
         ('digits_width', self.__num__(default.digits_width[self.__cls__])),
-        ('limits', Bounds(
-            lower = default.limits['lower'],
-            upper = default.limits['upper'],
-            dtype = int)),
         ('flag', self.__num__(default.flag)),
-        ('comm', Comm(send = default.send, receive = default.receive)),
         ('label', default.label),
         ('font_size', self.__num__(default.font['size'])),
       ])
+      self.limits = Bounds(**kwargs)
+      self.comm = Comm(**kwargs)
 
 
   def __pd__(self):

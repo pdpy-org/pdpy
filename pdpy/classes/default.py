@@ -66,30 +66,73 @@ def getFormat(fmt):
         return k
   return None
 
-
-
-
 class Default(object):
+  """ Default values for Pure Data objects """
   def __init__(self):
     self.screen       = { 'x':0, 'y': 22 }
+    """ The position of the screen in x-y space """
+    
     self.dimension    = { 'width': 450, 'height': 300 }
+    """ The size of the screen in pixels """
+    
     self.arrdimen     = { 'width': 450, 'height': 278 }
+    """ The dimensions of the array in pixels """
+    
     self.font         = { 'size': 12, 'face': 0 }
+    """ The font size and face """
+    
     self.array        = { 'size': 100, 'type': 'float', 'flag': 3}
+    """ GOP Array properties """
+    
+    self.coords       = {
+      'range' : {
+          'xmin': 0, 
+          'xmax': self.array['size'], 
+          'ymin': -1, 
+          'ymax': 1,
+      },
+      'gop' : 0,
+      'dimen' : {
+        'width' : 200,
+        'height' : 140
+      },
+      'margin' : {
+        'x' : 0,
+        'y' : 0
+      }
+    }
+    """ Coordinates for gop """
+
     self.vis          = 0
+    """ Canvas visibility """
+    
     self.digits_width = { 'floatatom': 5, 'symbolatom': 10, 'listbox': 20 } 
+    """ Amount of digits/elements to display on the atom box """
+    
     self.limits       = { 'lower':0, 'upper':0 } 
+    """ Range boundaries for floatatom """
+    
     self.flag         = 0
+    """ A flag """
+    
     self.label        = '-'
+    """ Empty symbol for Native Gui """
     self.receive      = '-'
+    """ Empty symbol for Native Gui """
     self.send         = '-'
+    """ Empty symbol for Native Gui """
+    
     self.name         = '(subpatch)'
+    """ Empty symbol for nameless patches """
+    
     self.iemgui = {
       'label'    : 'empty',
       'fontface' : 0,
       'fontsize' : 10,
       'fgcolor'  : '#000000'
     }
+    """ General iemgui properties """
+    
     self.iemgui.update({
       'vu': {
         'xoff':-1,

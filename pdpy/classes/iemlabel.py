@@ -18,28 +18,34 @@ __all__ = [ 'IEMLabel' ]
 class IEMLabel(Base):
   """ The IEM IEMLabel Obj
 
-  This is the base class for all IEM gui.
-
+  This IEM gui object represents an IEM Label
+  
   Parameters
   ----------
   
-  label : :class:`str`
-    the label text
+  pd_lines : :class:`list`
+    The lines of the Pure Data patch that define the object.
+  
+  json : :class:`dict`
+    A JSON representation of the object.
+
+  xml : ``xml.etree.ElementTree.Element`` or ``None``
+    An Xml Element with the appropriate element structure.  
+  
+  **kwargs: optional
+    Keyword arguments are:
     
-  x : :class:`int`
-    the x-offset of the label
-    
-  y : :class:`int`
-    the y-offset of the label
-    
-  fface : :class:`int`
-    the font face of the label
-    
-  fsize : :class:`int`
-    the font size of the label
-    
-  lbcolor : :class:`str`
-    the color of the label
+    * ``label``: (:class:`str`) the label text
+    * ``x``: (:class:`int`) the x-offset of the label
+    * ``y``: (:class:`int`) the y-offset of the label
+    * ``fface``: (:class:`int`) the font face of the label
+    * ``fsize``: (:class:`int`) the font size of the label  
+    * ``lbcolor``: (:class:`str`) the color of the label
+  
+  See also
+  --------
+  :class:`pdpy.classes.default.Default`
+    For default parameters.
     
   """
   def __init__(self, pd_lines=None, json=None, xml=None, **kwargs):

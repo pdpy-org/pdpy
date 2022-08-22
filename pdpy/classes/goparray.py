@@ -4,7 +4,10 @@
 # This file is part of the pdpy project
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
-""" Class Definitions for GOP Array """
+""" 
+GOP Array
+=========
+"""
 
 from .base import Base
 from .data import Data
@@ -14,10 +17,8 @@ from ..util.utils import  log
 __all__ = [ 'GOPArray' ]
 
 class GOPArray(Base):
-  """ A Pd Type
+  """ A Graph-on-Parent Array representation
   
-  Description
-  -----------
   A GOPArray instance extends the Base class with an `addflag` method
   to account for GOPArrayFlags. And, a `__pd__` method to return a
   string representation of the GOPArray.
@@ -25,16 +26,10 @@ class GOPArray(Base):
   Parameters
   ----------
   json : dict
-    A dictionary of the JSON object. For example: 
-    ```
-    {
-      'name' : 'array_name',
-      'length' : 100,
-      'type' : 'float',
-      'flag' : 0,
-      'className' : 'goparray'
-    }
-    ```
+    A dictionary of the JSON object. For example: ```{ 'name' : 'array_name', 'length' : 100, 'type' : 'float', 'flag' : 0, 'className' : 'goparray'}```
+  
+  **kwargs:
+    Other keyword arguments such as ``name``, ``head``, ``length``, and ``data``
 
   """
   def __init__(self, json=None, **kwargs):

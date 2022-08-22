@@ -17,23 +17,21 @@ __all__ = [ 'Msg' ]
 class Msg(Object):
   """ Representation of a patchable Pd Message box
 
-  Description
-  -----------
   This class represents a Pd message box with a list of targets.
   Each ``target`` is an instance of :class:`Message`.
 
   Parameters
   ----------
 
-  message : ``str``, a ``list`` of ``str``, or ``None``
+  message : :class:`str`, a :class:`list` of :class:`str`, or ``None``
     A string or a list of strings with a message. 
     Each element of the list defaults to the ``outlet`` target.
   
-  pd_lines : ``str``
+  pd_lines : :class:`str`
     A pd-lang string with a message, eg: ``#X msg 10 10 Hello world``
     Or, for multiple targets: ``#X msg 10 10 Hello World \\;pd quit``
   
-  json : ``dict``
+  json : :class:`dict`
     A json dictionary with the scope of a Msg.
   
   """
@@ -63,8 +61,7 @@ class Msg(Object):
 
 
   def addMessages(self, argv):
-    """ Add a new message to its appropriate ``target``
-    """
+    """ Add a new message to its appropriate ``target`` """
     
     if 2 < len(argv) and "f" == argv[-2] and argv[-1].isnumeric():
       self.border = self.__num__(argv[-1])
@@ -138,7 +135,7 @@ class Msg(Object):
       return self
 
   def __pd__(self):
-    """ Return a pd message in pd-lang """
+    """ Return the pd-lang string for this message """
     s = ''
     for target in getattr(self, "targets", []):
       s += target.__pd__()
@@ -149,7 +146,7 @@ class Msg(Object):
     return super().__pd__(s) if s else ''
   
   def __xml__(self):
-    """ Return the XML Element for this object """
+    """ Return the XML Element for this message """
     x = super().__xml__(scope=self, tag=self.__cls__, attrib='border')
     
     if hasattr(self, 'targets'):

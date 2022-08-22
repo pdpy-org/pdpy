@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # **************************************************************************** #
 # This file is part of the pdpy project
-# Copyright (C) 2021 Fede Camara Halac
+# Copyright (C) 2021-22 Fede Camara Halac
 # **************************************************************************** #
 """
 IEMGui Toggle
@@ -19,17 +19,35 @@ __all__ = [ 'Toggle' ]
 class Toggle(Obj):
   """ The IEM Toggle Obj, aka. `tgl`
   
-  The IEM gui object is a Toggle button.
+  This IEM gui object represents an IEM toggle.
+  
+  Parameters
+  ----------
 
-  1. 5: `size`: the size of the toggle square
-  2. 6: `init`: the init flag to trigger the toggle on loadtime
-  3. 7: `send`: the sender symbol of the toggle
-  3. 8: `receive`: the receiver symbol of the toggle
-  4. 9-14: `IEMLabel` Parameters
-  5. 15: `flag`: a flag
-  6. 16: `nonzero`: the non-zero value when toggle is on.
+  pd_lines : :class:`list`
+    The lines of the Pure Data patch that define the object.
+  
+  json : :class:`dict`
+    A JSON representation of the object.
+  
+  **kwargs: optional
+    Keyword arguments are:
+
+    *  ``size``: the size of the toggle square
+    *  ``init``: the init flag to trigger the toggle on loadtime
+    *  ``flag``: a flag
+    *  ``nonzero``: the non-zero value when toggle is on.
+    *  ``bgcolor``: the background color of the toggle
+    *  ``fgcolor``: the foreground of the toggle
+  
+    Other keyword arguments are passed to :class:`pdpy.classes.iemlabel.IEMLabel` and :class:`pdpy.classes.connections.Comm`
+  
+  See also
+  --------
+  :class:`pdpy.classes.default.Default`
+    For default parameters.
+  
   """
-
   def __init__(self, pd_lines=None, json=None, **kwargs):
     
     self.__pdpy__ = self.__class__.__name__
