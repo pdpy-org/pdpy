@@ -54,7 +54,7 @@ class Bng(Obj):
       self.intrrpt= self.__num__(pd_lines[2])
       self.init   = self.__pdbool__(pd_lines[3])
       self.comm = Comm(send=pd_lines[4], receive=pd_lines[5])
-      self.label = IEMLabel(*pd_lines[6:11], pd_lines[13])
+      self.label = IEMLabel(pd_lines = pd_lines[6:11] + [pd_lines[13]])
       self.bgcolor = self.__num__(pd_lines[11])
       self.fgcolor = self.__num__(pd_lines[12])
     

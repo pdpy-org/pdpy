@@ -73,9 +73,6 @@ class Canvas(CanvasBase, Base):
 
     if hasattr(self, 'isroot'):
       self.isroot = self.__pdbool__(self.isroot)
-    
-    if not hasattr(self, 'isroot') and not hasattr(self, 'title') and not self.isgraph:
-      self.title = "pd " + self.name
       
     
     if hasattr(self, 'font'):

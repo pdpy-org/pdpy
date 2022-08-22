@@ -1,7 +1,7 @@
 Hola Mundo
 ==========
 
-Here you can learn how to make a simple Pure Data hello world patch with **pdpy**. 
+Here you can learn how to make a simple Pure Data hello world patch with ``pdpy``. 
 If you know already how patch in Pd, you can bring this knowledge into action.
 
 
@@ -21,7 +21,9 @@ The final code is shown first, then you can see it explained line by line.
   mypatch.connect(obj1, msg1, obj2)              # connect them in the patch
   mypatch.write()                                # write out the patch
 
+
 Let's break this into parts:
+
 
 Import
 ------
@@ -30,8 +32,10 @@ First, you import the necessary pdpy Classes (line 1)::
 
   from pdpy import PdPy, Obj, Msg
 
+
 We will briefly go through these classes in this example.
 To find out more about these classes, you can go to :class:`pdpy.classes.pdpy.PdPy`, :class:`pdpy.classes.obj.Obj`, and :class:`pdpy.classes.message.Msg`.
+
 
 A PdPy patch
 ------------
@@ -41,11 +45,13 @@ With the ``PdPy`` class we can initialize a pdpy root patch (line 2)::
 
   mypatch = PdPy(name="holamundo", root=True)
 
+
 The ``name`` keyword argument stores the name of the patch, in this case ``holamundo``. 
 Because we want ``mypatch`` to be the ``root`` of our Pure Data patch (or in pd-lingo, the parent canvas), we set it to ``true``. 
 
 There are more keyword arguments available, but we wont need them here.
 You can go to :class:`pdpy.classes.pdpy.PdPy` to see it in full.
+
 
 Objects
 -------
@@ -58,8 +64,10 @@ We will instantiate them in variables arbitrarily called ``obj1`` and ``obj2``:
   obj1 = Obj('loadbang')
   obj2 = Obj('print')
 
+
 - ``obj1`` is a pdpy ``Obj`` that represents Pd's ``loadbang`` object,
 - ``obj2`` is another pdpy ``Obj`` that represents Pd's ``print`` object.
+
 
 Message
 -------
@@ -91,12 +99,15 @@ We can do that in this way (line 6)::
     mypatch.create(msg1)
     mypatch.create(obj2)
 
+
   Or, we pass a python list to the create function, this way::
   
     myobjects = [obj1, msg1, obj2]
     mypatch.create(*myobjects) # notice the expansion * char before the list
 
+
   In any case, we have keep them in variables to be able to call them later.
+
 
 Connect
 -------
@@ -121,6 +132,7 @@ Finally, we can write the patch to disk.
 We do this with the ``write`` method (line 8)::
   
   mypatch.write()
+
 
 After writing the patch, you should be able to find a ``holamundo.pd`` file 
 in the same directory you were running the python code.

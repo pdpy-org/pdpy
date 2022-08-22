@@ -249,13 +249,15 @@ class CanvasBase(XmlBuilder):
   def createCanvas(self, **kwargs):
     """ Create a subpatch """
     from .canvas import Canvas
-    new_canvas = Canvas(**kwargs)
+    canvas = Canvas(**kwargs)
+    if not hasattr(canvas, 'title'):
+      canvas.title = "pd " + canvas.name
     last_canvas = self.__last_canvas__()
-    new_canvas.id = self.__obj_idx__
-    new_canvas.__parent__(parent=last_canvas)
-    self.__canvas_idx__.append(last_canvas.add(new_canvas))
+    canvas.id = self.__obj_idx__
+    canvas.__parent__(parent=last_canvas)
+    self.__canvas_idx__.append(last_canvas.add(canvas))
 
-    return new_canvas
+    return canvas
 
   def __set_array_name__(self, array):
     """ Sets the name of the array incrementing the array name index """

@@ -39,36 +39,40 @@ class GOPArray(Base):
   """
   def __init__(self, json=None, **kwargs):
     self.__pdpy__ = self.__class__.__name__
-    super().__init__(**kwargs)
+    
+    super().__init__()
+
     if json is not None:
       super().__populate__(self, json)
+
     if hasattr(self, 'className') and self.className == 'goparray':
       self.__cls__ = 'array'
     else:
       self.__cls__ = 'array'
       
-      if 'name' in kwargs:
-        self.name = kwargs.pop('name')
-      
-      if 'length' in kwargs:
-        self.length = kwargs.pop('length')
-      else:
-        self.length = self.__d__.array['size']
-      
-      self.type = self.__d__.array['type']
-      self.flag = self.__d__.array['flag']
-      
-      if 'data' in kwargs:
-        _data = kwargs.pop('data')
-      else:
-        _data = [0 for _ in range(1 + self.length)]
-      
-      if 'head' in kwargs:
-        _head = kwargs.pop('head')
-      else:
-        _head = 0
-      
-      super().__setdata__(self, Data(data=_data, head=_head))
+    if 'name' in kwargs:
+      self.name = kwargs.pop('name')
+    
+    if 'head' in kwargs:
+      _head = kwargs.pop('head')
+    else:
+      _head = 0
+    
+    if 'length' in kwargs:
+      self.length = kwargs.pop('length')
+    else:
+      self.length = self.__d__.array['size']
+    
+    if 'data' in kwargs:
+      _data = kwargs.pop('data')
+    else:
+      _data = [0 for _ in range(1 + self.length)]
+    
+    
+    self.type = self.__d__.array['type']
+    self.flag = self.__d__.array['flag']
+    
+    super().__setdata__(self, Data(data=_data, head=_head))
 
     # print("Pdtype", self.__type__, self.__cls__)
 

@@ -8,6 +8,7 @@ For example, from the `.pd` format to other formats such as
 * `Pickle <https://docs.python.org/3/library/pickle.html#module-pickle>`_
 * `XML <https://www.w3.org/standards/xml>`_
 
+
 .. note::
  
   There is a convenience script for this purpose, see ``scripts/translate.py``
@@ -15,6 +16,7 @@ For example, from the `.pd` format to other formats such as
   The code to run is::
     
     python translate.py -t json -f pd -i tests/hello-world.pd -o tests/hello-world.json
+
 
 The Pd file
 -----------
@@ -28,10 +30,12 @@ The original Pure Data file looks like this::
   #X connect 0 0 1 0;
   #X connect 1 0 2 0;
 
+
 JSON output
 -----------
 
 The result is something like this in JSON
+
 
 .. code-block:: json
 
@@ -127,16 +131,20 @@ The result is something like this in JSON
       }
   }
 
+
 XML output
 ----------
 
+
 .. note::
+
   Run this to get XML::
   
     python3 translate.py -t json -f pd -i tests/hello-world.pd -o tests/hello-world.json 
 
 
 The result is something like this
+
 
 .. code-block:: xml
 

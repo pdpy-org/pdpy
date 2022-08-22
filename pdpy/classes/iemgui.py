@@ -81,10 +81,10 @@ class IEMLabel(Base):
     the color of the label
     
   """
-  def __init__(self, json=None, xml=None, **kwargs):
+  def __init__(self, pd_lines=None, json=None, xml=None, **kwargs):
     self.__pdpy__ = self.__class__.__name__
     super().__init__(json=json, xml=xml)
-    if json is None and xml is None:
+    if json is None and xml is None and pd_lines is None:
       self.__pdpy__ = self.__class__.__name__
       default = self.__d__
       iemgui = default.iemgui
@@ -95,6 +95,11 @@ class IEMLabel(Base):
         ('lbcolor', iemgui[className], lambda d:self.__num__(d))
       ])
       self.font = IEMFont(**kwargs)
+    elif pd_lines is not None:
+      self.label = pd_lines[0]
+      self.offset = Point(pd_lines[1], pd_lines[2])
+      self.font = IEMFont(face=pd_lines[3], points=pd_lines[4])
+      self.lbcolor = self.__num__(pd_lines[5])
 
   def __pd__(self):
     """ Return the pd-lang string for this iem label """

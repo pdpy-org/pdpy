@@ -40,7 +40,7 @@ class Toggle(Obj):
       self.size = Size(pd_lines[0])
       self.init = self.__pdbool__(pd_lines[1])
       self.comm = Comm(send=pd_lines[2], receive=pd_lines[3])
-      self.label = IEMLabel(*pd_lines[4:9], pd_lines[11])
+      self.label = IEMLabel(pd_lines = pd_lines[4:9] + [pd_lines[11]])
       self.bgcolor = self.__num__(pd_lines[9])
       self.fgcolor = self.__num__(pd_lines[10])
       self.flag    = self.__num__(pd_lines[12])

@@ -4,6 +4,7 @@ Connections
 Here you can learn how to connect and disconnect objects in ``pdpy``.
 The code we'll execute is here:
 
+
 .. code-block:: python
   :linenos:
 
@@ -60,4 +61,5 @@ Let's see the result::
   #N canvas 0 22 450 300 12;
   #X obj 10 10 loadbang;
   #X obj 10 58 print;
+
 

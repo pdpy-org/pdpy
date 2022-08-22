@@ -18,7 +18,6 @@ pdpy
   :caption: Documentation
   :maxdepth: 2
   
-  .. overview
   classes
 
 .. toctree::
@@ -29,3 +28,5 @@ pdpy
   examples/simpleaudio
   examples/translation
   examples/connections
+  examples/arrays
+

@@ -47,7 +47,7 @@ class Slider(Obj):
       self.log_flag = self.__pdbool__(pd_lines[4])
       self.init    = self.__pdbool__(pd_lines[5])
       self.comm = Comm(send=pd_lines[6], receive=pd_lines[7])
-      self.label = IEMLabel(*pd_lines[8:13], pd_lines[15])
+      self.label = IEMLabel(pd_lines = pd_lines[8:13] + [pd_lines[15]])
       self.bgcolor = self.__num__(pd_lines[13])
       self.fgcolor = self.__num__(pd_lines[14])
       self.value = float(pd_lines[16])

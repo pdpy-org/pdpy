@@ -43,7 +43,7 @@ class Cnv(Obj):
       else:
         self.comm = Comm(send=False,receive=pd_lines[3])
         off = 1
-      self.label = IEMLabel(*pd_lines[5-off:10-off], lbcolor=pd_lines[11-off])
+      self.label = IEMLabel(pd_lines=pd_lines[5-off:10-off]+[pd_lines[11-off]])
       self.bgcolor = self.__num__(pd_lines[10-off])
       self.flag    = self.__num__(pd_lines[12-off])
     elif json is not None:

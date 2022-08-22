@@ -36,7 +36,7 @@ class Vu(Obj):
       pd_lines = pd_lines[4:]
       self.area = Size(*pd_lines[:2])
       self.comm = Comm(send=False, receive=pd_lines[2])
-      self.label = IEMLabel(*pd_lines[3:8], pd_lines[9])
+      self.label = IEMLabel(pd_lines = pd_lines[3:8] + [pd_lines[9]])
       self.bgcolor = self.__num__(pd_lines[8])
       self.scale= self.__pdbool__(pd_lines[10]) if 10 < len(pd_lines) else None
       self.flag = self.__pdbool__(pd_lines[11]) if 11 < len(pd_lines) else None

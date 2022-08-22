@@ -35,9 +35,9 @@ class Data(Base):
         self.__cls__ = str(head)
         self.header = self.__cls__
         if self.__isnum__(self.header):
-          self.data = [float(d) for d in data]
+          self.data = list(map(lambda x: float(x), data))
         elif 'saved' == self.header:
-          self.data = [str(d) for d in data]
+          self.data = list(map(lambda x: str(x), data))
         elif 'set' == self.header:
           self.data = splitByEscapedChar(data, char=';')
           if self.data: # check if the data exists
@@ -201,7 +201,8 @@ class Data(Base):
       if hasattr(self, 'header'):
         if self.__isnum__(self.header):
           s = ' '.join(list(map(lambda x:str(self.__num__(x)), self.data)))
-          return super().__pd__('0 '+s)
+          return super().__pd__(s)
+          # return super().__pd__('0 '+s)
         
         if self.header == 'set' or self.header == 'saved':
           self.__cls__ = self.header
