@@ -16,6 +16,7 @@ The code we'll execute is here:
     pd.createArray(name="keeping", length=100, keep=True, data=[1/i**2 for i in range(-50,50) if i != 0])
     pd.createGOPArray()
 
+
 Import
 ------
 
@@ -37,6 +38,7 @@ In this case, we are creating three::
 
 
 .. note::
+
   If no name is provided, the arrays are named like in pd: ``arrayN``
 
 
@@ -56,10 +58,12 @@ Let's make a sinewave::
   
   sinewave = [ math.cos( i / 100 * 2 * math.pi) for i in range(100) ]
 
+
 There are more properties you can pass to an array, including a data list.
 In the following line, we set ``keep`` to ``True``, so that the data is kept infile::
   
   pd.createArray(name="keeping", length=100, keep=True, data=sinewave)
+
 
 
 Graph-on-parent
@@ -68,4 +72,5 @@ Graph-on-parent
 We can also create Graph-on-parent (GOP) array, and pass other data to it::
   
   pd.createGOPArray(data = map(lambda x,y: x * y**2, sinewave, sinewave))
+
 
