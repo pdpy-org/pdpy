@@ -46,18 +46,28 @@ class GOPArray(Base):
       self.__cls__ = 'array'
     else:
       self.__cls__ = 'array'
-      self.name = 'array1'
-      self.length = self.__d__.array['size']
+      
+      if 'name' in kwargs:
+        self.name = kwargs.pop('name')
+      
+      if 'length' in kwargs:
+        self.length = kwargs.pop('length')
+      else:
+        self.length = self.__d__.array['size']
+      
       self.type = self.__d__.array['type']
       self.flag = self.__d__.array['flag']
+      
       if 'data' in kwargs:
         _data = kwargs.pop('data')
       else:
         _data = [0 for _ in range(1 + self.length)]
+      
       if 'head' in kwargs:
         _head = kwargs.pop('head')
       else:
         _head = 0
+      
       super().__setdata__(self, Data(data=_data, head=_head))
 
     # print("Pdtype", self.__type__, self.__cls__)

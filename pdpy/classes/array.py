@@ -10,6 +10,7 @@ Array
 """
 
 from .obj import Obj
+from .data import Data
 
 __all__ = [ 'Array' ]
 
@@ -34,7 +35,7 @@ class Array(Obj):
     An `Array` object.
   
   """
-  def __init__(self, pd_lines = None, json = None):
+  def __init__(self, pd_lines=None, json=None, **kwargs):
 
     self.__pdpy__ = self.__class__.__name__
 
@@ -108,7 +109,36 @@ class Array(Obj):
       
       except IndexError:
         pass
+    else:
+      super().__init__(cls='obj', className='array')
+      
+      # canvasbase takes care of incrementing the arrayN counter
+      # because it will override the name
+      # if it is not set
+      if 'name' in kwargs:
+        self.name = kwargs.pop('name')
 
+      if 'length' in kwargs:
+        self.length = kwargs.pop('length')
+      else:
+        self.length = self.__d__.array['size']
+      
+      if 'subclass' in kwargs:
+        self.subclass = kwargs.pop('subclass')
+      else:
+        self.subclass = 'define'      
+      
+      if 'keep' in kwargs:
+        setattr(self, 'keep', True)
+      
+      if 'data' in kwargs:
+        _data = kwargs.pop('data')
+      else:
+        _data = [0 for _ in range(1 + self.length)]
+      
+      if hasattr(self, 'keep'):
+        super().__setdata__(self, Data(data=_data, head=0))    
+  
   def __pd__(self):
     """ Return the pd-lang string for the object. """
     s = ''
@@ -135,7 +165,7 @@ class Array(Obj):
       s += " -w " + " " + str(self.wait)
     
     if hasattr(self, 'length'):
-      s += " + " + str(self.length)
+      s += " " + str(self.length)
 
     return super().__pd__(s)
 

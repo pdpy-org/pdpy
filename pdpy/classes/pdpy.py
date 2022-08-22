@@ -324,23 +324,6 @@ class PdPy(CanvasBase, Base):
     if len(self.__canvas_idx__):
       self.__canvas_idx__.pop()
     return last
-
-  def createArray(self, array):
-    """ Create a GOP Array construction on the canvas """
-    canvas = Canvas()
-    canvas.name = self.__d__.name
-    canvas.vis = 0
-    
-    canvas.dimension.set_height(self.__d__.arrdimen['height'])
-    array.id = canvas.add(array)
-    array.__parent__(parent=canvas)
-
-    setattr(canvas, 'coords', Coords(gop=1))
-    setattr(canvas, 'isgraph', True)
-    
-    self.create(canvas)
-    
-    return self
     
   def write(self, filename=None):
     """ Write out the pd file to disk """

@@ -69,9 +69,12 @@ class Canvas(CanvasBase, Base):
         ('vis', default)
       ])
     
+      self.isgraph = kwargs.pop('isgraph') if 'isgraph' in kwargs else False
+
     if hasattr(self, 'isroot'):
       self.isroot = self.__pdbool__(self.isroot)
-    elif not hasattr(self, 'title'):
+    
+    if not hasattr(self, 'isroot') and not hasattr(self, 'title') and not self.isgraph:
       self.title = "pd " + self.name
       
     

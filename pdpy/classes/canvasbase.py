@@ -30,7 +30,7 @@ class CanvasBase(XmlBuilder):
       self.isroot = isroot
     
     self.__obj_idx__ = obj_idx
-    
+
     # This is a dictionary with 
     # - the node indices as keys, and 
     # - the last self.__depth_list__ index as values
@@ -256,6 +256,57 @@ class CanvasBase(XmlBuilder):
     self.__canvas_idx__.append(last_canvas.add(new_canvas))
 
     return new_canvas
+
+  def __set_array_name__(self, array):
+    """ Sets the name of the array incrementing the array name index """
+    if not hasattr(array, 'name'):
+      self.__arr_idx__ += 1
+      array.name = "array" + str(self.__arr_idx__)
+
+  def createArray(self, **kwargs):
+    """ Create a GOP Array construction on the canvas """
+    from .array import Array
+    
+    array = Array(**kwargs)
+    
+    self.__set_array_name__(array)
+    
+    canvas = self.__last_canvas__()
+
+    array.__parent__(parent=canvas)
+    
+    self.create(array)
+    
+    return array
+
+  def createGOPArray(self, **kwargs):
+    """ Create a GOP Array construction on the canvas """
+    from .canvas import Canvas
+    from .coords import Coords
+    from .goparray import GOPArray
+    
+    array = GOPArray(**kwargs)
+
+    self.__set_array_name__(array)
+
+    canvas = Canvas()
+    canvas.name = self.__d__.name
+    canvas.vis = 0
+    
+    canvas.dimension.set_height(self.__d__.arrdimen['height'])
+    array.id = canvas.add(array)
+    array.__parent__(parent=canvas)
+
+    setattr(canvas, 'coords', Coords(gop=1))
+    setattr(canvas, 'isgraph', True)
+
+    if hasattr(canvas, 'title'):
+      delattr(canvas, 'title')
+    
+    self.create(canvas)
+    
+    return array
+
 
   def grow(self):
     """ Increments the canvas object index by 1
