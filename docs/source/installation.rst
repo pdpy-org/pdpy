@@ -28,4 +28,5 @@ To compile the documentation you can type::
 .. note::
   
   In any case, it is recommended to use pdpy within a virtual environment.
+  Head to :doc:`virtual_env` for some instructions on how to make your virtual environment.
 

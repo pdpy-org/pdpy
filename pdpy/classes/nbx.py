@@ -13,7 +13,7 @@ from .obj import Obj
 from .size import Size
 from .bounds import Bounds
 from .connections import Comm
-from .iemgui import IEMLabel
+from .iemlabel import IEMLabel
 
 __all__ = [ 'Nbx' ]
 

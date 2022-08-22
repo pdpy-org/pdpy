@@ -5,14 +5,14 @@
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
 """
-Cnv
-===
+IEMGui Canvas
+=============
 """
 
 from .size import Size
 from .connections import Comm
 from .obj import Obj
-from .iemgui import IEMLabel
+from .iemlabel import IEMLabel
 
 __all__ = [ 'Cnv' ]
 

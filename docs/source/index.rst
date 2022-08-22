@@ -18,6 +18,9 @@ You can get libpd from `<http://github.com/libpd>`_.
 
   installation
   usage
+  virtual_env
+  install_libpd
+
 
 .. toctree::
   :caption: Documentation

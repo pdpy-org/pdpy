@@ -22,7 +22,8 @@ from .struct import *
 from .exceptions import *
 from .goparray import *
 from .graph import *
-from .iemgui import *
+from .iemlabel import *
+from .iemfont import *
 from .cnv import *
 from .toggle import *
 from .slider import *

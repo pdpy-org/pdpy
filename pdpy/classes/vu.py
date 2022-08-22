@@ -12,7 +12,7 @@ IEMGui Vu Meter
 from .size import Size
 from .connections import Comm
 from .obj import Obj
-from .iemgui import IEMLabel
+from .iemlabel import IEMLabel
 
 __all__ = [ 'Vu' ]
 

@@ -3,7 +3,7 @@ Simple Audio
 
 Here you can learn how to make a simple Pure Data audio patch with ``pdpy``. 
 
-This patch send out a sinusoid at 440 ``osc~ 440``, 
+This patch sends out a sinusoid at 440 ``osc~ 440``, 
 with amplitude 0.01 ``*~ 0.01``, 
 to channels #1, #3 and #4 of the system audio ``dac~ 1 2 3 4``
 
@@ -39,17 +39,17 @@ In line 7, the ``connect`` method is called with ``obj1`` and ``obj2``::
 
 
 This means that the first outlet of the first object is connected to the first inlet of the second object. 
-That is to say, the first (and only) outlet of ``osc~ 440`` is connected to the first inlet of the multiplier ``*~ 0.01``.
+So, the first and only outlet of ``osc~ 440`` is connected to the first inlet of the multiplier ``*~ 0.01``.
 
-In line 8, however, we have a different syntax on the second object::
+Notice we have a different syntax on line 8::
   
   mypatch.connect(obj2, [obj3, 0, 2, 3])
 
 
-What this means is that we are connecting the first outlet of the first object, 
+Here, we connect the first outlet of the first object, 
 with the 1st, 3rd, and 4th inlets of the second object.
-In other words, we connect the first outlet of the multiplier ``*~ 0.01`` to
-the ``dac~ 1 2 3 4`` object's inlets 1, 3, and 4. 
+So, the first outlet of the multiplier ``*~ 0.01`` fans out to
+the ``dac~ 1 2 3 4``, specifically, inlets #1, #3, and #4. 
 
 
 .. note::

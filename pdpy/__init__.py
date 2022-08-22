@@ -50,7 +50,8 @@ from .classes.graph import *
 from .classes.exceptions import *
 
 # iemgui
-from .classes.iemgui import *
+from .classes.iemlabel import *
+from .classes.iemfont import *
 from .classes.cnv import *
 from .classes.toggle import *
 from .classes.slider import *

@@ -140,7 +140,7 @@ XML output
 
   Run this to get XML::
   
-    python3 translate.py -t json -f pd -i tests/hello-world.pd -o tests/hello-world.json 
+    python translate.py -t xml -f pd -i tests/hello-world.pd -o tests/hello-world.xml 
 
 
 The result is something like this
