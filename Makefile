@@ -7,7 +7,7 @@ local:
 
 doc:
 	cd docs && make html
-	cd scripts && python touch_version.py
+
 
 build:
 	python -m build
@@ -30,7 +30,7 @@ test:
 	tox
 
 version:
-	python ./scripts/version.py 
+	cd scripts && python touch_version.py
 
 all:
 	make clean
