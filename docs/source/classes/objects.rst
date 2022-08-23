@@ -1,22 +1,4 @@
-Pure Data Gui Object Definitions
-================================
-
-.. automodule:: pdpy.classes.obj
-  :members:
-  :undoc-members:
-  :show-inheritance:
-
-.. automodule:: pdpy.classes.msg
-  :members:
-  :undoc-members:
-  :show-inheritance:
-
-.. automodule:: pdpy.classes.gui
-  :members:
-  :undoc-members:
-  :show-inheritance:
-
-.. automodule:: pdpy.classes.comment
+.. automodule:: pdpy.objects
   :members:
   :undoc-members:
   :show-inheritance:

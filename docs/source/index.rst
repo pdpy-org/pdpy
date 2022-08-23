@@ -7,7 +7,7 @@ You can also translate Pd files to other container files such as json, pickle, o
 The core library consists of a set of :doc:`classes`, plus some utility functions.
 
 .. hint::
-  For example, the :class:`pdpy.classes.patch.Patch` class allows you to run the newly created patch using the embedded Pd engine ``libpd``.
+  For example, the :class:`pdpy.Patch` class allows you to run the newly created patch using the embedded Pd engine ``libpd``.
   See the :doc:`examples/libpd` example for more.
 
 .. note::

@@ -77,12 +77,12 @@
             {
                 "__pdpy__": "Edge",
                 "source": {
-                    "__pdpy__": "Source",
+                    "__pdpy__": "Iolet",
                     "id": 0,
                     "port": 0
                 },
                 "sink": {
-                    "__pdpy__": "Source",
+                    "__pdpy__": "Iolet",
                     "id": 1,
                     "port": 0
                 }

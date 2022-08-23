@@ -8,8 +8,8 @@
 
 import re
 
-from ..util.utils import log, printer
-from ..classes.obj import Obj
+from ..utilities.utils import log, printer
+from ..objects.obj import Obj
 
 __all__ = [ 'PdPyLoad' ]
 

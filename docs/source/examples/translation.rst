@@ -104,12 +104,12 @@ The result is something like this in JSON
               {
                   "__pdpy__": "Edge",
                   "source": {
-                      "__pdpy__": "Source",
+                      "__pdpy__": "Iolet",
                       "id": "0",
                       "port": "0"
                   },
                   "sink": {
-                      "__pdpy__": "Source",
+                      "__pdpy__": "Iolet",
                       "id": "1",
                       "port": "0"
                   }
@@ -117,12 +117,12 @@ The result is something like this in JSON
               {
                   "__pdpy__": "Edge",
                   "source": {
-                      "__pdpy__": "Source",
+                      "__pdpy__": "Iolet",
                       "id": "1",
                       "port": "0"
                   },
                   "sink": {
-                      "__pdpy__": "Source",
+                      "__pdpy__": "Iolet",
                       "id": "2",
                       "port": "0"
                   }
@@ -193,21 +193,21 @@ The result is something like this
           </nodes>
           <edges>
               <edge>
-                  <source pdpy="Source">
+                  <source pdpy="Iolet">
                       <id>0</id>
                       <port>0</port>
                   </source>
-                  <sink pdpy="Source">
+                  <sink pdpy="Iolet">
                       <id>1</id>
                       <port>0</port>
                   </sink>
               </edge>
               <edge>
-                  <source pdpy="Source">
+                  <source pdpy="Iolet">
                       <id>1</id>
                       <port>0</port>
                   </source>
-                  <sink pdpy="Source">
+                  <sink pdpy="Iolet">
                       <id>2</id>
                       <port>0</port>
                   </sink>

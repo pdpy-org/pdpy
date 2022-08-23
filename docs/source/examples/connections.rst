@@ -34,7 +34,7 @@ Then, we create a loadbang and a printer, to test::
   >>> obj = pdpy.Obj('loadbang')
   >>> printer = pdpy.Obj('print')
   >>> pd.create(obj, printer)
-  <pdpy.classes.pdpy.PdPy object at 0x106596820>
+  <pdpy.PdPy object at 0x106596820>
 
 
 We connect them, and let's arrange them so that we can print them::

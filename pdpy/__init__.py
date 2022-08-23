@@ -2,79 +2,56 @@
 # -*- coding: utf-8 -*-
 # **************************************************************************** #
 # This file is part of the pdpy project: https://github.com/pdpy-org
-# Copyright (C) 2021 Fede Camara Halac
+# Copyright (C) 2021-22 Fede Camara Halac
 # **************************************************************************** #
-""" Class definitions """
+""" Main inititlization """
 
-# utilities
-from .util.utils import *
-from .util.arranger import *
-
-# default values
-from .classes.default import *
-
-# base classes
-from .classes.object import *
-from .classes.message import *
-from .classes.canvasbase import *
-from .classes.base import *
-
-# patching
-from .classes.pdpy import *
-from .classes.patch import *
-
-# translator class
-from .classes.translator import *
-
-# pd classes
-from .classes.obj import *
-from .classes.msg import *
-from .classes.gui import *
-from .classes.comment import *
-
-# canvas
-from .classes.canvas import *
-
-# dependencies
-from .classes.dependencies import *
-
-# data
-from .classes.types import *
-from .classes.scalar import *
-from .classes.data import *
-from .classes.array import *
-from .classes.struct import *
-from .classes.goparray import *
-from .classes.graph import *
-
-# exceptions
-from .classes.exceptions import *
-
-# iemgui
-from .classes.iemlabel import *
-from .classes.iemfont import *
-from .classes.cnv import *
-from .classes.toggle import *
-from .classes.slider import *
-from .classes.radio import *
-from .classes.nbx import *
-from .classes.bng import *
-from .classes.vu import *
-
-# connections
-from .classes.connections import *
-
-# encoding/decoding
-from .classes.PdPyXMLParser import *
-from .classes.pdpyencoder import *
-from .classes.xmlbuilder import *
-from .classes.xmltagconvert import *
-from .classes.pdpyparser import *
+from .core.base import *
+from .core.canvasbase import *
+from .core.object import *
+from .core.message import *
+from .primitives.point import *
+from .primitives.size import *
+from .primitives.area import *
+from .primitives.bounds import *
+from .primitives.coords import *
+from .objects.comment import *
+from .objects.obj import *
+from .objects.msg import *
+from .objects.gui import *
+from .iemgui.iemfont import *
+from .iemgui.iemlabel import *
+from .iemgui.bng import *
+from .iemgui.cnv import *
+from .iemgui.nbx import *
+from .iemgui.radio import *
+from .iemgui.slider import *
+from .iemgui.toggle import *
+from .iemgui.vu import *
+from .memory.data import *
+from .memory.scalar import *
+from .memory.array import *
+from .memory.struct import *
+from .memory.goparray import *
+from .memory.graph import *
+from .memory.types import *
+from .patching.pdpy import *
+from .patching.patch import *
+from .patching.canvas import *
+from .patching.dependencies import *
+from .patching.comm import *
+from .encoding.pdpyencoder import *
+from .encoding.xmltagconvert import *
+from .encoding.xmlbuilder import *
+from .utilities.utils import *
+from .utilities.regex import *
+from .utilities.namespace import *
+from .utilities.default import *
+from .utilities.exceptions import *
 from .parse.pdpy2json import *
-
-# primitives
-from .classes.point import *
-from .classes.size import *
-from .classes.area import *
-from .classes.bounds import *
-from .classes.coords import *
+from .parse.pdpyxmlparser import *
+from .parse.pdpyparser import *
+from .connections.edge import *
+from .connections.iolet import *
+from .extra.arranger import *
+from .extra.translator import *

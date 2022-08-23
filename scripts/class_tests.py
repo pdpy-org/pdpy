@@ -9,7 +9,7 @@ import pdpy
 import json
 # from types import SimpleNamespace
 
-from pdpy.classes.pdpy import PdPy
+from pdpy import PdPy
 
 # with open('tests/import_dict.json','r') as f:
 #   d = json.load(f)

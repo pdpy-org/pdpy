@@ -11,7 +11,7 @@ class Area(Base): pass
 class Scalar(Base): pass
 class Size(Base): pass
 class Point(Base): pass
-class Source(Base): pass
+class Iolet(Base): pass
 class Struct(Base): pass
 class Bounds(Base): pass
 class Comment(Base): pass
