@@ -41,7 +41,7 @@ We connect them, and let's arrange them so that we can print them::
   
   >>> pd.connect(obj,printer)
   >>> pd.__arrange__(pd)
-  Initialized Arrange graph placing algorithm.
+  Initialized Arranger graph placing algorithm.
   >>> print(pd.__pd__())
   #N canvas 0 22 450 300 12;
   #X obj 10 10 loadbang;

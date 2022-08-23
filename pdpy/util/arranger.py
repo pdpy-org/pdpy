@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # **************************************************************************** #
-# This file is part of the pdpy project
+# This file is part of the pdpy project: https://github.com/pdpy-org
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
 """
-Arrange
-=======
+Arranger
+========
 """
 
 from ..classes.point import Point
 
-__all__ = [ "Arrange" ]
+__all__ = [ "Arranger" ]
 
-class Arrange:
-  r""" Arrange objects on a 2d surface
+class Arranger:
+  r""" Arranger objects on a 2d surface
   
   This class attempts to arrange objects graphically on the self.canvas.
   To use, simply import and call the class.
@@ -68,10 +68,10 @@ class Arrange:
   Example
   -------
 
-  Import the PdPy and Arrange classes
+  Import the PdPy and Arranger classes
 
   >>> from .classes.pdpy import PdPy
-  >>> from .util.arrange import Arrange as arrange
+  >>> from .util.arrange import Arranger as arranger
   
   Create the PdPy instance (and add some objects)
   
@@ -79,7 +79,7 @@ class Arrange:
   
   Call the function
 
-  >>> arrange(p)
+  >>> arranger(p)
 
 
   """

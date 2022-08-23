@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # **************************************************************************** #
-# This file is part of the pdpy project
+# This file is part of the pdpy project: https://github.com/pdpy-org
 # Copyright (C) 2021-22 Fede Camara Halac
 # **************************************************************************** #
 """ 
@@ -538,7 +538,7 @@ class PdPy(CanvasBase, Base):
       from ..util.arrange2 import arrange2 as _do_arrange
     elif choice == 5: 
       # max recursion depth error
-      from ..util.arranger import Arrange as _do_arrange
+      from ..util.arranger import Arranger as _do_arrange
     else:
       # this one is nice (fails on dac~)
       from ..util.arrange1b import arrange1b as _do_arrange

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 # **************************************************************************** #
-# This file is part of the pdpy project
+# This file is part of the pdpy project: https://github.com/pdpy-org
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
 """
@@ -34,6 +34,11 @@ class Patch(PdPy):
   sr : :class:`int`
     Sample rate (defaults: 44100)
   
+  callback : :class:`bool`
+    Run ``pyaudio`` in callback, non-blocking mode.
+    This is useful for recording to disc.
+    Set to ``False`` if you want live output (defaults: True).
+  
   **kwargs:
     Other keyword arguments are passed to the :class:`pdpy.classes.pdpy.PdPy` base class
 
@@ -45,31 +50,37 @@ class Patch(PdPy):
 
     >>> import pdpy
 
-  Now, make a patch with a ``name`` and set it to be the root patch.
-    >>> patch = pdpy.Patch(name='test', root=True)
+  Now, make a patch with a ``name`` and set it to root, non-callback.
+
+    >>> patch = pdpy.Patch(name='test', root=True, callback=False)
   
   Create some objects: an oscillator
+
     >>> osc = pdpy.Obj('osc~')
     >>> osc.addargs(440)
     <pdpy.classes.obj.Obj object at 0x106ac7850>
   
   Now, let's make a multiplier and a dac objects
+
     >>> mul = pdpy.Obj('*~')
     >>> mul.addargs(0.1)
     <pdpy.classes.obj.Obj object at 0x106729850>
     >>> dac = pdpy.Obj('dac~')
 
   Create the objects and connect them
+
     >>> patch.create(osc, mul, dac)
     <pdpy.classes.patch.Patch object at 0x106755640>
     >>> patch.connect(osc, mul)
     >>> patch.connect(mul, [dac, 0, 1])
   
   Write the patch
+
     >>> patch.write()
-    Initialized Arrange graph placing algorithm.
+    Initialized Arranger graph placing algorithm.
   
   Start the audio and perform
+
     >>> patch.start_audio()
     <pyaudio.Stream object at 0x106ac74f0>
     >>> patch.perform()
@@ -80,15 +91,25 @@ class Patch(PdPy):
   def __init__(self, name=None, inch=2, outch=2, sr=44100, callback=True, **kwargs):
     """ Constructor """
     
-    PdPy.__init__(self, name, **kwargs)
+    super().__init__(name, **kwargs)
 
     self.__callback__ = callback
-    self.__inch__ = inch
-    self.__outch__ = outch
-    self.__sr__ = sr
-    self.__bs__ = pylibpd.libpd_blocksize()
-    self.__tpb__ = 6
+    """ callback flag for pyaudio """
     
+    self.__inch__ = inch
+    """ input channels """
+
+    self.__outch__ = outch
+    """ output channels """
+    
+    self.__sr__ = sr
+    """ sample rate """
+    
+    self.__bs__ = pylibpd.libpd_blocksize()
+    """ libpd blocksize """
+    
+    self.__tpb__ = 6
+    """ ticks per buffer for pyaudio """
     
     self.__libpd__ = pylibpd.PdManager(
         self.__inch__, 
@@ -96,8 +117,10 @@ class Patch(PdPy):
         self.__sr__,
         1
     )
+    """ The libpd manager class :class:`pylibpd.PdManager` """
     
     self.__pyaudio__ = pyaudio.PyAudio()
+    """ The pyaudio class :class:`pyaudio.PyAudio` """
 
   def __enter__(self):
     self.start_audio()
@@ -118,6 +141,8 @@ class Patch(PdPy):
               output = True,
               frames_per_buffer = self.__bs__ * self.__tpb__, 
               stream_callback=_callback if self.__callback__ else None)
+    """ the pyaudio stream """
+    
     return self.__stream__
 
   def performCallback(self):
