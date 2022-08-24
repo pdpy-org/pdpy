@@ -5,8 +5,8 @@
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
 """
-Pd Native Gui
-=============
+Gui Objects
+===========
 """
 
 from argparse import ArgumentError
@@ -43,7 +43,7 @@ class Gui(Object):
   
   See also
   --------
-  :class:`pdpy.Default`
+  :class:`pdpy.utilities.default.Default`
     For default parameters.
 
   """

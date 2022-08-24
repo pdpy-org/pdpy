@@ -1,17 +1,19 @@
-Encoding
-========
+Parsing
+=======
 
-.. automodule:: pdpy.encoding.pdpyencoder
+.. automodule:: pdpy.parse.pdpy2json
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.encoding.xmltagconvert
+.. automodule:: pdpy.parse.pdpyxmlparser
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    
+.. automodule:: pdpy.parse.pdpyparser
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.encoding.xmlbuilder
-    :members:
-    :undoc-members:
-    :show-inheritance:
+

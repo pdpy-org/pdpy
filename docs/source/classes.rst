@@ -7,7 +7,10 @@ Classes
   classes/iemgui
   classes/data
   classes/patching
+  classes/connections
   classes/primitives
-  classes/base
+  classes/core
   classes/utilities
   classes/encoders
+  classes/parsing
+  classes/extra

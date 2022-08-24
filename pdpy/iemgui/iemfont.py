@@ -39,7 +39,7 @@ class IEMFont(Base):
   
   See also
   --------
-  :class:`pdpy.Default`
+  :class:`pdpy.utilities.default.Default`
     For default parameters.
 
   """

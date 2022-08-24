@@ -40,7 +40,7 @@ class Base(XmlBuilder, XmlTagConvert):
   xml : ``xml.etree.ElementTree.Element`` or ``None``
     An Xml Element with the appropriate element structure.
   
-  default : :class:`pdpy.Default` or ``None``
+  default : :class:`pdpy.utilities.default.Default` or ``None``
     A class containing a template for default values.
 
 

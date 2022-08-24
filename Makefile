@@ -1,9 +1,9 @@
 
-help:
-	@echo "Help file here"
-
 local:
 	python setup.py build
+
+help:
+	@echo "Help file here"
 
 doc:
 	cd docs && make html
