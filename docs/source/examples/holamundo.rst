@@ -59,7 +59,7 @@ Objects
 With the ``Obj`` class we can instantiate a few objects (lines 3,4).
 Notice that we can pass a :class:`str` upon instantiation.
 The ``Obj`` instance will represent the Pd object called as such.
-We will instantiate them in variables arbitrarily called ``obj1`` and ``obj2``:
+We will instantiate them in variables arbitrarily called ``obj1`` and ``obj2``::
 
   obj1 = Obj('loadbang')
   obj2 = Obj('print')
