@@ -57,11 +57,13 @@ Copyright
   
   examples/holamundo
   examples/simpleaudio
+  examples/additive_synthesis
   examples/translation
   examples/connections
   examples/contexts
   examples/arrays
   examples/libpd
+  examples/comments
 
 
 

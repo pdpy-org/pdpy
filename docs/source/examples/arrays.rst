@@ -65,12 +65,11 @@ In the following line, we set ``keep`` to ``True``, so that the data is kept inf
   pd.createArray(name="keeping", length=100, keep=True, data=sinewave)
 
 
-
 Graph-on-parent
 ---------------
 
-We can also create Graph-on-parent (GOP) array, and pass other data to it::
-  
+We can also create Graph-on-parent (GOP) array::
+
   pd.createGOPArray(data = map(lambda x,y: x * y**2, sinewave, sinewave))
 
 
