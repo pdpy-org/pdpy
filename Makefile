@@ -31,6 +31,8 @@ test:
 
 version:
 	cd scripts && python touch_version.py
+	git add pyproject.toml && git commit -m 'bump version number'
+	cd ../doc && git add version.txt && git commit -m 'bump version number'
 
 all:
 	make clean
