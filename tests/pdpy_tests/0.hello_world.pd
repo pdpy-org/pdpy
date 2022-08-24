@@ -1,6 +1,0 @@
-#N canvas 0 22 450 300 12;
-#X obj 12 36 loadbang;
-#X obj 12 60 print;
-#X text 12 12 this example prints 'hello world' to console;
-#X connect 0 0 3 0;
-#X connect 0 0 3 0;

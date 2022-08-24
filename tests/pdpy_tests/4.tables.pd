@@ -1,7 +1,0 @@
-#N canvas 0 22 450 300 12;
-#X obj 12 84 array define -k myOtherTab;
-#X obj 12 108 array define -k myOtherTab.get;
-#X text 12 12 **********************************************************;
-#X text 12 36 * Tables *;
-#X text 12 60 **********************************************************;
-#X connect 0 0 1 0;

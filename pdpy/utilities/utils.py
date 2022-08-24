@@ -83,17 +83,17 @@ def log(level, *argv):
     The log level (defaults: None)
 
   """
-  
+  __repr__ = " ".join(map(repr, argv))
   if 0 == level:
-    print("NORMAL", " ".join(argv))
+    print("NORMAL", __repr__)
   elif 1 == level:
-    print("WARNING", " ".join(argv))
+    print("DEBUG", __repr__)
   elif 2 == level:
-    print("ERROR", " ".join(list(map(lambda x:x.__repr__(), argv))))
+    print("ERROR", __repr__)
   elif level < 0:
     pass
   else:
-    print(" ".join(argv))
+    print("WARNING", __repr__)
 
 def findIndices(data, cond_func):
   """ Find the start and stop slice indices 
@@ -220,7 +220,7 @@ def tokenize(line):
 
   # filter out empty tokens
   tokens = list(filter(None,tokens))
-
+  print(tokens)
   return tokens
 
 def parsePdFileLines(file_lines):

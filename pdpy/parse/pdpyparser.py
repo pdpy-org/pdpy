@@ -32,7 +32,7 @@ class PdPyParser(PdPy):
     2. `pddb` is a json file holding a pure data object database
 
     """
-  def __init__(self, lines, pddb, **kwargs):
+  def __init__(self, pdpy_lines, pddb, **kwargs):
     super().__init__(**kwargs)
     
     self.__pdpy__ = 'PdPy'
@@ -48,8 +48,15 @@ class PdPyParser(PdPy):
     self.__canvases__ = []
     self.__last__ = None #  the las object
     self.__auto_patch__ = True
-    
-    for i, line in enumerate(lines):
+    self.__pdpy_lines__ = pdpy_lines
+
+    self.parse()
+  
+  
+  def parse(self):
+    """ Parse the store pdpy file lines """
+
+    for i, line in enumerate(self.__pdpy_lines__):
       self.__line_num__ = i
       log(LOG,"-"*30)
       log(LOG,repr(line))
@@ -106,7 +113,7 @@ class PdPyParser(PdPy):
         self.__depth__ -= 1
         if len(self.__canvas_idx__):
           self.__canvas_idx__.pop()
-        __canvas__.grow_margins(len(__canvas__.name))
+        __canvas__.__margin__.width += len(__canvas__.name)
         __canvas__.__cursor__.y += __canvas__.__box__.height
         log(LOG,"restored", __canvas__.name)
         # check again and pass arguments to pipe through
@@ -156,11 +163,10 @@ class PdPyParser(PdPy):
     log(LOG,"objCreator",argv)
 
     word_length = len(argv) if isinstance(argv,str) else len(" ".join(argv))
+    x, y = __canvas__.__cursor__.x, __canvas__.__cursor__.y
     if not root:
-      x, y = __canvas__.get_position()
-      __canvas__.grow_margins(word_length)
+      __canvas__.__margin__.width += word_length
     else:
-      x, y = __canvas__.get_position()
       __canvas__.__cursor__.y += __canvas__.__box__.height
     
     if objClass is Comment:
@@ -190,7 +196,7 @@ class PdPyParser(PdPy):
 
     # tokenize ---------------------------------------------------------------
     self.__tokens__ = tokenize(string.strip())
-    log(LOG,"Tokens are",self.__tokens__)
+    log(LOG,"Tokens are",*self.__tokens__)
     
     # ignore comments ---------------------------------------------------------
     c = ('//', '*', '/*', '*/') # comments
