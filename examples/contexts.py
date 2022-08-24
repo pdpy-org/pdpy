@@ -4,15 +4,6 @@
 # This file is part of the pdpy project: https://github.com/pdpy-org
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
-""" Using Python Contexts
-
-In this example, we see how to use the ``with`` keyword to open the PdPy patch.
-When exiting the context, the file is automatically written to disk.
-So, there is no need to call ``PdPy.write()`` at the end.
-
-The patch creates a spectrum of 16 harmonics with phased-out cosine amplitude envelopes 
-
-"""
 from pdpy import PdPy, Obj, Msg
 
 fund = 110

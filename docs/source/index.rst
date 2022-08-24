@@ -51,14 +51,6 @@ Copyright
   virtual_env
   install_libpd
 
-
-.. toctree::
-  :caption: Documentation
-  :maxdepth: 2
-  
-  classes
-  overview
-
 .. toctree::
   :caption: Examples
   :maxdepth: 1
@@ -67,6 +59,15 @@ Copyright
   examples/simpleaudio
   examples/translation
   examples/connections
+  examples/contexts
   examples/arrays
   examples/libpd
 
+
+
+.. toctree::
+  :caption: API Documentation
+  :maxdepth: 2
+  
+  overview
+  classes

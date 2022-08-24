@@ -4,7 +4,134 @@
 # This file is part of the pdpy project: https://github.com/pdpy-org
 # Copyright (C) 2021-22 Fede Camara Halac
 # **************************************************************************** #
-""" Main inititlization """
+""" 
+API Overview
+============
+
+Objects
+-------
+
+.. autosummary::
+    pdpy.objects.obj.Obj
+    pdpy.objects.msg.Msg
+    pdpy.objects.gui.Gui
+    pdpy.objects.comment.Comment
+
+IEMGui
+------
+
+.. autosummary::
+  
+    pdpy.iemgui.toggle.Toggle
+    pdpy.iemgui.bng.Bng
+    pdpy.iemgui.nbx.Nbx
+    pdpy.iemgui.slider.Slider
+    pdpy.iemgui.radio.Radio
+    pdpy.iemgui.vu.Vu
+    pdpy.iemgui.cnv.Cnv
+    pdpy.iemgui.iemlabel.IEMLabel
+    pdpy.iemgui.iemfont.IEMFont
+
+Memory
+------
+
+.. autosummary::
+
+    pdpy.memory.types.Float
+    pdpy.memory.types.Int
+    pdpy.memory.types.Symbol
+    pdpy.memory.types.List
+    pdpy.memory.data.Data
+    pdpy.memory.scalar.Scalar
+    pdpy.memory.struct.Struct
+    pdpy.memory.array.Array
+    pdpy.memory.goparray.GOPArray
+    pdpy.memory.graph.Graph
+
+
+Patching
+--------
+
+.. autosummary::
+      
+    pdpy.patching.patch.Patch
+    pdpy.patching.pdpy.PdPy
+    pdpy.patching.canvas.Canvas
+    pdpy.patching.dependencies.Dependencies
+    pdpy.patching.comm.Comm
+
+Connections
+-----------
+
+.. autosummary::
+  
+    pdpy.connections.edge.Edge
+    pdpy.connections.iolet.Iolet
+
+Extra
+-----
+
+.. autosummary::
+  
+    pdpy.extra.arranger.Arranger
+    pdpy.extra.translator.Translator
+
+
+Primitives
+----------
+
+.. autosummary::
+
+    pdpy.primitives.point.Point
+    pdpy.primitives.size.Size
+    pdpy.primitives.area.Area
+    pdpy.primitives.bounds.Bounds
+    pdpy.primitives.coords.Coords
+
+
+Core
+----
+
+.. autosummary::
+
+    pdpy.core.base.Base
+    pdpy.core.canvasbase.CanvasBase
+    pdpy.core.object.Object
+    pdpy.core.message.Message
+
+
+Utilities
+---------
+
+.. autosummary::
+
+    pdpy.utilities.namespace.Namespace
+    pdpy.utilities.default.Default
+    pdpy.utilities.exceptions.ArgumentException
+    pdpy.utilities.exceptions.MalformedName
+    pdpy.utilities.utils
+    pdpy.utilities.regex
+
+Encoding
+--------
+
+.. autosummary::
+    
+    pdpy.encoding.pdpyencoder.PdPyEncoder
+    pdpy.encoding.xmltagconvert.XmlTagConvert
+    pdpy.encoding.xmlbuilder.XmlBuilder
+
+
+Parsing
+-------
+
+.. autosummary::
+
+    pdpy.parse.pdpyxmlparser.PdPyXMLParser
+    pdpy.parse.pdpyparser.PdPyParser
+    pdpy.parse.pdpy2json
+
+"""
 
 from .core.base import *
 from .core.canvasbase import *
