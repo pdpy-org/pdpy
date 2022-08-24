@@ -1,7 +1,7 @@
-Using Python Contexts
-=====================
+Contexts
+========
 
-In this example, we see how to use the :py:`with` keyword to open the PdPy patch.
+In this example, we see how to use the ``with`` keyword to open the PdPy patch.
 When exiting the context, the file is automatically written to disk.
 So, there is no need to call :func:`PdPy.write()` at the end.
 
