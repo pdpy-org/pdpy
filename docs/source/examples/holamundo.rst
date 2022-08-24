@@ -106,7 +106,7 @@ We can do that in this way (line 6)::
     mypatch.create(*myobjects) # notice the expansion * char before the list
 
 
-  In any case, we have keep them in variables to be able to call them later.
+  In any case, we keep them in variables to be able to call them later.
 
 
 Connect
