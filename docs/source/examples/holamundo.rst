@@ -64,9 +64,10 @@ We will instantiate them in variables arbitrarily called ``obj1`` and ``obj2``::
   obj1 = Obj('loadbang')
   obj2 = Obj('print')
 
-
-- ``obj1`` is a pdpy ``Obj`` that represents Pd's ``loadbang`` object,
-- ``obj2`` is another pdpy ``Obj`` that represents Pd's ``print`` object.
+.. note:: 
+ 
+  * **obj1** is an instance of :class:`pdpy.objects.obj.Obj` that represents Pd's `loadbang` object,
+  * **obj2** is another instance, now representing Pd's `print` object.
 
 
 Message
@@ -100,13 +101,15 @@ We can do that in this way (line 6)::
     mypatch.create(obj2)
 
 
-  Or, we pass a python list to the create function, this way::
+.. hint::
+  
+  It is recommended to pass a python list to the create function::
   
     myobjects = [obj1, msg1, obj2]
     mypatch.create(*myobjects) # notice the expansion * char before the list
 
 
-  In any case, we keep them in variables to be able to call them later.
+In any case, we keep them in variables to be able to call them later.
 
 
 Connect
@@ -118,7 +121,7 @@ We use the ``connect`` method to do this (line 7)::
   mypatch.connect(obj1, msg1, obj2)
 
 
-.. note::
+.. hint::
   
   If we reuse our ``myobjects`` list above, we can connect objects this way::
 
