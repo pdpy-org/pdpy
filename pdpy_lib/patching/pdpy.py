@@ -108,7 +108,7 @@ class PdPy(CanvasBase, Base):
   def addRoot(self, pd_lines=None, json=None, name=None):
     """ Add a root canvas object from pure data, json, or an empty canvas 
 
-    Called by the :func:`parse` method as well as the :class:`pdpy.PdPyParser` class
+    Called by the :func:`parse` method as well as the :class:`pdpy_lib.parse.pdpyparser.PdPyParser` class
 
     Return
     ------

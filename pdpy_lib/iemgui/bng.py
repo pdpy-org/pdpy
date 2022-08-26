@@ -39,11 +39,11 @@ class Bng(Obj):
     *  ``bgcolor``: the background color of the bang
     *  ``fgcolor``: the foreground of the bang
     
-    Other keyword arguments are passed to :class:`pdpy.IEMLabel` and :class:`pdpy.Comm`
+    Other keyword arguments are passed to :class:`pdpy_lib.iemgui.iemlabel.IEMLabel` and :class:`pdpy_lib.patching.comm.Comm`
   
   See also
   --------
-  :class:`pdpy.utilities.default.Default`
+  :class:`pdpy_lib.utilities.default.Default`
     For default parameters.
 
   """

@@ -14,7 +14,7 @@ from . import base
 __all__ = [ 'Message' ]
 
 class Message(base.Base):
-  """ Representation of a Pd Message (non patchable, used by :class:`pdpy.Msg`)
+  """ Representation of a Pd Message (non patchable, used by :class:`pdpy_lib.objects.msg.Msg`)
   
   This class represents a Pd message.
   It stores a list of messages, together with a ``address``.

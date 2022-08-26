@@ -317,7 +317,7 @@ class Arranger:
     Parameters
     ----------
 
-    obj: :class:`pdpy.Object`
+    obj: :class:`pdpy_lib.core.object.Object`
       The PdPy object with ``position`` attribute
     
     children: ``list``

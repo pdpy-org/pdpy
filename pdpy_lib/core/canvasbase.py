@@ -18,7 +18,7 @@ __all__ = [ 'CanvasBase' ]
 class CanvasBase(XmlBuilder):
   """ Base class for a canvas
   
-  This class is based by :class:`pdpy.PdPy` and :class:`pdpy.Canvas`
+  This class is based by :class:`pdpy_lib.patching.pdpy.PdPy` and :class:`pdpy_lib.patching.canvas.Canvas`
   
   """
 

@@ -18,7 +18,7 @@ class Area(Base):
   r""" Represents a rectangular section of the screen
 
   The area is represented with two points, ``a`` and ``b``.
-  See :class:`pdpy.Point`.
+  See :class:`pdpy_lib.primitives.point.Point`.
   The first two coordinates are the upper-left corner in Point ``a``,
   and the second two are the lower-right corner in Point ``b``.
   

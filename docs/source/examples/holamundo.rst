@@ -34,7 +34,7 @@ First, you import the necessary pdpy Classes (line 1)::
 
 
 We will briefly go through these classes in this example.
-To find out more about these classes, you can go to :class:`pdpy.PdPy`, :class:`pdpy.Obj`, and :class:`pdpy.Msg`.
+To find out more about these classes, you can go to :class:`pdpy_lib.patching.pdpy.PdPy`, :class:`pdpy_lib.objects.obj.Obj`, and :class:`pdpy_lib.objects.msg.Msg`.
 
 
 A PdPy patch
@@ -50,7 +50,7 @@ The ``name`` keyword argument stores the name of the patch, in this case ``holam
 Because we want ``mypatch`` to be the ``root`` of our Pure Data patch (or in pd-lingo, the parent canvas), we set it to ``true``. 
 
 There are more keyword arguments available, but we wont need them here.
-You can go to :class:`pdpy.PdPy` to see it in full.
+You can go to :class:`pdpy_lib.patching.pdpy.PdPy` to see it in full.
 
 
 Objects
@@ -66,7 +66,7 @@ We will instantiate them in variables arbitrarily called ``obj1`` and ``obj2``::
 
 .. note:: 
  
-  * **obj1** is an instance of :class:`pdpy.objects.obj.Obj` that represents Pd's `loadbang` object,
+  * **obj1** is an instance of :class:`pdpy_lib.objects.obj.Obj` that represents Pd's `loadbang` object,
   * **obj2** is another instance, now representing Pd's `print` object.
 
 

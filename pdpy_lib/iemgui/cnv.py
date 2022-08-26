@@ -39,11 +39,11 @@ class Cnv(Obj):
     *  ``fgcolor``: the foreground of the canvas
     *  ``flag``: a flag
 
-    Other keyword arguments are passed to :class:`pdpy.IEMLabel` and :class:`pdpy.Comm`
+    Other keyword arguments are passed to :class:`pdpy_lib.iemgui.iemlabel.IEMLabel` and :class:`pdpy_lib.patching.comm.Comm`
   
   See also
   --------
-  :class:`pdpy.utilities.default.Default`
+  :class:`pdpy_lib.utilities.default.Default`
     For default parameters.
   
   """

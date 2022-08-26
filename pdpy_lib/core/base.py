@@ -40,7 +40,7 @@ class Base(XmlBuilder, XmlTagConvert):
   xml : ``xml.etree.ElementTree.Element`` or ``None``
     An Xml Element with the appropriate element structure.
   
-  default : :class:`pdpy.utilities.default.Default` or ``None``
+  default : :class:`pdpy_lib.utilities.default.Default` or ``None``
     A class containing a template for default values.
 
 
@@ -393,7 +393,7 @@ class Base(XmlBuilder, XmlTagConvert):
     
     .. note:: 
       This method assumes it belongs to a PdPy class, because:
-      :class:`pdpy.PdPy` bases :class:`pdpy.Base`
+      :class:`pdpy_lib.patching.pdpy.PdPy` bases :class:`pdpy_lib.core.base.Base`
     
     """
     # get the xml root element
@@ -464,7 +464,7 @@ class Base(XmlBuilder, XmlTagConvert):
     return getattr(self, 'className', self.__class__.__name__)
 
   def addpos(self, x, y):
-    """ Adds or updates the position :class:`pdpy.Point` """
+    """ Adds or updates the position :class:`pdpy_lib.primitives.point.Point` """
     # print("Adding position for:", self.getname(), x, y)
     if not hasattr(self, 'position'):
       from ..primitives.point import Point

@@ -44,7 +44,7 @@ class IEMLabel(Base):
   
   See also
   --------
-  :class:`pdpy.utilities.default.Default`
+  :class:`pdpy_lib.utilities.default.Default`
     For default parameters.
     
   """
