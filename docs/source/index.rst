@@ -35,7 +35,15 @@ Copyright
 * `Pure Data <https://github.com/pure-data/pure-data>`_: Copyright (c) 1997-2021 Miller Puckette and others.
 * `pyaudio <https://people.csail.mit.edu/hubert/pyaudio>`_: Copyright (c) 2006 Hubert Pham 
 
+Donate
+------
 
+If you feel like helping this project, please donate `over here <https://www.paypal.com/donate/?business=B5TMA7FZ4BXA2&no_recurring=0&currency_code=USD>`_, or by clicking the following button:
+
+|donate|_
+
+.. |donate| image:: https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif
+.. _donate: https://www.paypal.com/donate/?business=B5TMA7FZ4BXA2&no_recurring=0&currency_code=USD
 
 
 
