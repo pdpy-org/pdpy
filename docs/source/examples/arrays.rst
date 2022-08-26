@@ -7,7 +7,7 @@ The code we'll execute is here:
 .. code-block:: python
   :linenos:
 
-  import pdpy
+  import pdpy_lib as pdpy
   import math
   with pdpy.PdPy(name='arrays', root=True) as pd:
     for _ in range(3):
@@ -20,9 +20,9 @@ The code we'll execute is here:
 Import
 ------
 
-First, we import pdpy, the math module (see below), and create a PdPy context::
+First, we import pdpy_lib as pdpy, the math module (see below), and create a PdPy context::
 
-  import pdpy
+  import pdpy_lib as pdpy
   import math
   with pdpy.PdPy(name='arrays', root=True) as pd:
 

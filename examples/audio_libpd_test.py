@@ -9,7 +9,7 @@ Testing Audio with libpd
 ========================
 """
 
-from pdpy import PdPy, Obj, Msg, Canvas
+from pdpy_lib import PdPy, Obj, Msg, Canvas
 import pylibpd as libpd
 import pyaudio
 import random

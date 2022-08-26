@@ -14,7 +14,7 @@ __all__ = [ 'Namespace' ]
 class Namespace:
   """ PdPy Namespace """
   def __init__(self):
-    import pdpy
+    import pdpy_lib as pdpy
     self.__module__ = pdpy
     self.__name__ = { 
       e.lower().replace('__', '') : e for e in dir(self.__module__) 

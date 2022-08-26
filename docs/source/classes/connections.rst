@@ -1,12 +1,12 @@
 Connections
 ===========
 
-.. automodule:: pdpy.connections.edge
+.. automodule:: pdpy_lib.connections.edge
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.connections.iolet
+.. automodule:: pdpy_lib.connections.iolet
     :members:
     :undoc-members:
     :show-inheritance:

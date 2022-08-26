@@ -9,7 +9,7 @@ Making Subpatches
 =================
 """
 
-from pdpy import Patch, Obj, Msg
+from pdpy_lib import Patch, Obj, Msg
 import random
 patchname = "subpatches"
 

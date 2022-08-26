@@ -1,27 +1,27 @@
 Utilities
 =========
 
-.. automodule:: pdpy.utilities.utils
+.. automodule:: pdpy_lib.utilities.utils
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.utilities.regex
+.. automodule:: pdpy_lib.utilities.regex
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.utilities.namespace
+.. automodule:: pdpy_lib.utilities.namespace
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.utilities.default
+.. automodule:: pdpy_lib.utilities.default
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.utilities.exceptions
+.. automodule:: pdpy_lib.utilities.exceptions
     :members:
     :undoc-members:
     :show-inheritance:

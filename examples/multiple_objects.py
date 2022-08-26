@@ -4,7 +4,7 @@
 # This file is part of the pdpy project: https://github.com/pdpy-org
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
-from pdpy import PdPy, Obj, Bng
+from pdpy_lib import PdPy, Obj, Bng
 # path to where the Pd-*.app exists
 # pdpath = "/Users/fd/Development/pure-data"
 pdpath = None

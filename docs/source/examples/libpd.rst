@@ -8,7 +8,7 @@ The code we'll execute is here:
 .. code-block:: python
   :linenos:
 
-  from pdpy import Patch, Obj
+  from pdpy_lib import Patch, Obj
   with Patch(name="mypatch", root=True, callback=False) as p:
     osc = [Obj('osc~').addargs(110 * i) for i in range(1, 16)]
     mul = Obj('*~').addargs(1/16)
@@ -25,9 +25,9 @@ This class allows you to create a patch within a context.
 Once the context exits, the patch is automatically executed using ``libpd``.
 
 
-First, we import pdpy::
+First, we import pdpy_lib as pdpy::
   
-  from pdpy import Patch, Obj
+  from pdpy_lib import Patch, Obj
 
 
 Then, we enter the :class:`Patch` context as ``root`` and we name it::

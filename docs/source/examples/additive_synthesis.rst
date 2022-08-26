@@ -7,7 +7,7 @@ The code is displayed first in full, then it is explained in detail.
 .. code-block:: python
   :linenos:
 
-  from pdpy import PdPy, Obj                  # necessary imports
+  from pdpy_lib import PdPy, Obj                  # necessary imports
   fund = 110                                  # fundamental frequency in Hz 
   partials = 8                                # number of partials
   mypatch = PdPy(name="additive", root=True)  # initialize a patch
@@ -26,7 +26,7 @@ The code is displayed first in full, then it is explained in detail.
 
 First, we import the library so we can use it::
 
-  from pdpy import PdPy, Obj
+  from pdpy_lib import PdPy, Obj
 
 Variables
 ---------

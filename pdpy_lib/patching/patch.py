@@ -10,8 +10,20 @@ Patch
 """
 
 import time
-import pylibpd
-import pyaudio
+try:
+  import pyaudio
+  HAS_PYAUDIO = True
+except ModuleNotFoundError:
+  HAS_PYAUDIO = False
+  print("You might want to get pyaudio: ``pip install pyaudio``")
+
+try:
+  import pylibpd
+  HAS_PYLIBPD = True
+except ModuleNotFoundError:
+  HAS_PYLIBPD = False
+  print("You might want to get libpd from https://github.com/libpd/libpd")
+
 from . import pdpy
 
 __all__ = [ 'Patch' ]
@@ -48,7 +60,7 @@ class Patch(pdpy.PdPy):
 
   First, we need to do our import::
 
-    >>> import pdpy
+    >>> import pdpy_lib as pdpy
 
   Now, make a patch with a ``name`` and set it to root, non-callback.
 
@@ -105,21 +117,21 @@ class Patch(pdpy.PdPy):
     self.__sr__ = sr
     """ sample rate """
     
-    self.__bs__ = pylibpd.libpd_blocksize()
-    """ libpd blocksize """
-    
     self.__tpb__ = 6
     """ ticks per buffer for pyaudio """
+    
+    self.__bs__ = pylibpd.libpd_blocksize() if HAS_PYLIBPD else 64
+    """ libpd blocksize """
     
     self.__libpd__ = pylibpd.PdManager(
         self.__inch__, 
         self.__outch__, 
         self.__sr__,
         1
-    )
+    ) if HAS_PYLIBPD else None
     """ The libpd manager class :class:`pylibpd.PdManager` """
     
-    self.__pyaudio__ = pyaudio.PyAudio()
+    self.__pyaudio__ = pyaudio.PyAudio() if HAS_PYAUDIO else None
     """ The pyaudio class :class:`pyaudio.PyAudio` """
 
   def __enter__(self):
@@ -130,7 +142,7 @@ class Patch(pdpy.PdPy):
     """ Start the pyaudio stream """
     
     def _callback(in_data, frame_count, time_info, status):
-      data = self.__libpd__.process(in_data)
+      data = self.__libpd__.process(in_data) if HAS_PYLIBPD else in_data
       return (bytes(data), pyaudio.paContinue)
     
     self.__stream__ = self.__pyaudio__.open(
@@ -140,7 +152,8 @@ class Patch(pdpy.PdPy):
               input = True,
               output = True,
               frames_per_buffer = self.__bs__ * self.__tpb__, 
-              stream_callback=_callback if self.__callback__ else None)
+              stream_callback=_callback if self.__callback__ else None
+    )
     """ the pyaudio stream """
     
     return self.__stream__
@@ -157,25 +170,26 @@ class Patch(pdpy.PdPy):
 
     while 1:
       data = self.__stream__.read(self.__bs__, exception_on_overflow=False)
-      outp = self.__libpd__.process(data)
+      outp = self.__libpd__.process(data) if HAS_PYLIBPD else data
       self.__stream__.write(bytes(outp))
     
     self.__stream__.close()
   
   def __exit__(self, ctx_type, ctx_value, ctx_traceback):
     super().__exit__(ctx_type, ctx_value, ctx_traceback)
+
+    if HAS_PYLIBPD: pylibpd.libpd_open_patch(self.patchname + '.pd')
     
-    pylibpd.libpd_open_patch(self.patchname + '.pd')
+    if HAS_PYAUDIO:
+      if self.__callback__:
+        try:
+          self.performCallback()
+        except Exception as e:
+          raise Exception("There was an error", e)
+      else:
+        self.perform()
+      
+      self.__pyaudio__.terminate()
     
-    if self.__callback__:
-      try:
-        self.performCallback()
-      except Exception as e:
-        raise Exception("There was an error", e)
-    else:
-      self.perform()
-    
-    self.__pyaudio__.terminate()
-    
-    pylibpd.libpd_release()
+    if HAS_PYLIBPD: pylibpd.libpd_release()
   

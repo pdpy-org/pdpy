@@ -22,9 +22,10 @@ This project is inspired by many discussions and projects:
 
 * Pure Data to XML: see `this discussion <https://lists.puredata.info/pipermail/pd-dev/2004-12/003316.html>`_ on the pd-list archives.
 * Pure Data to JSON: see `this other one <https://lists.puredata.info/pipermail/pd-dev/2012-06/018434.html>`_ on the pd-list archives.
-* New Pd file format `discussion <https://lists.puredata.info/pipermail/pd-dev/2007-09/009483.html>`_ on the pd-list archives.
-* PURE DATA FILE FORMAT specifications were expained `here <http://puredata.info/docs/developer/PdFileFormat>`_
+* Pure Data file format specifications were expained `here <http://puredata.info/docs/developer/PdFileFormat>`_
+* *New* Pd file format `discussion <https://lists.puredata.info/pipermail/pd-dev/2007-09/009483.html>`_ on the pd-list archives.
 * ``sebpiq``'s repostirories: `WebPd_pd-parser <https://github.com/sebpiq/WebPd_pd-parser>`_, as well as his `pd-fileutils <https://github.com/sebpiq/pd-fileutils>`_
+* ``dylanburati``'s `puredata-compiler <https://github.com/dylanburati/puredata-compiler>`_
 
 
 Copyright

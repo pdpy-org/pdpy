@@ -21,7 +21,7 @@ def get_version(filename='pyproject.toml',
       # check against "version = " to see if we are on the version line
       if version_prefix in line:
         version_line = i
-        print("[version found]:" + line.replace("\n",""))
+        # print("[version found]:" + line.replace("\n",""))
         # get rid of version_prefix and split into [max, min, min2]
         old_version = line.replace(version_prefix, '').split('.')
       # append to the text buffer
@@ -54,7 +54,7 @@ def set_version(prev_file,
   # and add the newline char
   prev_file[version_line] = version + "\n"
 
-  print("[version updated]:" + version)
+  # print("[version updated]:" + version)
 
   # open the same file to write the buffer out and overwrite
   with open(filename, 'w') as f:

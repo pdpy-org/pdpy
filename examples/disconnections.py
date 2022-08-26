@@ -4,7 +4,7 @@
 # This file is part of the pdpy project: https://github.com/pdpy-org
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
-import pdpy
+import pdpy_lib as pdpy
 pd = pdpy.PdPy(name='test_disconnect',root=True)
 obj = pdpy.Obj('loadbang')
 printer = pdpy.Obj('print')

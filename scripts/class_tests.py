@@ -5,11 +5,12 @@
 # Copyright (C) 2021 Fede Camara Halac
 # **************************************************************************** #
 """ test class """
-import pdpy
+import pdpy_lib as pdpy
 import json
 # from types import SimpleNamespace
 
-from pdpy import PdPy
+from pdpy_lib 
+import PdPy
 
 # with open('tests/import_dict.json','r') as f:
 #   d = json.load(f)

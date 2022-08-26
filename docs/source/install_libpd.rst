@@ -8,6 +8,8 @@ clone the libpd repository::
     git submodule update --init --recursive
 
 
+Make sure you have the correct build tools. 
+Check the README.md file. 
 Then, type make::
 
     make

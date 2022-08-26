@@ -12,7 +12,7 @@ The final code is shown first, then you can see it explained line by line.
 .. code-block:: python
   :linenos:
 
-  from pdpy import PdPy, Obj, Msg                # necessary imports
+  from pdpy_lib import PdPy, Obj, Msg                # necessary imports
   mypatch = PdPy(name="holamundo", root=True)    # a pdpy root patch
   obj1 = Obj('loadbang')                         # a loadbang object
   obj2 = Obj('print')                            # a print object
@@ -30,7 +30,7 @@ Import
 
 First, you import the necessary pdpy Classes (line 1)::
 
-  from pdpy import PdPy, Obj, Msg
+  from pdpy_lib import PdPy, Obj, Msg
 
 
 We will briefly go through these classes in this example.

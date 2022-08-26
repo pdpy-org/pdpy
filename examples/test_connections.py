@@ -19,7 +19,7 @@ In most arrangements, the last object of the circle is placed to the right.
 
 
 """
-from pdpy import PdPy, Obj, Msg
+from pdpy_lib import PdPy, Obj, Msg
 with PdPy(name="test_connections", root=True) as pd:
   i = 0
   while i < 10:

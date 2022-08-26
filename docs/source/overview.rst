@@ -1,2 +1,2 @@
 
-.. automodule:: pdpy
+.. automodule:: pdpy_lib

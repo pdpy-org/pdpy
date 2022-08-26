@@ -1,21 +1,16 @@
 Usage
 =====
 
-Once installed (see :doc:`installation`), you can now import pdpy.
+Once installed (see :doc:`installation`), you can now import pdpy_lib as pdpy.
 
 Source the virtual environment first::
   
   source ~/.pdpy/bin/activate
 
 
-Run the python console::
-
-  python
-
-
-Import ``pdpy``::
+From python, import the library::
   
-  >>> import pdpy
+  >>> import pdpy_lib as pdpy
 
 
 Things you can do with ``pdpy``

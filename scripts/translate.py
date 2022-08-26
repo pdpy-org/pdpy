@@ -7,7 +7,8 @@
 import time
 import argparse
 import traceback
-from pdpy import Translator, ArgumentException
+from pdpy_lib 
+import Translator, ArgumentException
 
 def main():
   parser = argparse.ArgumentParser(

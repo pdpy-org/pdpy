@@ -21,16 +21,23 @@ deploy:
 install:
 	python -m pip install -i https://test.pypi.org/simple/ $(shell ./scripts/get_version.sh ./pyproject.toml ==)
 
+dist:
+	python setup.py sdist
+
+publish:
+	python -m twine upload dist/* --verbose
+
 clean:
 	rm -rf ./build
 	rm -rf ./dist
-	rm -rf pdpy.egg-info
+	rm -rf *.egg-info
 
 test:
 	tox
 
 version:
 	cd scripts && python touch_version.py
+	./scripts/make_setup.sh > setup.py
 	git add pyproject.toml && git commit -m 'bump version number'
 	cd ../doc && git add version.txt && git commit -m 'bump version number'
 

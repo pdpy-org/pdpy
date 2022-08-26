@@ -1,27 +1,27 @@
 Primitives
 ==========
 
-.. automodule:: pdpy.primitives.point
+.. automodule:: pdpy_lib.primitives.point
   :members:
   :undoc-members:
   :show-inheritance:
   
-.. automodule:: pdpy.primitives.size
+.. automodule:: pdpy_lib.primitives.size
   :members:
   :undoc-members:
   :show-inheritance:
   
-.. automodule:: pdpy.primitives.area
+.. automodule:: pdpy_lib.primitives.area
   :members:
   :undoc-members:
   :show-inheritance:
   
-.. automodule:: pdpy.primitives.bounds
+.. automodule:: pdpy_lib.primitives.bounds
   :members:
   :undoc-members:
   :show-inheritance:
   
-.. automodule:: pdpy.primitives.coords
+.. automodule:: pdpy_lib.primitives.coords
   :members:
   :undoc-members:
   :show-inheritance:

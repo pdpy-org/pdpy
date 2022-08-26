@@ -4,7 +4,7 @@
 # This file is part of the pdpy project: https://github.com/pdpy-org
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
-from pdpy import PdPy, Obj, Msg                # necessary imports
+from pdpy_lib import PdPy, Obj, Msg                # necessary imports
 mypatch = PdPy(name="holamundo", root=True)    # a pdpy root patch
 obj1 = Obj('loadbang')                         # a loadbang object
 obj2 = Obj('print')                            # a print object

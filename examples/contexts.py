@@ -4,7 +4,7 @@
 # This file is part of the pdpy project: https://github.com/pdpy-org
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
-from pdpy import PdPy, Obj, Msg
+from pdpy_lib import PdPy, Obj, Msg
 
 fund = 110
 npartials = 16

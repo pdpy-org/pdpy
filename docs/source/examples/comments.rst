@@ -7,7 +7,7 @@ In this example we see several ways to insert Pure Data comments on the patch.
 .. code-block:: python
   :linenos:
 
-  import pdpy
+  import pdpy_lib as pdpy
 
   with pdpy.PdPy(name='comments', root=True) as pd:
 

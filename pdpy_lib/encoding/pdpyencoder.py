@@ -13,7 +13,7 @@ __all__ = [ 'PdPyEncoder' ]
 class PdPyEncoder(JSONEncoder):
   
   def __init__(self):
-    import pdpy
+    import pdpy_lib as pdpy
     self.__module__ = pdpy
     # self.__objects__ = []
     # log(1, "PdPyEncoder initialized")

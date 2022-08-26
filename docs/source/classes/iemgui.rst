@@ -1,47 +1,47 @@
 IEMGui
 ======
 
-.. automodule:: pdpy.iemgui.iemfont
+.. automodule:: pdpy_lib.iemgui.iemfont
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.iemgui.iemlabel
+.. automodule:: pdpy_lib.iemgui.iemlabel
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.iemgui.bng
+.. automodule:: pdpy_lib.iemgui.bng
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.iemgui.cnv
+.. automodule:: pdpy_lib.iemgui.cnv
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.iemgui.nbx
+.. automodule:: pdpy_lib.iemgui.nbx
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.iemgui.radio
+.. automodule:: pdpy_lib.iemgui.radio
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.iemgui.slider
+.. automodule:: pdpy_lib.iemgui.slider
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.iemgui.toggle
+.. automodule:: pdpy_lib.iemgui.toggle
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.iemgui.vu
+.. automodule:: pdpy_lib.iemgui.vu
     :members:
     :undoc-members:
     :show-inheritance:

@@ -1,22 +1,22 @@
 Objects
 =======
 
-.. automodule:: pdpy.objects.comment
+.. automodule:: pdpy_lib.objects.comment
   :members:
   :undoc-members:
   :show-inheritance:
   
-.. automodule:: pdpy.objects.obj
+.. automodule:: pdpy_lib.objects.obj
   :members:
   :undoc-members:
   :show-inheritance:
   
-.. automodule:: pdpy.objects.msg
+.. automodule:: pdpy_lib.objects.msg
   :members:
   :undoc-members:
   :show-inheritance:
   
-.. automodule:: pdpy.objects.gui
+.. automodule:: pdpy_lib.objects.gui
   :members:
   :undoc-members:
   :show-inheritance:

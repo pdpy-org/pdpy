@@ -12,41 +12,41 @@ Objects
 -------
 
 .. autosummary::
-    pdpy.objects.obj.Obj
-    pdpy.objects.msg.Msg
-    pdpy.objects.gui.Gui
-    pdpy.objects.comment.Comment
+    pdpy_lib.objects.obj.Obj
+    pdpy_lib.objects.msg.Msg
+    pdpy_lib.objects.gui.Gui
+    pdpy_lib.objects.comment.Comment
 
 IEMGui
 ------
 
 .. autosummary::
   
-    pdpy.iemgui.toggle.Toggle
-    pdpy.iemgui.bng.Bng
-    pdpy.iemgui.nbx.Nbx
-    pdpy.iemgui.slider.Slider
-    pdpy.iemgui.radio.Radio
-    pdpy.iemgui.vu.Vu
-    pdpy.iemgui.cnv.Cnv
-    pdpy.iemgui.iemlabel.IEMLabel
-    pdpy.iemgui.iemfont.IEMFont
+    pdpy_lib.iemgui.toggle.Toggle
+    pdpy_lib.iemgui.bng.Bng
+    pdpy_lib.iemgui.nbx.Nbx
+    pdpy_lib.iemgui.slider.Slider
+    pdpy_lib.iemgui.radio.Radio
+    pdpy_lib.iemgui.vu.Vu
+    pdpy_lib.iemgui.cnv.Cnv
+    pdpy_lib.iemgui.iemlabel.IEMLabel
+    pdpy_lib.iemgui.iemfont.IEMFont
 
 Memory
 ------
 
 .. autosummary::
 
-    pdpy.memory.types.Float
-    pdpy.memory.types.Int
-    pdpy.memory.types.Symbol
-    pdpy.memory.types.List
-    pdpy.memory.data.Data
-    pdpy.memory.scalar.Scalar
-    pdpy.memory.struct.Struct
-    pdpy.memory.array.Array
-    pdpy.memory.goparray.GOPArray
-    pdpy.memory.graph.Graph
+    pdpy_lib.memory.types.Float
+    pdpy_lib.memory.types.Int
+    pdpy_lib.memory.types.Symbol
+    pdpy_lib.memory.types.List
+    pdpy_lib.memory.data.Data
+    pdpy_lib.memory.scalar.Scalar
+    pdpy_lib.memory.struct.Struct
+    pdpy_lib.memory.array.Array
+    pdpy_lib.memory.goparray.GOPArray
+    pdpy_lib.memory.graph.Graph
 
 
 Patching
@@ -54,27 +54,27 @@ Patching
 
 .. autosummary::
       
-    pdpy.patching.patch.Patch
-    pdpy.patching.pdpy.PdPy
-    pdpy.patching.canvas.Canvas
-    pdpy.patching.dependencies.Dependencies
-    pdpy.patching.comm.Comm
+    pdpy_lib.patching.patch.Patch
+    pdpy_lib.patching.pdpy.PdPy
+    pdpy_lib.patching.canvas.Canvas
+    pdpy_lib.patching.dependencies.Dependencies
+    pdpy_lib.patching.comm.Comm
 
 Connections
 -----------
 
 .. autosummary::
   
-    pdpy.connections.edge.Edge
-    pdpy.connections.iolet.Iolet
+    pdpy_lib.connections.edge.Edge
+    pdpy_lib.connections.iolet.Iolet
 
 Extra
 -----
 
 .. autosummary::
   
-    pdpy.extra.arranger.Arranger
-    pdpy.extra.translator.Translator
+    pdpy_lib.extra.arranger.Arranger
+    pdpy_lib.extra.translator.Translator
 
 
 Primitives
@@ -82,11 +82,11 @@ Primitives
 
 .. autosummary::
 
-    pdpy.primitives.point.Point
-    pdpy.primitives.size.Size
-    pdpy.primitives.area.Area
-    pdpy.primitives.bounds.Bounds
-    pdpy.primitives.coords.Coords
+    pdpy_lib.primitives.point.Point
+    pdpy_lib.primitives.size.Size
+    pdpy_lib.primitives.area.Area
+    pdpy_lib.primitives.bounds.Bounds
+    pdpy_lib.primitives.coords.Coords
 
 
 Core
@@ -94,10 +94,10 @@ Core
 
 .. autosummary::
 
-    pdpy.core.base.Base
-    pdpy.core.canvasbase.CanvasBase
-    pdpy.core.object.Object
-    pdpy.core.message.Message
+    pdpy_lib.core.base.Base
+    pdpy_lib.core.canvasbase.CanvasBase
+    pdpy_lib.core.object.Object
+    pdpy_lib.core.message.Message
 
 
 Utilities
@@ -105,21 +105,21 @@ Utilities
 
 .. autosummary::
 
-    pdpy.utilities.namespace.Namespace
-    pdpy.utilities.default.Default
-    pdpy.utilities.exceptions.ArgumentException
-    pdpy.utilities.exceptions.MalformedName
-    pdpy.utilities.utils
-    pdpy.utilities.regex
+    pdpy_lib.utilities.namespace.Namespace
+    pdpy_lib.utilities.default.Default
+    pdpy_lib.utilities.exceptions.ArgumentException
+    pdpy_lib.utilities.exceptions.MalformedName
+    pdpy_lib.utilities.utils
+    pdpy_lib.utilities.regex
 
 Encoding
 --------
 
 .. autosummary::
     
-    pdpy.encoding.pdpyencoder.PdPyEncoder
-    pdpy.encoding.xmltagconvert.XmlTagConvert
-    pdpy.encoding.xmlbuilder.XmlBuilder
+    pdpy_lib.encoding.pdpyencoder.PdPyEncoder
+    pdpy_lib.encoding.xmltagconvert.XmlTagConvert
+    pdpy_lib.encoding.xmlbuilder.XmlBuilder
 
 
 Parsing
@@ -127,9 +127,9 @@ Parsing
 
 .. autosummary::
 
-    pdpy.parse.pdpyxmlparser.PdPyXMLParser
-    pdpy.parse.pdpyparser.PdPyParser
-    pdpy.parse.pdpy2json
+    pdpy_lib.parse.pdpyxmlparser.PdPyXMLParser
+    pdpy_lib.parse.pdpyparser.PdPyParser
+    pdpy_lib.parse.pdpy2json
 
 """
 

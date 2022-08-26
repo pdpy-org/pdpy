@@ -10,7 +10,7 @@ The patch creates a spectrum of 16 harmonics with phased-out cosine amplitude en
 .. code-block:: python
   :linenos:
 
-  from pdpy import PdPy, Obj, Msg
+  from pdpy_lib import PdPy, Obj, Msg
 
   fund = 110
   npartials = 16

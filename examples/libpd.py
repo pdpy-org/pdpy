@@ -9,7 +9,7 @@ Patcher
 =======
 """
 
-from pdpy import Patch, Obj
+from pdpy_lib import Patch, Obj
 
 with Patch(name="mypatch", root=True) as p:
   osc = [Obj('osc~').addargs(110 * i) for i in range(1, 16)]

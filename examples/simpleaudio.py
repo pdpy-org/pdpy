@@ -4,7 +4,7 @@
 # This file is part of the pdpy project: https://github.com/pdpy-org
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
-from pdpy import PdPy, Obj                      # necesary imports
+from pdpy_lib import PdPy, Obj                      # necesary imports
 mypatch = PdPy(name="simpleaudio", root=True)   # initialize
 obj1 = Obj('osc~').addargs(440)                 # an ``osc~`` at 440 Hz
 obj2 = Obj('*~').addargs(0.01)                  # a signal multiplier at 0.01

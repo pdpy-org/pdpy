@@ -1,37 +1,37 @@
 Memory
 ======
 
-.. automodule:: pdpy.memory.data
+.. automodule:: pdpy_lib.memory.data
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.memory.scalar
+.. automodule:: pdpy_lib.memory.scalar
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.memory.array
+.. automodule:: pdpy_lib.memory.array
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.memory.struct
+.. automodule:: pdpy_lib.memory.struct
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.memory.goparray
+.. automodule:: pdpy_lib.memory.goparray
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.memory.graph
+.. automodule:: pdpy_lib.memory.graph
     :members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: pdpy.memory.types
+.. automodule:: pdpy_lib.memory.types
     :members:
     :undoc-members:
     :show-inheritance:

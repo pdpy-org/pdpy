@@ -47,7 +47,7 @@ class Area(Base):
   
   This example imports and calls the class with the ``coords`` keywords
 
-    >>> import pdpy
+    >>> import pdpy_lib as pdpy
     >>> area = pdpy.Area(coords=[0,0,10,10])
   
   The default pd-lang string interleaves the coords, getting ``x1,x2,y1,y2``

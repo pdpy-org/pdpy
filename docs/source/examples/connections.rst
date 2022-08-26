@@ -8,7 +8,7 @@ The code we'll execute is here:
 .. code-block:: python
   :linenos:
 
-  import pdpy
+  import pdpy_lib as pdpy
   pd = pdpy.PdPy(name='test_disconnect',root=True)
   obj = pdpy.Obj('loadbang')
   printer = pdpy.Obj('print')
@@ -20,9 +20,9 @@ The code we'll execute is here:
   print(pd.__pd__())
 
 
-First, we import pdpy and create a PdPy instance::
+First, we import pdpy_lib as pdpy and create a PdPy instance::
 
-  >>> import pdpy
+  >>> import pdpy_lib as pdpy
   >>> pd = pdpy.PdPy(name='test_disconnect',root=True)
   Found  darwin  platform.
   Locating pd...

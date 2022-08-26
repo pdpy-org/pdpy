@@ -7,7 +7,7 @@ Using pip
 ``pdpy`` can be installed with the Python Package Index (PyPI).
 To do this, simply type::
   
-  pip install pdpy
+  pip install pdpy-lib
 
 
 From Github

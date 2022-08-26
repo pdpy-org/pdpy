@@ -4,7 +4,7 @@
 # This file is part of the pdpy project: https://github.com/pdpy-org
 # Copyright (C) 2022 Fede Camara Halac
 # **************************************************************************** #
-from pdpy import PdPy, Obj                  # necessary imports
+from pdpy_lib import PdPy, Obj                  # necessary imports
 offset = 110                                # fundamental frequency in Hz 
 partials = 8                                # number of partials
 mypatch = PdPy(name="additive_env", root=True)  # initialize a patch

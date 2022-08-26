@@ -11,7 +11,7 @@ to channels #1, #3 and #4 of the system audio ``dac~ 1 2 3 4``
 .. code-block:: python
   :linenos:
   
-  from pdpy import PdPy, Obj                      # necesary imports
+  from pdpy_lib import PdPy, Obj                      # necesary imports
   mypatch = PdPy(name="simpleaudio", root=True)   # initialize
   obj1 = Obj('osc~').addargs(440)                 # an ``osc~`` at 440 Hz
   obj2 = Obj('*~').addargs(0.01)                  # a signal multiplier at 0.01
