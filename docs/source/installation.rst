@@ -9,6 +9,10 @@ To do this, simply type::
   
   pip install pdpy-lib
 
+.. note::
+
+  ``pdpy`` requires python version 3.9 or greater.
+
 
 From Github
 -----------

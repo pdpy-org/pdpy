@@ -9,6 +9,11 @@ Create
 ------
 
 
+.. note::
+
+  ``pdpy`` requires python version 3.9 or greater.
+
+
 To start, you need to create the virtual environment.
 You only need to do this once; you can reuse your ``venv`` later on.
 For this, you need a path to a common folder.

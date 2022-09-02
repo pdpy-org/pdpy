@@ -134,6 +134,9 @@ class Patch(pdpy.PdPy):
     self.__pyaudio__ = pyaudio.PyAudio() if HAS_PYAUDIO else None
     """ The pyaudio class :class:`pyaudio.PyAudio` """
 
+    self.__gui__ = False
+    """ The flag if gui is on or off """
+
   def __enter__(self):
     self.start_audio()
     return self
@@ -192,4 +195,38 @@ class Patch(pdpy.PdPy):
       self.__pyaudio__.terminate()
     
     if HAS_PYLIBPD: pylibpd.libpd_release()
+  
+
+  def start_gui(self, path):
+    # pylibpd.libpd_init()
+    pylibpd.libpd_init_audio(self.__inch__, self.__outch__, self.__sr__)
+    pylibpd.libpd_subscribe('#py')
+    pylibpd.libpd_set_message_callback(lambda x,y,z:print("MESSAGE",x,y,z))
+    print_hook  = lambda x : print("CONSOLE", x) if x != '\n' else None
+    pylibpd.libpd_set_print_callback(print_hook)
+    # self.__instances__.append(pylibpd.libpd_new_instance())
+    # pylibpd.libpd_set_instance(self.__instances__[-1])
+    # [; pd dsp 1(
+    # pylibpd.__libpd_start_message(1) # one entry in list
+    # pylibpd.__libpd_add_float(1)
+    # pylibpd.__libpd_finish_message("pd", "dsp")
+
+    # self.__files__.append(pylibpd.libpd_openfile(self.name, '.'))
+
+    # pylibpd.libpd_open_patch(self.name + '.pd')
+    # failed = pylibpd.libpd_start_gui(self.__pdbin__.as_posix() + "/../..")
+    failed = pylibpd.libpd_start_gui(path)
+    
+    if failed: print("gui startup failed")
+    else: self.__gui__ = True
+
+
+  def stop_gui(self):
+    if self.__gui__: pylibpd.libpd_stop_gui()
+    print(pylibpd.libpd_exists("#py"))
+    pylibpd.libpd_unsubscribe('#py')
+
+
+  def send(self, recv, symbol, *args):
+    pylibpd.libpd_message(recv, symbol, *args)
   
