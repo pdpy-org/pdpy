@@ -197,7 +197,7 @@ class Patch(pdpy.PdPy):
     if HAS_PYLIBPD: pylibpd.libpd_release()
   
 
-  def start_gui(self, path):
+  def start_gui(self, path=None):
     # pylibpd.libpd_init()
     pylibpd.libpd_init_audio(self.__inch__, self.__outch__, self.__sr__)
     pylibpd.libpd_subscribe('#py')
@@ -215,10 +215,14 @@ class Patch(pdpy.PdPy):
 
     # pylibpd.libpd_open_patch(self.name + '.pd')
     # failed = pylibpd.libpd_start_gui(self.__pdbin__.as_posix() + "/../..")
+    if path is None:
+      path = self.__pdpath__.as_posix() 
+    
     failed = pylibpd.libpd_start_gui(path)
     
     if failed: print("gui startup failed")
     else: self.__gui__ = True
+    self.poll()
 
 
   def stop_gui(self):
@@ -229,4 +233,11 @@ class Patch(pdpy.PdPy):
 
   def send(self, recv, symbol, *args):
     pylibpd.libpd_message(recv, symbol, *args)
+    self.poll()
+
+
+  def poll(self):
+    pylibpd.libpd_poll_gui()
+
+
   
