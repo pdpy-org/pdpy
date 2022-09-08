@@ -463,8 +463,8 @@ class PdPy(CanvasBase, Base):
       # print("Found ", platform, " platform.")
       
       if "darwin" in platform: # macos
-        pdpath = Path("/Applications")
-        bindir = "/Contents/Resources/bin/pd"
+        pdpath = Path("/Applications/Contents/Resources")
+        bindir = pdpath / Path("/bin/pd")
       elif "win" in platform: # windoz
         pdpath = Path("C:/Program Files (x86)")
         bindir = "/usr/bin/pd"
@@ -491,6 +491,7 @@ class PdPy(CanvasBase, Base):
       if Path(pdbin).exists():
         # print("Found pd at: ", pdbin.as_posix())
         setattr(self, '__pdbin__', pdbin)
+        setattr(self, '__pdpath__', pdpath)
       else:
         log(2, "This pd binary does not exist: " + pdbin.as_posix())
     
