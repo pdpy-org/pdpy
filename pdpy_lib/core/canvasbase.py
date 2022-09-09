@@ -11,6 +11,7 @@ Canvas Base
 
 from ..connections.edge import Edge
 from ..encoding.xmlbuilder import XmlBuilder
+from ..utilities.utils import log
 
 
 __all__ = [ 'CanvasBase' ]
@@ -132,7 +133,12 @@ class CanvasBase(XmlBuilder):
     if not hasattr(self, 'edges'): 
       self.edges = []
     super().__parent__(self, edge)
-    self.edges.append(edge.connect())
+    connected_edge = edge.connect()
+    for e in self.edges:
+      if connected_edge == e:
+        log(1, "Already connected.")
+        return
+    self.edges.append(connected_edge)
     # log(1,"Edge",edge.__dict__)
   
   def disconnect(self, *argv):
@@ -211,6 +217,8 @@ class CanvasBase(XmlBuilder):
       elif srclist and snklist:
         for i in range(1,min(len(src),len(snk))):
           _connect(src[0].id, src[i], snk[0].id, snk[i])
+    
+    return self
 
   def comment(self, comment):
     """ Append a pure data comment
