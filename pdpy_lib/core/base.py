@@ -12,7 +12,7 @@ Base
 from json import dumps as json_dumps
 from ..encoding.xmltagconvert import XmlTagConvert
 from ..encoding.xmlbuilder import XmlBuilder
-from ..utilities.utils import log
+from ..utilities.utils import log, parsePdBinBuf
 from ..utilities.exceptions import ArgumentException, MalformedName
 from ..utilities.default import Default
 from ..utilities.namespace import Namespace
@@ -206,7 +206,10 @@ class Base(XmlBuilder, XmlTagConvert):
         pdnm = "{:e}".format(int(float(n)))
       elif "." in n: pdnm = float(n)
       else:
-        pdnm = int(n)
+        try:
+          pdnm = int(n)
+        except ValueError:
+          pdnm = n
     elif isinstance(n, list):
       # print("__num__(): input was a list of str numbers", n)
       pdnm = list(map(lambda x:self.__num__(x),n))
@@ -474,3 +477,11 @@ class Base(XmlBuilder, XmlTagConvert):
     else:
       self.position.set_x(int(x))
       self.position.set_y(int(y))
+
+  def as_list(self):
+    """ Return the pd patch as a python list """
+    pd_lines = parsePdBinBuf(self.__pd__())
+    return list(map(self.__num__, pd_lines))
+    
+  def __repr__(self):
+    return self.__pd__()
