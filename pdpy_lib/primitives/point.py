@@ -10,6 +10,7 @@ Point
 """
 
 from ..core.base import Base
+from ..utilities.utils import log
 
 __all__ = [ 'Point' ]
 
@@ -49,6 +50,10 @@ class Point(Base):
       return str(self.x) + " " + str(self.y)
     except ValueError as ve:
       raise Exception(ve, "in object", self.id, "named", self.getname())
+    except AttributeError as ae:
+      log(2, ae)
+      log(2, "Object was not placed on canvas. Try running `arrange` first.")
+      return ""
 
 
   def __xml__(self, tag=None):
