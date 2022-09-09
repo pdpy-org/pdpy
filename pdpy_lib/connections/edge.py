@@ -55,3 +55,6 @@ class Edge(Base):
     super().__subelement__(x, self.source.__xml__(o, tag='source'))
     super().__subelement__(x, self.sink.__xml__(o, tag='sink'))
     return x
+
+  def __eq__(self, edge):
+    return (self.source == edge.source) and (self.sink == edge.sink)

@@ -55,3 +55,6 @@ class Iolet(Base):
     super().__subelement__(x, 'id', text = self.id)
     super().__subelement__(x, 'port', text = self.port)
     return x
+
+  def __eq__(self, iolet):
+    return (self.id == iolet.id) and (self.port == iolet.port)
