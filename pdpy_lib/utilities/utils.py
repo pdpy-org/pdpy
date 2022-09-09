@@ -220,7 +220,7 @@ def tokenize(line):
 
   # filter out empty tokens
   tokens = list(filter(None,tokens))
-  print(tokens)
+  # print(tokens)
   return tokens
 
 def parsePdFileLines(file_lines):
