@@ -236,6 +236,10 @@ class CanvasBase(XmlBuilder):
       else:
         a.id = cnv.add(a)
       a.__parent__(parent=cnv)
+    
+    if self.__autoconnect__:
+      self.connect(*anything)
+    
     return self
 
   def createComment(self, *anything):

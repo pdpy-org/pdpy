@@ -47,23 +47,33 @@ class PdPy(CanvasBase, Base):
                pd_lines=None,
                json=None,
                xml=None,
-               pdpath=None):
+               pdpath=None,
+               autoconnect=False):
     """ Initialize a PdPy object """
     
     self.patchname = Base.__sane_name__(self, name)
     self.encoding = encoding
     self.__pdpy__ = self.__class__.__name__
+
+    # For canvases and subcanvases 
     self.__canvas_idx__ = []
     self.__depth__ = 0
+
+    # The following are used in the arrange function:
+    self.arrangement(5) # set the arrangement function
+    
     self.__max_w__ = 0
     self.__max_h__ = 0
-    self.arrangement(5) # set the arrangement function
-    # The following are used in the arrange function:
-    # the horizontal step size for increments
-    self.__hstep__ = 1.25 
-    # the vertical step size for increments
-    self.__vstep__ = 1
 
+    self.__hstep__ = 1.25 
+    """ The horizontal step size for increments"""
+    
+    self.__vstep__ = 1
+    """ The vertical step size for increments"""
+
+    self.__autoconnect__ = bool(autoconnect)
+    """ Connect objects together as in pd's `autoconnect` option """
+    
     CanvasBase.__init__(self, obj_idx=0)
     Base.__init__(self, json=json, xml=xml)
     
@@ -452,7 +462,7 @@ class PdPy(CanvasBase, Base):
     
     return super().__tree__(x)
 
-  def __set_pd_path__(self, path_to_pd):
+  def __set_pd_path__(self, path_to_pd=None):
       """ Attempt to locate the ``pd`` executable """
       
       from sys import platform
@@ -461,39 +471,48 @@ class PdPy(CanvasBase, Base):
       installed = False
       
       # print("Found ", platform, " platform.")
-      
+
+      pdapppath = Path(path_to_pd) if path_to_pd is not None else None
+      bindir = Path("bin")
+
       if "darwin" in platform: # macos
-        pdpath = Path("/Applications/Contents/Resources")
-        bindir = pdpath / Path("/bin/pd")
+        pdapppath = pdapppath or Path("/Applications")
+        pdpath = Path("Contents/Resources")
       elif "win" in platform: # windoz
-        pdpath = Path("C:/Program Files (x86)")
-        bindir = "/usr/bin/pd"
-      else: # asume pd is out there
+        pdapppath = Path("C:/Program Files (x86)")
+        pdpath = Path("usr")
+      else: # asume pd is installed out there
+        pdapppath = pdapppath or Path("/usr/local")
+        pdpath = Path("lib")
         installed = True
-        pdbin = Path("/")
       
-      if path_to_pd is not None:
-        pdpath = Path(path_to_pd)
 
       if installed:
-        pdbin += "pd"
+        pdbin = pdapppath / bindir
+        pdpath = pdapppath / pdpath
       else:
         # print("Locating pd...")
-        apps = [p for p in sorted(pdpath.glob("Pd*.app"))]
+        apps = [p for p in sorted(pdapppath.glob("Pd*.app"))]
         
         if len(apps) >= 1:
           appdir = apps[0]
         else:
-          log(2, "Could not find pd in " + pdpath)
-
-        pdbin = Path(appdir.as_posix() + bindir)
+          log(2, "Could not find pd in " + pdapppath.as_posix())
+        
+        # log(1, "Appdir", appdir.as_posix())
+        pdpath = appdir / pdpath
+        pdbin = pdpath / bindir
+    
+      pdbin /= Path("pd")
       
-      if Path(pdbin).exists():
-        # print("Found pd at: ", pdbin.as_posix())
+      # log(1, "Found pd at: ", pdbin.as_posix())
+    
+      try:
         setattr(self, '__pdbin__', pdbin)
         setattr(self, '__pdpath__', pdpath)
-      else:
-        log(2, "This pd binary does not exist: " + pdbin.as_posix())
+        assert pdbin.exists() and pdpath.exists()
+      except AssertionError:
+        log(2, "Pd not found.")
     
   def run(self):
     """ Run Pd from the Pure Data binary """
@@ -559,3 +578,7 @@ class PdPy(CanvasBase, Base):
 
     self.__arrange__ = _begin_arrange
     
+
+  def arrange(self):
+    """ Arrange the internal patch in 2d space """
+    self.__arrange__(self)
