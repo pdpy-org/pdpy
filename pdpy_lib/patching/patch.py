@@ -100,10 +100,11 @@ class Patch(pdpy.PdPy):
   You should now hear a sinewave at 440 Hz.
 
   """
-  def __init__(self, name=None, inch=2, outch=2, sr=44100, callback=True, **kwargs):
+  def __init__(self, name=None, inch=2, outch=2, sr=44100, callback=False, **kwargs):
     """ Constructor """
+
     
-    super().__init__(name, **kwargs)
+    super().__init__(name, root = kwargs.pop('root', True), **kwargs)
 
     self.__callback__ = callback
     """ callback flag for pyaudio """
@@ -136,6 +137,9 @@ class Patch(pdpy.PdPy):
 
     self.__gui__ = False
     """ The flag if gui is on or off """
+
+    self.__vis__ = False
+    """ The flag if the root is vised or not """
 
   def __enter__(self):
     self.start_audio()
@@ -240,4 +244,40 @@ class Patch(pdpy.PdPy):
     pylibpd.libpd_poll_gui()
 
 
-  
+  def create(self, *args):
+    super().create(*args)
+
+
+  def vis(self):
+    if not self.__gui__: return
+
+    if not self.__vis__:
+      patch = self.patchname + '.pd'
+      handle = 'pd-' + patch
+      
+      for line in self.as_list():
+        # self.send(handle, *list(map(str, s.split(' ')))) # old mapping
+        if line[0] == "#N":
+          # donecanvasdialog / canvas creator
+          pass
+        elif line[0] == "#A":
+          # array stuff
+          pass
+        elif line[0] == "#X":
+          # object creator (on the last canvas)
+          self.send(handle, *line[1:])
+        else:
+          pdpy.log(1, "What is this?", line)
+      self.poll()
+      self.__vis__ = True
+
+  def start_patch(self):
+    """ Start the Pd Patch """
+
+    if not self.__gui__: return
+    
+    try:
+      self.send('pd', 'menunew', self.patchname + '.pd', '.')
+      self.poll()
+    except Exception as e:
+      pdpy.log(3, e)
