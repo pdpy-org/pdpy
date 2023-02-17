@@ -7,8 +7,7 @@
 import time
 import argparse
 import traceback
-from pdpy_lib 
-import Translator, ArgumentException
+from pdpy_lib import Translator, ArgumentException
 
 def main():
   parser = argparse.ArgumentParser(
@@ -31,7 +30,7 @@ def main():
 
   # get time before translation
   start_time = time.process_time()
-  
+
   try:
     # create an instance of the Translator class
     print("-"*80)
@@ -39,7 +38,7 @@ def main():
     print("BEGIN:" + " " + str(start_time) + " - " + str(direction))
     print("Creating translator instance...")
     translator = Translator(arguments)
-    
+
     # check if the class was created
     if translator is None:
       raise Exception("Translator could not be created.")
