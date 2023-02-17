@@ -17,3 +17,5 @@ __pycache__/
 # documentation
 _build/
 
+# vim
+*.swp
