@@ -24,6 +24,14 @@ except ModuleNotFoundError:
   HAS_PYLIBPD = False
   print("You might want to get libpd from https://github.com/libpd/libpd")
 
+try:
+    # On Linux dlopenflags need to be set for Pd plugin loading to work.
+    import DLFCN
+    import sys
+    sys.setdlopenflags(DLFCN.RTLD_LAZY | DLFCN.RTLD_GLOBAL)
+except ImportError:
+    pass
+
 from . import pdpy
 
 __all__ = [ 'Patch' ]
