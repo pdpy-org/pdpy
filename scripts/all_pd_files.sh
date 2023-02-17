@@ -8,20 +8,24 @@
 # into separate files first. Then, it sorts them and removes dupes,
 # and places them into one big text file.
 
-# The main path where most of $FILES are located
-DEV=/home/fd/Documents
+# The root path where pdpy and pure-data are presumed to be located
+ROOT=Documents
 
-# All the patches root folders go here (stemming from $DEV)
-FILES=(pdpy-org/pdpy/tests/pd_files  pure-data/doc Pd/externals Pd/patches spat-tools timbreID fd_lib thornblower phossillators pdmixer pd-tutorial pd-fileutils FilterUtility Camomile Berelay Apollo1 hidio quack-and-netty-0.92 pix_fft pdobs)
+USER=$(whoami)
+
+FULL_ROOT_PATH=/home/$USER/$ROOT
+
+# All the patches root folders go here (stemming from $FULL_ROOT_PATH)
+FILES=(pdpy-org/pdpy/tests/pd_files  pure-data/doc Pd)
 
 # The output path
-OUT=$DEV/pdpy-org/pdpy/tests/patch_paths
+OUT=$FULL_ROOT_PATH/pdpy-org/pdpy/tests/patch_paths
 
 # the python executable
 PY=python
 
 # place the remove_dupes.py script in a variable
-REM_DUPES=$DEV/pdpy-org/pdpy/scripts/remove_dupes.py
+REM_DUPES=$FULL_ROOT_PATH/pdpy-org/pdpy/scripts/remove_dupes.py
 
 function finder {
   # This function finds all the patches in the given folder
@@ -45,7 +49,7 @@ mkdir -p $OUT/individual
 # Run the finder function for each of the folders
 for file in ${FILES[@]}
 do
-  finder $DEV/$file
+  finder $FULL_ROOT_PATH/$file
 done
 
 # execute the remove_dupes.py script 
