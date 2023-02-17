@@ -9,7 +9,7 @@
 # and places them into one big text file.
 
 # The main path where most of $FILES are located
-DEV=/Users/fd/Development
+DEV=/home/fd/Documents
 
 # All the patches root folders go here (stemming from $DEV)
 FILES=(pdpy-org/pdpy/tests/pd_files  pure-data/doc Pd/externals Pd/patches spat-tools timbreID fd_lib thornblower phossillators pdmixer pd-tutorial pd-fileutils FilterUtility Camomile Berelay Apollo1 hidio quack-and-netty-0.92 pix_fft pdobs)
@@ -28,9 +28,14 @@ function finder {
   # and places their paths into separate files.
   local path="$1"
   local name=$OUT/individual/$(basename $path).txt
-  echo "$path -> $name"
-  find $path -name "*.pd" -type f | awk '{gsub(" ","\\ ",$0);print $0}' > $name
-  cat $name >> /tmp/allfiles
+  if [[ -d $path ]]; then
+    echo "$path -> $name"
+    find $path -name "*.pd" -type f | awk '{gsub(" ","\\ ",$0);print $0}' > $name
+    cat $name >> /tmp/allfiles
+  else
+    echo "No such path: $path"
+  fi
+
 }
 
 touch /tmp/allfiles
