@@ -1,7 +1,0 @@
-/Users/fd/Development/phossillators/coupled_fm-samplewise-1.pd
-/Users/fd/Development/phossillators/coupled_fm.pd
-/Users/fd/Development/phossillators/phoscil.pd
-/Users/fd/Development/phossillators/input_data.pd
-/Users/fd/Development/phossillators/main.pd
-/Users/fd/Development/phossillators/coupled_fm-samplewise.pd
-/Users/fd/Development/phossillators/phascil.pd

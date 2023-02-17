@@ -1,2 +1,0 @@
-/Users/fd/Development/pdobs/pdobs.pd
-/Users/fd/Development/pdobs/lib/sf2.pd

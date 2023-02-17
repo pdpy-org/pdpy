@@ -1,5 +1,0 @@
-/Users/fd/Development/pdmixer/pdmixer.pd
-/Users/fd/Development/pdmixer/lib/store.pd
-/Users/fd/Development/pdmixer/lib/ingui.pd
-/Users/fd/Development/pdmixer/lib/input.pd
-/Users/fd/Development/pdmixer/lib/pdmixer-server.pd

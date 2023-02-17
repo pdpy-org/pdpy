@@ -20,3 +20,4 @@ _build/
 # vim
 *.swp
 examples/*.pd
+examples/*.json
