@@ -6,7 +6,7 @@ The documentation exists here: [pdpy-org.github.io/doc](https://pdpy-org.github.
 
 ## Installation
 
-To install `pdpy` you can either run the following from console, or create a [virtual environment](https://pdpy-org.github.io/doc/virtual_env.html). 
+To install `pdpy` you can either run the following from terminal, or create a [virtual environment](https://pdpy-org.github.io/doc/virtual_env.html). 
 
 **NOTE: You will need python version 3.9 or greater.**
 
